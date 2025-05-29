@@ -4,8 +4,8 @@ using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 
-[Serializable]
-public struct Action
+[Serializable] 
+public class Action
 {
     public AnimationClip animToPlay;
     public UnityEvent OnActionStart;
