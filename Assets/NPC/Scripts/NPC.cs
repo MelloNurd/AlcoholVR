@@ -18,7 +18,7 @@ public enum NPCState
     PerformingAction
 }
 
-public abstract class NPC : MonoBehaviour
+public class NPC : MonoBehaviour
 {
     [SerializeField] private bool _debugMode = false;
     [ReadOnly] public NPCState currentState = NPCState.Idle;
