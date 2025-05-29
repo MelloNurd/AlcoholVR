@@ -62,7 +62,6 @@ public class SceneSwitcher : MonoBehaviour
     {
         if (isPlayerInside)
         {
-            Debug.Log("Switching to scene: " + sceneToLoad);
             UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToLoad);
         }
     }
