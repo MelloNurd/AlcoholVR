@@ -10,18 +10,18 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
+[Serializable]
+public enum NPCState
+{
+    Idle,
+    Moving,
+    PerformingAction
+}
+
 public abstract class NPC : MonoBehaviour
 {
-    [Serializable]
-    private enum NPCState
-    {
-        Idle,
-        Moving,
-        PerformingAction
-    }
-
     [SerializeField] private bool _debugMode = false;
-    [SerializeField, ReadOnly] private NPCState _currentState = NPCState.Idle;
+    [ReadOnly] public NPCState currentState = NPCState.Idle;
     
     private Animator _animator;
     private GameObject _bodyObj;
@@ -31,11 +31,13 @@ public abstract class NPC : MonoBehaviour
     [SerializeField, Tooltip("If false, it will only pull Actions from the ActionController on the \"Body\" GameObject.")] private bool _checkpointDeterminedActions = true;
     private ActionContainer _actionContainer;
 
-
     [Header("Checkpoint Settings")]
+    public UnityEvent OnCheckpointLeave = new();
+    public UnityEvent OnCheckpointArrive = new();
     [SerializeField] private AnimationClip _idleAnimation;
     [SerializeField] private AnimationClip _moveAnimation;
     [SerializeField] private SortMode _checkpointSortMode; // How it determines the next checkpoint to move to
+    [ShowIf("_checkpointSortMode", SortMode.Random), SerializeField] private bool _excludeCurrentCheckpoint = true; // If it should be able to stay at the same checkpoint
     private List<ActionContainer> _checkPoints = new();
     private int _currentCheckpointIndex = -1;
 
@@ -56,6 +58,11 @@ public abstract class NPC : MonoBehaviour
                 _checkPoints.Add(container);
             }
         }
+        if(_checkPoints.Count <= 0 && _checkpointDeterminedActions)
+        {
+            Debug.Log("No checkpoints found for \"" + gameObject.name + "\", setting _checkpointDeterminedActions to false.");
+            _checkpointDeterminedActions = false;
+        }
     }
 
     private void Start()
@@ -68,7 +75,7 @@ public abstract class NPC : MonoBehaviour
     {
         while(true)
         {
-            await UniTask.Delay(5000);
+            await ProcessActions();
             await GoToNextCheckpoint();
         }
     }
@@ -102,7 +109,7 @@ public abstract class NPC : MonoBehaviour
     }
     private async UniTask GoToNextCheckpoint()
     {
-        // invoke before moving to checkpoint event
+        OnCheckpointLeave?.Invoke();
         if (_checkPoints.Count > 0)
         {
             Vector3 nextCheckpoint = GetNextCheckpoint();
@@ -112,7 +119,7 @@ public abstract class NPC : MonoBehaviour
 
             await UniTask.WaitUntil(() => _agent.remainingDistance <= _agent.stoppingDistance);
         }
-        // invoke after moving to checkpoint event
+        OnCheckpointArrive?.Invoke();
 
         StartIdling();
     }
@@ -120,27 +127,59 @@ public abstract class NPC : MonoBehaviour
     {
         if (_checkPoints.Count == 0) return _bodyObj.transform.position; // No checkpoints, stay in place
 
-        _currentCheckpointIndex = _checkpointSortMode switch
+        int index = -1;
+        switch(_checkpointSortMode)
         {
-            SortMode.Random => Random.Range(0, _checkPoints.Count),
-            SortMode.RoundRobin => (_currentCheckpointIndex + 1) % _checkPoints.Count,
-            SortMode.RoundRobinReverse => (_currentCheckpointIndex - 1 + _checkPoints.Count) % _checkPoints.Count,
-            _ => -1
-        };
-
+            case SortMode.Random:
+                Debug.Log("Random CHECKPOINT");
+                do index = Random.Range(0, _checkPoints.Count);
+                while(_excludeCurrentCheckpoint && _currentCheckpointIndex == index);
+                break;
+            case SortMode.RoundRobin:
+                Debug.Log("RR CHECKPOINT");
+                index = (_currentCheckpointIndex + 1) % _checkPoints.Count;
+                break;
+            case SortMode.RoundRobinReverse:
+                Debug.Log("RRR CHECKPOINT");
+                index = (_currentCheckpointIndex - 1 + _checkPoints.Count) % _checkPoints.Count;
+                break;
+        }
+        _currentCheckpointIndex = index;
         return _checkPoints[_currentCheckpointIndex].transform.position;
     }
 
-    
+    private async UniTask ProcessActions()
+    {
+        ActionContainer container = !_checkpointDeterminedActions ? _actionContainer : _checkPoints[_currentCheckpointIndex];
+
+        int numberOfActionsToPlay = Random.Range(container.minActions, container.maxActions + 1);
+
+        int seconds = Mathf.RoundToInt(container.AnimationDelay * 1000); // Convert to milliseconds for async delay
+
+        for (int i = 0; i < numberOfActionsToPlay; i++)
+        {
+            await UniTask.Delay(seconds);
+
+            Action temp = container.GetAction(out int durationMS);
+            if (temp.animToPlay != null)
+            {
+                _animator.Play(temp.animToPlay.name); // Get the next action and its duration
+                currentState = NPCState.PerformingAction;
+            }
+
+            temp.OnActionStart?.Invoke();
+            await UniTask.Delay(durationMS); // Wait for the action to complete
+            temp.OnActionEnd?.Invoke();
+
+            StartIdling();
+        }
+
+        await UniTask.Delay(seconds);
+    }
 
     private void StartMoving()
     {
-        if (_debugMode)
-        {
-            Debug.Log("Starting to move...");
-        }
-
-        _currentState = NPCState.Moving;
+        currentState = NPCState.Moving;
 
         if (_moveAnimation != null)
         {
@@ -149,32 +188,12 @@ public abstract class NPC : MonoBehaviour
     }
     private void StartIdling()
     {
-        if (_debugMode)
-        {
-            Debug.Log("Starting to idle...");
-        }
-
-        _currentState = NPCState.Idle;
+        currentState = NPCState.Idle;
 
         if (_idleAnimation != null)
         {
             _animator.Play(_idleAnimation.name); // Play the idle animation
         }
-    }
-
-    // Consider coroutines for better cancellation
-    private async void ProcessActions()
-    {
-        int numberOfActionsToPlay = Random.Range(_actionContainer.minActions, _actionContainer.maxActions + 1);
-
-        // Wait some number of time
-        // play some action
-        // wiat more time
-        // wait action
-        // wait more time
-        // finish
-
-        // Play actions x times with y seconds in between, y being the one enum variable
     }
 
     private void OnDrawGizmos()
@@ -194,8 +213,4 @@ public abstract class NPC : MonoBehaviour
             Gizmos.DrawSphere(_agent.destination, 0.2f);
         }
     }
-
-    // Basically, should have abilities to walk between points, play animations based on min/max (random), and have a delay between actions
-    // This should be super modular. Use as many events as possible. Also have buttons so we can like force skip an action or something.
-    // Figure out how to use async or IEnumerators to wait for the things
 }

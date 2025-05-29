@@ -19,10 +19,10 @@ public enum SortMode
     Random,
 }
 
-public enum TimeBetweenActions // WIP
+public enum Timing
 {
-    Slow,
-    Normal,
-    Fast,
-    Instant,
+    Slow, // 10 seconds between
+    Normal, // 5 seconds between
+    Fast, // 2 seconds between
+    Instant, // 0 seconds between
 }

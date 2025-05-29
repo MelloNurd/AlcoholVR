@@ -1,15 +1,31 @@
+using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ActionContainer : MonoBehaviour
 {
     public List<Action> _actions = new();
 
-    public SortMode actionSortMode; // How it determines the next action to play
-    [ShowIf("actionSortMode", SortMode.Random)] public bool includeCurrentAction = false; // If it should be able to play the same action again immediately
+    public SortMode actionSortMode = SortMode.RoundRobin; // How it determines the next action to play
+    [ShowIf("actionSortMode", SortMode.Random)] public bool excludeCurrentAction = false; // If it should be able to play the same action again immediately
 
-    public TimeBetweenActions delaySpeed;
+    public Timing timeBetweenActions = Timing.Normal;
+    public float AnimationDelay
+    { 
+        get {
+            return timeBetweenActions switch
+            {
+                Timing.Slow => 8,
+                Timing.Normal => 3f,
+                Timing.Fast => 1f,
+                Timing.Instant => 0f,
+                _ => 5f
+            };
+        }
+    }
 
     [Min(1)] public int minActions = 1;
     [Min(1)] public int maxActions = 5;
@@ -18,50 +34,42 @@ public class ActionContainer : MonoBehaviour
 
     private void Start()
     {
-        _currentActionIndex = GetFirstIndex();
+        GetFirstIndex();
     }
 
-    public Action GetNextAction() => GetNextAction(out _);
-    public Action GetNextAction(out float seconds)
+    public Action GetAction(out int miliseconds) // This will autoincrement the index after getting the current action
     {
         if(_actions.Count == 0)
         {
-            Debug.LogWarning("No actions available on {" + gameObject.name + "}. Returning default action.");
-            seconds = 0f;
-            return default;
+            Debug.Log("No actions available in \"" + gameObject.name + "\". Returning default.");
+            miliseconds = 0;
+            return null; // Return a default action or handle the case where there are no actions
         }
+
+        if (_currentActionIndex < 0) GetFirstIndex(); // Ensure we have a valid index
+
+        Action action = _actions[_currentActionIndex];
+        miliseconds = action.animToPlay ? Mathf.RoundToInt(action.animToPlay.length * 1000) : 0;
 
         int index = -1;
         switch (actionSortMode)
         {
             case SortMode.Random:
-                int threshold = 0;
-                do
-                {
-                    index = Random.Range(0, _actions.Count);
-                }
-                while (index == _currentActionIndex && !includeCurrentAction && threshold++ < 50);
-                if (threshold >= 50)
-                {
-                    Debug.LogWarning("Could not find a new action after 50 attempts. Returning current action.");
-                    index = _currentActionIndex;
-                }
+                do index = Random.Range(0, _actions.Count);
+                while (excludeCurrentAction && _currentActionIndex == index);
                 break;
             case SortMode.RoundRobin:
-                index = (_currentActionIndex + 1) % _actions.Count;
+                index = (_currentActionIndex + 1) % _actions.Count; // Move to the next checkpoint in a round-robin fashion
                 break;
             case SortMode.RoundRobinReverse:
-                index = (_currentActionIndex - 1 + _actions.Count) % _actions.Count;
+                index = (_currentActionIndex - 1 + _actions.Count) % _actions.Count; // Move to the next checkpoint in a round-robin fashion
                 break;
         }
-
         _currentActionIndex = index;
-        seconds = _actions[index % _actions.Count].animToPlay.length;
 
-        return _actions[index % _actions.Count];
+        return action;
     }
 
-    public Action GetActionByAnimation(AnimationClip anim) => GetActionByAnimation(anim, out _);
     public Action GetActionByAnimation(AnimationClip anim, out float seconds)
     {
         foreach (var action in _actions)
@@ -76,9 +84,9 @@ public class ActionContainer : MonoBehaviour
         return default;
     }
 
-    private int GetFirstIndex()
+    private void GetFirstIndex()
     {
-        return actionSortMode switch
+        _currentActionIndex = actionSortMode switch
         {
             SortMode.Random => Random.Range(0, _actions.Count),
             SortMode.RoundRobin => 0,
