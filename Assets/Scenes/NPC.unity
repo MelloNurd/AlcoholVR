@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1.5
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 133347283e115d147a5fcce7f47a538f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 8cce5eb233a87cf40a9ba890aa4d9ada, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 6baadf7b33fd7ee4295fbb01aa5a3e43, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -183,7 +183,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 62b5ec42aaf0064458d0e1162a36c5ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -327,7 +327,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 62b5ec42aaf0064458d0e1162a36c5ad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -539,8 +539,8 @@ Transform:
   m_GameObject: {fileID: 397703369}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.147, y: 0.5, z: -3.973}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.147, y: 1.65, z: -3.973}
+  m_LocalScale: {x: 1, y: 3.418, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 107257303}
@@ -638,13 +638,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.35006493, y: -0.5058627, z: 0.7357412, w: 0.28327093}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 70.509, y: 43.228, z: 169.176}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -970,6 +970,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 949022603612244006, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
+      propertyPath: m_AutoBraking
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 949022603612244006, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
+      propertyPath: m_Acceleration
+      value: 999
+      objectReference: {fileID: 0}
+    - target: {fileID: 949022603612244006, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 9999
+      objectReference: {fileID: 0}
     - target: {fileID: 3109217077197163892, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.12312081
@@ -1249,7 +1261,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fc9f6fb33f2b6cf459de9738e21b17da, type: 2}
+  - {fileID: 2100000, guid: 87bc52564e507b44bbde4c38e123bb7e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1305,6 +1317,18 @@ PrefabInstance:
     - target: {fileID: 1688126841686072987, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
       propertyPath: m_Name
       value: InteractableNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484728434308405418, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: m_AutoBraking
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484728434308405418, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: m_Acceleration
+      value: 999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5484728434308405418, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 9999
       objectReference: {fileID: 0}
     - target: {fileID: 6322158923298213170, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
       propertyPath: m_LocalPosition.x
