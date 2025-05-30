@@ -9,69 +9,39 @@ public class DialogueSystem : MonoBehaviour
     // NOT a singleton
 
     public Dialogue currentDialogue;
-
-    [SerializeField] private GameObject _dialogueOptionRow;
-    [SerializeField] private GameObject _dialogueOptionButton;
+    public bool IsDialogueActive => _dialogueText.text.Length > 0;
 
     private TMP_Text _dialogueText;
-    private GameObject _dialogueOptionsHolder;
 
     private void Awake()
     {
-        _dialogueText = transform.Find("Chat").GetComponentInChildren<TMP_Text>();
-        _dialogueOptionsHolder = transform.Find("Options").GetChild(0).gameObject;
+        _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
     }
 
-    private void Start()
+    public void StartDialogue(Dialogue dialogue)
     {
-        if (currentDialogue == null)
+        if(dialogue == null)
         {
-            Debug.LogError("Current dialogue is not set. Please assign a dialogue to the DialogueSystem.");
+            Debug.LogWarning("Dialogue is null. Cannot start dialogue.");
             return;
         }
 
-        if (_dialogueText == null || _dialogueOptionsHolder == null)
-        {
-            Debug.LogError("Dialogue UI components are not properly set up. Please check the hierarchy.");
-            return;
-        }
-
-        UpdateDialogueUI();
-    }
-
-    public void UpdateDialogueUI()
-    {
+        currentDialogue = dialogue;
         _dialogueText.text = currentDialogue.text;
 
-        CreateDialogueButtons();
+        DialogueUI.Instance.CreateDialogueButtons(this);
     }
 
-    private void CreateDialogueButtons()
+    public void EndDialogue()
     {
-        foreach (Transform child in _dialogueOptionsHolder.transform)
+        if (currentDialogue != null)
         {
-            Destroy(child.gameObject);
+            currentDialogue.onDialogueEnd?.Invoke();
+            currentDialogue = null;
         }
 
-        GameObject currentRow = null;
-
-        for(int i = 0; i < currentDialogue.options.Count; i++)
-        {
-            if(i % 3 == 0)
-            {
-                currentRow = Instantiate(_dialogueOptionRow, _dialogueOptionsHolder.transform);
-                currentRow.name = "DialogueOptionRow_" + (i / 3);
-            }
-
-
-            Button optionButton = Instantiate(_dialogueOptionButton, currentRow.transform).GetComponent<Button>();
-            optionButton.name = "DialogueOptionButton_" + i;
-
-            int index = i; // weird behavior needed with lambda function, called a closure
-            optionButton.onClick.AddListener(() => SwitchDialogue(index));
-
-            optionButton.GetComponentInChildren<TMP_Text>().text = currentDialogue.options[i].text;
-        }
+        DialogueUI.Instance.ClearButtons();
+        _dialogueText.text = string.Empty;
     }
 
     public void SwitchDialogue(int optionIndex)
@@ -91,7 +61,7 @@ public class DialogueSystem : MonoBehaviour
                 currentDialogue.onDialogueStart?.Invoke();
             }
 
-            UpdateDialogueUI();
+            StartDialogue(nextDialogue);
         }
     }
 }

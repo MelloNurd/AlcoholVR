@@ -10,6 +10,7 @@ public class Action
     public AnimationClip animToPlay;
     public UnityEvent OnActionStart;
     public UnityEvent OnActionEnd;
+    public bool CanBeInterrupted = true;
 }
 
 public enum SortMode

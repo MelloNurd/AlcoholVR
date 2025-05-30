@@ -46,7 +46,7 @@ public class ActionContainer : MonoBehaviour
             return null; // Return a default action or handle the case where there are no actions
         }
 
-        if (_currentActionIndex < 0) GetFirstIndex(); // Ensure we have a valid index
+        if (_currentActionIndex < 0) GetFirstIndex();
 
         Action action = _actions[_currentActionIndex];
         miliseconds = action.animToPlay ? Mathf.RoundToInt(action.animToPlay.length * 1000) : 0;
