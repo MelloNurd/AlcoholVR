@@ -18,6 +18,8 @@ public class UBS_LightBulb : MonoBehaviour {
 
     private bool init;
 
+    public float intensity;
+
     // Use this for initialization
     void Start ()
     {
@@ -30,6 +32,8 @@ public class UBS_LightBulb : MonoBehaviour {
         lightB = lightBGO.GetComponent<Light>();
         lightB.flare = lightFlare;
         lightB.enabled = binaryState;
+        lightB.intensity = intensity;
+        lightB.color = new Color32(255, 246, 210, 255);
 
         init = true;
     }
