@@ -52,8 +52,8 @@ public class PhysicalButton : MonoBehaviour
         Physics.IgnoreCollision(buttonBase.GetComponent<Collider>(), button.GetComponent<Collider>()); // Ignore collision between button base and top
 
         // Setting up and down positions (these are local positions, relative to the base!)
-        buttonUpPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) + (button.transform.localScale.y * 0.5f), 0);
-        buttonDownPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) - (button.transform.localScale.y * 0.25f), 0);
+        buttonUpPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) + (button.transform.localScale.y * 0.5f), 0) * transform.localScale.y;
+        buttonDownPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) - (button.transform.localScale.y * 0.25f), 0) * transform.localScale.y;
 
         totalTravelDistance = Vector3.Distance(buttonUpPosition, buttonDownPosition);
 
@@ -87,14 +87,11 @@ public class PhysicalButton : MonoBehaviour
         // Clamp button position between up and down positions
         button.transform.position = button.transform.position.Clamp(buttonBase.transform.position + buttonDownPosition, buttonBase.transform.position + buttonUpPosition);
 
-        // Apply spring force if needed
-        if (button.transform.localPosition.y < buttonUpPosition.y)
-        {
-            buttonRb.AddForce(button.transform.up * buttonSpringForce * Time.deltaTime);
-        }
+        // Apply spring force
+        buttonRb.AddForce(button.transform.up * buttonSpringForce * Time.deltaTime);
 
         // Set label position
-        buttonLabel.rectTransform.position = new Vector3(button.transform.position.x, button.transform.position.y + button.transform.localScale.y * 0.51f, button.transform.position.z);
+        buttonLabel.rectTransform.position = new Vector3(button.transform.position.x, button.transform.position.y + button.transform.localScale.y * 0.51f * transform.localScale.y, button.transform.position.z);
     }
 
     private bool CheckIfPressed()
