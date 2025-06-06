@@ -10,18 +10,20 @@ using UnityEngine.UIElements;
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
-    [Range(0f, 1f), SerializeField] private float buttonActivationThreshold = 0.95f; // How far the button needs to be pushed in to activate, as a percentage
-    [SerializeField] private float buttonSpringForce = 7.5f;
+    [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.95f; // How far the button needs to be pushed in to activate, as a percentage
+    [SerializeField] private float _buttonSpringForce = 7.5f;
 
-    public string labelText;
-    private TMP_Text buttonLabel;
+    [SerializeField] private string labelText;
+    private TMP_Text _buttonLabel;
 
-    [ReadOnly] public bool isPressed;
-    private bool previousPressState;
+    public bool IsActive = true;
+
+    [ReadOnly] public bool IsPressed;
+    private bool _previousPressState;
 
     [Header("Audio Settings")]
-    [SerializeField] private AudioClip pressedSound;
-    [SerializeField] private AudioClip releasedSound;
+    [SerializeField] private AudioClip _pressedSound;
+    [SerializeField] private AudioClip _releasedSound;
     private AudioSource _audioSource;
 
     [Header("Events")]
@@ -29,100 +31,143 @@ public class PhysicalButton : MonoBehaviour
     public UnityEvent OnButtonUp; // Runs the first frame the button is released
     public UnityEvent OnButtonHold; // Runs every frame the button is pressed
 
-    private GameObject button;
-    private GameObject buttonBase;
+    private GameObject _button;
+    private GameObject _buttonBase;
 
-    private Rigidbody buttonRb;
+    private Rigidbody _buttonRb;
 
-    private Vector3 buttonUpPosition;
-    private Vector3 buttonDownPosition;
+    [SerializeField, ReadOnly] private Vector3 _buttonUpPosition;
+    [SerializeField, ReadOnly] private Vector3 _buttonDownPosition;
+    private Vector3 _upPosition => (_buttonUpPosition.magnitude * _buttonBase.transform.up) + _buttonBase.transform.position;
+    private Vector3 _downPosition => (_buttonDownPosition.magnitude * _buttonBase.transform.up) + _buttonBase.transform.position;
 
-    float totalTravelDistance;
+    private float _totalTravelDistance;
 
     private void Awake()
     {
-        button = transform.Find("Button").gameObject;
-        buttonRb = button.GetComponent<Rigidbody>();
+        _button = transform.Find("Button").gameObject;
+        _buttonRb = _button.GetComponent<Rigidbody>();
 
-        buttonBase = transform.Find("Base").gameObject;
+        _buttonBase = transform.Find("Base").gameObject;
 
-        buttonLabel = transform.Find("Label").GetComponent<TMP_Text>();
-        buttonLabel.text = labelText;
+        _buttonLabel = transform.Find("Label").GetComponent<TMP_Text>();
+        _buttonLabel.text = labelText;
 
-        Physics.IgnoreCollision(buttonBase.GetComponent<Collider>(), button.GetComponent<Collider>()); // Ignore collision between button base and top
+        Physics.IgnoreCollision(_buttonBase.GetComponent<Collider>(), _button.GetComponent<Collider>()); // Ignore collision between button base and top
 
         // Setting up and down positions (these are local positions, relative to the base!)
-        buttonUpPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) + (button.transform.localScale.y * 0.5f), 0) * transform.localScale.y;
-        buttonDownPosition = new Vector3(0, (buttonBase.transform.localScale.y * 0.5f) - (button.transform.localScale.y * 0.25f), 0) * transform.localScale.y;
+        _buttonUpPosition = new Vector3(0, (_buttonBase.transform.localScale.y * 0.5f) + (_button.transform.localScale.y * 0.5f), 0) * transform.localScale.y;
+        _buttonDownPosition = new Vector3(0, (_buttonBase.transform.localScale.y * 0.5f) - (_button.transform.localScale.y * 0.25f), 0) * transform.localScale.y;
 
-        totalTravelDistance = Vector3.Distance(buttonUpPosition, buttonDownPosition);
+        _totalTravelDistance = Vector3.Distance(_buttonUpPosition, _buttonDownPosition);
 
-        previousPressState = isPressed;
+        _previousPressState = IsPressed;
 
-        if(!TryGetComponent(out AudioSource _audioSource) && (pressedSound != null || releasedSound != null))
+        if(!TryGetComponent(out AudioSource _audioSource) && (_pressedSound != null || _releasedSound != null))
         {
             _audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        button.transform.position = buttonBase.transform.position + buttonUpPosition;
-        buttonLabel.rectTransform.sizeDelta = new Vector2(button.transform.localScale.x, button.transform.localScale.z);
+        _button.transform.position = _upPosition;
+        _buttonLabel.transform.position = _upPosition;
+        _buttonLabel.rectTransform.sizeDelta = new Vector2(_button.transform.localScale.x, _button.transform.localScale.z);
     }
 
     public void SetButtonText(string text)
     {
         labelText = text;
-        buttonLabel.text = labelText;
+        _buttonLabel.text = labelText;
     }
 
     // Update is called once per frame
     void Update()
     {
         ApplyButtonForces();
-        isPressed = CheckIfPressed();
+        IsPressed = CheckIfPressed();
         RunButtonEvents();
     }
 
     private void ApplyButtonForces()
     {
+        _button.transform.rotation = _buttonBase.transform.rotation; // Keep button aligned with base
+
+        var upper = transform.InverseTransformPoint(_upPosition);
+        var lower = transform.InverseTransformPoint(_downPosition);
+        var clampedPos = Mathf.Clamp(Mathf.Abs(_button.transform.localPosition.y), lower.y, upper.y);
+
+        //Debug.Log($"Upper : {upper}, Lower: {lower}, PosPreClamp: {_button.transform.localPosition.y}, ClampedPos: {clampedPos}");
+
         // Clamp button position between up and down positions
-        button.transform.position = button.transform.position.Clamp(buttonBase.transform.position + buttonDownPosition, buttonBase.transform.position + buttonUpPosition);
+        _button.transform.localPosition = new Vector3(0, clampedPos, 0);
 
         // Apply spring force
-        buttonRb.AddForce(button.transform.up * buttonSpringForce * Time.deltaTime);
+        _buttonRb.AddForce(_button.transform.up * _buttonSpringForce * Time.deltaTime);
 
         // Set label position
-        buttonLabel.rectTransform.position = new Vector3(button.transform.position.x, button.transform.position.y + button.transform.localScale.y * 0.51f * transform.localScale.y, button.transform.position.z);
+        _buttonLabel.rectTransform.position = _upPosition + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
+
+        // Disable if not active
+        if (!IsActive)
+        {
+            _buttonRb.isKinematic = true; // Disable physics if not active
+            _button.transform.position = _upPosition; // Reset position
+        }
+        else
+        {
+            _buttonRb.isKinematic = false; // Enable physics if active
+        }
     }
 
     private bool CheckIfPressed()
     {
-        float percentagePressed = (button.transform.position - (buttonBase.transform.position + buttonUpPosition)).magnitude / totalTravelDistance;
-        return percentagePressed >= buttonActivationThreshold;
+        if(!IsActive) return false;
+
+        float percentagePressed = (transform.InverseTransformPoint(_upPosition).y - _button.transform.localPosition.y) / _totalTravelDistance * transform.localScale.y;
+        //Debug.Log(percentagePressed);
+        return percentagePressed >= _buttonActivationThreshold;
     }
 
     private void RunButtonEvents()
     {
-        if(isPressed)
+        if(IsPressed)
         {
-            if (previousPressState == false)
+            if (_previousPressState == false)
             {
-                OnButtonDown?.Invoke();
-                if(pressedSound != null) _audioSource.PlayOneShot(pressedSound);
-                Debug.Log("Pressed");
+                ButtonPress();
             }
             else
             {
-                OnButtonHold?.Invoke();
-                Debug.Log("Held");
+                ButtonHold();
             }
         }
-        else if(previousPressState == true)
+        else if(_previousPressState == true)
         {
-            OnButtonUp?.Invoke();
-            if(releasedSound != null) _audioSource.PlayOneShot(releasedSound);
-            Debug.Log("Released");
+            ButtonRelease();
         }
 
-        previousPressState = isPressed;
+        _previousPressState = IsPressed;
+    }
+
+    [Button("Execute Button Press")]
+    private void ButtonPress()
+    {
+        OnButtonDown?.Invoke();
+        if (_pressedSound != null) _audioSource.PlayOneShot(_pressedSound);
+        //Debug.Log("Pressed");
+    }
+
+    [Button("Execute Button Hold")]
+    private void ButtonHold()
+    {
+        OnButtonHold?.Invoke();
+        //Debug.Log("Held");
+    }
+
+    [Button("Execute Button Release")]
+    private void ButtonRelease()
+    {
+        OnButtonUp?.Invoke();
+        if (_releasedSound != null) _audioSource.PlayOneShot(_releasedSound);
+        //Debug.Log("Released");
     }
 }

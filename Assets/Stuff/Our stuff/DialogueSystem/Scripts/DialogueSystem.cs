@@ -29,7 +29,7 @@ public class DialogueSystem : MonoBehaviour
         currentDialogue = dialogue;
         _dialogueText.text = currentDialogue.text;
 
-        DialogueUI.Instance.CreateDialogueButtons(this);
+        DialogueButtons.Instance.CreateDialogueButtons(this);
     }
 
     public void EndDialogue()
@@ -40,7 +40,7 @@ public class DialogueSystem : MonoBehaviour
             currentDialogue = null;
         }
 
-        DialogueUI.Instance.ClearButtons();
+        DialogueButtons.Instance.ClearButtons();
         _dialogueText.text = string.Empty;
     }
 

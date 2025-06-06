@@ -42,6 +42,7 @@ public class InteractableNPC : NPC
         }
         if(_incompleteDialogue == null) _incompleteDialogue = _firstDialogue;
         if(_completeDialogue == null) _completeDialogue = _firstDialogue;
+        if(_failDialogue == null) _failDialogue = _firstDialogue;
 
         _dialogueSystem = GetComponent<DialogueSystem>();
     }
@@ -54,18 +55,6 @@ public class InteractableNPC : NPC
 
     private void Update()
     {
-        if(Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            if (_isBeingInteractedWith)
-            {
-                ResumeNPC();
-            }
-            else
-            {
-                Interact();
-            }
-        }
-
         if(Keyboard.current.fKey.wasPressedThisFrame)
         {
             Quest.Complete();
@@ -73,6 +62,18 @@ public class InteractableNPC : NPC
         if (Keyboard.current.gKey.wasPressedThisFrame)
         {
             Quest.Fail();
+        }
+    }
+
+    public void TryInteract()
+    {
+        if (_isBeingInteractedWith)
+        {
+            ResumeNPC();
+        }
+        else
+        {
+            Interact();
         }
     }
 
