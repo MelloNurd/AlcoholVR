@@ -65,6 +65,7 @@ public class InteractableNPC : NPC
         }
     }
 
+    [Button("Execute Interaction")]
     public void TryInteract()
     {
         if (_isBeingInteractedWith)

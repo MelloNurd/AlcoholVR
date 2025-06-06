@@ -34,17 +34,18 @@ public class DialogueButtons : MonoBehaviour
 
         for (int i = 0; i < countCache; i++)
         {
-            int index = i % currentDialogue.options.Count; // weird behavior needed with lambda function, called a closure. plus allows us to multiply count above for debugging without breaking things
+            int index = reverseOrder ? countCache - 1 - i : i; // adjust index for reverse order
 
             var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (countCache * 0.5f - 0.5f)); // angle in degrees
-            Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * cameraCache.forward; // angle as a normalized vector
-            Vector3 spawnPosition = (cameraCache.position + angle) - new Vector3(0, cameraCache.position.y * 0.3f, 0); // position in world
+            Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * cameraCache.forward * 0.6f; // angle as a vector
+            Vector3 spawnPosition = (cameraCache.position + angle) - Vector3.up * 0.25f; // position in world
             Quaternion spawnRotation = Quaternion.LookRotation(spawnPosition - cameraCache.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotation to face camera
 
             PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPosition, spawnRotation, transform).GetComponent<PhysicalButton>();
             optionButton.name = "DialogueButton: " + currentDialogue.options[index].text;
 
-            optionButton.OnButtonDown.AddListener(() => system.SwitchDialogue(index));
+            int closerIndex = i; // weird behavior needed with lambda function, called a closure
+            optionButton.OnButtonDown.AddListener(() => system.SwitchDialogue(closerIndex));
 
             optionButton.SetButtonText(currentDialogue.options[index].text);
         }
