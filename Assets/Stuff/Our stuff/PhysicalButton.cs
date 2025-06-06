@@ -104,7 +104,7 @@ public class PhysicalButton : MonoBehaviour
         _buttonRb.AddForce(_button.transform.up * _buttonSpringForce * Time.deltaTime);
 
         // Set label position
-        _buttonLabel.rectTransform.position = _upPosition + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
+        _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
 
         // Disable if not active
         if (!IsActive)
