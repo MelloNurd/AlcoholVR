@@ -29,7 +29,7 @@ public class PhysicsRig : MonoBehaviour
 
     void SetColliderPosition()
     {
-        bodyCollider.height = Mathf.Clamp(playerHead.localPosition.y, bodyHeightMin, bodyHeightMax);
+        //bodyCollider.height = Mathf.Clamp(playerHead.localPosition.y, bodyHeightMin, bodyHeightMax);
         //bodyCollider.center = new Vector3(playerHead.localPosition.x, bodyCollider.height / 2, playerHead.localPosition.z);
         //playerBody.localPosition = new Vector3(playerHead.localPosition.x, bodyCollider.height / 2, playerHead.localPosition.z);
     }
