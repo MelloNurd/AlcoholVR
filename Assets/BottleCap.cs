@@ -6,6 +6,7 @@ public class BottleCap : MonoBehaviour
     XRGrabInteractable grabInteractable;
     FixedJoint fixedJoint;
     AudioSource audioSource;
+    bool broken = false;
 
     private void Awake()
     {
@@ -16,7 +17,7 @@ public class BottleCap : MonoBehaviour
 
     private void Update()
     {
-        if(grabInteractable.isSelected && grabInteractable != null)
+        if(grabInteractable.isSelected && !broken)
         {
             fixedJoint.breakTorque = 5f;
         }
@@ -25,5 +26,6 @@ public class BottleCap : MonoBehaviour
     private void OnJointBreak(float breakForce)
     {
         audioSource.Play();
+        broken = true;
     }
 }
