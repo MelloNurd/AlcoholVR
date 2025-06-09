@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
@@ -57,14 +58,14 @@ public class PhysicalButton : MonoBehaviour
         Physics.IgnoreCollision(_buttonBase.GetComponent<Collider>(), _button.GetComponent<Collider>()); // Ignore collision between button base and top
 
         // Setting up and down positions (these are local positions, relative to the base!)
-        _buttonUpPosition = new Vector3(0, (_buttonBase.transform.localScale.y * 0.5f) + (_button.transform.localScale.y * 0.5f), 0) * transform.localScale.y;
-        _buttonDownPosition = new Vector3(0, (_buttonBase.transform.localScale.y * 0.5f) - (_button.transform.localScale.y * 0.25f), 0) * transform.localScale.y;
+        _buttonUpPosition = new Vector3(0, 0.03f, 0);
+        _buttonDownPosition = Vector3.zero;
 
         _totalTravelDistance = Vector3.Distance(_buttonUpPosition, _buttonDownPosition);
 
         _previousPressState = IsPressed;
 
-        if(!TryGetComponent(out AudioSource _audioSource) && (_pressedSound != null || _releasedSound != null))
+        if(!TryGetComponent(out _audioSource) && (_pressedSound != null || _releasedSound != null))
         {
             _audioSource = gameObject.AddComponent<AudioSource>();
         }
@@ -162,10 +163,14 @@ public class PhysicalButton : MonoBehaviour
     private void ButtonPress()
     {
         OnButtonDown?.Invoke();
-        if (_pressedSound != null) _audioSource.PlayOneShot(_pressedSound);
+        Debug.Log("audio Source: " + _audioSource);
+        if (_pressedSound != null)
+        {
+            _audioSource.pitch = Random.Range(0.95f, 1.05f);
+            _audioSource.PlayOneShot(_pressedSound);
+        }
         //Debug.Log("Pressed");
     }
-
     [Button("Execute Button Hold")]
     private void ButtonHold()
     {
@@ -177,7 +182,12 @@ public class PhysicalButton : MonoBehaviour
     private void ButtonRelease()
     {
         OnButtonUp?.Invoke();
-        if (_releasedSound != null) _audioSource.PlayOneShot(_releasedSound);
+        if (_releasedSound != null)
+        {
+            _audioSource.pitch = Random.Range(0.95f, 1.05f);
+            _audioSource.PlayOneShot(_releasedSound);
+
+        }
         //Debug.Log("Released");
     }
 }
