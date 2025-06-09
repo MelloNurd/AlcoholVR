@@ -11,8 +11,8 @@ using UnityEngine.UIElements;
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
-    [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.95f; // How far the button needs to be pushed in to activate, as a percentage
-    [SerializeField] private float _buttonSpringForce = 7.5f;
+    [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.98f; // How far the button needs to be pushed in to activate, as a percentage
+    [SerializeField] private float _buttonSpringForce = 8f;
 
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;

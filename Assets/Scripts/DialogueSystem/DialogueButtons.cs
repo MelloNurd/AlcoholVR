@@ -9,6 +9,7 @@ public class DialogueButtons : MonoBehaviour
     [SerializeField] private GameObject _dialogueButtonPrefab;
 
     [SerializeField, Range(0, 360)] private float _buttonAngleSpacing = 30f;
+    [SerializeField] private float _spawnDistanceFromPlayer = 0.6f;
 
     private Vector3 _camPosition;
 
@@ -42,7 +43,7 @@ public class DialogueButtons : MonoBehaviour
 
             var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (currentDialogue.options.Count * 0.5f - 0.5f)); // angle in degrees
             Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
-            Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * 0.75f; // position in world
+            Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * _spawnDistanceFromPlayer; // position in world
             spawnPosition.y = _camPosition.y - 0.25f; // adjust height to be slightly below camera
             Quaternion spawnRotation = Quaternion.LookRotation(spawnPosition - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
 
