@@ -61,7 +61,25 @@ public class DialogueButtons : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            Destroy(child.gameObject);
+            if(child.TryGetComponent(out PhysicalButton button))
+            {
+                button.OnButtonDown.RemoveAllListeners(); // Remove all listeners to prevent memory leaks
+                button.IsActive = false;
+            }
+
+            Collider[] colliders = child.GetComponentsInChildren<Collider>(); // Get all colliders in children  
+            foreach (Collider grandChildCol in colliders)
+            {
+                grandChildCol.enabled = false; // Disable colliders to prevent interaction  
+            }
+
+            MeshRenderer[] meshes = child.GetComponentsInChildren<MeshRenderer>(); // Get all colliders in children  
+            foreach (MeshRenderer grandChildMesh in meshes)
+            {
+                grandChildMesh.enabled = false; // Disable colliders to prevent interaction  
+            }
+
+            Destroy(child.gameObject, 0.5f); // Destroy the child object after a delay to allow audio to play
         }
     }
 }
