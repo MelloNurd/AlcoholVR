@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
@@ -43,7 +44,7 @@ public class PhysicalButton : MonoBehaviour
 
     private float _totalTravelDistance;
 
-    private void Awake()
+    private async void Awake()
     {
         _button = transform.Find("Button").gameObject;
         _buttonRb = _button.GetComponent<Rigidbody>();
@@ -71,6 +72,17 @@ public class PhysicalButton : MonoBehaviour
         _button.transform.position = _upPosition;
         _buttonLabel.transform.position = _upPosition;
         _buttonLabel.rectTransform.sizeDelta = new Vector2(_button.transform.localScale.x, _button.transform.localScale.z);
+        
+        // Disable button briefly at the start to make sure it doesn't immediatley get pressed
+        if(IsActive)
+        {
+            Collider col = _button.GetComponent<Collider>();
+            col.enabled = false;
+            IsActive = false;
+            await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
+            IsActive = true;
+            col.enabled = true;
+        }
     }
 
     public void SetButtonText(string text)
@@ -94,8 +106,6 @@ public class PhysicalButton : MonoBehaviour
         var upper = transform.InverseTransformPoint(_upPosition);
         var lower = transform.InverseTransformPoint(_downPosition);
         var clampedPos = Mathf.Clamp(Mathf.Abs(_button.transform.localPosition.y), lower.y, upper.y);
-
-        //Debug.Log($"Upper : {upper}, Lower: {lower}, PosPreClamp: {_button.transform.localPosition.y}, ClampedPos: {clampedPos}");
 
         // Clamp button position between up and down positions
         _button.transform.localPosition = new Vector3(0, clampedPos, 0);
