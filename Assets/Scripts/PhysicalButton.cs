@@ -162,26 +162,24 @@ public class PhysicalButton : MonoBehaviour
     [Button("Execute Button Press")]
     private void ButtonPress()
     {
-        OnButtonDown?.Invoke();
-        Debug.Log("audio Source: " + _audioSource);
         if (_pressedSound != null)
         {
             _audioSource.pitch = Random.Range(0.95f, 1.05f);
             _audioSource.PlayOneShot(_pressedSound);
         }
         //Debug.Log("Pressed");
+        OnButtonDown?.Invoke();
     }
     [Button("Execute Button Hold")]
     private void ButtonHold()
     {
-        OnButtonHold?.Invoke();
         //Debug.Log("Held");
+        OnButtonHold?.Invoke();
     }
 
     [Button("Execute Button Release")]
     private void ButtonRelease()
     {
-        OnButtonUp?.Invoke();
         if (_releasedSound != null)
         {
             _audioSource.pitch = Random.Range(0.95f, 1.05f);
@@ -189,5 +187,6 @@ public class PhysicalButton : MonoBehaviour
 
         }
         //Debug.Log("Released");
+        OnButtonUp?.Invoke();
     }
 }
