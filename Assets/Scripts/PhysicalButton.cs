@@ -1,19 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using TMPro;
+using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
+using ReadOnly = NaughtyAttributes.ReadOnlyAttribute;
 
 [SelectionBase] // Makes it so in scene view, clicking it selects this object, not like the base or top or whatever you physically click
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
+    [SerializeField] private LayerMask _ignoredColliders;
     [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.98f; // How far the button needs to be pushed in to activate, as a percentage
-    [SerializeField] private float _buttonSpringForce = 8f;
 
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;
@@ -36,32 +35,20 @@ public class PhysicalButton : MonoBehaviour
     private GameObject _button;
     private GameObject _buttonBase;
 
-    private Rigidbody _buttonRb;
-
-    [SerializeField, ReadOnly] private Vector3 _buttonUpPosition;
-    [SerializeField, ReadOnly] private Vector3 _buttonDownPosition;
-    private Vector3 _upPosition => (_buttonUpPosition.magnitude * _buttonBase.transform.up) + _buttonBase.transform.position;
-    private Vector3 _downPosition => (_buttonDownPosition.magnitude * _buttonBase.transform.up) + _buttonBase.transform.position;
-
-    private float _totalTravelDistance;
+    [SerializeField, ReadOnly] private float _buttonUpDistance;
+    private Vector3 _upPosition => (_buttonUpDistance * _buttonBase.transform.up) + _buttonBase.transform.position;
 
     private async void Awake()
     {
         _button = transform.Find("Button").gameObject;
-        _buttonRb = _button.GetComponent<Rigidbody>();
 
         _buttonBase = transform.Find("Base").gameObject;
 
         _buttonLabel = transform.Find("Label").GetComponent<TMP_Text>();
         _buttonLabel.text = labelText;
 
-        Physics.IgnoreCollision(_buttonBase.GetComponent<Collider>(), _button.GetComponent<Collider>()); // Ignore collision between button base and top
-
-        // Setting up and down positions (these are local positions, relative to the base!)
-        _buttonUpPosition = new Vector3(0, 0.03f, 0);
-        _buttonDownPosition = Vector3.zero;
-
-        _totalTravelDistance = Vector3.Distance(_buttonUpPosition, _buttonDownPosition);
+        // Setting up distance (how far up from base)
+        _buttonUpDistance = 0.03f;
 
         _previousPressState = IsPressed;
 
@@ -77,12 +64,19 @@ public class PhysicalButton : MonoBehaviour
         // Disable button briefly at the start to make sure it doesn't immediatley get pressed
         if(IsActive)
         {
-            Collider col = _button.GetComponent<Collider>();
-            col.enabled = false;
             IsActive = false;
             await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
             IsActive = true;
-            col.enabled = true;
+        }
+
+        // Add this script's layer to the ignore colliders layer mask
+        if (_ignoredColliders == 0)
+        {
+            _ignoredColliders = LayerMask.GetMask(gameObject.layer.ToString()); // If no layer mask is set, use this object's layer
+        }
+        else
+        {
+            _ignoredColliders |= (1 << gameObject.layer); // Add this object's layer to the ignore colliders layer mask
         }
     }
 
@@ -96,7 +90,6 @@ public class PhysicalButton : MonoBehaviour
     void Update()
     {
         ApplyButtonForces();
-        IsPressed = CheckIfPressed();
         RunButtonEvents();
     }
 
@@ -104,38 +97,24 @@ public class PhysicalButton : MonoBehaviour
     {
         _button.transform.rotation = _buttonBase.transform.rotation; // Keep button aligned with base
 
-        var upper = transform.InverseTransformPoint(_upPosition);
-        var lower = transform.InverseTransformPoint(_downPosition);
-        var clampedPos = Mathf.Clamp(Mathf.Abs(_button.transform.localPosition.y), lower.y, upper.y);
+        // Set button position
+        Vector3 scale = transform.localScale.WithY(0.06f) * 0.5f;
+        float distance = _buttonUpDistance;
 
-        // Clamp button position between up and down positions
-        _button.transform.localPosition = new Vector3(0, clampedPos, 0);
+        float hitPoint = distance;
+        if (IsActive && (Physics.BoxCast(_buttonBase.transform.position, scale, _buttonBase.transform.up, out RaycastHit hitInfo, transform.rotation, distance, ~_ignoredColliders) 
+                        || Physics.OverlapBox(_buttonBase.transform.position + (_button.transform.up * hitPoint), scale, transform.rotation, ~_ignoredColliders).Length > 0))
+        {
+            // We assume that if the raycast doesn't hit anything but we do overlap with something, the button is inside the collider (which returns false for raycast hit)
+            hitPoint = hitInfo.distance;
+        }
 
-        // Apply spring force
-        _buttonRb.AddForce(_button.transform.up * _buttonSpringForce * Time.deltaTime);
+        _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitPoint);
 
         // Set label position
         _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
 
-        // Disable if not active
-        if (!IsActive)
-        {
-            _buttonRb.isKinematic = true; // Disable physics if not active
-            _button.transform.position = _upPosition; // Reset position
-        }
-        else
-        {
-            _buttonRb.isKinematic = false; // Enable physics if active
-        }
-    }
-
-    private bool CheckIfPressed()
-    {
-        if(!IsActive) return false;
-
-        float percentagePressed = (transform.InverseTransformPoint(_upPosition).y - _button.transform.localPosition.y) / _totalTravelDistance * transform.localScale.y;
-        //Debug.Log(percentagePressed);
-        return percentagePressed >= _buttonActivationThreshold;
+        IsPressed = IsActive && hitPoint < (1 - _buttonActivationThreshold) * distance;
     }
 
     private void RunButtonEvents()
