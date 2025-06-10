@@ -38,6 +38,8 @@ public class PhysicalButton : MonoBehaviour
     [SerializeField, ReadOnly] private float _buttonUpDistance;
     private Vector3 _upPosition => (_buttonUpDistance * _buttonBase.transform.up) + _buttonBase.transform.position;
 
+    private Collider[] _collisionResults = new Collider[8]; // Pre-allocated array for overlap detection
+
     private async void Awake()
     {
         _button = transform.Find("Button").gameObject;
@@ -80,38 +82,35 @@ public class PhysicalButton : MonoBehaviour
         }
     }
 
-    public void SetButtonText(string text)
+    void FixedUpdate()
     {
-        labelText = text;
-        _buttonLabel.text = labelText;
+        // Since this uses a box cast and an overlap box, run it in FixedUpdate to optimize performance
+        ApplyButtonPhysics();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        ApplyButtonForces();
         RunButtonEvents();
     }
 
-    private void ApplyButtonForces()
+    private void ApplyButtonPhysics()
     {
         _button.transform.rotation = _buttonBase.transform.rotation; // Keep button aligned with base
 
         // Set button position
         Vector3 scale = transform.localScale.WithY(0.06f) * 0.5f;
-        float distance = _buttonUpDistance;
 
-        float hitPoint = distance;
         // Check for valid collisions with the button
-        if (IsActive && IsButtonObstructed(scale, distance, out hitPoint)) { } // hitPoint is set by the out parameter
+        float hitDistance = _buttonUpDistance;
+        if (IsActive && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitPoint is set by the out parameter
 
-        _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitPoint);
+        _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitDistance);
 
         // Set label position
         _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
 
         // Set pressed state
-        IsPressed = IsActive && hitPoint < (1 - _buttonActivationThreshold) * distance;
+        IsPressed = IsActive && hitDistance < (1 - _buttonActivationThreshold) * _buttonUpDistance;
     }
 
     private bool IsButtonObstructed(Vector3 scale, float distance, out float hitPoint)
@@ -128,24 +127,22 @@ public class PhysicalButton : MonoBehaviour
             distance,
             ~_ignoredColliders);
 
-        // Check if anything is overlapping with the button (needed because if the button is inside an object, the ast won't hit it)
-        bool overlapBoxHit = Physics.OverlapBox(
+        // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
+        bool overlapHit = Physics.OverlapBoxNonAlloc(
             _buttonBase.transform.position + (_button.transform.up * hitPoint),
             scale,
+            _collisionResults,
             transform.rotation,
-            ~_ignoredColliders).Length > 0;
+            ~_ignoredColliders) > 0;
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
         bool isValidHit = boxCastHit &&
             (hitInfo.collider.gameObject.layer != LayerMask.NameToLayer("PlayerBody") ||
              hitInfo.collider.CompareTag("Hand"));
 
-        if ((boxCastHit && isValidHit) || overlapBoxHit)
+        if ((boxCastHit && isValidHit) || overlapHit)
         {
-            if (boxCastHit)
-            {
-                hitPoint = hitInfo.distance;
-            }
+            hitPoint = hitInfo.distance;
             return true;
         }
 
@@ -202,5 +199,11 @@ public class PhysicalButton : MonoBehaviour
         }
         //Debug.Log("Released");
         OnButtonUp?.Invoke();
+    }
+
+    public void SetButtonText(string text)
+    {
+        labelText = text;
+        _buttonLabel.text = labelText;
     }
 }
