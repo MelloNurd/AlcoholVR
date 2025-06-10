@@ -102,19 +102,54 @@ public class PhysicalButton : MonoBehaviour
         float distance = _buttonUpDistance;
 
         float hitPoint = distance;
-        if (IsActive && (Physics.BoxCast(_buttonBase.transform.position, scale, _buttonBase.transform.up, out RaycastHit hitInfo, transform.rotation, distance, ~_ignoredColliders) 
-                        || Physics.OverlapBox(_buttonBase.transform.position + (_button.transform.up * hitPoint), scale, transform.rotation, ~_ignoredColliders).Length > 0))
-        {
-            // We assume that if the raycast doesn't hit anything but we do overlap with something, the button is inside the collider (which returns false for raycast hit)
-            hitPoint = hitInfo.distance;
-        }
+        // Check for valid collisions with the button
+        if (IsActive && IsButtonObstructed(scale, distance, out hitPoint)) { } // hitPoint is set by the out parameter
 
         _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitPoint);
 
         // Set label position
         _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
 
+        // Set pressed state
         IsPressed = IsActive && hitPoint < (1 - _buttonActivationThreshold) * distance;
+    }
+
+    private bool IsButtonObstructed(Vector3 scale, float distance, out float hitPoint)
+    {
+        hitPoint = distance;
+
+        // Use a box cast to check for collisions AND determine how far the button is pressed in
+        bool boxCastHit = Physics.BoxCast(
+            _buttonBase.transform.position,
+            scale,
+            _buttonBase.transform.up,
+            out RaycastHit hitInfo,
+            transform.rotation,
+            distance,
+            ~_ignoredColliders);
+
+        // Check if anything is overlapping with the button (needed because if the button is inside an object, the ast won't hit it)
+        bool overlapBoxHit = Physics.OverlapBox(
+            _buttonBase.transform.position + (_button.transform.up * hitPoint),
+            scale,
+            transform.rotation,
+            ~_ignoredColliders).Length > 0;
+
+        // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
+        bool isValidHit = boxCastHit &&
+            (hitInfo.collider.gameObject.layer != LayerMask.NameToLayer("PlayerBody") ||
+             hitInfo.collider.CompareTag("Hand"));
+
+        if ((boxCastHit && isValidHit) || overlapBoxHit)
+        {
+            if (boxCastHit)
+            {
+                hitPoint = hitInfo.distance;
+            }
+            return true;
+        }
+
+        return false;
     }
 
     private void RunButtonEvents()
