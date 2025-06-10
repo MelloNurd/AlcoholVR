@@ -117,8 +117,6 @@ public class PhysicalButton : MonoBehaviour
             distance,
             _interactableColliders);
 
-        if(boxCastHit) Debug.Log(hitInfo.collider.gameObject.name + " hit the button!");
-
         // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
         bool overlapHit = Physics.OverlapBoxNonAlloc(
             _buttonBase.transform.position + (_button.transform.up * hitPoint),
@@ -126,11 +124,6 @@ public class PhysicalButton : MonoBehaviour
             _collisionResults,
             transform.rotation,
             _interactableColliders) > 0;
-
-        foreach(Collider collider in _collisionResults)
-        {
-            if(collider != null) Debug.Log(collider.gameObject.name + " is overlapping the button!");
-        }
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
         bool isValidHit = boxCastHit &&
