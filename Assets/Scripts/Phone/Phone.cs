@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
+using PrimeTween;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,14 +13,25 @@ public class Phone : MonoBehaviour
 {
     public static Phone Instance { get; private set; }
 
-    public bool IsUsingCamera => _phonePhysicalCamera.enabled;
-
-    [Header("Materials")]
+    [Header("General")]
     [SerializeField, Required] private Material _uiMaterial;
     [SerializeField, Required] private Material _cameraMaterial;
-
-    [Header("Phone Settings")]
     [SerializeField] private bool _useRealTimeClock = true;
+    private DateTime _phoneTime;
+    private RectTransform _notificationPanel;
+
+    [Header("Camera")]
+    public bool IsUsingCamera => _phonePhysicalCamera.enabled;
+
+    [Header("Objectives")]
+    // stuff here
+
+    [Header("Messages")]
+    [SerializeField] private GameObject _messagePrefab;
+    private Transform _messagesContainer;
+    private List<PhoneMessage> _messages = new();
+
+    [Header("Settings")]
     [SerializeField] private PhoneTheme _currentTheme;
     [SerializeField] private PhoneTheme[] _availableThemes;
 
@@ -28,7 +43,6 @@ public class Phone : MonoBehaviour
     private TMP_Text _phoneClockTime;
     private TMP_Text _phoneClockDate;
 
-    private DateTime _phoneTime;
 
     private void Awake()
     {
@@ -51,6 +65,8 @@ public class Phone : MonoBehaviour
         _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
         _phoneClockTime = _phoneUICanvas.transform.Find("HomeScreen").Find("Clock").Find("Time").GetComponent<TMP_Text>();
         _phoneClockDate = _phoneUICanvas.transform.Find("HomeScreen").Find("Clock").Find("Date").GetComponent<TMP_Text>();
+        _messagesContainer = _phoneUICanvas.transform.Find("MessagesScreen").Find("Messages");
+        _notificationPanel = _phoneUICanvas.transform.Find("Notification").GetComponent<RectTransform>();
 
         // Initialize values
         _phoneScreenMeshRenderer.material = _uiMaterial;
@@ -62,12 +78,16 @@ public class Phone : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        if(Input.GetKeyDown(KeyCode.C))
         {
             ToggleCamera();
         }
+        else if(Input.GetKeyDown(KeyCode.N))
+        {
+            ShowNotification("Test Notification", "This is a test notification message.");
+        }
 
-        if(_useRealTimeClock)
+        if (_useRealTimeClock)
         {
             _phoneTime = DateTime.Now;
         }
@@ -114,6 +134,43 @@ public class Phone : MonoBehaviour
         foreach (Shadow shadow in appsDrawer.GetComponentsInChildren<Shadow>())
         {
             shadow.effectColor = theme.SecondaryColor;
+        }
+    }
+
+    public void ShowNotification(PhoneMessage msg) => ShowNotification(msg.Sender, "Message from: " + msg.Content);
+    public async void ShowNotification(string title, string message)
+    {
+        Tween.CompleteAll(_notificationPanel); // Resets any existing tweens
+        // FIX THE ABOVE ^^^
+
+        _notificationPanel.Find("Title").GetComponent<TMP_Text>().text = title;
+        _notificationPanel.Find("Text").GetComponent<TMP_Text>().text = message;
+
+        await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
+        await UniTask.Delay(5_000);
+        _ = Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f);
+    }
+
+    public void AddMessage(PhoneMessage message)
+    {
+        if(message == null)
+        {
+            Debug.LogWarning("Attempted to add a null message.");
+            return;
+        }
+
+        _messages.RemoveAll(x => x.Sender == message.Sender); // We only keep the latest message from each sender
+        _messages.Add(message);
+    }
+
+    private void LoadMessages()
+    {
+        foreach(var msg in _messages)
+        {
+            GameObject messageObject = Instantiate(_messagePrefab, _messagesContainer);
+            messageObject.transform.Find("Name").GetComponent<TMP_Text>().text = msg.Sender;
+            messageObject.transform.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
+            messageObject.transform.Find("Time").GetComponent<TMP_Text>().text = msg.Timestamp.ToString("h:mm tt"); // Format: 1:02 PM
         }
     }
 }

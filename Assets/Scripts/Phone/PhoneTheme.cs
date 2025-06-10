@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PhoneTheme", menuName = "Scriptable Objects/PhoneTheme")]
+[CreateAssetMenu(fileName = "NewTheme", menuName = "Phone/Theme")]
 public class PhoneTheme : ScriptableObject
 {
     public Sprite BackgroundImage;
