@@ -11,7 +11,7 @@ using ReadOnly = NaughtyAttributes.ReadOnlyAttribute;
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
-    [SerializeField] private LayerMask _ignoredColliders;
+    [SerializeField] private LayerMask _interactableColliders;
     [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.98f; // How far the button needs to be pushed in to activate, as a percentage
 
     [SerializeField] private string labelText;
@@ -70,16 +70,6 @@ public class PhysicalButton : MonoBehaviour
             await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
             IsActive = true;
         }
-
-        // Add this script's layer to the ignore colliders layer mask
-        if (_ignoredColliders == 0)
-        {
-            _ignoredColliders = LayerMask.GetMask(gameObject.layer.ToString()); // If no layer mask is set, use this object's layer
-        }
-        else
-        {
-            _ignoredColliders |= (1 << gameObject.layer); // Add this object's layer to the ignore colliders layer mask
-        }
     }
 
     void FixedUpdate()
@@ -102,7 +92,7 @@ public class PhysicalButton : MonoBehaviour
 
         // Check for valid collisions with the button
         float hitDistance = _buttonUpDistance;
-        if (IsActive && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitPoint is set by the out parameter
+        if (IsActive && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitDistance is set by the out parameter, so the if can be empty
 
         _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitDistance);
 
@@ -125,7 +115,9 @@ public class PhysicalButton : MonoBehaviour
             out RaycastHit hitInfo,
             transform.rotation,
             distance,
-            ~_ignoredColliders);
+            _interactableColliders);
+
+        if(boxCastHit) Debug.Log(hitInfo.collider.gameObject.name + " hit the button!");
 
         // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
         bool overlapHit = Physics.OverlapBoxNonAlloc(
@@ -133,7 +125,12 @@ public class PhysicalButton : MonoBehaviour
             scale,
             _collisionResults,
             transform.rotation,
-            ~_ignoredColliders) > 0;
+            _interactableColliders) > 0;
+
+        foreach(Collider collider in _collisionResults)
+        {
+            if(collider != null) Debug.Log(collider.gameObject.name + " is overlapping the button!");
+        }
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
         bool isValidHit = boxCastHit &&
