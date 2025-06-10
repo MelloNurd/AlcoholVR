@@ -7,7 +7,7 @@ public class ObjectiveManager : MonoBehaviour
     // Singleton instance
     public static ObjectiveManager Instance { get; private set; }
 
-    List<Objective> objectives = new List<Objective>();
+    public List<Objective> objectives = new List<Objective>();
 
     private void Awake()
     {
@@ -23,6 +23,7 @@ public class ObjectiveManager : MonoBehaviour
     {
         Debug.Log($"Adding Objective: {objective.objectiveDetails.objectiveText}");
         objectives.Add(objective);
+        ObjectiveHUDManager.Instance.AddObjectiveToHUD(objective);
     }
 
     public void RemoveObjective(Objective objective)
