@@ -70,11 +70,6 @@ public class PhysicalButton : MonoBehaviour
             await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
             IsActive = true;
         }
-
-        //foreach(MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>())
-        //{
-        //    renderer.material.renderQueue = 4_000;
-        //}
     }
 
     void FixedUpdate()
