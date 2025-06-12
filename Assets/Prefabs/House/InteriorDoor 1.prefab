@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 7869409988404857897}
   - component: {fileID: 7754559966282460913}
   - component: {fileID: 8095302194229016914}
+  - component: {fileID: 4333849723383007544}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -121,6 +122,8 @@ Transform:
   m_LocalScale: {x: 1, y: 0.67865944, z: 0.7640206}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3037746661449071872}
+  - {fileID: 8529495031710312725}
   - {fileID: 393892685747148886}
   m_Father: {fileID: 3614393314645217706}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -206,9 +209,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3878763540587355616}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 20
   m_Drag: 0
-  m_AngularDrag: 10
+  m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -342,7 +345,7 @@ MonoBehaviour:
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
-  m_MatchAttachRotation: 1
+  m_MatchAttachRotation: 0
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
@@ -351,7 +354,7 @@ MonoBehaviour:
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
   m_AngularVelocityScale: 1
-  m_TrackPosition: 0
+  m_TrackPosition: 1
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 8
   m_TightenPosition: 0.1
@@ -388,6 +391,19 @@ MonoBehaviour:
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
   m_FarAttachMode: 0
+--- !u!114 &4333849723383007544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3878763540587355616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0ad6206d559836468a7f7f86fe95450, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxDistance: 1.5
 --- !u!1 &4031695969661785367
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,12 +537,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4873755337889505057}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.023250818, y: 1.3621302, z: 1.4051042}
+  m_LocalScale: {x: 1, y: 1.3852633, z: 1.2890865}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 393892685747148886}
+  m_Father: {fileID: 8634469559986809069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2089944154782516724
 BoxCollider:
@@ -579,9 +595,7 @@ Transform:
   m_LocalPosition: {x: 0.023250699, y: 1.3621302, z: 1.4051043}
   m_LocalScale: {x: 1, y: 1.3852633, z: 1.2890865}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3037746661449071872}
-  - {fileID: 8529495031710312725}
+  m_Children: []
   m_Father: {fileID: 8634469559986809069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3867839214083653228
@@ -661,7 +675,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7488863168001440241}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -670,7 +684,7 @@ Transform:
   - {fileID: 8634469559986809069}
   - {fileID: 1266536518358859532}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &8230232608224693474
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,12 +710,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8230232608224693474}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.023250818, y: 1.3621302, z: 1.4051042}
+  m_LocalScale: {x: 1, y: 1.3852633, z: 1.2890865}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 393892685747148886}
+  m_Father: {fileID: 8634469559986809069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &4536167070124150282
 BoxCollider:
