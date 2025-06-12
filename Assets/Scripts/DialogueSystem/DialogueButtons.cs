@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,23 +32,30 @@ public class DialogueButtons : MonoBehaviour
         _camPosition = Camera.main.transform.position;
     }
 
-    public void CreateDialogueButtons(DialogueSystem system, bool reverseOrder = false)
+    private void Update()
+    {
+        
+    }
+
+    public bool TryCreateDialogueButtons(DialogueSystem system, bool reverseOrder = false)
     {
         ClearButtons();
 
         Dialogue currentDialogue = system.currentDialogue;
 
+        if(!TryGenerateSpawnPositions(currentDialogue.options.Count, out Vector3[] spawnPos))
+        {
+            Debug.LogWarning("Failed to find valid spawn positions for dialogue buttons.");
+            return false;
+        }
+
         for (int i = 0; i < currentDialogue.options.Count; i++)
         {
             int index = reverseOrder ? currentDialogue.options.Count - 1 - i : i; // adjust index for reverse order
 
-            var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (currentDialogue.options.Count * 0.5f - 0.5f)); // angle in degrees
-            Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
-            Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * _spawnDistanceFromPlayer; // position in world
-            spawnPosition.y = _camPosition.y - 0.25f; // adjust height to be slightly below camera
-            Quaternion spawnRotation = Quaternion.LookRotation(spawnPosition - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
+            Quaternion spawnRotation = Quaternion.LookRotation(spawnPos[i] - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
 
-            PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPosition, spawnRotation, transform).GetComponent<PhysicalButton>();
+            PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, transform).GetComponent<PhysicalButton>();
             optionButton.name = "DialogueButton: " + currentDialogue.options[index].text;
 
             int closerIndex = i; // weird behavior needed with lambda function, called a closure
@@ -55,6 +63,60 @@ public class DialogueButtons : MonoBehaviour
 
             optionButton.SetButtonText(currentDialogue.options[index].text);
         }
+
+        return true;
+    }
+
+    private bool TryGenerateSpawnPositions(int amount, out Vector3[] spawnPositions)
+    {
+        spawnPositions = new Vector3[amount];
+
+        bool validSpawn;
+        int offset = 0;
+        int increment = 1; // Will be 1 or -1
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, 100f))
+        {
+            float leftRightValue = Vector3.Dot(hit.normal, Camera.main.transform.right);
+            Debug.Log($"Left/Right value: {leftRightValue}");
+            increment = (int)Mathf.Sign(leftRightValue);
+        }
+
+        do
+        {
+            validSpawn = true;
+
+            for (int i = 0; i < amount; i++)
+            {
+                var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (amount * 0.5f - 0.5f)) + (offset); // angle in degrees
+                Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
+                Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * _spawnDistanceFromPlayer; // position in world
+                spawnPosition.y = _camPosition.y - 0.25f; // adjust height to be slightly below camera
+
+                spawnPositions[i] = spawnPosition;
+            }
+
+            foreach (Vector3 pos in spawnPositions)
+            {
+                Collider[] colliders = Physics.OverlapSphere(pos, 0.1f); // Check for existing colliders at the position
+                foreach (Collider col in colliders)
+                {
+                    if (col.gameObject == gameObject) continue; // Avoid self-collision
+                    validSpawn = false;
+                }
+            }
+
+            offset += increment;
+        } 
+        while (!validSpawn && Mathf.Abs(offset) < 360);
+
+        if(!validSpawn)
+        {
+            spawnPositions = null;
+            // Could try reducing spacing and trying once more, if this ends up happening often
+            return false;
+        }
+
+        return true;
     }
 
     public void ClearButtons()

@@ -18,18 +18,18 @@ public class DialogueSystem : MonoBehaviour
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
     }
 
-    public void StartDialogue(Dialogue dialogue)
+    public bool TryStartDialogue(Dialogue dialogue)
     {
         if(dialogue == null)
         {
             Debug.LogWarning("Dialogue is null. Cannot start dialogue.");
-            return;
+            return false;
         }
 
         currentDialogue = dialogue;
         _dialogueText.text = currentDialogue.text;
 
-        DialogueButtons.Instance.CreateDialogueButtons(this);
+        return DialogueButtons.Instance.TryCreateDialogueButtons(this);
     }
 
     public void EndDialogue()
@@ -61,7 +61,7 @@ public class DialogueSystem : MonoBehaviour
                 currentDialogue.onDialogueStart?.Invoke();
             }
 
-            StartDialogue(nextDialogue);
+            TryStartDialogue(nextDialogue);
         }
     }
 }
