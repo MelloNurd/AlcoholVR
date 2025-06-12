@@ -33,15 +33,8 @@ public class DialogueButtons : MonoBehaviour
         _camPosition = Camera.main.transform.position;
     }
 
-    private void Update()
-    {
-        
-    }
-
     public bool TryCreateDialogueButtons(DialogueSystem system, bool reverseOrder = false)
     {
-        ClearButtons();
-
         Dialogue currentDialogue = system.currentDialogue;
 
         if(!TryGenerateSpawnPositions(currentDialogue.options.Count, out Vector3[] spawnPos))
@@ -97,7 +90,7 @@ public class DialogueButtons : MonoBehaviour
                 var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (amount * 0.5f - 0.5f)) + (offset); // angle in degrees
                 Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
                 Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * _spawnDistanceFromPlayer; // position in world
-                spawnPosition.y = _camPosition.y - 0.25f; // adjust height to be slightly below camera
+                spawnPosition.y = _camPosition.y - 0.3f; // adjust height to be slightly below camera
 
                 spawnPositions[i] = spawnPosition;
             }

@@ -109,23 +109,23 @@ public class InteractableNPC : NPC
         switch(Quest.State)
         {
             case QuestState.NotStarted:
-                _dialogueSystem.TryStartDialogue(_firstDialogue);
+                _dialogueSystem.StartDialogue(_firstDialogue);
                 _firstDialogue.onDialogueStart?.Invoke();
                 OnFirstInteraction?.Invoke();
                 Quest.Start();
                 break;
             case QuestState.Incomplete:
-                _dialogueSystem.TryStartDialogue(_incompleteDialogue);
+                _dialogueSystem.StartDialogue(_incompleteDialogue);
                 _incompleteDialogue.onDialogueStart?.Invoke();
                 OnIncompleteInteraction?.Invoke();
                 break;
             case QuestState.Complete:
-                _dialogueSystem.TryStartDialogue(_completeDialogue);
+                _dialogueSystem.StartDialogue(_completeDialogue);
                 _completeDialogue.onDialogueStart?.Invoke();
                 OnCompleteInteraction?.Invoke();
                 break;
             case QuestState.Failed:
-                _dialogueSystem.TryStartDialogue(_failDialogue);
+                _dialogueSystem.StartDialogue(_failDialogue);
                 _failDialogue.onDialogueStart?.Invoke();
                 OnFailInteraction?.Invoke();
                 break;

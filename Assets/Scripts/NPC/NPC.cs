@@ -20,6 +20,7 @@ public enum NPCState
     PerformingAction
 }
 
+[RequireComponent(typeof(AudioSource))]
 public class NPC : MonoBehaviour
 {
     [SerializeField] protected bool _debugMode = false;
@@ -28,6 +29,7 @@ public class NPC : MonoBehaviour
     protected Animator _animator;
     protected GameObject _bodyObj;
     protected NavMeshAgent _agent;
+    protected AudioSource _audioSource;
 
     [Header("Action Settings")]
     [SerializeField, Tooltip("If false, it will only pull Actions from the ActionController on the \"Body\" GameObject.")] protected bool _checkpointDeterminedActions = true;
@@ -57,6 +59,7 @@ public class NPC : MonoBehaviour
         _actionContainer = _bodyObj.GetComponent<ActionContainer>(); // This acts as the universal ActionContainer, and is used when destinationDeterminedActions is false
         _animator = GetComponentInChildren<Animator>();
         _agent = GetComponentInChildren<NavMeshAgent>();
+        _audioSource = GetComponentInChildren<AudioSource>();
         _cancellationTokenSource = new CancellationTokenSource();
 
         // Initialize Checkpoints list
@@ -161,7 +164,13 @@ public class NPC : MonoBehaviour
 
             StartMoving();
 
-            await UniTask.WaitUntil(() => _agent.remainingDistance <= _agent.stoppingDistance || _cancellationTokenSource.IsCancellationRequested);
+            await UniTask.WaitUntil(() => !isActiveAndEnabled || _agent.remainingDistance <= _agent.stoppingDistance || _cancellationTokenSource.IsCancellationRequested);
+
+            if(!isActiveAndEnabled)
+            {
+                return;
+            }
+
             await UniTask.WaitUntil(() => !_isBeingInteractedWith);
         }
         OnCheckpointArrive?.Invoke();
