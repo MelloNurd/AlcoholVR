@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,20 +19,31 @@ public class DialogueSystem : MonoBehaviour
     private void Awake()
     {
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
+        _typewriter = GetComponentInChildren<Typewriter>();
     }
 
-    public bool TryStartDialogue(Dialogue dialogue)
+    public async void StartDialogue(Dialogue dialogue)
     {
         if(dialogue == null)
         {
             Debug.LogWarning("Dialogue is null. Cannot start dialogue.");
-            return false;
+            return;
         }
 
-        currentDialogue = dialogue;
-        _dialogueText.text = currentDialogue.text;
+        DialogueButtons.Instance.ClearButtons();
 
-        return DialogueButtons.Instance.TryCreateDialogueButtons(this);
+        currentDialogue = dialogue;
+        if(_useTypewriterEffect && _typewriter != null) 
+        {
+            await _typewriter.StartWriting(currentDialogue.text);
+        }
+        else {
+            _dialogueText.text = currentDialogue.text;
+        }
+
+        await UniTask.Delay(_typewriter.GetWritingSpeed()); // Wait slightly before showing buttons
+
+        DialogueButtons.Instance.TryCreateDialogueButtons(this);
     }
 
     public void EndDialogue()
@@ -63,7 +75,7 @@ public class DialogueSystem : MonoBehaviour
                 currentDialogue.onDialogueStart?.Invoke();
             }
 
-            TryStartDialogue(nextDialogue);
+            StartDialogue(nextDialogue);
         }
     }
 }
