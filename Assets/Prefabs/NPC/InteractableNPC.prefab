@@ -212,6 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1154731198615116471}
   - component: {fileID: 3624742555357654998}
+  - component: {fileID: 5948284952902801584}
   - component: {fileID: 2098656369127185327}
   m_Layer: 6
   m_Name: DialogueText
@@ -284,6 +285,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5948284952902801584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5109779854276772152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23bb91d38fd49845a565ac6870c78df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _typingSpeed: 0.05
+  OnCharacterType:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTextComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2098656369127185327
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -165,8 +165,7 @@ public class PhysicalButton : MonoBehaviour
     {
         if (_pressedSound != null)
         {
-            _audioSource.pitch = Random.Range(0.95f, 1.05f);
-            _audioSource.PlayOneShot(_pressedSound);
+            PlaySound(_pressedSound);
         }
         //Debug.Log("Pressed");
         OnButtonDown?.Invoke();
@@ -183,9 +182,7 @@ public class PhysicalButton : MonoBehaviour
     {
         if (_releasedSound != null)
         {
-            _audioSource.pitch = Random.Range(0.95f, 1.05f);
-            _audioSource.PlayOneShot(_releasedSound);
-
+            PlaySound(_releasedSound);
         }
         //Debug.Log("Released");
         OnButtonUp?.Invoke();
@@ -195,5 +192,14 @@ public class PhysicalButton : MonoBehaviour
     {
         labelText = text;
         _buttonLabel.text = labelText;
+    }
+
+    public void PlaySound(AudioClip sound, bool randomizePitch = true)
+    {
+        if (randomizePitch)
+        {
+            _audioSource.pitch = Random.Range(0.95f, 1.05f);
+        }
+        _audioSource.PlayOneShot(sound);
     }
 }

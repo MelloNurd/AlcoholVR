@@ -8,6 +8,7 @@ public class DialogueButtons : MonoBehaviour
     public static DialogueButtons Instance { get; private set; }
 
     [SerializeField] private GameObject _dialogueButtonPrefab;
+    [SerializeField] private AudioClip _buttonAppearSound;
 
     [SerializeField, Range(0, 360)] private float _buttonAngleSpacing = 30f;
     [SerializeField] private float _spawnDistanceFromPlayer = 0.6f;
@@ -49,6 +50,8 @@ public class DialogueButtons : MonoBehaviour
             return false;
         }
 
+        int middleIndex = currentDialogue.options.Count / 2; // Calculate middle index for reverse order
+
         for (int i = 0; i < currentDialogue.options.Count; i++)
         {
             int index = reverseOrder ? currentDialogue.options.Count - 1 - i : i; // adjust index for reverse order
@@ -62,6 +65,11 @@ public class DialogueButtons : MonoBehaviour
             optionButton.OnButtonDown.AddListener(() => system.SwitchDialogue(closerIndex));
 
             optionButton.SetButtonText(currentDialogue.options[index].text);
+
+            if (i == middleIndex && _buttonAppearSound != null)
+            {
+                optionButton.PlaySound(_buttonAppearSound);
+            }
         }
 
         return true;
@@ -77,7 +85,6 @@ public class DialogueButtons : MonoBehaviour
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit, 100f))
         {
             float leftRightValue = Vector3.Dot(hit.normal, Camera.main.transform.right);
-            Debug.Log($"Left/Right value: {leftRightValue}");
             increment = (int)Mathf.Sign(leftRightValue);
         }
 

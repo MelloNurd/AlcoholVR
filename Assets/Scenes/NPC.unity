@@ -357,6 +357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogueButtonPrefab: {fileID: 2386559390694288349, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
+  _buttonAppearSound: {fileID: 8300000, guid: 80bb5b4420447d245b71a879e090e9a0, type: 3}
   _buttonAngleSpacing: 35
   _spawnDistanceFromPlayer: 0.6
 --- !u!4 &23213497
@@ -1542,66 +1543,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 648859740}
   m_CullTransparentMesh: 1
---- !u!1001 &668633186
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -3.5126257
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.2297089
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 7.957265
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.71975535
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.6512101
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.17947252
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.16021048
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -95.772
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -150.388
-      objectReference: {fileID: 0}
-    - target: {fileID: 1082025959069353832, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -181.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 2386559390694288349, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      propertyPath: m_Name
-      value: PhysicalButton
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5848545445254649746, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-  m_SourcePrefab: {fileID: 100100000, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
 --- !u!1 &746906471
 GameObject:
   m_ObjectHideFlags: 0
@@ -4837,5 +4778,4 @@ SceneRoots:
   - {fileID: 6494871237663175637}
   - {fileID: 23213497}
   - {fileID: 1602583809}
-  - {fileID: 668633186}
   - {fileID: 262086460}

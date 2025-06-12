@@ -9,8 +9,10 @@ public class DialogueSystem : MonoBehaviour
     // NOT a singleton
 
     public Dialogue currentDialogue;
+    [SerializeField] private bool _useTypewriterEffect = true;
     public bool IsDialogueActive => _dialogueText.text.Length > 0;
 
+    private Typewriter _typewriter;
     private TMP_Text _dialogueText;
 
     private void Awake()
