@@ -4,6 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Rendering;
+
+public enum Rarity
+{
+    Common,
+    Uncommon,
+    Rare,
+    Epic,
+    Legendary
+}
 
 public static class Extensions
 {
@@ -12,7 +22,24 @@ public static class Extensions
     // These are here simply to make code a little easier to read and write. You can use them as you would with any other function on the specified type.
 
     #region Project Specific Extensions
-
+    public static Color GetColor(this Rarity rarity)
+    {
+        switch (rarity)
+        {
+            case Rarity.Common:
+                return Color.white;
+            case Rarity.Uncommon:
+                return Color.green;
+            case Rarity.Rare:
+                return Color.blue;
+            case Rarity.Epic:
+                return Color.magenta;
+            case Rarity.Legendary:
+                return Color.yellow;
+            default:
+                return Color.white;
+        }
+    }
     #endregion
 
     #region String Extensions
@@ -188,6 +215,25 @@ public static class Extensions
     {
         return source.FirstOrDefault(x => x.Value == lookup).Key;
     }
+
+    ////////// SERIALIZED DICTIONARIES ////////////
+
+    /// <summary>
+    /// Clones a dictionary by creating a new dictionary and copying the keys and values.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="original"></param>
+    /// <returns>An exact copy of the original Dictionary.</returns>
+    public static SerializedDictionary<TKey, TValue> Clone<TKey, TValue>(this SerializedDictionary<TKey, TValue> original)
+    {
+        var copy = new SerializedDictionary<TKey, TValue>();
+        foreach (var kvp in original)
+        {
+            copy.Add(kvp.Key, kvp.Value); // Consider deep-copying TValue if it's a reference type
+        }
+        return copy;
+    }
     #endregion
 
     #region Vector3 Extensions
@@ -350,6 +396,30 @@ public static class Extensions
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
+    }
+    #endregion
+
+    #region CanvasGroup Extensions
+    /// <summary>
+    /// Enables alpha and interaction on a CanvasGroup.
+    /// </summary>
+    public static void Show(this CanvasGroup group)
+    {
+        group.interactable = true;
+        group.blocksRaycasts = true;
+        group.alpha = 1f;
+        group.ignoreParentGroups = false;
+    }
+
+    /// <summary>
+    /// Disables alpha and interaction on a CanvasGroup.
+    /// </summary>
+    public static void Hide(this CanvasGroup group)
+    {
+        group.interactable = false;
+        group.blocksRaycasts = false;
+        group.alpha = 0f;
+        group.ignoreParentGroups = true;
     }
     #endregion
 }

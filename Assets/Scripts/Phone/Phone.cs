@@ -7,6 +7,7 @@ using PrimeTween;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Phone : MonoBehaviour
@@ -43,6 +44,18 @@ public class Phone : MonoBehaviour
     private TMP_Text _phoneClockTime;
     private TMP_Text _phoneClockDate;
 
+    private GameObject _screenObject;
+
+    private CanvasGroup _homeScreenGroup;
+    private CanvasGroup _messagesScreenGroup;
+    private CanvasGroup _notificationGroup;
+
+    private AppButton _cameraButton;
+    private AppButton _messagesButton;
+    private AppButton _objectivesButton;
+    private AppButton _settingsButton;
+
+    public GameObject debugObj;
 
     private void Awake()
     {
@@ -59,14 +72,48 @@ public class Phone : MonoBehaviour
 
         // Assign component variables
         _phoneObject = transform.Find("Physical Phone").gameObject;
-        _phoneScreenMeshRenderer = _phoneObject.transform.Find("Screen").GetComponent<MeshRenderer>();
-        _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
+        _screenObject = _phoneObject.transform.Find("Screen").gameObject;
+
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
         _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
-        _phoneClockTime = _phoneUICanvas.transform.Find("HomeScreen").Find("Clock").Find("Time").GetComponent<TMP_Text>();
-        _phoneClockDate = _phoneUICanvas.transform.Find("HomeScreen").Find("Clock").Find("Date").GetComponent<TMP_Text>();
-        _messagesContainer = _phoneUICanvas.transform.Find("MessagesScreen").Find("Messages");
-        _notificationPanel = _phoneUICanvas.transform.Find("Notification").GetComponent<RectTransform>();
+
+        _homeScreenGroup = _phoneUICanvas.transform.Find("HomeScreen").GetComponent<CanvasGroup>();
+        var temp = _homeScreenGroup.transform.Find("Clock");
+        _phoneClockTime = temp.Find("Time").GetComponent<TMP_Text>();
+        _phoneClockDate = temp.Find("Date").GetComponent<TMP_Text>();
+
+        _messagesScreenGroup = _phoneUICanvas.transform.Find("MessagesScreen").GetComponent<CanvasGroup>();
+        _messagesContainer = _messagesScreenGroup.transform.Find("Messages");
+
+        _notificationGroup = _phoneUICanvas.transform.Find("Notification").GetComponent<CanvasGroup>();
+        _notificationPanel = _notificationGroup.GetComponent<RectTransform>();
+
+        temp = _homeScreenGroup.transform.Find("Apps");
+        _cameraButton = temp.Find("Camera").GetComponent<AppButton>();
+        _cameraButton.OnClick.AddListener(ToggleCamera);
+        _messagesButton = temp.Find("Messages").GetComponent<AppButton>();
+        _messagesButton.OnClick.AddListener(() =>
+        {
+            _homeScreenGroup.Hide();
+            // hide objectives panel
+            _messagesScreenGroup.Show();
+            LoadMessages();
+        });
+        _objectivesButton = temp.Find("Objectives").GetComponent<AppButton>();
+        _objectivesButton.OnClick.AddListener(() =>
+        {
+            // Hide other panels and show objectives
+            Debug.Log("Objectives button clicked.");
+        });
+        _settingsButton = temp.Find("Settings").GetComponent<AppButton>();
+        _settingsButton.OnClick.AddListener(() =>
+        {
+            // hide other panels and show settings
+            Debug.Log("Settings button clicked.");
+        });
+
+        _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
+        _phoneScreenMeshRenderer = _phoneObject.transform.Find("Screen").GetComponent<MeshRenderer>();
 
         // Initialize values
         _phoneScreenMeshRenderer.material = _uiMaterial;
@@ -74,6 +121,9 @@ public class Phone : MonoBehaviour
 
         if(_currentTheme == null) _currentTheme = _availableThemes.GetRandom();
         ApplyTheme();
+
+        //_homeScreenGroup.Hide();
+        _messagesScreenGroup.Hide();
     }
 
     private void Update()
@@ -92,6 +142,52 @@ public class Phone : MonoBehaviour
             _phoneTime = DateTime.Now;
         }
         UpdateClock();
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            // Cast a ray from the main camera through the mouse position
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (hit.collider.name != "Screen") return;
+
+                SimulateScreenPressAtPoint(hit.point);
+            }
+        }
+    }
+
+    private void SimulateScreenPressAtPoint(Vector3 point)
+    {
+        Vector3 localHitPoint = _screenObject.transform.InverseTransformPoint(point);
+
+        // Calculate normalized position (assuming screen mesh is centered and properly scaled)
+        // Adjust these calculations based on your phone screen's local orientation and dimensions
+        float normalizedX = 1 - (localHitPoint.x + 0.5f); // Map from -0.5 to 0.5 to 0-1 range and flip X
+        float normalizedY = (localHitPoint.y + 0.5f); // Map from -0.5 to 0.5 to 0-1 range
+
+        // Convert to phone UI camera's texture coordinates
+        Vector2 virtualPos = new Vector2(
+            normalizedX * _phoneUICamera.targetTexture.width,
+            normalizedY * _phoneUICamera.targetTexture.height
+        );
+
+        // Create pointer event data for UI raycasting
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = virtualPos;
+
+        // Raycast against UI elements
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        GameObject[] hitObjects = results
+            .Where(result => result.gameObject.CompareTag("AppIcon")) // Only get objects with the "AppIcon" tags
+            .Select(result => result.gameObject)
+            .ToArray();
+
+        foreach (GameObject obj in hitObjects)
+        {
+            Utilities.SimulatePress(obj);
+        }
     }
 
     private void ToggleCamera()
