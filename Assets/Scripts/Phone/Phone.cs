@@ -15,14 +15,11 @@ public class Phone : MonoBehaviour
     public static Phone Instance { get; private set; }
 
     [Header("General")]
-    [SerializeField, Required] private Material _uiMaterial;
-    [SerializeField, Required] private Material _cameraMaterial;
     [SerializeField] private bool _useRealTimeClock = true;
-    private DateTime _phoneTime;
+    [SerializeField] private bool _useRealBattery = true;
+    private DateTime _phoneTime = DateTime.Now;
+    private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
-
-    [Header("Camera")]
-    public bool IsUsingCamera => _phonePhysicalCamera.enabled;
 
     [Header("Objectives")]
     // stuff here
@@ -35,10 +32,10 @@ public class Phone : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private PhoneTheme _currentTheme;
     [SerializeField] private PhoneTheme[] _availableThemes;
+    private TMP_Text _batteryLevelText;
+    private Image _batteryFillImage;
 
     private GameObject _phoneObject;
-    private MeshRenderer _phoneScreenMeshRenderer;
-    private Camera _phonePhysicalCamera; // The camera that renders the phone's camera (the camera app)
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
     private TMP_Text _phoneClockTime;
@@ -46,9 +43,14 @@ public class Phone : MonoBehaviour
 
     private GameObject _screenObject;
 
+    private Image _phoneBG;
+
     private CanvasGroup _homeScreenGroup;
     private CanvasGroup _messagesScreenGroup;
+    private CanvasGroup _objectivesScreenGroup;
+    private CanvasGroup _settingsScreenGroup;
     private CanvasGroup _notificationGroup;
+    private CanvasGroup _cameraScreenGroup;
 
     private AppButton _cameraButton;
     private AppButton _messagesButton;
@@ -76,6 +78,10 @@ public class Phone : MonoBehaviour
 
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
         _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
+        _phoneBG = _phoneUICanvas.transform.Find("BG").GetComponent<Image>();
+
+        _batteryLevelText = _phoneUICanvas.transform.Find("Battery/Text").GetComponent<TMP_Text>();
+        _batteryFillImage = _phoneUICanvas.transform.Find("Battery/IconFill").GetComponent<Image>();
 
         _homeScreenGroup = _phoneUICanvas.transform.Find("HomeScreen").GetComponent<CanvasGroup>();
         var temp = _homeScreenGroup.transform.Find("Clock");
@@ -85,65 +91,49 @@ public class Phone : MonoBehaviour
         _messagesScreenGroup = _phoneUICanvas.transform.Find("MessagesScreen").GetComponent<CanvasGroup>();
         _messagesContainer = _messagesScreenGroup.transform.Find("Messages");
 
+        _objectivesScreenGroup = _phoneUICanvas.transform.Find("ObjectivesScreen").GetComponent<CanvasGroup>();
+
+        _settingsScreenGroup = _phoneUICanvas.transform.Find("SettingsScreen").GetComponent<CanvasGroup>();
+
         _notificationGroup = _phoneUICanvas.transform.Find("Notification").GetComponent<CanvasGroup>();
         _notificationPanel = _notificationGroup.GetComponent<RectTransform>();
 
+        _cameraScreenGroup = _phoneUICanvas.transform.Find("CameraScreen").GetComponent<CanvasGroup>();
+
+
         temp = _homeScreenGroup.transform.Find("Apps");
         _cameraButton = temp.Find("Camera").GetComponent<AppButton>();
-        _cameraButton.OnClick.AddListener(ToggleCamera);
+        _cameraButton.OnClick.AddListener(ShowCameraScreen);
         _messagesButton = temp.Find("Messages").GetComponent<AppButton>();
-        _messagesButton.OnClick.AddListener(() =>
-        {
-            _homeScreenGroup.Hide();
-            // hide objectives panel
-            _messagesScreenGroup.Show();
-            LoadMessages();
-        });
+        _messagesButton.OnClick.AddListener(ShowMessagesScreen);
         _objectivesButton = temp.Find("Objectives").GetComponent<AppButton>();
-        _objectivesButton.OnClick.AddListener(() =>
-        {
-            // Hide other panels and show objectives
-            Debug.Log("Objectives button clicked.");
-        });
+        _objectivesButton.OnClick.AddListener(ShowObjectivesScreen);
         _settingsButton = temp.Find("Settings").GetComponent<AppButton>();
-        _settingsButton.OnClick.AddListener(() =>
-        {
-            // hide other panels and show settings
-            Debug.Log("Settings button clicked.");
-        });
-
-        _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
-        _phoneScreenMeshRenderer = _phoneObject.transform.Find("Screen").GetComponent<MeshRenderer>();
-
-        // Initialize values
-        _phoneScreenMeshRenderer.material = _uiMaterial;
-        _phonePhysicalCamera.enabled = false;
+        _settingsButton.OnClick.AddListener(ShowSettingsScreen);
 
         if(_currentTheme == null) _currentTheme = _availableThemes.GetRandom();
         ApplyTheme();
 
-        //_homeScreenGroup.Hide();
+        _homeScreenGroup.Show();
         _messagesScreenGroup.Hide();
+        _objectivesScreenGroup.Hide();
+        _settingsScreenGroup.Hide();
+        _cameraScreenGroup.Hide();
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C))
+        if(Input.GetKeyDown(KeyCode.N))
         {
-            ToggleCamera();
+            ShowNotification("Test Sender", "This is a test message");
         }
-        else if(Input.GetKeyDown(KeyCode.N))
+        else if (Input.GetKeyDown(KeyCode.M))
         {
-            ShowNotification("Test Notification", "This is a test notification message.");
+            ShowNotification("Test Sender", "This is a second test message");
         }
 
-        if (_useRealTimeClock)
-        {
-            _phoneTime = DateTime.Now;
-        }
-        UpdateClock();
-
-        if(Input.GetMouseButtonDown(0))
+        // This is temporary, tesing with mouse input for screen interaction
+        if (Input.GetMouseButtonDown(0))
         {
             // Cast a ray from the main camera through the mouse position
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -154,6 +144,12 @@ public class Phone : MonoBehaviour
                 SimulateScreenPressAtPoint(hit.point);
             }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        UpdateClock();
+        UpdateBattery();
     }
 
     private void SimulateScreenPressAtPoint(Vector3 point)
@@ -189,17 +185,25 @@ public class Phone : MonoBehaviour
             Utilities.SimulatePress(obj);
         }
     }
-
-    private void ToggleCamera()
-    {
-        _phonePhysicalCamera.enabled = !_phonePhysicalCamera.enabled;
-        _phoneScreenMeshRenderer.material = IsUsingCamera ? _cameraMaterial : _uiMaterial;
-    }
-
+    
     private void UpdateClock()
     {
+        if (_useRealTimeClock)
+        {
+            _phoneTime = DateTime.Now;
+        }
         _phoneClockTime.text = _phoneTime.ToString("h:mm tt"); // Format: 1:02 PM
         _phoneClockDate.text = _phoneTime.ToString("MMM d, yyyy"); // Format: Jan 1, 2023
+    }
+
+    private void UpdateBattery()
+    {
+        if(_useRealBattery)
+        {
+            _batteryLevel = SystemInfo.batteryLevel == -1 ? _batteryLevel : SystemInfo.batteryLevel;
+        }
+        _batteryLevelText.text = $"{Mathf.Round(_batteryLevel * 100)}%";
+        _batteryFillImage.fillAmount = _batteryLevel;
     }
 
     [Button("Apply Theme", EButtonEnableMode.Playmode)]
@@ -215,35 +219,49 @@ public class Phone : MonoBehaviour
 
         _currentTheme = theme;
         
-        _phoneUICanvas.transform.Find("BG").GetComponent<Image>().sprite = theme.BackgroundImage;
+        _phoneBG.sprite = theme.BackgroundImage;
         _phoneUICanvas.transform.Find("HomeScreen").Find("ClockBG").GetComponent<Image>().color = theme.ClockBackgroundColor;
 
         _phoneClockTime.color = theme.PrimaryColor;
         _phoneClockDate.color = theme.PrimaryColor;
 
-        Transform appsDrawer = _phoneUICanvas.transform.Find("HomeScreen").transform.Find("Apps");
-        foreach(Image image in appsDrawer.GetComponentsInChildren<Image>())
+        // This is ugly but not called often
+        foreach(Image image in _phoneUICanvas.GetComponentsInChildren<Image>())
         {
+            if(!image.CompareTag("AppIcon") && !image.CompareTag("ColoredUI")) continue;
+
             image.color = theme.PrimaryColor;
             if (image.name == "BG") image.color = theme.TertiaryColor;
         }
-        foreach (Shadow shadow in appsDrawer.GetComponentsInChildren<Shadow>())
+
+        foreach (Shadow shadow in _phoneUICanvas.GetComponentsInChildren<Shadow>())
         {
+            if (!shadow.CompareTag("AppIcon") && !shadow.CompareTag("ColoredUI")) continue;
+
             shadow.effectColor = theme.SecondaryColor;
+        }
+
+        foreach (TMP_Text text in _phoneUICanvas.GetComponentsInChildren<TMP_Text>())
+        {
+            if (!text.CompareTag("AppIcon") && !text.CompareTag("ColoredUI")) continue;
+
+            text.color = theme.PrimaryColor;
         }
     }
 
-    public void ShowNotification(PhoneMessage msg) => ShowNotification(msg.Sender, "Message from: " + msg.Content);
-    public async void ShowNotification(string title, string message)
+    public void ShowNotification(string sender, string content) => ShowNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
+    public async void ShowNotification(PhoneMessage msg)
     {
         Tween.CompleteAll(_notificationPanel); // Resets any existing tweens
         // FIX THE ABOVE ^^^
 
-        _notificationPanel.Find("Title").GetComponent<TMP_Text>().text = title;
-        _notificationPanel.Find("Text").GetComponent<TMP_Text>().text = message;
+        _notificationPanel.Find("Title").GetComponent<TMP_Text>().text = msg.Sender;
+        _notificationPanel.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
+       
+        AddMessage(msg);
 
         await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
-        await UniTask.Delay(5_000);
+        await UniTask.Delay(3_000);
         _ = Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f);
     }
 
@@ -261,12 +279,73 @@ public class Phone : MonoBehaviour
 
     private void LoadMessages()
     {
-        foreach(var msg in _messages)
+        foreach(Transform child in _messagesContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var msg in _messages)
         {
             GameObject messageObject = Instantiate(_messagePrefab, _messagesContainer);
             messageObject.transform.Find("Name").GetComponent<TMP_Text>().text = msg.Sender;
             messageObject.transform.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
             messageObject.transform.Find("Time").GetComponent<TMP_Text>().text = msg.Timestamp.ToString("h:mm tt"); // Format: 1:02 PM
         }
+    }
+
+    public void ShowHomeScreen()
+    {
+        _messagesScreenGroup.Hide();
+        _objectivesScreenGroup.Hide();
+        _settingsScreenGroup.Hide();
+        _cameraScreenGroup.Hide();
+        _phoneBG.enabled = true;
+
+        _homeScreenGroup.Show();
+    }
+
+    public void ShowMessagesScreen()
+    {
+        _homeScreenGroup.Hide();
+        _objectivesScreenGroup.Hide();
+        _settingsScreenGroup.Hide();
+        _cameraScreenGroup.Hide();
+        _phoneBG.enabled = true;
+
+        _messagesScreenGroup.Show();
+        LoadMessages();
+    }
+
+    public void ShowObjectivesScreen()
+    {
+        _homeScreenGroup.Hide();
+        _messagesScreenGroup.Hide();
+        _settingsScreenGroup.Hide();
+        _cameraScreenGroup.Hide();
+        _phoneBG.enabled = true;
+
+        _objectivesScreenGroup.Show();
+    }
+
+    public void ShowSettingsScreen()
+    {
+        _homeScreenGroup.Hide();
+        _messagesScreenGroup.Hide();
+        _objectivesScreenGroup.Hide();
+        _cameraScreenGroup.Hide();
+        _phoneBG.enabled = true;
+
+        _settingsScreenGroup.Show();
+    }
+    
+    public void ShowCameraScreen()
+    {
+        _homeScreenGroup.Hide();
+        _messagesScreenGroup.Hide();
+        _objectivesScreenGroup.Hide();
+        _settingsScreenGroup.Hide();
+        _phoneBG.enabled = false;
+
+        _cameraScreenGroup.Show();
     }
 }

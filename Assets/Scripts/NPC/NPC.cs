@@ -20,6 +20,7 @@ public enum NPCState
     PerformingAction
 }
 
+[SelectionBase]
 [RequireComponent(typeof(AudioSource))]
 public class NPC : MonoBehaviour
 {
@@ -211,13 +212,13 @@ public class NPC : MonoBehaviour
             await UniTask.WaitUntil(() => !_isBeingInteractedWith);
 
             Action temp = container.GetAction(out int durationMS);
-            if (temp.animToPlay != null)
+            if (temp?.animToPlay != null)
             {
                 PlayAnimation(temp.animToPlay.name); // Get the next action and its duration
                 currentState = NPCState.PerformingAction;
             }
 
-            temp.OnActionStart?.Invoke();
+            temp?.OnActionStart?.Invoke();
 
             startTime = Time.time;
             await UniTask.Delay(durationMS, cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
@@ -231,7 +232,7 @@ public class NPC : MonoBehaviour
 
             await UniTask.WaitUntil(() => !_isBeingInteractedWith);
 
-            temp.OnActionEnd?.Invoke();
+            temp?.OnActionEnd?.Invoke();
 
             StartIdling();
         }

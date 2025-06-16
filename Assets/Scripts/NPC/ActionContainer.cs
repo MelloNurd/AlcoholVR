@@ -41,9 +41,8 @@ public class ActionContainer : MonoBehaviour
     {
         if(_actions.Count == 0)
         {
-            Debug.Log("No actions available in \"" + gameObject.name + "\". Returning default.");
             miliseconds = 0;
-            return null; // Return a default action or handle the case where there are no actions
+            return null; // When there are no actions, return null (this is still okay, if we just want them idling)
         }
 
         if (_currentActionIndex < 0) GetFirstIndex();
