@@ -36,6 +36,7 @@ public class Phone : MonoBehaviour
     private Image _batteryFillImage;
 
     private GameObject _phoneObject;
+    private Camera _phonePhysicalCamera;
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
     private TMP_Text _phoneClockTime;
@@ -75,6 +76,7 @@ public class Phone : MonoBehaviour
         // Assign component variables
         _phoneObject = transform.Find("Physical Phone").gameObject;
         _screenObject = _phoneObject.transform.Find("Screen").gameObject;
+        _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
 
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
         _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
@@ -293,24 +295,27 @@ public class Phone : MonoBehaviour
         }
     }
 
-    public void ShowHomeScreen()
+    private void HideAllScreens()
     {
+        _homeScreenGroup.Hide();
         _messagesScreenGroup.Hide();
         _objectivesScreenGroup.Hide();
         _settingsScreenGroup.Hide();
         _cameraScreenGroup.Hide();
         _phoneBG.enabled = true;
+        _phonePhysicalCamera.enabled = false;
+    }
+
+    public void ShowHomeScreen()
+    {
+        HideAllScreens();
 
         _homeScreenGroup.Show();
     }
 
     public void ShowMessagesScreen()
     {
-        _homeScreenGroup.Hide();
-        _objectivesScreenGroup.Hide();
-        _settingsScreenGroup.Hide();
-        _cameraScreenGroup.Hide();
-        _phoneBG.enabled = true;
+        HideAllScreens();
 
         _messagesScreenGroup.Show();
         LoadMessages();
@@ -318,34 +323,24 @@ public class Phone : MonoBehaviour
 
     public void ShowObjectivesScreen()
     {
-        _homeScreenGroup.Hide();
-        _messagesScreenGroup.Hide();
-        _settingsScreenGroup.Hide();
-        _cameraScreenGroup.Hide();
-        _phoneBG.enabled = true;
+        HideAllScreens();
 
         _objectivesScreenGroup.Show();
     }
 
     public void ShowSettingsScreen()
     {
-        _homeScreenGroup.Hide();
-        _messagesScreenGroup.Hide();
-        _objectivesScreenGroup.Hide();
-        _cameraScreenGroup.Hide();
-        _phoneBG.enabled = true;
+        HideAllScreens();
 
         _settingsScreenGroup.Show();
     }
     
     public void ShowCameraScreen()
     {
-        _homeScreenGroup.Hide();
-        _messagesScreenGroup.Hide();
-        _objectivesScreenGroup.Hide();
-        _settingsScreenGroup.Hide();
-        _phoneBG.enabled = false;
+        HideAllScreens();
 
+        _phoneBG.enabled = false;
+        _phonePhysicalCamera.enabled = true;
         _cameraScreenGroup.Show();
     }
 }

@@ -244,7 +244,7 @@ public class NPC : MonoBehaviour
 
     private void PlayAnimation(string name)
     {
-        _animator.CrossFadeInFixedTime(name, 0.2f); // Play the animation with a crossfade
+        _animator.CrossFadeInFixedTime(name, 0.4f); // Play the animation with a crossfade
     }
 
     protected void StartMoving()
