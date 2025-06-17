@@ -20,7 +20,8 @@ public class PlayerAudio : MonoBehaviour
             Destroy(gameObject);
         }
 
-        audioSources = new List<AudioSource>(); // Fix: Initialize as a List instead of an array  
+        // Initialize audio sources
+        audioSources = new List<AudioSource>();
         for (int i = 0; i < audioSourceCount; i++)
         {
             AddNewAudioSource();
@@ -39,14 +40,16 @@ public class PlayerAudio : MonoBehaviour
     /// Play a one-shot sound effect.
     /// </summary>
     /// <param name="audio">Audio to play</param>
+    /// <param name="volume">(0, 1f) volume to play the audio at</param>
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
-    public static void PlaySound(AudioClip audio, bool randomizePitch = false)
+    public static void PlaySound(AudioClip audio, float volume = 1f, bool randomizePitch = false)
     {
         if (Instance == null || audio == null) return;
 
         AudioSource source = Instance.audioSources[Instance.currentAudioSourceIndex];
         source.clip = audio;
         source.pitch = randomizePitch ? Random.Range(0.9f, 1.1f) : 1f;
+        source.volume = volume;
         source.Play();
 
         Instance.currentAudioSourceIndex = (Instance.currentAudioSourceIndex + 1) % Instance.audioSourceCount;
@@ -56,13 +59,15 @@ public class PlayerAudio : MonoBehaviour
     /// Play a sound that will loop forever. This will remove it from the pool of available audio sources.
     /// </summary>
     /// <returns>The audio source dedicated to playing this sound.</returns>
-    public static AudioSource PlayLoopingSound(AudioClip audio)
+    public static AudioSource PlayLoopingSound(AudioClip audio, float volume = 1f)
     {
         if (Instance == null || audio == null) return null;
+        if (Instance.audioSources.Count <= 0) return null;
 
         AudioSource source = Instance.audioSources[Instance.audioSources.Count - 1];
         source.clip = audio;
         source.loop = true;
+        source.volume = volume;
         source.Play();
 
         Instance.audioSources.Remove(source); // Remove this source from list as it is constant
