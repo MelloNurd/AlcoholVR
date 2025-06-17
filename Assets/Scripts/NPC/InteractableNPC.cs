@@ -16,8 +16,8 @@ public class InteractableNPC : NPC
     public Dialogue _failDialogue;
     public UnityEvent OnFirstInteraction = new();
     public UnityEvent OnCompleteInteraction = new();
-    public UnityEvent OnIncompleteInteraction= new();
-    public UnityEvent OnFailInteraction= new();
+    public UnityEvent OnIncompleteInteraction = new();
+    public UnityEvent OnFailInteraction = new();
 
     [Header("Quest Settings")]
     public bool _hasQuest = false;
@@ -27,10 +27,9 @@ public class InteractableNPC : NPC
     private GameObject _playerObj;
 
     private Vector3 _currentDestination;
-
     private int _interactionCount = 0;
-
     private DialogueSystem _dialogueSystem;
+    private bool _isRotatingToPlayer = false;
 
     private new void Awake()
     {
@@ -53,17 +52,21 @@ public class InteractableNPC : NPC
         _playerObj = GameObject.Find(_playerObjName);
     }
 
-    private void Update()
+    private new void Update()
     {
         base.Update();
-        if(Keyboard.current.fKey.wasPressedThisFrame)
+        
+        #if UNITY_EDITOR
+        // Debug controls only for testing
+        if(Keyboard.current.fKey.wasPressedThisFrame && _hasQuest)
         {
             Quest.Complete();
         }
-        if (Keyboard.current.gKey.wasPressedThisFrame)
+        if (Keyboard.current.gKey.wasPressedThisFrame && _hasQuest)
         {
             Quest.Fail();
         }
+        #endif
     }
 
     [Button("Execute Interaction")]
@@ -81,32 +84,50 @@ public class InteractableNPC : NPC
 
     public void Interact()
     {
+        if (_isBeingInteractedWith || _isRotatingToPlayer)
+            return;
+            
         _interactionCount++;
         InterruptNPC();
     }
 
     private void InterruptNPC()
     {
+        // Store current destination and stop movement
         _currentDestination = _agent.destination;
         _agent.SetDestination(_bodyObj.transform.position);
-
-        // Face player
-        // Get the direction to the player
-        Vector3 directionToPlayer = _playerObj.transform.position - _bodyObj.transform.position;
-        // Zero out the Y component to only rotate horizontally
-        directionToPlayer.y = 0;
-        // Create rotation and apply it
-        Tween.LocalRotation(_bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f).OnComplete(StartDialogue);
-
+        
+        // Cancel current tasks safely
+        if (!_cancellationTokenSource.IsCancellationRequested)
+            _cancellationTokenSource.Cancel();
+            
+        _isBeingInteractedWith = true;
+        _isRotatingToPlayer = true;
+        _cancellationTokenSource = new CancellationTokenSource();
+        
+        // Set animation and rotate to player
         StartIdling();
 
-        _cancellationTokenSource.Cancel();
-        _isBeingInteractedWith = true;
-        _cancellationTokenSource = new CancellationTokenSource();
+        // Face player with clear transition to dialogue
+        Vector3 directionToPlayer = _playerObj.transform.position - _bodyObj.transform.position;
+        directionToPlayer.y = 0;
+        
+        Tween.LocalRotation(_bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f)
+            .OnComplete(() => {
+                _isRotatingToPlayer = false;
+                StartDialogue();
+            });
     }
 
     private void StartDialogue()
     {
+        if (!_hasQuest)
+        {
+            _dialogueSystem.StartDialogue(_firstDialogue);
+            _firstDialogue.onDialogueStart?.Invoke();
+            return;
+        }
+
         switch(Quest.State)
         {
             case QuestState.NotStarted:
@@ -135,8 +156,17 @@ public class InteractableNPC : NPC
 
     private void ResumeNPC()
     {
+        if (!_isBeingInteractedWith)
+            return;
+            
         _dialogueSystem.EndDialogue();
-        _agent.SetDestination(_currentDestination);
+        
+        // Only restore destination if it's valid
+        if (_currentDestination != Vector3.zero) 
+            _agent.SetDestination(_currentDestination);
+            
         _isBeingInteractedWith = false;
+        
+        // Let the NPC loop in base class naturally resume
     }
 }

@@ -46,9 +46,9 @@ public class NPC : MonoBehaviour
     protected List<ActionContainer> _checkPoints = new();
     protected int _currentCheckpointIndex = -1;
 
-    // INTERACTION STUFF
+    // This is really only used for InteractableNPC
+    [SerializeField, ReadOnly] protected bool _isBeingInteractedWith = false;
     protected CancellationTokenSource _cancellationTokenSource;
-    protected bool _isBeingInteractedWith = false;
 
     protected int _currentActionIndex = -1;
     protected bool _wasInterrupted = false;
@@ -98,7 +98,7 @@ public class NPC : MonoBehaviour
             _agent.transform.rotation = Quaternion.RotateTowards(
                 _agent.transform.rotation,
                 targetRot,
-                Time.deltaTime * 200f // feels snappy
+                Time.deltaTime * _agent.angularSpeed // turn speed
             );
         }
     }
