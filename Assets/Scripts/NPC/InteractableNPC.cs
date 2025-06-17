@@ -55,6 +55,7 @@ public class InteractableNPC : NPC
 
     private void Update()
     {
+        base.Update();
         if(Keyboard.current.fKey.wasPressedThisFrame)
         {
             Quest.Complete();

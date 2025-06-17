@@ -84,6 +84,23 @@ public class NPC : MonoBehaviour
     {
         StartAtFirstCheckpoint();
         RunNPCLoop();
+        _agent.updateRotation = false;
+    }
+
+    protected void Update()
+    {
+        // Manually do rotation so it looks better (default is way too slow)
+        Vector3 moveDir = _agent.velocity;
+
+        if (moveDir.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir.normalized);
+            _agent.transform.rotation = Quaternion.RotateTowards(
+                _agent.transform.rotation,
+                targetRot,
+                Time.deltaTime * 200f // feels snappy
+            );
+        }
     }
 
     protected async void RunNPCLoop()
