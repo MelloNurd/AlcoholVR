@@ -1,14 +1,13 @@
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
+using PrimeTween;
 using UnityEngine;
 
-public abstract class NPCBaseState
+public abstract class NPC_BaseState
 {
-    protected NPCStateMachine npc;
+    protected NPC_SM npc;
 
-    public NPCBaseState(NPCStateMachine npc)
+    public NPC_BaseState(NPC_SM npc)
     {
         this.npc = npc;
     }
@@ -19,9 +18,9 @@ public abstract class NPCBaseState
     public virtual void ExitState() { }
 }
 
-public class NPCIdleState : NPCBaseState
+public class NPC_IdleState : NPC_BaseState
 {
-    public NPCIdleState(NPCStateMachine npc) : base(npc) { } // constructor
+    public NPC_IdleState(NPC_SM npc) : base(npc) { } // constructor
     public override void EnterState()
     {
         base.EnterState();
@@ -29,9 +28,9 @@ public class NPCIdleState : NPCBaseState
     }
 }
 
-public class NPCWalkState : NPCBaseState
+public class NPC_WalkState : NPC_BaseState
 {
-    public NPCWalkState(NPCStateMachine npc) : base(npc) { } // constructor
+    public NPC_WalkState(NPC_SM npc) : base(npc) { } // constructor
     public override void EnterState()
     {
         base.EnterState();
@@ -55,15 +54,16 @@ public class NPCWalkState : NPCBaseState
             {
                 if (notFirstArrival) npc.actionsLeft = (npc.currentCheckpoint._actions.Count <= 0) ? 0 : Random.Range(npc.currentCheckpoint.minActions, npc.currentCheckpoint.maxActions + 1);
                 else npc.OnCheckpointArrive?.Invoke();
-                npc.SwitchState(NPCStateMachine.States.Checkpoint);
+
+                npc.SwitchState(NPC_SM.States.Checkpoint);
             }
         }
     }
 }
 
-public class NPCCheckpointState : NPCBaseState
+public class NPC_CheckpointState : NPC_BaseState
 {
-    public NPCCheckpointState(NPCStateMachine npc) : base(npc) { } // constructor
+    public NPC_CheckpointState(NPC_SM npc) : base(npc) { } // constructor
 
     CancellationTokenSource _cancelToken;
 
@@ -90,7 +90,7 @@ public class NPCCheckpointState : NPCBaseState
         if (_cancelToken.IsCancellationRequested) return; // If we were cancelled, don't proceed to next checkpoint
 
         npc.SetNextCheckpoint();
-        npc.SwitchState(NPCStateMachine.States.Walk);
+        npc.SwitchState(NPC_SM.States.Walk);
         npc.OnCheckpointLeave?.Invoke();
     }
 
@@ -117,23 +117,41 @@ public class NPCCheckpointState : NPCBaseState
     }
 }
 
-public class NPCInteractState : NPCBaseState
+public class NPC_InteractState : NPC_BaseState
 {
-    public NPCInteractState(NPCStateMachine npc) : base(npc) { } // constructor
+    public NPC_InteractState(NPC_SM npc) : base(npc) { } // constructor
 
-    Vector3 tempDestination;
+    private InteractableNPC_SM _interactableNPC;
+    Vector3 storedDestination;
 
-    public override void EnterState()
+    public override async void EnterState()
     {
         base.EnterState();
-        npc.PlayIdleAnimation();
-        tempDestination = npc.agent.destination;
-        npc.agent.destination = npc.bodyPosition;
+
+        _interactableNPC = npc as InteractableNPC_SM; // Cast it to InteractableNPC_SM
+        if(_interactableNPC == null)
+        {
+            Debug.LogError($"NPC {npc.gameObject.name} is not interactable or not of type InteractableNPC_SM");
+            return;
+        }
+
+        _interactableNPC.PlayIdleAnimation();
+        storedDestination = _interactableNPC.agent.destination;
+        _interactableNPC.agent.destination = _interactableNPC.bodyObj.transform.position;
+
+        Vector3 directionToPlayer = (_interactableNPC.playerPosition - _interactableNPC.bodyObj.transform.position).WithY(0);
+
+        await Tween.LocalRotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+
+        if (_interactableNPC.currentState != _interactableNPC.states[NPC_SM.States.Interact]) return; // If state changed during the wait, don't start dialogue
+        _interactableNPC.StartDialogue();
     }
 
     public override void ExitState()
     {
         base.ExitState();
-        npc.agent.destination = tempDestination;
-    }   
+        Tween.CompleteAll(this);
+        _interactableNPC.dialogueSystem.EndDialogue();
+        _interactableNPC.agent.destination = storedDestination;
+    }
 }
