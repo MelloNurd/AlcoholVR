@@ -15,17 +15,23 @@ public class DialogueButtons : MonoBehaviour
 
     private Vector3 _camPosition;
 
+    private Light _spotLight;
+
     private void Awake()
     {
         if(Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject.transform.parent); // global manager
         }
         else
         {
             Destroy(gameObject);
             return;
         }
+
+        _spotLight = GetComponentInChildren<Light>(true);
+        _spotLight.enabled = false;
     }
 
     private void Start()
@@ -64,6 +70,9 @@ public class DialogueButtons : MonoBehaviour
                 optionButton.PlaySound(_buttonAppearSound);
             }
         }
+
+        _spotLight.transform.position = Camera.main.transform.position.WithY(_camPosition.y + 1f);
+        _spotLight.enabled = true;
 
         return true;
     }
@@ -123,7 +132,9 @@ public class DialogueButtons : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            if(child.TryGetComponent(out PhysicalButton button))
+            if(child == _spotLight.transform) continue; // Skip spotlight
+
+            if (child.TryGetComponent(out PhysicalButton button))
             {
                 button.OnButtonDown.RemoveAllListeners(); // Remove all listeners to prevent memory leaks
                 button.IsActive = false;
@@ -143,5 +154,7 @@ public class DialogueButtons : MonoBehaviour
 
             Destroy(child.gameObject, 0.5f); // Destroy the child object after a delay to allow audio to play
         }
+
+        _spotLight.enabled = false;
     }
 }

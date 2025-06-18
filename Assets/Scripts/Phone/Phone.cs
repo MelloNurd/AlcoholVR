@@ -161,7 +161,7 @@ public class Phone : MonoBehaviour
         // Calculate normalized position (assuming screen mesh is centered and properly scaled)
         // Adjust these calculations based on your phone screen's local orientation and dimensions
         float normalizedX = 1 - (localHitPoint.x + 0.5f); // Map from -0.5 to 0.5 to 0-1 range and flip X
-        float normalizedY = (localHitPoint.y + 0.5f); // Map from -0.5 to 0.5 to 0-1 range
+        float normalizedY = 1 - (localHitPoint.y + 0.5f); // Map from -0.5 to 0.5 to 0-1 range and flip Y
 
         // Convert to phone UI camera's texture coordinates
         Vector2 virtualPos = new Vector2(

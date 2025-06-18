@@ -77,13 +77,13 @@ public class NPC_CheckpointState : NPC_BaseState
 
     private async void ProcessActions()
     {
-        await UniTask.Delay(npc.currentCheckpoint.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        await UniTask.Delay(npc.currentCheckpoint.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow(); // Always start with a delay
         if (_cancelToken.IsCancellationRequested) return;
 
         int loops = npc.actionsLeft;
         for (int i = 0; i < loops; i++)
         {
-            await ProcessNextAction();
+            await ProcessNextAction(); // Wait for an action and delay again afterwards
             await UniTask.Delay(npc.currentCheckpoint.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         }
 
@@ -96,7 +96,7 @@ public class NPC_CheckpointState : NPC_BaseState
 
     private async UniTask ProcessNextAction()
     {
-        int halfDuration = npc.PlayNextAction() / 2;
+        int halfDuration = npc.PlayNextAction() / 2; // Play the action and get back the duration halved
 
         // Doing this weirdly, but basically we are subtracting the actionsLeft halfway through the action play time. So if it is only 25% played and we interrupt, it will play again.
         await UniTask.Delay(halfDuration, cancellationToken: _cancelToken.Token).SuppressCancellationThrow(); // Where we play the new action
@@ -131,7 +131,7 @@ public class NPC_InteractState : NPC_BaseState
         _interactableNPC = npc as InteractableNPC_SM; // Cast it to InteractableNPC_SM
         if(_interactableNPC == null)
         {
-            Debug.LogError($"NPC {npc.gameObject.name} is not interactable or not of type InteractableNPC_SM");
+            Debug.LogError($"NPC {npc.gameObject.name} is not of type InteractableNPC_SM");
             return;
         }
 
