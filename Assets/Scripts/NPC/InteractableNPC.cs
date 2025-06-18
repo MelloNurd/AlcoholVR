@@ -18,6 +18,7 @@ public class InteractableNPC : NPC
     public UnityEvent OnCompleteInteraction = new();
     public UnityEvent OnIncompleteInteraction = new();
     public UnityEvent OnFailInteraction = new();
+    private bool _canInteractWith = true;
 
     [Header("Quest Settings")]
     public bool _hasQuest = false;
@@ -30,6 +31,7 @@ public class InteractableNPC : NPC
     private int _interactionCount = 0;
     private DialogueSystem _dialogueSystem;
     private bool _isRotatingToPlayer = false;
+    private bool _isInDialogue = false;
 
     private new void Awake()
     {
@@ -39,9 +41,9 @@ public class InteractableNPC : NPC
             Debug.LogError("First dialogue is not set for " + gameObject.name + ". Please assign a dialogue.");
             return;
         }
-        if(_incompleteDialogue == null) _incompleteDialogue = _firstDialogue;
-        if(_completeDialogue == null) _completeDialogue = _firstDialogue;
-        if(_failDialogue == null) _failDialogue = _firstDialogue;
+        if (_incompleteDialogue == null) _incompleteDialogue = _firstDialogue;
+        if (_completeDialogue == null) _completeDialogue = _firstDialogue;
+        if (_failDialogue == null) _failDialogue = _firstDialogue;
 
         _dialogueSystem = GetComponent<DialogueSystem>();
     }
@@ -56,9 +58,8 @@ public class InteractableNPC : NPC
     {
         base.Update();
         
-        #if UNITY_EDITOR
-        // Debug controls only for testing
-        if(Keyboard.current.fKey.wasPressedThisFrame && _hasQuest)
+        // Some quest example stuff
+        if (Keyboard.current.fKey.wasPressedThisFrame && _hasQuest)
         {
             Quest.Complete();
         }
@@ -66,61 +67,97 @@ public class InteractableNPC : NPC
         {
             Quest.Fail();
         }
-        #endif
     }
 
     [Button("Execute Interaction")]
     public void TryInteract()
     {
-        if (_isBeingInteractedWith)
+        // If we're already in dialogue, exit it
+        if (_isInDialogue)
         {
             ResumeNPC();
+            return;
         }
-        else
+
+        if(!_canInteractWith) return;
+
+        // If being interacted with but not in dialogue yet (e.g. rotating), do nothing
+        if (_isBeingInteractedWith && !_isInDialogue)
         {
-            Interact();
+            return;
         }
+
+        Interact();
     }
 
-    public void Interact()
+    public async void Interact()
     {
         if (_isBeingInteractedWith || _isRotatingToPlayer)
             return;
-            
+
         _interactionCount++;
         InterruptNPC();
+
+        _canInteractWith = false;
+        await UniTask.Delay(750, ignoreTimeScale: true);
+        _canInteractWith = true;
     }
 
     private void InterruptNPC()
     {
         // Store current destination and stop movement
         _currentDestination = _agent.destination;
-        _agent.SetDestination(_bodyObj.transform.position);
+        _agent.isStopped = true;
+
+        // Track if we were moving when interrupted
+        _wasMovingToCheckpoint = currentState == NPCState.Moving;
         
         // Cancel current tasks safely
-        if (!_cancellationTokenSource.IsCancellationRequested)
-            _cancellationTokenSource.Cancel();
-            
+        CancelCurrentOperations();
+
         _isBeingInteractedWith = true;
         _isRotatingToPlayer = true;
-        _cancellationTokenSource = new CancellationTokenSource();
-        
+
         // Set animation and rotate to player
         StartIdling();
 
         // Face player with clear transition to dialogue
         Vector3 directionToPlayer = _playerObj.transform.position - _bodyObj.transform.position;
-        directionToPlayer.y = 0;
-        
-        Tween.LocalRotation(_bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f)
-            .OnComplete(() => {
-                _isRotatingToPlayer = false;
-                StartDialogue();
-            });
+        directionToPlayer.y = 0; // Make sure we only rotate around the Y axis
+
+        if (directionToPlayer.sqrMagnitude < 0.001f)
+        {
+            // If player is too close, skip rotation
+            _isRotatingToPlayer = false;
+            StartDialogue();
+        }
+        else
+        {
+            Tween.LocalRotation(_bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f)
+                .OnComplete(() => {
+                    _isRotatingToPlayer = false;
+                    StartDialogue();
+                });
+        }
+    }
+
+    private void CancelCurrentOperations()
+    {
+        // Create a new token source before canceling the old one to avoid race conditions
+        var oldTokenSource = _cancellationTokenSource;
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        if (oldTokenSource != null && !oldTokenSource.IsCancellationRequested)
+        {
+            oldTokenSource.Cancel();
+            oldTokenSource.Dispose();
+        }
     }
 
     private void StartDialogue()
     {
+        _isInDialogue = true;
+
         if (!_hasQuest)
         {
             _dialogueSystem.StartDialogue(_firstDialogue);
@@ -128,7 +165,7 @@ public class InteractableNPC : NPC
             return;
         }
 
-        switch(Quest.State)
+        switch (Quest.State)
         {
             case QuestState.NotStarted:
                 _dialogueSystem.StartDialogue(_firstDialogue);
@@ -158,15 +195,19 @@ public class InteractableNPC : NPC
     {
         if (!_isBeingInteractedWith)
             return;
-            
+
         _dialogueSystem.EndDialogue();
-        
+        _isInDialogue = false;
+
+        // Resume NPC movement
+        _agent.isStopped = false;
+
         // Only restore destination if it's valid
-        if (_currentDestination != Vector3.zero) 
+        if (_currentDestination != Vector3.zero)
             _agent.SetDestination(_currentDestination);
-            
+
         _isBeingInteractedWith = false;
-        
+
         // Let the NPC loop in base class naturally resume
     }
 }

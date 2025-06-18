@@ -53,6 +53,7 @@ public class NPC : MonoBehaviour
     protected int _currentActionIndex = -1;
     protected bool _wasInterrupted = false;
     protected float _remainingDelay = 0;
+    protected bool _wasMovingToCheckpoint = false;
 
     protected void Awake()
     {
@@ -109,9 +110,16 @@ public class NPC : MonoBehaviour
         {
             await UniTask.WaitUntil(() => !_isBeingInteractedWith);
 
-            if (_wasInterrupted && _currentActionIndex >= 0)
+            if (_wasMovingToCheckpoint)
             {
-                await ProcessActions(); // Resume actions
+                // Continue the checkpoint movement that was interrupted
+                _wasMovingToCheckpoint = false;
+                await GoToNextCheckpoint();
+                await UniTask.WaitUntil(() => !_isBeingInteractedWith);
+            }
+            else if (_wasInterrupted && _currentActionIndex >= 0)
+            {
+                await ProcessActions(); // Resume interrupted actions
             }
             else
             {
@@ -143,6 +151,7 @@ public class NPC : MonoBehaviour
         _currentCheckpointIndex = index;
         return _checkPoints[_currentCheckpointIndex].transform.position;
     }
+
     protected void StartAtFirstCheckpoint()
     {
         // Default to current position, then try to set to a checkpoint position
@@ -196,7 +205,6 @@ public class NPC : MonoBehaviour
         StartIdling();
     }
 
-
     protected async UniTask ProcessActions()
     {
         ActionContainer container = !_checkpointDeterminedActions ? _actionContainer : _checkPoints[_currentCheckpointIndex];
@@ -228,7 +236,7 @@ public class NPC : MonoBehaviour
 
             await UniTask.WaitUntil(() => !_isBeingInteractedWith);
 
-            Action temp = container.GetAction(out int durationMS);
+            Action temp = container.GetNextAction(out int durationMS);
             if (temp?.animToPlay != null)
             {
                 PlayAnimation(temp.animToPlay.name); // Get the next action and its duration

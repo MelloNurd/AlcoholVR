@@ -26,6 +26,7 @@ public class ActionContainer : MonoBehaviour
             };
         }
     }
+    public int AnimationDelayInMS => (int)(AnimationDelay * 1000f);
 
     [Min(1)] public int minActions = 1;
     [Min(1)] public int maxActions = 5;
@@ -37,7 +38,8 @@ public class ActionContainer : MonoBehaviour
         GetFirstIndex();
     }
 
-    public Action GetAction(out int miliseconds) // This will autoincrement the index after getting the current action
+    public Action GetNextAction() => GetNextAction(out _); // Overload that ignores the out parameter
+    public Action GetNextAction(out int miliseconds) // This will autoincrement the index after getting the current action
     {
         if(_actions.Count == 0)
         {
@@ -69,6 +71,7 @@ public class ActionContainer : MonoBehaviour
         return action;
     }
 
+    public Action GetActionByAnimation(AnimationClip anim) => GetActionByAnimation(anim, out _); // Overload that ignores the out parameter
     public Action GetActionByAnimation(AnimationClip anim, out float seconds)
     {
         foreach (var action in _actions)
