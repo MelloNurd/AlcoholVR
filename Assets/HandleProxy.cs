@@ -20,45 +20,50 @@ public class HandleProxy : MonoBehaviour
     Transform realHandleTransform;
     Transform proxyHandleTransform;
 
+    public float linearThreshold = 0.1f;
+    public float angularThreshold = 0.1f;
+
+    float maxDistanceSqr;
+
     void Awake()
     {
-        // Slightly faster than GetComponent in Start
+        // Slightly faster than GetComponent in Start  
         interactable = proxyHandle.GetComponent<XRGrabInteractable>();
         realRb = realHandle.GetComponent<Rigidbody>();
 
         realHandleTransform = realHandle.transform;
         proxyHandleTransform = proxyHandle.transform;
+        maxDistanceSqr = maxDistance * maxDistance;
     }
 
     void FixedUpdate()
     {
-        if (!interactable.isSelected)
+        // Reset the position to the real handle's position if not selected and outside thresholds and stop forces  
+        if (!interactable.isSelected &&
+            (Vector3.Distance(realHandleTransform.position, proxyHandleTransform.position) > linearThreshold ||
+             Quaternion.Angle(realHandleTransform.rotation, proxyHandleTransform.rotation) > angularThreshold))
         {
-            // Snap proxy back when released (only if offset exists)
-            if (!proxyHandleTransform.position.Equals(realHandleTransform.position))
-                proxyHandleTransform.position = realHandleTransform.position;
-
-            if (!proxyHandleTransform.rotation.Equals(realHandleTransform.rotation))
-                proxyHandleTransform.rotation = realHandleTransform.rotation;
-
+            proxyHandleTransform.position = realHandleTransform.position;
+            proxyHandleTransform.rotation = realHandleTransform.rotation;
+            //realRb.linearVelocity = Vector3.zero; // Stop forces when not selected  
             return;
         }
 
-        // Compute delta
+        // Compute delta  
         Vector3 posDelta = proxyHandleTransform.position - realHandleTransform.position;
 
-        // Optional distance limit check
-        if (distanceLimit && posDelta.sqrMagnitude > maxDistance * maxDistance)
+        // Optional distance limit check  
+        if (distanceLimit && posDelta.sqrMagnitude > maxDistanceSqr)
         {
             var interactor = interactable.GetOldestInteractorSelecting();
             if (interactor != null)
             {
                 interactable.interactionManager.SelectExit(interactor, interactable);
-                return; // Prevent force being applied after releasing
+                return; // Prevent force being applied after releasing  
             }
         }
 
-        // Critically damped spring force
+        // Critically damped spring force  
         Vector3 force = (posDelta * springStrength) + (-realRb.linearVelocity * springDamping);
         realRb.AddForce(force, ForceMode.Force);
     }
