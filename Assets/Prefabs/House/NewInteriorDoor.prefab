@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 5048604473603391385}
   - component: {fileID: 8907064620353764830}
   - component: {fileID: 6344816752670085783}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ProxyHandle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,6 +301,7 @@ GameObject:
   - component: {fileID: 9155033402823427353}
   - component: {fileID: 4837002588765440956}
   - component: {fileID: 2218763118880642691}
+  - component: {fileID: 3473872552473717138}
   m_Layer: 0
   m_Name: RealKnob
   m_TagString: Untagged
@@ -366,6 +367,27 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!65 &3473872552473717138
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2811021941471984386}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2989885865191187937
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,6 +399,7 @@ GameObject:
   - component: {fileID: 7344893868084905945}
   - component: {fileID: 7829943538855622137}
   - component: {fileID: 6986443392170901925}
+  - component: {fileID: 8942608445881331515}
   m_Layer: 0
   m_Name: RealKnob2
   m_TagString: Untagged
@@ -442,6 +465,27 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!65 &8942608445881331515
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2989885865191187937}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3145173413982922668
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,6 +834,8 @@ MonoBehaviour:
   springDamping: 100
   distanceLimit: 1
   maxDistance: 1.5
+  linearThreshold: 0.1
+  angularThreshold: 0.1
 --- !u!114 &1622609596209396430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -808,6 +854,8 @@ MonoBehaviour:
   springDamping: 100
   distanceLimit: 1
   maxDistance: 1.5
+  linearThreshold: 0.1
+  angularThreshold: 0.1
 --- !u!1 &7564291876354007483
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +1012,7 @@ GameObject:
   - component: {fileID: 8079452791539561902}
   - component: {fileID: 8283895474595939295}
   - component: {fileID: 4651649233470130799}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ProxyHandle2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
