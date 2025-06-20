@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 5631973917074029638}
   - component: {fileID: 7833951436401325411}
   - component: {fileID: 3203605111023415968}
+  - component: {fileID: 6469422777359155506}
   m_Layer: 0
   m_Name: RealKnob2
   m_TagString: Untagged
@@ -162,6 +163,27 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!65 &6469422777359155506
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196101355037630078}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &542522901949477624
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +196,7 @@ GameObject:
   - component: {fileID: 2017796437704157153}
   - component: {fileID: 5938624631090582002}
   - component: {fileID: 6857539637663314780}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ProxyKnob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,6 +399,7 @@ GameObject:
   - component: {fileID: 6110173174755982982}
   - component: {fileID: 312850057406219724}
   - component: {fileID: 5943127463646413718}
+  - component: {fileID: 244500531893895513}
   m_Layer: 0
   m_Name: RealKnob
   m_TagString: Untagged
@@ -442,6 +465,27 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!65 &244500531893895513
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919937126120226973}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3060020876835949350
 GameObject:
   m_ObjectHideFlags: 0
@@ -540,7 +584,7 @@ GameObject:
   - component: {fileID: 243543875316218371}
   - component: {fileID: 8063915511274825290}
   - component: {fileID: 6217544517258079971}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ProxyKnob2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1030,6 +1074,8 @@ MonoBehaviour:
   springDamping: 100
   distanceLimit: 1
   maxDistance: 1.5
+  linearThreshold: 0.1
+  angularThreshold: 0.1
 --- !u!114 &3660326699858441872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,6 +1094,8 @@ MonoBehaviour:
   springDamping: 100
   distanceLimit: 1
   maxDistance: 1.5
+  linearThreshold: 0.1
+  angularThreshold: 0.1
 --- !u!1001 &914703862844269665
 PrefabInstance:
   m_ObjectHideFlags: 0
