@@ -23,6 +23,22 @@ public class Typewriter : MonoBehaviour
 
     [Tooltip("While true, typing speed will be increased, as if holding down a key.")]
     public bool typeFaster = false;
+
+    [HideInInspector] public bool IsWriting;
+    public float TypingProgress
+    {
+        get
+        {
+            if(IsWriting)
+            {
+                return (float)_textComponent.maxVisibleCharacters / _textComponent.text.Length;
+            }
+
+            if (_textComponent.text.IsBlank()) return 0f; // If no text is set, return 0
+
+            return 1f; // If not writing, assume text is fully displayed
+        }
+    }
     private float typingSpeedMultiplier => typeFaster ? 0.4f : 1f;
 
     [Header("Events")]
@@ -155,6 +171,8 @@ public class Typewriter : MonoBehaviour
             return;
         }
 
+        IsWriting = true;
+
         if (_cancelToken != null)
         {
             _cancelToken.Cancel();
@@ -178,11 +196,13 @@ public class Typewriter : MonoBehaviour
             await UniTask.Delay(delay, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
             if(_cancelToken.Token.IsCancellationRequested)
             {
+                IsWriting = false;
                 return;
             }
         }
 
         OnTextComplete?.Invoke();
+        IsWriting = false;
     }
 
     /// <summary>
