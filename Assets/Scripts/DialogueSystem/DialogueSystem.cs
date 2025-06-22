@@ -35,13 +35,13 @@ public class DialogueSystem : MonoBehaviour
         currentDialogue = dialogue;
         if(_useTypewriterEffect && _typewriter != null) 
         {
-            await _typewriter.StartWriting(currentDialogue.text);
+            await _typewriter.StartWritingAsync(currentDialogue.text);
         }
         else {
             _dialogueText.text = currentDialogue.text;
         }
 
-        await UniTask.Delay(_typewriter.GetWritingSpeed()); // Wait slightly before showing buttons
+        await UniTask.Delay(_typewriter.DefaultWritingSpeedInMS); // Wait slightly before showing buttons
 
         DialogueButtons.Instance.TryCreateDialogueButtons(this);
     }

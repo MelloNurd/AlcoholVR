@@ -61,7 +61,7 @@ public class DialogueButtons : MonoBehaviour
             optionButton.name = "DialogueButton: " + currentDialogue.options[index].text;
 
             int closerIndex = i; // weird behavior needed with lambda function, called a closure
-            optionButton.OnButtonDown.AddListener(() => system.SwitchDialogue(closerIndex));
+            optionButton.OnButtonUp.AddListener(() => system.SwitchDialogue(closerIndex));
 
             optionButton.SetButtonText(currentDialogue.options[index].text);
 
