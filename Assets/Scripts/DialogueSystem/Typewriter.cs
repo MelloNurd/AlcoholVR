@@ -39,7 +39,7 @@ public class Typewriter : MonoBehaviour
             return 1f; // If not writing, assume text is fully displayed
         }
     }
-    private float typingSpeedMultiplier => typeFaster ? 0.4f : 1f;
+    private float typingSpeedMultiplier => typeFaster ? 0.25f : 1f;
 
     [Header("Events")]
     public UnityEvent OnCharacterType;
@@ -59,28 +59,6 @@ public class Typewriter : MonoBehaviour
         {
             _audioSource = gameObject.AddComponent<AudioSource>();
         }
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            var text = DateTime.Now.ToString("HH:mm:ss") + " - " + "This is a test message with <speed=0.01>FAST WORDS NOW<speed=0.05>variable typing speeds to demonstrate the typewriter effect.";
-            StartWriting(text);
-            Debug.Log("clean text: " + PreprocessText(text, out float[] speeds));
-            Debug.Log("times: " + String.Join(", ", speeds));
-
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            CancelWriting();
-        }
-        else if(Input.GetKeyDown(KeyCode.Return))
-        {
-            SkipToEnd();
-        }
-
-        typeFaster = Input.GetKey(KeyCode.LeftShift);
     }
 
     /// <summary>
@@ -154,6 +132,27 @@ public class Typewriter : MonoBehaviour
     }
 
     /// <summary>
+    /// Instantly sets the text of the TMP_Text component, removing any tags if specified.
+    /// </summary>
+    /// <param name="text">The text to show.</param>
+    /// <param name="cleanText">Whether or not the shown text should include any speed tags.</param>
+    public void SetTextInstantly(string text, bool cleanText = true)
+    {
+        if(_textComponent == null)
+        {
+            Debug.LogError($"TMP_Text component not found for {gameObject.name}'s {this.name}.");
+            return;
+        }
+
+        if (cleanText)
+        {
+            text = PreprocessText(text, out _); // Preprocess to remove tags and get typing speeds
+        }
+
+        _textComponent.text = text;
+    }
+
+    /// <summary>
     /// Initiates the process of writing the specified text.
     /// </summary>
     /// <param name="text">The text to be written.</param>
@@ -171,13 +170,13 @@ public class Typewriter : MonoBehaviour
             return;
         }
 
-        IsWriting = true;
-
         if (_cancelToken != null)
         {
             _cancelToken.Cancel();
-            _cancelToken.Dispose();
+            await UniTask.NextFrame(); // Prevents flickering if called multiple times quickly
         }
+
+        IsWriting = true;
         _cancelToken = new CancellationTokenSource();
 
         string cleanText = PreprocessText(text, out float[] typingSpeeds);
@@ -197,12 +196,19 @@ public class Typewriter : MonoBehaviour
             if(_cancelToken.Token.IsCancellationRequested)
             {
                 IsWriting = false;
+                _cancelToken.Dispose();
+                _cancelToken = null;
                 return;
             }
         }
 
         OnTextComplete?.Invoke();
         IsWriting = false;
+        if (_cancelToken != null)
+        {
+            _cancelToken.Dispose();
+            _cancelToken = null;
+        }
     }
 
     /// <summary>
@@ -213,8 +219,6 @@ public class Typewriter : MonoBehaviour
         if (_cancelToken != null)
         {
             _cancelToken.Cancel();
-            _cancelToken.Dispose();
-            _cancelToken = null;
         }
     }
 
