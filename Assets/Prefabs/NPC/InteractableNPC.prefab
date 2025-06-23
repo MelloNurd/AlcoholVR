@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6322158923298213170}
   - component: {fileID: 6608409681946874392}
+  - component: {fileID: 4592959228423433359}
   - component: {fileID: 859192940300388617}
-  - component: {fileID: 6198475423303735891}
   - component: {fileID: 6585840218102524311}
   - component: {fileID: 2061259066119879156}
+  - component: {fileID: 6198475423303735891}
   m_Layer: 0
   m_Name: InteractableNPC
   m_TagString: Untagged
@@ -68,10 +69,10 @@ MonoBehaviour:
   _alwaysUnique: 1
   _currentStateName: 
   isInteractable: 1
-  firstDialogue: {fileID: 11400000, guid: 40869e3c13bb9fc42b23a0a0f9835560, type: 2}
-  incompleteDialogue: {fileID: 0}
-  completeDialogue: {fileID: 0}
-  failDialogue: {fileID: 0}
+  firstDialogue: {fileID: 11400000, guid: 10061aed67d77d44aa95cc2d1b8af237, type: 2}
+  incompleteDialogue: {fileID: 11400000, guid: a02ca104442acb6479b06ba9a469b5a3, type: 2}
+  completeDialogue: {fileID: 11400000, guid: b02fb5f652513cd4b96051c7e01aab54, type: 2}
+  failDialogue: {fileID: 11400000, guid: 8373b416fd14b3f4cabb010a25e65e46, type: 2}
   onFirstInteraction:
     m_PersistentCalls:
       m_Calls: []
@@ -86,19 +87,35 @@ MonoBehaviour:
       m_Calls: []
   interactionCount: 0
   dialogueSystem: {fileID: 0}
-  _hasQuest: 1
-  Quest:
-    State: 0
-    CanFailBeforeStarting: 1
-    OnCompletion:
-      m_PersistentCalls:
-        m_Calls: []
-    OnFailure:
-      m_PersistentCalls:
-        m_Calls: []
-    OnAdvance:
-      m_PersistentCalls:
-        m_Calls: []
+--- !u!114 &4592959228423433359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56e141e4668c11e43adf68ad68abe20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveDetails:
+    text: 
+    priority: 0
+    worldPosition: {fileID: 0}
+  currentStatus: 0
+  OnBegin:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCompletion:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFailure:
+    m_PersistentCalls:
+      m_Calls: []
+  OnAdvance:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &859192940300388617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,6 +130,112 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentDialogue: {fileID: 0}
   _useTypewriterEffect: 1
+--- !u!114 &6585840218102524311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23bb91d38fd49845a565ac6870c78df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseTypingSpeed: 0.02
+  _typingSound: {fileID: 0}
+  typeFaster: 0
+  IsWriting: 0
+  OnCharacterType:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTextComplete:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2061259066119879156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6608409681946874392}
+        m_TargetAssemblyTypeName: InteractableNPC_SM, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
 --- !u!82 &6198475423303735891
 AudioSource:
   m_ObjectHideFlags: 0
@@ -210,110 +333,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6585840218102524311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688126841686072987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a23bb91d38fd49845a565ac6870c78df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _typingSpeed: 0.02
-  _typingSound: {fileID: 0}
-  OnCharacterType:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTextComplete:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &2061259066119879156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688126841686072987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
-  m_Colliders: []
-  m_InteractionLayers:
-    m_Bits: 1
-  m_DistanceCalculationMode: 1
-  m_SelectMode: 0
-  m_FocusMode: 1
-  m_CustomReticle: {fileID: 0}
-  m_AllowGazeInteraction: 0
-  m_AllowGazeSelect: 0
-  m_OverrideGazeTimeToSelect: 0
-  m_GazeTimeToSelect: 0.5
-  m_OverrideTimeToAutoDeselectGaze: 0
-  m_TimeToAutoDeselectGaze: 3
-  m_AllowGazeAssistance: 0
-  m_FirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstFocusEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastFocusExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FocusEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FocusExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Activated:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6608409681946874392}
-        m_TargetAssemblyTypeName: InteractableNPC_SM, Assembly-CSharp
-        m_MethodName: Interact
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  m_Deactivated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
-  m_StartingInteractionStrengthFilters: []
 --- !u!1 &3987021468932513059
 GameObject:
   m_ObjectHideFlags: 0

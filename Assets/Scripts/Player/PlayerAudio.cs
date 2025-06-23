@@ -44,7 +44,12 @@ public class PlayerAudio : MonoBehaviour
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
     public static void PlaySound(AudioClip audio, float volume = 1f, bool randomizePitch = false)
     {
-        if (Instance == null || audio == null) return;
+        if (Instance == null) return;
+        if(audio == null)
+        {
+            Debug.LogWarning($"Could not find audio {audio.name}. Unable to play.");
+            return;
+        }
 
         AudioSource source = Instance.audioSources[Instance.currentAudioSourceIndex];
         source.clip = audio;

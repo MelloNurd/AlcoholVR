@@ -29,12 +29,12 @@ public class ObjectiveHUDManager : MonoBehaviour
         
     }
 
-    public void AddObjectiveToHUD(Objective objective)
+    public void AddObjectiveToHUD(ObjectiveSystem objective)
     {
-        Debug.Log($"Adding Objective to HUD: {objective.objectiveDetails.objectiveText}");
+        Debug.Log($"Adding Objective to HUD: {objective.objectiveDetails.text}");
         GameObject objectiveUI = Instantiate(ObjectiveUIPrefab, transform);
         TextMeshProUGUI objectiveText = objectiveUI.GetComponentInChildren<TextMeshProUGUI>();
-        objectiveText.text = objective.objectiveDetails.objectiveText + "\nStatus: " + objective.status.ToString() + "Priority level: " + objective.objectiveDetails.priorityLevel;
+        objectiveText.text = objective.objectiveDetails.text + "\nStatus: " + objective.currentStatus.ToString() + "Priority level: " + objective.objectiveDetails.priority;
         SortByPriorityValue();
     }
 
@@ -43,7 +43,7 @@ public class ObjectiveHUDManager : MonoBehaviour
         //go through list and place objectives with lower value above others
         Debug.Log("Sorting objectives by priority value.");
         var objectives = ObjectiveManager.Instance.objectives;
-        objectives.Sort((a, b) => a.objectiveDetails.priorityLevel.CompareTo(b.objectiveDetails.priorityLevel));
+        objectives.Sort((a, b) => a.objectiveDetails.priority.CompareTo(b.objectiveDetails.priority));
         // Clear current HUD
         foreach (Transform child in transform)
         {
@@ -56,11 +56,11 @@ public class ObjectiveHUDManager : MonoBehaviour
         }
     }
 
-    public void RefillHUD(Objective objective)
+    public void RefillHUD(ObjectiveSystem objective)
     {
-        Debug.Log($"Adding Objective to HUD: {objective.objectiveDetails.objectiveText}");
+        Debug.Log($"Adding Objective to HUD: {objective.objectiveDetails.text}");
         GameObject objectiveUI = Instantiate(ObjectiveUIPrefab, transform);
         TextMeshProUGUI objectiveText = objectiveUI.GetComponentInChildren<TextMeshProUGUI>();
-        objectiveText.text = objective.objectiveDetails.objectiveText + "\nStatus: " + objective.status.ToString() + "Priority level: " + objective.objectiveDetails.priorityLevel;
+        objectiveText.text = objective.objectiveDetails.text + "\nStatus: " + objective.currentStatus.ToString() + "Priority level: " + objective.objectiveDetails.priority;
     }
 }

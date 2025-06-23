@@ -17,7 +17,7 @@ public class PhysicalButton : MonoBehaviour
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;
 
-    public bool IsActive = true;
+    [field: SerializeField, Tooltip("Whether or not the button can be pressed.")] public bool IsInteractable { get; set; } = true;
 
     [ReadOnly] public bool IsPressed;
     private bool _previousPressState;
@@ -64,11 +64,11 @@ public class PhysicalButton : MonoBehaviour
         _buttonLabel.rectTransform.sizeDelta = new Vector2(_button.transform.localScale.x, _button.transform.localScale.z);
         
         // Disable button briefly at the start to make sure it doesn't immediatley get pressed
-        if(IsActive)
+        if(IsInteractable)
         {
-            IsActive = false;
+            IsInteractable = false;
             await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
-            IsActive = true;
+            IsInteractable = true;
         }
     }
 
@@ -92,7 +92,7 @@ public class PhysicalButton : MonoBehaviour
 
         // Check for valid collisions with the button
         float hitDistance = _buttonUpDistance;
-        if (IsActive && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitDistance is set by the out parameter, so the if can be empty
+        if (IsInteractable && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitDistance is set by the out parameter, so the if can be empty
 
         _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitDistance);
 
@@ -100,7 +100,7 @@ public class PhysicalButton : MonoBehaviour
         _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
 
         // Set pressed state
-        IsPressed = IsActive && hitDistance < (1 - _buttonActivationThreshold) * _buttonUpDistance;
+        IsPressed = IsInteractable && hitDistance < (1 - _buttonActivationThreshold) * _buttonUpDistance;
     }
 
     private bool IsButtonObstructed(Vector3 scale, float distance, out float hitPoint)
@@ -163,6 +163,8 @@ public class PhysicalButton : MonoBehaviour
     [Button("Execute Button Press")]
     private void ButtonPress()
     {
+        if (!IsInteractable) return;
+
         if (_pressedSound != null)
         {
             PlaySound(_pressedSound);
@@ -173,6 +175,8 @@ public class PhysicalButton : MonoBehaviour
     [Button("Execute Button Hold")]
     private void ButtonHold()
     {
+        if (!IsInteractable) return;
+
         //Debug.Log("Held");
         OnButtonHold?.Invoke();
     }
@@ -180,6 +184,8 @@ public class PhysicalButton : MonoBehaviour
     [Button("Execute Button Release")]
     private void ButtonRelease()
     {
+        if (!IsInteractable) return;
+
         if (_releasedSound != null)
         {
             PlaySound(_releasedSound);

@@ -5,10 +5,10 @@ using Cysharp.Threading.Tasks;
 using NaughtyAttributes;
 using PrimeTween;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class Phone : MonoBehaviour
 {
@@ -20,9 +20,12 @@ public class Phone : MonoBehaviour
     private DateTime _phoneTime = DateTime.Now;
     private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
+    [SerializeField] private Transform _handTransform;
+    [SerializeField] private AudioClip _clickSound;
 
     [Header("Objectives")]
-    // stuff here
+    [SerializeField] private GameObject _objectivePrefab;
+    private Transform _objectivesContainer;
 
     [Header("Messages")]
     [SerializeField] private GameObject _messagePrefab;
@@ -58,7 +61,8 @@ public class Phone : MonoBehaviour
     private AppButton _objectivesButton;
     private AppButton _settingsButton;
 
-    public GameObject debugObj;
+    private bool _buttonPressed = false;
+    private bool _lastButtonState = true;
 
     private void Awake()
     {
@@ -94,6 +98,7 @@ public class Phone : MonoBehaviour
         _messagesContainer = _messagesScreenGroup.transform.Find("Messages");
 
         _objectivesScreenGroup = _phoneUICanvas.transform.Find("ObjectivesScreen").GetComponent<CanvasGroup>();
+        _objectivesContainer = _messagesScreenGroup.transform.Find("Objectives");
 
         _settingsScreenGroup = _phoneUICanvas.transform.Find("SettingsScreen").GetComponent<CanvasGroup>();
 
@@ -101,7 +106,6 @@ public class Phone : MonoBehaviour
         _notificationPanel = _notificationGroup.GetComponent<RectTransform>();
 
         _cameraScreenGroup = _phoneUICanvas.transform.Find("CameraScreen").GetComponent<CanvasGroup>();
-
 
         temp = _homeScreenGroup.transform.Find("Apps");
         _cameraButton = temp.Find("Camera").GetComponent<AppButton>();
@@ -123,28 +127,50 @@ public class Phone : MonoBehaviour
         _cameraScreenGroup.Hide();
     }
 
+    private void Start()
+    {
+        // Set phone to follow hand position (set parent to hand)
+        if (_handTransform != null)
+        {
+            _phoneObject.transform.parent = _handTransform;
+        }
+        else
+        {
+            Debug.LogError("_handTransform not found. Phone will not follow hand position.");
+        }
+
+        // Hide phone at start
+        if (_phoneObject.activeSelf)
+        {
+            _phoneObject.SetActive(false);
+        }
+    }
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.N))
         {
+            string msg = Input.GetKey(KeyCode.LeftShift) ? "This is a test message" : "This is a second test message";
             ShowNotification("Test Sender", "This is a test message");
         }
-        else if (Input.GetKeyDown(KeyCode.M))
+
+        if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed))
         {
-            ShowNotification("Test Sender", "This is a second test message");
+            if (_buttonPressed && !_lastButtonState)
+            {
+                _lastButtonState = true;
+                _phoneObject.SetActive(!_phoneObject.activeSelf);
+                return;
+            }
+            if (!_buttonPressed && _lastButtonState)
+            {
+                _lastButtonState = false;
+            }
         }
 
-        // This is temporary, tesing with mouse input for screen interaction
-        if (Input.GetMouseButtonDown(0))
+        if(Input.GetKeyDown(KeyCode.C)) // Right click to show home screen
         {
-            // Cast a ray from the main camera through the mouse position
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit))
-            {
-                if (hit.collider.name != "Screen") return;
-
-                SimulateScreenPressAtPoint(hit.point);
-            }
+            ShowCameraScreen();
         }
     }
 
@@ -154,7 +180,7 @@ public class Phone : MonoBehaviour
         UpdateBattery();
     }
 
-    private void SimulateScreenPressAtPoint(Vector3 point)
+    public void SimulateScreenPressAtPoint(Vector3 point)
     {
         Vector3 localHitPoint = _screenObject.transform.InverseTransformPoint(point);
 
@@ -185,6 +211,7 @@ public class Phone : MonoBehaviour
         foreach (GameObject obj in hitObjects)
         {
             Utilities.SimulatePress(obj);
+            PlayerAudio.PlaySound(_clickSound, randomizePitch: true); // Play click sound
         }
     }
     
@@ -293,6 +320,19 @@ public class Phone : MonoBehaviour
             messageObject.transform.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
             messageObject.transform.Find("Time").GetComponent<TMP_Text>().text = msg.Timestamp.ToString("h:mm tt"); // Format: 1:02 PM
         }
+    }
+
+    private void LoadObjectives()
+    {
+        foreach(Transform child in _objectivesContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        ObjectiveManager.Instance.objectives.ForEach(objective => 
+        {
+            var temp = Instantiate(_objectivePrefab, _objectivesScreenGroup.transform.Find("ObjectivesContainer"));
+        });
     }
 
     private void HideAllScreens()

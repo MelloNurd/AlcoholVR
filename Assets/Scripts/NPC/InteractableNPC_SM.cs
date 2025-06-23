@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 
 [SelectionBase]
+[RequireComponent(typeof(DialogueSystem), typeof(ObjectiveSystem))]
 public class InteractableNPC_SM : NPC_SM // SM = State Machine
 {
     [Header("Interaction Settings")]
@@ -15,6 +16,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     public Dialogue completeDialogue;
     public Dialogue failDialogue;
 
+    [Header("Interaction Events")]
     public UnityEvent onFirstInteraction = new();
     public UnityEvent onCompleteInteraction = new();
     public UnityEvent onIncompleteInteraction = new();
@@ -23,15 +25,16 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     [HideInInspector] public int interactionCount = 0;
     [HideInInspector] public DialogueSystem dialogueSystem;
 
-    [Header("Quest Settings")]
-    public bool _hasQuest = false;
-    [ShowIf("_hasQuest")] public Quest Quest;
+    //[Header("Objective Settings")]
+    //[SerializeField] private bool hasObjective = false;
+    private ObjectiveSystem objective;
 
     private new void Awake()
     {
         base.Awake();
 
         dialogueSystem = GetComponent<DialogueSystem>();
+        objective = GetComponent<ObjectiveSystem>();
 
         if (firstDialogue != null)
         {
@@ -43,6 +46,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         {
             Debug.LogError("First dialogue is not set for " + gameObject.name + ". Please assign a dialogue.");
         }
+
     }
 
     [Button("Execute Interact", EButtonEnableMode.Playmode)]
@@ -68,32 +72,25 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
             return;
         }
 
-        if (!_hasQuest)
+        switch (objective.currentStatus)
         {
-            dialogueSystem.StartDialogue(firstDialogue);
-            firstDialogue.onDialogueStart?.Invoke();
-            return;
-        }
-
-        switch (Quest.State)
-        {
-            case QuestState.NotStarted:
+            case ObjectiveSystem.Statuses.ToDo:
                 dialogueSystem.StartDialogue(firstDialogue);
                 firstDialogue.onDialogueStart?.Invoke();
                 onFirstInteraction?.Invoke();
-                Quest.Start();
+                objective.Begin();
                 break;
-            case QuestState.Incomplete:
+            case ObjectiveSystem.Statuses.InProgress:
                 dialogueSystem.StartDialogue(incompleteDialogue);
                 incompleteDialogue.onDialogueStart?.Invoke();
                 onIncompleteInteraction?.Invoke();
                 break;
-            case QuestState.Complete:
+            case ObjectiveSystem.Statuses.Completed:
                 dialogueSystem.StartDialogue(completeDialogue);
                 completeDialogue.onDialogueStart?.Invoke();
                 onCompleteInteraction?.Invoke();
                 break;
-            case QuestState.Failed:
+            case ObjectiveSystem.Statuses.Failed:
                 dialogueSystem.StartDialogue(failDialogue);
                 failDialogue.onDialogueStart?.Invoke();
                 onFailInteraction?.Invoke();

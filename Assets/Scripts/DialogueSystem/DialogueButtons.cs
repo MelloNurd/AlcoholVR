@@ -137,7 +137,7 @@ public class DialogueButtons : MonoBehaviour
             if (child.TryGetComponent(out PhysicalButton button))
             {
                 button.OnButtonDown.RemoveAllListeners(); // Remove all listeners to prevent memory leaks
-                button.IsActive = false;
+                button.IsInteractable = false;
             }
 
             Collider[] colliders = child.GetComponentsInChildren<Collider>(); // Get all colliders in children  
