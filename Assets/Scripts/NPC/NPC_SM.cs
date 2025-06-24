@@ -61,6 +61,11 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
                 _checkpoints.Add(container);
             }
         }
+        if(_checkpoints.Count == 0)
+        {
+            _checkpoints.Add(_selfActionContainer);
+        }
+
         StartAtFirstCheckpoint();
 
         // Initialize states dictionary

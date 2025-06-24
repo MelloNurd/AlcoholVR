@@ -8,6 +8,8 @@ public class PhoneMessage : ScriptableObject
     public DateTime Timestamp;
     public string Content;
 
+    public Objective Objective; // optional
+
     private void Awake()
     {
         Timestamp = DateTime.Now;

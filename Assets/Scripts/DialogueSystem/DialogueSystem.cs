@@ -88,5 +88,10 @@ public class DialogueSystem : MonoBehaviour
 
             StartDialogue(nextDialogue);
         }
+        else
+        {
+            // No further dialogue found, end current dialogue
+            EndDialogue();
+        }
     }
 }

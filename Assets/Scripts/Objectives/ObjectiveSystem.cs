@@ -55,7 +55,7 @@ public class ObjectiveSystem : MonoBehaviour
 
     private void Start()
     {
-        OnAdvance.AddListener(Phone.Instance.LoadObjectives); // This will force the list to update when any objective is advanced
+        //OnAdvance.AddListener(Phone.Instance.LoadObjectives); // This will force the list to update when any objective is advanced
     }
 
     private string SetTags(string dirtyText)
@@ -76,7 +76,7 @@ public class ObjectiveSystem : MonoBehaviour
     public void Begin() // This is called by the dialogue system, when npc is first interacted with
     {
         currentStatus = Statuses.InProgress;
-        if(ObjectiveManager.Instance != null)
+        if(ObjectiveManager.Instance != null && hasObjective)
         {
             objective.text = SetTags(objective.text);
             ObjectiveManager.Instance.AddObjective(objective);
@@ -88,8 +88,10 @@ public class ObjectiveSystem : MonoBehaviour
 
     public void Complete()
     {
+        if(currentStatus == Statuses.Completed) return; // Cannot complete an already completed objective
+
         currentStatus = Statuses.Completed;
-        if (ObjectiveManager.Instance != null)
+        if (ObjectiveManager.Instance != null && hasObjective)
         {
             ObjectiveManager.Instance.RemoveObjective(objective);
         }
@@ -101,7 +103,7 @@ public class ObjectiveSystem : MonoBehaviour
     public void Fail()
     {
         if (currentStatus == Statuses.Completed) return; // Cannot fail a completed objective
-        if (ObjectiveManager.Instance != null)
+        if (ObjectiveManager.Instance != null && hasObjective)
         {
             ObjectiveManager.Instance.RemoveObjective(objective);
         }

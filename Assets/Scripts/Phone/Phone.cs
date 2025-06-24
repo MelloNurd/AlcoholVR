@@ -368,13 +368,18 @@ public class Phone : MonoBehaviour
     public void ShowNotification(string sender, string content) => ShowNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
     public async void ShowNotification(PhoneMessage msg)
     {
-        Tween.CompleteAll(_notificationPanel); // Resets any existing tweens
+        Tween.StopAll(_notificationPanel); // Resets any existing tweens
         // FIX THE ABOVE ^^^
 
         _notificationPanel.Find("Title").GetComponent<TMP_Text>().text = msg.Sender;
         _notificationPanel.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
        
         AddMessage(msg);
+
+        if(msg.Objective != null)
+        {
+            ObjectiveManager.Instance.CreateObjectiveObject(msg.Objective);
+        }
 
         await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
         await UniTask.Delay(3_000);

@@ -36,6 +36,15 @@ public class ObjectiveManager : MonoBehaviour
         HandleTracking();
     }
 
+    public ObjectiveSystem CreateObjectiveObject(Objective objective)
+    {
+        GameObject newObj = new GameObject("New objective", typeof(ObjectiveSystem));
+        ObjectiveSystem objectiveSystem = newObj.GetComponent<ObjectiveSystem>();
+        objectiveSystem.objective = objective;
+        objectiveSystem.Begin();
+        return objectiveSystem;
+    }
+
     public void AddObjective(Objective objective)
     {
         if (objective == null) return;
@@ -61,6 +70,7 @@ public class ObjectiveManager : MonoBehaviour
         }
 
         objectives.Add((objective, lineRenderer));
+        Phone.Instance.LoadObjectives();
     }
 
     public void RemoveObjective(Objective objective)
@@ -82,6 +92,7 @@ public class ObjectiveManager : MonoBehaviour
                 return;
             }
         }
+        Phone.Instance.LoadObjectives();
     }
 
     public void HideAllPaths()
@@ -103,6 +114,7 @@ public class ObjectiveManager : MonoBehaviour
 
     private void HandleTracking()
     {
+
         if (!Phone.Instance.IsActive) return; // Only update paths when the phone is active
 
         foreach ((Objective objective, LineRenderer lr) in objectives)
@@ -137,6 +149,10 @@ public class ObjectiveManager : MonoBehaviour
                 
                 // Scrolling effect
                 lr.material.mainTextureOffset = new Vector2(Time.time * 0.1f, 0);
+            }
+            else
+            {
+                Debug.Log("Could not calculate path for objective: " + objective.text);
             }
         }
     }
