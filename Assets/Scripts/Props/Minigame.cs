@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using NaughtyAttributes;
+using EditorAttributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,7 +16,7 @@ public struct ScoringCollider
 
     [Space(10)]
     public bool OverrideScoreCooldown;
-    [ShowIf("OverrideScoreCooldown"), Min(0)] public float ScoringCooldown;
+    [ShowField(nameof(OverrideScoreCooldown)), Min(0)] public float ScoringCooldown;
 
     [Space(10)]
     public UnityEvent OnEnterEvent;

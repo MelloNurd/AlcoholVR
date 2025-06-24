@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using EditorAttributes;
 using PrimeTween;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using Random = UnityEngine.Random;
 
 public class Phone : MonoBehaviour
 {
@@ -22,6 +24,15 @@ public class Phone : MonoBehaviour
     private RectTransform _notificationPanel;
     [SerializeField] private Transform _handTransform;
     [SerializeField] private AudioClip _clickSound;
+    public bool IsActive => _phoneObject.activeSelf;
+    public bool IsInteractable { get; set; } = true;
+    private Vector3 _phoneSize;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip _phoneAppearSound;
+    [SerializeField] private AudioClip _phoneDisappearSound;
+    [SerializeField] private AudioClip _notificationSound;
+    private AudioSource _phoneAudioSource;
 
     [Header("Objectives")]
     [SerializeField] private GameObject _objectivePrefab;
@@ -33,8 +44,9 @@ public class Phone : MonoBehaviour
     private List<PhoneMessage> _messages = new();
 
     [Header("Settings")]
-    [SerializeField] private PhoneTheme _currentTheme;
-    [SerializeField] private PhoneTheme[] _availableThemes;
+    [SerializeField, InlineButton(nameof(ApplyCurrentTheme), "Apply", buttonWidth: 50)] private PhoneTheme _currentTheme;
+    [Space(3)]
+    [SerializeField] private List<PhoneTheme> _availableThemes;
     private TMP_Text _batteryLevelText;
     private Image _batteryFillImage;
 
@@ -64,6 +76,8 @@ public class Phone : MonoBehaviour
     private bool _buttonPressed = false;
     private bool _lastButtonState = true;
 
+    private ParticleSystem _appearParticles;
+
     private void Awake()
     {
         // Singleton implementation
@@ -81,6 +95,7 @@ public class Phone : MonoBehaviour
         _phoneObject = transform.Find("Physical Phone").gameObject;
         _screenObject = _phoneObject.transform.Find("Screen").gameObject;
         _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
+        _appearParticles = transform.Find("AppearParticles").GetComponent<ParticleSystem>();
 
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
         _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
@@ -98,7 +113,7 @@ public class Phone : MonoBehaviour
         _messagesContainer = _messagesScreenGroup.transform.Find("Messages");
 
         _objectivesScreenGroup = _phoneUICanvas.transform.Find("ObjectivesScreen").GetComponent<CanvasGroup>();
-        _objectivesContainer = _messagesScreenGroup.transform.Find("Objectives");
+        _objectivesContainer = _objectivesScreenGroup.transform.Find("Objectives");
 
         _settingsScreenGroup = _phoneUICanvas.transform.Find("SettingsScreen").GetComponent<CanvasGroup>();
 
@@ -117,14 +132,22 @@ public class Phone : MonoBehaviour
         _settingsButton = temp.Find("Settings").GetComponent<AppButton>();
         _settingsButton.OnClick.AddListener(ShowSettingsScreen);
 
-        if(_currentTheme == null) _currentTheme = _availableThemes.GetRandom();
-        ApplyTheme();
+        int index = PlayerPrefs.GetInt("PhoneThemeIndex", -1);
+        PhoneTheme theme = _availableThemes[index < 0 ? Random.Range(0, _availableThemes.Count) : index];
+        ApplyTheme(theme);
 
         _homeScreenGroup.Show();
         _messagesScreenGroup.Hide();
         _objectivesScreenGroup.Hide();
         _settingsScreenGroup.Hide();
         _cameraScreenGroup.Hide();
+
+        // We leave it on its own gameobject so we can disable/enable the phone without interrupting the audio source
+        var tempAudioSourceObj = new GameObject("Phone Audio Source");
+        tempAudioSourceObj.transform.parent = transform.parent;
+        _phoneAudioSource = tempAudioSourceObj.AddComponent<AudioSource>();
+        _phoneAudioSource.playOnAwake = false;
+        _phoneAudioSource.loop = false;
     }
 
     private void Start()
@@ -139,11 +162,8 @@ public class Phone : MonoBehaviour
             Debug.LogError("_handTransform not found. Phone will not follow hand position.");
         }
 
-        // Hide phone at start
-        if (_phoneObject.activeSelf)
-        {
-            _phoneObject.SetActive(false);
-        }
+        _phoneSize = _phoneObject.transform.localScale;
+        DisablePhone(0f, false);
     }
 
     private void Update()
@@ -159,7 +179,7 @@ public class Phone : MonoBehaviour
             if (_buttonPressed && !_lastButtonState)
             {
                 _lastButtonState = true;
-                _phoneObject.SetActive(!_phoneObject.activeSelf);
+                TogglePhone();
                 return;
             }
             if (!_buttonPressed && _lastButtonState)
@@ -180,8 +200,66 @@ public class Phone : MonoBehaviour
         UpdateBattery();
     }
 
+    private async void EnablePhone(float time = 0.25f, bool effects = true)
+    {
+        if (_messagesScreenGroup.IsVisible())
+        {
+            LoadMessages();
+        }
+        else if (_objectivesScreenGroup.IsVisible())
+        {
+            LoadObjectives();
+        }
+
+        if (_phoneAppearSound != null && effects)
+        {
+            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f); // Play phone appear sound
+        }
+        IsInteractable = false;
+        _phoneObject.SetActive(true);
+        _phoneObject.transform.localScale = Vector3.zero;
+        await Tween.Scale(_phoneObject.transform, _phoneSize, time, ease: Ease.OutBack);
+        IsInteractable = true;
+    }
+
+    private async void DisablePhone(float time = 0.25f, bool effects = true)
+    {
+
+        if (_phoneDisappearSound != null && effects)
+        {
+            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f); // Play phone appear sound
+        }
+        IsInteractable = false;
+        await Tween.Scale(_phoneObject.transform, Vector3.zero, time, ease: Ease.InBack);
+        _phoneObject.SetActive(false);
+        if (_appearParticles != null && effects)
+        {
+            _appearParticles.transform.position = _phoneObject.transform.position; // Set particle position to phone position
+            _appearParticles.transform.rotation = _phoneObject.transform.rotation;
+            _appearParticles.Play();
+        }
+
+        ObjectiveManager.Instance.HideAllPaths();
+    }
+
+    private void TogglePhone()
+    {
+        if (IsActive)
+        {
+            DisablePhone();
+        }
+        else
+        {
+            EnablePhone();
+        }
+    }
+
     public void SimulateScreenPressAtPoint(Vector3 point)
     {
+        if(!IsInteractable) return;
+
         Vector3 localHitPoint = _screenObject.transform.InverseTransformPoint(point);
 
         // Calculate normalized position (assuming screen mesh is centered and properly scaled)
@@ -235,11 +313,18 @@ public class Phone : MonoBehaviour
         _batteryFillImage.fillAmount = _batteryLevel;
     }
 
-    [Button("Apply Theme", EButtonEnableMode.Playmode)]
-    private void ApplyTheme() => ApplyTheme(_currentTheme);
-    private void ApplyRandomTheme() => ApplyTheme(_availableThemes.GetRandom());
-    private void ApplyTheme(PhoneTheme theme)
+    public void ApplyCurrentTheme() => ApplyTheme(_currentTheme);
+    public void ApplyRandomTheme() => ApplyTheme(_availableThemes.GetRandomUnique(_currentTheme));
+    public void ApplyTheme(PhoneTheme theme)
     {
+        if (!Application.isPlaying) return;
+
+        if(_availableThemes.Contains(theme))
+        {
+            _availableThemes.Add(theme);
+        }
+
+
         if(theme == null)
         {
             Debug.LogWarning("No theme provided. Using default theme.");
@@ -276,6 +361,8 @@ public class Phone : MonoBehaviour
 
             text.color = theme.PrimaryColor;
         }
+
+        PlayerPrefs.SetInt("PhoneThemeIndex", _availableThemes.IndexOf(theme));
     }
 
     public void ShowNotification(string sender, string content) => ShowNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
@@ -292,6 +379,12 @@ public class Phone : MonoBehaviour
         await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
         await UniTask.Delay(3_000);
         _ = Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f);
+
+        if(_notificationSound != null)
+        {
+            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
+        }
     }
 
     public void AddMessage(PhoneMessage message)
@@ -304,9 +397,11 @@ public class Phone : MonoBehaviour
 
         _messages.RemoveAll(x => x.Sender == message.Sender); // We only keep the latest message from each sender
         _messages.Add(message);
+
+        LoadMessages();
     }
 
-    private void LoadMessages()
+    public void LoadMessages()
     {
         foreach(Transform child in _messagesContainer)
         {
@@ -322,17 +417,21 @@ public class Phone : MonoBehaviour
         }
     }
 
-    private void LoadObjectives()
+    public void LoadObjectives()
     {
         foreach(Transform child in _objectivesContainer)
         {
             Destroy(child.gameObject);
         }
 
-        ObjectiveManager.Instance.objectives.ForEach(objective => 
+        var objectives = ObjectiveManager.Instance.GetSortedList();
+        foreach (var objective in objectives)
         {
-            var temp = Instantiate(_objectivePrefab, _objectivesScreenGroup.transform.Find("ObjectivesContainer"));
-        });
+            // Note for later: if point is null, we don't ahve the button to guide me
+
+            ObjectiveUI objectiveObject = Instantiate(_objectivePrefab, _objectivesContainer).GetComponent<ObjectiveUI>();
+            objectiveObject.Initialize(objective);
+        }
     }
 
     private void HideAllScreens()
@@ -346,6 +445,7 @@ public class Phone : MonoBehaviour
         _phonePhysicalCamera.enabled = false;
     }
 
+    [Button]
     public void ShowHomeScreen()
     {
         HideAllScreens();
@@ -353,6 +453,7 @@ public class Phone : MonoBehaviour
         _homeScreenGroup.Show();
     }
 
+    [Button]
     public void ShowMessagesScreen()
     {
         HideAllScreens();
@@ -361,20 +462,24 @@ public class Phone : MonoBehaviour
         LoadMessages();
     }
 
+    [Button]
     public void ShowObjectivesScreen()
     {
         HideAllScreens();
 
         _objectivesScreenGroup.Show();
+        LoadObjectives();
     }
 
+    [Button]
     public void ShowSettingsScreen()
     {
         HideAllScreens();
 
         _settingsScreenGroup.Show();
     }
-    
+
+    [Button]
     public void ShowCameraScreen()
     {
         HideAllScreens();

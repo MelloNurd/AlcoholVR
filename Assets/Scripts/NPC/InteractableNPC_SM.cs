@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using NaughtyAttributes;
+using EditorAttributes;
+using EditorAttributes.Editor.Utility;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Events;
 
 [SelectionBase]
@@ -49,7 +48,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
 
     }
 
-    [Button("Execute Interact", EButtonEnableMode.Playmode)]
+    [Button]
     public void Interact()
     {
         if(!isInteractable) return;

@@ -188,6 +188,44 @@ public static class Extensions
         }
         return list[Random.Range(0, list.Count)];
     }
+
+    /// <summary>
+    /// Gets a random value from the list that is different from a previous item.
+    /// </summary>
+    /// <param name="previousItem">The item to avoid returning</param>
+    /// <returns>A random value from the list different from the previous item, or the default value if the list is empty.</returns>
+    public static T GetRandomUnique<T>(this IList<T> list, T previousItem)
+    {
+        if(previousItem == null)
+        {
+            return list.GetRandom(); // If previousItem is null, just return a random item
+        }
+
+        if (list.Count == 0)
+        {
+            return default(T);
+        }
+
+        if (list.Count == 1)
+        {
+            return list[0]; // Only one option available
+        }
+
+        int randomIndex;
+        T randomItem;
+        int attempts = 0;
+        int maxAttempts = 20; // Prevent infinite loop if all items are equal
+
+        do
+        {
+            randomIndex = Random.Range(0, list.Count);
+            randomItem = list[randomIndex];
+            attempts++;
+        }
+        while (EqualityComparer<T>.Default.Equals(randomItem, previousItem) && attempts < maxAttempts);
+
+        return randomItem;
+    }
     #endregion
 
     #region Dictonary Extensions
@@ -420,6 +458,16 @@ public static class Extensions
         group.blocksRaycasts = false;
         group.alpha = 0f;
         group.ignoreParentGroups = true;
+    }
+
+    /// <summary>
+    /// Whether or not the CanvasGroup is visible.
+    /// </summary>
+    /// <param name="group"></param>
+    /// <returns>A bool representing the visibility state of the canvas group.</returns>
+    public static bool IsVisible(this CanvasGroup group)
+    {
+        return group.alpha > 0f;
     }
     #endregion
 }

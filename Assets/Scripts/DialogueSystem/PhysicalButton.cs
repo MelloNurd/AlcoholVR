@@ -1,11 +1,11 @@
 using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using EditorAttributes;
 using TMPro;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
-using ReadOnly = NaughtyAttributes.ReadOnlyAttribute;
+using ReadOnly = EditorAttributes.ReadOnlyAttribute;
 
 [SelectionBase] // Makes it so in scene view, clicking it selects this object, not like the base or top or whatever you physically click
 public class PhysicalButton : MonoBehaviour
@@ -16,6 +16,10 @@ public class PhysicalButton : MonoBehaviour
 
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;
+
+    [ButtonField(nameof(ButtonPress), buttonLabel: "Execute Press"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct0;
+    [ButtonField(nameof(ButtonRelease), buttonLabel: "Execute Release"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct1;
+    [ButtonField(nameof(ButtonHold), true, buttonLabel: "Execute Hold"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct2;
 
     [field: SerializeField, Tooltip("Whether or not the button can be pressed.")] public bool IsInteractable { get; set; } = true;
 
@@ -160,7 +164,6 @@ public class PhysicalButton : MonoBehaviour
         _previousPressState = IsPressed;
     }
 
-    [Button("Execute Button Press")]
     private void ButtonPress()
     {
         if (!IsInteractable) return;
@@ -172,7 +175,6 @@ public class PhysicalButton : MonoBehaviour
         //Debug.Log("Pressed");
         OnButtonDown?.Invoke();
     }
-    [Button("Execute Button Hold")]
     private void ButtonHold()
     {
         if (!IsInteractable) return;
@@ -181,7 +183,6 @@ public class PhysicalButton : MonoBehaviour
         OnButtonHold?.Invoke();
     }
 
-    [Button("Execute Button Release")]
     private void ButtonRelease()
     {
         if (!IsInteractable) return;

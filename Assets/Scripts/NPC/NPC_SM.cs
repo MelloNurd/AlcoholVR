@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using NaughtyAttributes;
+using EditorAttributes;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -37,10 +37,10 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     [HideInInspector] public ActionContainer currentCheckpoint;
     [HideInInspector] public int actionsLeft = 0;
     protected List<ActionContainer> _checkpoints = new();
-    [ShowIf("_checkpointSortMode", SortMode.Random), SerializeField] protected bool _alwaysUnique = true; // If it should be able to stay at the same checkpoint
+    [ShowField(nameof(_checkpointSortMode), SortMode.Random), SerializeField] protected bool _alwaysUnique = true; // If it should be able to stay at the same checkpoint
     protected int _currentCheckpointIndex = -1;
 
-    [SerializeField, ReadOnly, Label("Current State (Debug)")] protected string _currentStateName;
+    [SerializeField, ReadOnly, Rename("Current State (Debug)")] protected string _currentStateName;
 
     protected void Awake()
     {

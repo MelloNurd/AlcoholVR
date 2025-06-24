@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public static class Utilities
 {
@@ -262,6 +263,115 @@ public static class Utilities
             targetUI,
             new PointerEventData(EventSystem.current),
             ExecuteEvents.pointerClickHandler);
+    }
+
+    #endregion
+
+    #region Miscellaneous Utilities
+
+    /// <summary>
+    /// Creates a new path with beveled corners from the provided points.
+    /// </summary>
+    /// <param name="segments">Number of segments to create for each bevel (minimum 2)</param>
+    /// <param name="radius">Radius factor for the bevel (0-1 range, where 1 is maximum possible radius)</param>
+    /// <param name="useSmoothing">Whether to use bezier curve smoothing instead of linear interpolation</param>
+    /// <param name="path">Points that make up the path</param>
+    /// <returns>A new path with beveled corners</returns>
+    public static Vector3[] BevelCorners(float segments = 4, float radius = 0.5f, bool useSmoothing = true, params Vector3[] path)
+    {
+        return BevelCorners(path, segments, radius, useSmoothing);
+    }
+
+    /// <summary>
+    /// Creates a new path with beveled corners from the input path.
+    /// </summary>
+    /// <param name="path">Original path as an array of points</param>
+    /// <param name="segments">Number of segments to create for each bevel (minimum 2)</param>
+    /// <param name="radius">Radius factor for the bevel (0-1 range, where 1 is maximum possible radius)</param>
+    /// <param name="useSmoothing">Whether to use bezier curve smoothing instead of linear interpolation</param>
+    /// <returns>A new path with beveled corners</returns>
+    public static Vector3[] BevelCorners(Vector3[] path, float segments = 4, float radius = 0.5f, bool useSmoothing = true)
+    {
+        if (path == null || path.Length < 3)
+            return path;
+
+        int segmentsInt = Mathf.Max(2, Mathf.RoundToInt(segments));
+        radius = Mathf.Clamp01(radius);
+        
+        List<Vector3> newPath = new List<Vector3>();
+        
+        // Add first point
+        newPath.Add(path[0]);
+        
+        for (int i = 1; i < path.Length - 1; i++)
+        {
+            Vector3 prev = path[i - 1];
+            Vector3 current = path[i];
+            Vector3 next = path[i + 1];
+            
+            // Calculate direction vectors
+            Vector3 dirToCurrent = (current - prev).normalized;
+            Vector3 dirToNext = (next - current).normalized;
+            
+            // Calculate dot product to determine angle
+            float dot = Vector3.Dot(dirToCurrent, dirToNext);
+            
+            // If the angle is significant (not almost a straight line)
+            if (dot < 0.99f)
+            {
+                // Calculate distances (used for determining control points)
+                float distToPrev = Vector3.Distance(current, prev);
+                float distToNext = Vector3.Distance(current, next);
+                
+                // Calculate the bevel radius (limited by the shorter segment length)
+                float maxRadius = Mathf.Min(distToPrev, distToNext) * 0.5f;
+                float bevelRadius = maxRadius * radius;
+                
+                // Calculate start and end points of the bevel
+                Vector3 bevelStart = current - dirToCurrent * bevelRadius;
+                Vector3 bevelEnd = current + dirToNext * bevelRadius;
+                
+                // Add bevel points
+                for (int j = 0; j < segmentsInt; j++)
+                {
+                    float t = j / (float)(segmentsInt - 1);
+                    
+                    Vector3 point;
+                    if (useSmoothing)
+                    {
+                        // Bezier curve for smoother transition
+                        point = QuadraticBezier(bevelStart, current, bevelEnd, t);
+                    }
+                    else
+                    {
+                        // Linear interpolation between bevel start/end
+                        point = Vector3.Lerp(bevelStart, bevelEnd, t);
+                    }
+                    
+                    if (j > 0 || i == 1) // Skip first point except for first corner
+                        newPath.Add(point);
+                }
+            }
+            else
+            {
+                // If it's almost a straight line, just add the corner point
+                newPath.Add(current);
+            }
+        }
+        
+        // Add last point
+        newPath.Add(path[path.Length - 1]);
+        
+        return newPath.ToArray();
+    }
+    
+    /// <summary>
+    /// Calculate a point on a quadratic Bezier curve.
+    /// </summary>
+    public static Vector3 QuadraticBezier(Vector3 p0, Vector3 p1, Vector3 p2, float t)
+    {
+        float oneMinusT = 1f - t;
+        return oneMinusT * oneMinusT * p0 + 2f * oneMinusT * t * p1 + t * t * p2;
     }
 
     #endregion

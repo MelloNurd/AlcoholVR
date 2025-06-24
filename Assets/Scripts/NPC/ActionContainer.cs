@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using NaughtyAttributes;
+using EditorAttributes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,7 +9,7 @@ public class ActionContainer : MonoBehaviour
     public List<Action> _actions = new();
 
     public SortMode actionSortMode = SortMode.RoundRobin; // How it determines the next action to play
-    [ShowIf("actionSortMode", SortMode.Random)] public bool excludeCurrentAction = false; // If it should be able to play the same action again immediately
+    [ShowField(nameof(actionSortMode), SortMode.Random)] public bool excludeCurrentAction = false; // If it should be able to play the same action again immediately
 
     public Timing timeBetweenActions = Timing.Normal;
     public float AnimationDelay

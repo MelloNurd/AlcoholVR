@@ -1,13 +1,10 @@
 using Cysharp.Threading.Tasks;
 using TMPro;
-using Unity.Hierarchy;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using NaughtyAttributes;
-using System;
 
 public class Typewriter : MonoBehaviour
 {
