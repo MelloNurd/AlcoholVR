@@ -55,6 +55,7 @@ public class Phone : MonoBehaviour
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
     private TMP_Text _phoneClockTime;
+    private TMP_Text _smallClockTime;
     private TMP_Text _phoneClockDate;
 
     private GameObject _screenObject;
@@ -108,6 +109,7 @@ public class Phone : MonoBehaviour
         var temp = _homeScreenGroup.transform.Find("Clock");
         _phoneClockTime = temp.Find("Time").GetComponent<TMP_Text>();
         _phoneClockDate = temp.Find("Date").GetComponent<TMP_Text>();
+        _smallClockTime = _phoneUICanvas.transform.Find("Time").GetComponentInChildren<TMP_Text>();
 
         _messagesScreenGroup = _phoneUICanvas.transform.Find("MessagesScreen").GetComponent<CanvasGroup>();
         _messagesContainer = _messagesScreenGroup.transform.Find("Messages");
@@ -132,22 +134,24 @@ public class Phone : MonoBehaviour
         _settingsButton = temp.Find("Settings").GetComponent<AppButton>();
         _settingsButton.OnClick.AddListener(ShowSettingsScreen);
 
-        int index = PlayerPrefs.GetInt("PhoneThemeIndex", -1);
-        PhoneTheme theme = _availableThemes[index < 0 ? Random.Range(0, _availableThemes.Count) : index];
-        ApplyTheme(theme);
-
-        _homeScreenGroup.Show();
-        _messagesScreenGroup.Hide();
-        _objectivesScreenGroup.Hide();
-        _settingsScreenGroup.Hide();
-        _cameraScreenGroup.Hide();
-
         // We leave it on its own gameobject so we can disable/enable the phone without interrupting the audio source
         var tempAudioSourceObj = new GameObject("Phone Audio Source");
         tempAudioSourceObj.transform.parent = transform.parent;
         _phoneAudioSource = tempAudioSourceObj.AddComponent<AudioSource>();
         _phoneAudioSource.playOnAwake = false;
         _phoneAudioSource.loop = false;
+
+        if (_currentTheme == null)
+        {
+            int index = PlayerPrefs.GetInt("PhoneThemeIndex", -1);
+            _currentTheme = _availableThemes[index < 0 ? Random.Range(0, _availableThemes.Count) : index];
+
+        }
+        ApplyTheme(_currentTheme);
+
+        // Initialize screens (start at home)
+        HideAllScreens();
+        ShowHomeScreen();
     }
 
     private void Start()
@@ -300,6 +304,7 @@ public class Phone : MonoBehaviour
             _phoneTime = DateTime.Now;
         }
         _phoneClockTime.text = _phoneTime.ToString("h:mm tt"); // Format: 1:02 PM
+        _smallClockTime.text = _phoneTime.ToString("h:mm tt"); // Format: 1:02
         _phoneClockDate.text = _phoneTime.ToString("MMM d, yyyy"); // Format: Jan 1, 2023
     }
 
@@ -313,13 +318,14 @@ public class Phone : MonoBehaviour
         _batteryFillImage.fillAmount = _batteryLevel;
     }
 
-    public void ApplyCurrentTheme() => ApplyTheme(_currentTheme);
+    [Button]
     public void ApplyRandomTheme() => ApplyTheme(_availableThemes.GetRandomUnique(_currentTheme));
+    public void ApplyCurrentTheme() => ApplyTheme(_currentTheme);
     public void ApplyTheme(PhoneTheme theme)
     {
         if (!Application.isPlaying) return;
 
-        if(_availableThemes.Contains(theme))
+        if(!_availableThemes.Contains(theme))
         {
             _availableThemes.Add(theme);
         }
@@ -446,8 +452,9 @@ public class Phone : MonoBehaviour
         _objectivesScreenGroup.Hide();
         _settingsScreenGroup.Hide();
         _cameraScreenGroup.Hide();
-        _phoneBG.enabled = true;
         _phonePhysicalCamera.enabled = false;
+        _phoneBG.enabled = true;
+        _smallClockTime.enabled = true; // This should show on all screens, EXCEPT home
     }
 
     [Button]
@@ -455,6 +462,7 @@ public class Phone : MonoBehaviour
     {
         HideAllScreens();
 
+        _smallClockTime.enabled = false;
         _homeScreenGroup.Show();
     }
 
