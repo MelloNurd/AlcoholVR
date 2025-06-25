@@ -307,6 +307,37 @@ public static class Extensions
     }
 
     /// <summary>
+    /// Returns a new Vector3 with the x value increased by the given amount.
+    /// </summary>
+    /// <param name="x">The amount to add to x</param>
+    /// <returns>The vector3 with the increased x value</returns>
+    public static Vector3 AddX(this Vector3 vector, float x)
+    {
+        vector.x += x;
+        return vector;
+    }
+    /// <summary>
+    /// Returns a new Vector3 with the y value increased by the given amount.
+    /// </summary>
+    /// <param name="y">The amount to add to y</param>
+    /// <returns>The vector3 with the increased y value</returns>
+    public static Vector3 AddY(this Vector3 vector, float y)
+    {
+        vector.y += y;
+        return vector;
+    }
+    /// <summary>
+    /// Returns a new Vector3 with the z value increased by the given amount.
+    /// </summary>
+    /// <param name="z">The amount to add to z</param>
+    /// <returns>The vector3 with the increased z value</returns>
+    public static Vector3 AddZ(this Vector3 vector, float z)
+    {
+        vector.z += z;
+        return vector;
+    }
+
+    /// <summary>
     /// Converts a Vector3 to a Vector2 by removing the z value.
     /// </summary>
     /// <returns>A vector2 made with the x and y of the vector3</returns>
@@ -365,6 +396,27 @@ public static class Extensions
     public static Vector2 WithY(this Vector2 vector, float y)
     {
         vector.y = y;
+        return vector;
+    }
+
+    /// <summary>
+    /// Returns a new Vector2 with the x value increased by the given amount.
+    /// </summary>
+    /// <param name="x">The amount to add to x</param>
+    /// <returns>The vector2 with the increased x value</returns>
+    public static Vector2 AddX(this Vector2 vector, float x)
+    {
+        vector.x += x;
+        return vector;
+    }
+    /// <summary>
+    /// Returns a new Vector2 with the y value increased by the given amount.
+    /// </summary>
+    /// <param name="y">The amount to add to y</param>
+    /// <returns>The vector2 with the increased y value</returns>
+    public static Vector2 AddY(this Vector2 vector, float y)
+    {
+        vector.y += y;
         return vector;
     }
 
