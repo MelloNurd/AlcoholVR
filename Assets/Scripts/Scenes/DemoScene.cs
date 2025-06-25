@@ -1,13 +1,14 @@
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class DemoScene : MonoBehaviour
 {
-    public bool broughtSnacks = false;
-    public bool broughtBeer = false;
+    [SceneDropdown, SerializeField] private string _sceneChange;
 
     [SerializeField] private Transform _fridgeTransform;
     [SerializeField] private Transform _backpackTransform;
@@ -23,12 +24,12 @@ public class DemoScene : MonoBehaviour
 
     private async void Start()
     {
-        await UniTask.Delay(1);
+        await UniTask.Delay(12_000);
 
         var temp = new PhoneMessage
         {
             Sender = "Markus",
-            Content = "Hey! Are you coming to the party?",
+            Content = "Hey! I'm throwing a party, can you bring snacks and beer?",
         };
 
         Phone.Instance.ShowNotification(temp);
@@ -42,8 +43,6 @@ public class DemoScene : MonoBehaviour
     {
         if (args.interactableObject is XRBaseInteractable interactable)
         {
-            Debug.Log("Grabbed: " + interactable.name);
-
             if (interactable.name.Contains("Food"))
             {
                 obj1?.Complete();
@@ -68,26 +67,22 @@ public class DemoScene : MonoBehaviour
     {
         if (args.interactableObject is XRBaseInteractable interactable)
         {
-            Debug.Log("Dropped: " + interactable.name);
-
-            if (interactable.name.Contains("Bottle") && !broughtBeer)
+            if (interactable.name.Contains("Bottle"))
             {
                 obj4?.Complete();
-                broughtBeer = true;
-                if (obj5 == null)
-                {
-                    obj5 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Go talk to your dad.", 1, _dadTransform));
-                }
+                PlayerPrefs.SetInt("BroughtBeer", 1);
+                Phone.Instance.LoadObjectives();
             }
-            else if (interactable.name.Contains("Food") && !broughtSnacks)
+            if (interactable.name.Contains("Food"))
             {
                 obj3?.Complete();
-                broughtSnacks = true;
                 if (obj5 == null)
                 {
                     obj5 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Go talk to your dad.", 1, _dadTransform));
                 }
+                Phone.Instance.LoadObjectives();
             }
+
             Destroy(interactable.gameObject);
         }
     }
@@ -103,7 +98,9 @@ public class DemoScene : MonoBehaviour
 
     public void OnHouseLeft()
     {
-        Debug.Log("You left the house!");
+        if (obj6 == null) return;
+
+        SceneManager.LoadScene(_sceneChange);
         obj6?.Complete();
     }
 }
