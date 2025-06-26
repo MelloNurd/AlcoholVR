@@ -9,11 +9,20 @@ public class Dart : MonoBehaviour
     private XRGrabInteractable grabInteractable;
 
     private bool stuck = false;
+    float StickDelay = 0;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         grabInteractable = GetComponent<XRGrabInteractable>();
+    }
+
+    void Update()
+    {
+        if(StickDelay > 0)
+        {
+            StickDelay -= Time.deltaTime;
+        }
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -26,6 +35,12 @@ public class Dart : MonoBehaviour
                 var oldestInteractor = grabInteractable.GetOldestInteractorSelecting();
                 grabInteractable.interactionManager.SelectExit((IXRSelectInteractor)oldestInteractor, (IXRSelectInteractable)grabInteractable);
             }
+        }
+
+        // Don't stick to other darts
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Dart") || StickDelay > 0)
+        {
+            return;
         }
 
         // Freeze dart motion
@@ -73,5 +88,16 @@ public class Dart : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None; // Remove all constraints
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        StickDelay = 0.5f; // Delay before the dart can stick again
+    }
+
+    void OnDrawGizmos()
+    {
+        if (rb != null)
+        {
+            Gizmos.color = Color.red;
+            Vector3 worldCenterOfMass = transform.TransformPoint(rb.centerOfMass);
+            Gizmos.DrawSphere(worldCenterOfMass, 0.01f);
+        }
     }
 }
