@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class ArcadeObstacle : MonoBehaviour
@@ -11,10 +12,24 @@ public class ArcadeObstacle : MonoBehaviour
 
     void Update()
     {
+        if(arcade.State != Arcade.GameState.Playing) return;
+
         transform.position += Vector3.left * arcade.GameSpeed * Time.deltaTime * arcade.arcadeBackgroundObj.transform.localScale.x;
         if(transform.position.x < arcade.arcadeGameCamera.transform.position.x - arcade.arcadeGameCamera.orthographicSize - 1) // optimize this
         {
+            arcade.obstacles.Remove(this);
             Destroy(gameObject);
+        }
+    }
+
+    private async void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("ArcadePlayer")) return;
+
+        await UniTask.Delay(250);
+        if(arcade.State == Arcade.GameState.Playing)
+        {
+            arcade.UpdateScore(arcade.Score + 1);
         }
     }
 }

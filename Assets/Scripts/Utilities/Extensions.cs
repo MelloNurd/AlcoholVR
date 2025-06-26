@@ -226,6 +226,24 @@ public static class Extensions
 
         return randomItem;
     }
+
+    /// <summary>
+    /// Destroys all MonoBehaviour objects in the list and clears the list.
+    /// </summary>
+    /// <returns>The number of objects destroyed</returns>
+    public static int DestroyAllAndClear<T>(this IList<T> List) where T : MonoBehaviour
+    {
+        int temp = List.Count;
+        foreach (var item in List)
+        {
+            if (item != null)
+            {
+                GameObject.Destroy(item.gameObject);
+            }
+        }
+        List.Clear();
+        return temp;
+    }
     #endregion
 
     #region Dictonary Extensions
