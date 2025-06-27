@@ -14,6 +14,8 @@ public class PhysicalButton : MonoBehaviour
     [SerializeField] private LayerMask _interactableColliders;
     [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.98f; // How far the button needs to be pushed in to activate, as a percentage
 
+    [SerializeField] private float _pressCooldown = 0.05f;
+    private bool _isOnCooldown = false;
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;
 
@@ -166,7 +168,7 @@ public class PhysicalButton : MonoBehaviour
 
     private void ButtonPress()
     {
-        if (!IsInteractable) return;
+        if (!IsInteractable || _isOnCooldown) return;
 
         if (_pressedSound != null)
         {
@@ -174,10 +176,11 @@ public class PhysicalButton : MonoBehaviour
         }
         //Debug.Log("Pressed");
         OnButtonDown?.Invoke();
+        ApplyCooldown();
     }
     private void ButtonHold()
     {
-        if (!IsInteractable) return;
+        if (!IsInteractable || _isOnCooldown) return;
 
         //Debug.Log("Held");
         OnButtonHold?.Invoke();
@@ -185,7 +188,7 @@ public class PhysicalButton : MonoBehaviour
 
     private void ButtonRelease()
     {
-        if (!IsInteractable) return;
+        if (!IsInteractable || _isOnCooldown) return;
 
         if (_releasedSound != null)
         {
@@ -193,6 +196,13 @@ public class PhysicalButton : MonoBehaviour
         }
         //Debug.Log("Released");
         OnButtonUp?.Invoke();
+    }
+
+    private async void ApplyCooldown()
+    {
+        _isOnCooldown = true;
+        await UniTask.Delay(Mathf.RoundToInt(_pressCooldown * 1000));
+        _isOnCooldown = false;
     }
 
     public void SetButtonText(string text)
