@@ -5,54 +5,76 @@ using UnityEngine.UIElements;
 
 public class ArcadePlayer : MonoBehaviour
 {
-    [SerializeField] private Arcade arcade;
-
     public bool isInvincible = false;
     public bool shouldMove = false;
 
     public UnityEvent OnPlayerDeath = new();
 
-    private int direction = 1;
+    private Arcade _arcade;
+
+    private int _direction = 1;
     private float _offset;
-    public float speed = 8f;
+    private float _speed = 8f;
+
+    private ParticleSystem _trailParticles;
+    private ParticleSystem _stopParticles;
+
+    private void Awake()
+    {
+        _trailParticles = transform.Find("TrailParticles").GetComponent<ParticleSystem>();
+        _stopParticles = transform.Find("StopParticles").GetComponent<ParticleSystem>();
+    }
 
     private void Start()
     {
-        _offset = arcade.arcadeGameCamera.orthographicSize - transform.localScale.y * 0.5f;
+        _arcade = Arcade.Instance;
+        _offset = _arcade.arcadeGameCamera.orthographicSize - transform.localScale.y * 0.5f;
     }
 
     void Update()
     {
         if (!shouldMove) return;
 
-        transform.position += Vector3.up * speed * Mathf.Clamp01(arcade.GameSpeed) * direction * Time.deltaTime;
+        transform.position += Vector3.up * _speed * Mathf.Clamp01(_arcade.GameSpeed) * _direction * Time.deltaTime;
 
         // Clamp to screen bounds
         Vector3 pos = transform.position;
-        pos.y = Mathf.Clamp(pos.y, arcade.arcadeGameCamera.transform.position.y - _offset, arcade.arcadeGameCamera.transform.position.y + _offset);
+        pos.y = Mathf.Clamp(pos.y, _arcade.arcadeGameCamera.transform.position.y - _offset, _arcade.arcadeGameCamera.transform.position.y + _offset);
         transform.position = pos;
     }
 
     public void ChangeDirection()
     {
-        direction *= -1;
-        SetDirection(direction);
+        _direction *= -1;
+        SetDirection(_direction);
     }
 
     public void SetDirection(float direction)
     {
-        this.direction = Math.Sign(direction);
-        transform.GetChild(0).rotation = Quaternion.Euler(0, 0, this.direction * 10f);
+        this._direction = Math.Sign(direction);
+        transform.GetChild(0).rotation = Quaternion.Euler(0, 0, this._direction * 10f);
+    }
+
+    public void RestartPlayer(Vector3 pos)
+    {
+        transform.position = pos;
+        transform.Find("TrailParticles").GetComponent<ParticleSystem>().Stop();
+        _trailParticles.Play();
+        _speed = 8f;
+
+        transform.Find("cow").gameObject.SetActive(true);
+        transform.Find("StoppedCow").GetComponent<SpriteRenderer>().enabled = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(isInvincible) return;
 
-        transform.Find("TrailParticles").GetComponent<ParticleSystem>().Stop();
+        _trailParticles.Stop();
+        _stopParticles.Play();
         transform.Find("cow").gameObject.SetActive(false);
         transform.Find("StoppedCow").GetComponent<SpriteRenderer>().enabled = true;
-        speed = 0f;
+        _speed = 0f;
         OnPlayerDeath?.Invoke();
     }
 }

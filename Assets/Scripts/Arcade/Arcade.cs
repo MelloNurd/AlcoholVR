@@ -1,21 +1,24 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using PrimeTween;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Arcade : MonoBehaviour
 {
     public enum GameState
     {
         Menu,
-        Cutscene,
+        Transition,
         Playing,
-        GameOver
+        GameOver,
+        Restarting
     }
 
     public static Arcade Instance { get; private set; }
@@ -32,7 +35,7 @@ public class Arcade : MonoBehaviour
     public GameObject arcadeBackgroundObj;
     public ArcadePlayer _arcadePlayer;
     [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private RectTransform _scoreBG;
+    [SerializeField] private Image _scoreBG;
     [SerializeField] private SpriteRenderer _titleSprite;
     [SerializeField] private SpriteRenderer _subtitleSprite;
 
@@ -51,6 +54,9 @@ public class Arcade : MonoBehaviour
     private MaterialScroll _bgScroll;
 
     private CancellationTokenSource _cancelToken;
+
+    private Vector3 _titleStartPos;
+    private Vector3 _subtitleStartPos;
 
     private void Awake()
     {
@@ -74,77 +80,154 @@ public class Arcade : MonoBehaviour
             EndGame();
         });
 
-        InitalizeGame();
-
         var root = new GameObject("ArcadeObjects").transform;
         _obstacleHolder = new GameObject("Obstacles").transform;
         _obstacleHolder.SetParent(root);
         _detailHolder = new GameObject("Details").transform;
         _detailHolder.SetParent(root);
+
+        _titleStartPos = _titleSprite.transform.position;
+        _subtitleStartPos = _subtitleSprite.transform.position;
+    }
+
+    private void Start()
+    {
+        InitializeGame();
     }
 
     private void Update()
     {
+        IncreaseGameSpeed();
+    }
+
+    [Button("Simulate Button Press")]
+    public void OnButtonPress()
+    {
+        // Nothing for GameState.Transitions
         if (State == GameState.Menu)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                StartGame();
-            }
+            StartGame();
         }
         else if (State == GameState.Playing)
         {
-            IncreaseGameSpeed();
-
-            // Temporary
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ChangePlayerDirection();
-            }
-            else if (Input.GetKeyDown(KeyCode.O))
-            {
-                SpawnObstacle();
-            }
-            else if (Input.GetKeyDown(KeyCode.R))
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Restart the game
-            }
+            ChangePlayerDirection();
         }
         else if (State == GameState.GameOver)
         {
-            // Temporary
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                InitalizeGame();
-            }
+            RestartGame();
         }
     }
 
-    public void InitalizeGame()
+    #region Game Sequence Logic
+    public void InitializeGame(bool restarting = false)
     {
-        State = GameState.Menu;
+        State = restarting ? GameState.Restarting : GameState.Menu;
+        _cancelToken?.Cancel();
+        _cancelToken = null;
+
+        _arcadePlayer.RestartPlayer(arcadeGameCamera.transform.position.WithZ(0));
+        _arcadePlayer.SetDirection(0);
+
         GameSpeed = 0.5f; // Reset game speed
         _bgScroll.SetScrollSpeed(-GameSpeed, 0);
         _bgScroll.ScrollingActive = true;
         _arcadePlayer.shouldMove = false;
         _arcadePlayer.transform.position = _arcadePlayer.transform.position.WithY(arcadeGameCamera.transform.position.y);
         obstacles.DestroyAllAndClear();
+        details.DestroyAllAndClear();
         _scoreText.text = "";
+        _scoreText.alpha = 1;
         _scoreText.rectTransform.anchoredPosition = new Vector3(0, 135, 0);
-        _scoreBG.localScale = _scoreText.rectTransform.localScale.WithX(0);
+
+        _titleSprite.transform.position = _titleStartPos;
+        _subtitleSprite.transform.position = _subtitleStartPos;
 
         RunTitlePositionAnimations();
         RunTitleRotationAnimations();
         RunSubtitleScaleAnimations();
     }
 
+    public async void StartGame()
+    {
+        State = GameState.Transition;
+
+        StartSpawningClouds();
+        Tween.StopAll(_titleSprite.transform);
+        Tween.StopAll(_subtitleSprite.transform);
+        _ = Tween.Position(_titleSprite.transform, _titleStartPos.AddY(7), 0.5f, Ease.InOutCubic);
+        _ = Tween.Position(_subtitleSprite.transform, _subtitleStartPos.AddY(-7), 0.5f, Ease.InOutCubic);
+        await Tween.PositionX(_arcadePlayer.transform, -2.87f, 1.5f);
+
+        State = GameState.Playing;
+        _arcadePlayer.shouldMove = true;
+        UpdateScore(0);
+        _ = Tween.UIAnchoredPosition(_scoreText.rectTransform, Vector2.zero, 0.5f, Ease.OutExpo);
+        _arcadePlayer.SetDirection(1);
+        StartSpawningObstacles();
+    }
+
+    // The "Update" of the game sequence logic
+    private void IncreaseGameSpeed()
+    {
+        if(State != GameState.Playing) return;
+
+        if (GameSpeed < _maxGameSpeed)
+        {
+            GameSpeed += Time.deltaTime * 0.01f; // Gradually increase game speed
+            _bgScroll.SetScrollSpeed(-GameSpeed, 0);
+        }
+    }
+
+    public async void EndGame()
+    {
+        _bgScroll.ScrollingActive = false;
+        State = GameState.Transition;
+
+        int highScore = PlayerPrefs.GetInt("Arcade_HighScore", 0);
+        if( Score > highScore)
+        {
+            PlayerPrefs.SetInt("Arcade_HighScore", Score);
+            PlayerPrefs.Save();
+        }
+
+        _cancelToken?.Cancel();
+
+        await Tween.UIAnchoredPosition(_scoreText.rectTransform, new Vector3(0, 135, 0), 0.5f, Ease.OutExpo);
+        _scoreText.text = "";
+        _scoreBG.transform.localScale = new Vector3(0, 0.4f, 1);
+        await Tween.Scale(_scoreBG.transform, new Vector3(1, 0.4f, 1), 0.5f, Ease.OutExpo);
+        await UniTask.Delay(250); // Wait for the score text to clear
+        _scoreText.rectTransform.anchoredPosition = new Vector3(0, -315, 0);
+        _scoreText.text = $"Score: {Score}";
+        await UniTask.Delay(1000);
+        _scoreText.text = $"Score: {Score}\n Highscore: {PlayerPrefs.GetInt("Arcade_HighScore", Score)}";
+        await UniTask.Delay(100);
+        State = GameState.GameOver;
+    }
+
+    public async void RestartGame()
+    {
+        State = GameState.Restarting;
+        _ = Tween.Alpha(_scoreText, 0f, 0.25f);
+        _ = Tween.Alpha(_scoreBG, 1f, 0.4f);
+        await Tween.Scale(_scoreBG.transform, Vector3.one, 0.3f, Ease.InExpo);
+        InitializeGame(true);
+        await UniTask.Delay(250);
+        await Tween.Scale(_scoreBG.transform, Vector3.right, 0.4f, Ease.OutExpo);
+        _scoreBG.color = Color.black.WithAlpha(0.87f);
+        State = GameState.Menu;
+    }
+
+    #endregion
+
+    #region Dedicated Animation Methods
     private async void RunTitlePositionAnimations()
     {
         while (State == GameState.Menu)
         {
-            await Tween.PositionY(_titleSprite.transform, -11.85f + 0.1f, 1.012f, Ease.InOutSine);
+            await Tween.PositionY(_titleSprite.transform, _titleStartPos.y + 0.1f, 1.012f, Ease.InOutSine);
             if (State != GameState.Menu) return;
-            await Tween.PositionY(_titleSprite.transform, -11.85f - 0.1f, 1.012f, Ease.InOutSine);
+            await Tween.PositionY(_titleSprite.transform, _titleStartPos.y - 0.1f, 1.012f, Ease.InOutSine);
         }
     }
 
@@ -160,65 +243,14 @@ public class Arcade : MonoBehaviour
 
     private async void RunSubtitleScaleAnimations()
     {
-        while(State == GameState.Menu)
+        while (State == GameState.Menu)
         {
             await Tween.Scale(_subtitleSprite.transform, Vector3.one * 1.6f, 0.5f, Ease.InOutSine);
             if (State != GameState.Menu) return;
             await Tween.Scale(_subtitleSprite.transform, Vector3.one * 1.4f, 0.5f, Ease.InOutSine);
         }
     }
-
-    public async void StartGame()
-    {
-        State = GameState.Cutscene;
-
-        StartSpawningClouds();
-        Tween.StopAll(_titleSprite.transform);
-        Tween.StopAll(_subtitleSprite.transform);
-        _ = Tween.Position(_titleSprite.transform, _titleSprite.transform.position.WithY(-5), 0.5f, Ease.InOutCubic);
-        _ = Tween.Position(_subtitleSprite.transform, _subtitleSprite.transform.position.WithY(-19), 0.5f, Ease.InOutCubic);
-        await Tween.PositionX(_arcadePlayer.transform, -2.87f, 1.5f);
-
-        State = GameState.Playing;
-        _arcadePlayer.shouldMove = true;
-        UpdateScore(0);
-        _ = Tween.UIAnchoredPosition(_scoreText.rectTransform, Vector2.zero, 0.5f, Ease.OutExpo);
-        _arcadePlayer.SetDirection(1);
-        StartSpawningObstacles();
-    }
-
-    private void IncreaseGameSpeed()
-    {
-        if (GameSpeed < _maxGameSpeed)
-        {
-            GameSpeed += Time.deltaTime * 0.01f; // Gradually increase game speed
-            _bgScroll.SetScrollSpeed(-GameSpeed, 0);
-        }
-    }
-
-    public async void EndGame()
-    {
-        _bgScroll.ScrollingActive = false;
-        State = GameState.GameOver;
-
-        int highScore = PlayerPrefs.GetInt("Arcade_HighScore", 0);
-        if( Score > highScore)
-        {
-            PlayerPrefs.SetInt("Arcade_HighScore", Score);
-            PlayerPrefs.Save();
-        }
-
-        _cancelToken?.Cancel();
-
-        await Tween.UIAnchoredPosition(_scoreText.rectTransform, new Vector3(0, 135, 0), 0.5f, Ease.OutExpo);
-        _scoreText.text = "";
-        await Tween.Scale(_scoreBG, Vector3.one, 0.5f, Ease.OutExpo);
-        await UniTask.Delay(250); // Wait for the score text to clear
-        _scoreText.rectTransform.anchoredPosition = new Vector3(0, -300, 0);
-        _scoreText.text = $"Score: {Score}";
-        await UniTask.Delay(1500);
-        _scoreText.text = $"Score: {Score}\n Highscore: {PlayerPrefs.GetInt("Arcade_HighScore", Score)}";
-    }
+    #endregion
 
     private async void StartSpawningObstacles()
     {
@@ -241,14 +273,16 @@ public class Arcade : MonoBehaviour
     
     private async void StartSpawningClouds()
     {
-        int threshold = 0;
-        while (State != GameState.Menu && threshold++ < 100)
+        if (_cancelToken != null)
         {
-            if (_cancelToken != null)
+            _cancelToken.Dispose();
+        }
+        while (State != GameState.Menu && State != GameState.Restarting)
+        {
+            if (_cancelToken == null || _cancelToken.IsCancellationRequested)
             {
-                _cancelToken.Dispose();
+                _cancelToken = new CancellationTokenSource();
             }
-            _cancelToken = new CancellationTokenSource();
 
             float speed = GameSpeed * Random.Range(0.4f, 0.6f);
             Sprite sprite = _cloudSprites.GetRandom();
@@ -276,7 +310,6 @@ public class Arcade : MonoBehaviour
 
             await UniTask.Delay(System.TimeSpan.FromSeconds(Random.Range(1f, 5f)), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         }
-        Debug.Log($"Threshold reached: {threshold}");
     }
 
     public void ChangePlayerDirection()

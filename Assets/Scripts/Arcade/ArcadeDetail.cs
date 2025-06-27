@@ -31,6 +31,7 @@ public class ArcadeDetail : MonoBehaviour
         transform.position += Vector3.left * speed * Time.deltaTime * arcade.arcadeBackgroundObj.transform.localScale.x;
         if (transform.position.x < arcade.arcadeGameCamera.transform.position.x - arcade.arcadeGameCamera.orthographicSize - 4) // optimize this
         {
+            arcade.details.Remove(this);
             Destroy(gameObject);
         }
     }
