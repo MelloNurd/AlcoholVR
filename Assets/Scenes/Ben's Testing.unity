@@ -11538,6 +11538,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 196634558489421, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206922324868133824, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 3892492536478318566, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.41716322
@@ -11591,9 +11599,45 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _buttonActivationThreshold
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 919132148914858588}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 919132148914858588}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnButtonPress
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Arcade, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5644920330068219980, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: m_Name
       value: Arcade Cabinet
