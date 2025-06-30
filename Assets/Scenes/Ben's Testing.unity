@@ -11538,26 +11538,34 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 196634558489421, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: m_ExcludeLayers.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
-    - target: {fileID: 2206922324868133824, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: m_ExcludeLayers.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
-    - target: {fileID: 3892492536478318566, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.41716322
-      objectReference: {fileID: 0}
-    - target: {fileID: 3892492536478318566, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.41716322
-      objectReference: {fileID: 0}
-    - target: {fileID: 3892492536478318566, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.41716322
-      objectReference: {fileID: 0}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _scoreBG
+      value: 
+      objectReference: {fileID: 1092728682}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _scoreText
+      value: 
+      objectReference: {fileID: 1469189131}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _titleSprite
+      value: 
+      objectReference: {fileID: 1683073045}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _arcadePlayer
+      value: 
+      objectReference: {fileID: 1773277194}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: _subtitleSprite
+      value: 
+      objectReference: {fileID: 1331997099}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: arcadeGameCamera
+      value: 
+      objectReference: {fileID: 1835432918}
+    - target: {fileID: 2171593298793389032, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      propertyPath: arcadeBackgroundObj
+      value: 
+      objectReference: {fileID: 483604485}
     - target: {fileID: 3892492536478318566, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.1198
@@ -11598,122 +11606,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: _buttonActivationThreshold
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 919132148914858588}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 919132148914858588}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnButtonPress
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Arcade, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 5558221312451467964, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      propertyPath: OnButtonUp.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 5644920330068219980, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: m_Name
       value: Arcade Cabinet
       objectReference: {fileID: 0}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: _scoreBG
       value: 
-      objectReference: {fileID: 1092728681}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+      objectReference: {fileID: 1092728682}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: _scoreText
       value: 
       objectReference: {fileID: 1469189131}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: _titleSprite
       value: 
       objectReference: {fileID: 1683073045}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: _arcadePlayer
       value: 
       objectReference: {fileID: 1773277194}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: _subtitleSprite
       value: 
       objectReference: {fileID: 1331997099}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: arcadeGameCamera
       value: 
       objectReference: {fileID: 1835432918}
-    - target: {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    - target: {fileID: 8917643122669104627, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       propertyPath: arcadeBackgroundObj
       value: 
       objectReference: {fileID: 483604485}
-    m_RemovedComponents:
-    - {fileID: 6356705475027060748, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5644920330068219980, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 919132148914858588}
     - targetCorrespondingSourceObject: {fileID: 5462122542158971910, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
---- !u!1 &919132148914858587 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5644920330068219980, guid: fea70ca89a0233e4f83943a3977d762b, type: 3}
-  m_PrefabInstance: {fileID: 120623759771513755}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &919132148914858588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132148914858587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f946b15b449dd94880c968121d5fd1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arcadeGameCamera: {fileID: 1835432918}
-  arcadeBackgroundObj: {fileID: 483604485}
-  _arcadePlayer: {fileID: 1773277194}
-  _scoreText: {fileID: 1469189131}
-  _scoreBG: {fileID: 1092728682}
-  _titleSprite: {fileID: 1683073045}
-  _subtitleSprite: {fileID: 1331997099}
-  _obstaclePrefab: {fileID: 845957420589594166, guid: 1dab97da572278b40a43a5c26bb3a16a, type: 3}
-  obstacles: []
-  _detailPrefab: {fileID: 7696694923041629257, guid: e4355dc98d18e8c43bb04e0ad1b039bc, type: 3}
-  _cloudSprites:
-  - {fileID: 21300000, guid: f3422fa5aee8ae3479be6b4dde624edf, type: 3}
-  - {fileID: 21300000, guid: 9f9611dea62087c418a3c2b57d5272b4, type: 3}
-  - {fileID: 21300000, guid: 1e82dfda91ccfc94f8bc39ac8fabad7d, type: 3}
-  details: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

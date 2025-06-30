@@ -191,14 +191,14 @@ public class PhysicalButton : MonoBehaviour
         {
             PlaySound(_pressedSound);
         }
-        Debug.Log("Pressed");
+        //Debug.Log("Pressed");
         OnButtonDown?.Invoke();
     }
     private void ButtonHold()
     {
         if (!IsInteractable) return;
 
-        Debug.Log("Held");
+        //Debug.Log("Held");
         OnButtonHold?.Invoke();
     }
 
@@ -210,7 +210,7 @@ public class PhysicalButton : MonoBehaviour
         {
             PlaySound(_releasedSound);
         }
-        Debug.Log("Released");
+        //Debug.Log("Released");
         OnButtonUp?.Invoke();
     }
 
