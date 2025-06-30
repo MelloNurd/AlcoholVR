@@ -171,6 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3892492536478318566}
+  - component: {fileID: 8917643122669104627}
   m_Layer: 0
   m_Name: Arcade Cabinet
   m_TagString: Untagged
@@ -188,8 +189,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.580882, y: -1.09, z: -4.1140375}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.41716322, y: 0.41716322, z: 0.41716322}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6003724571500793651}
   - {fileID: 1270902197188373494}
@@ -198,6 +199,33 @@ Transform:
   - {fileID: 1577190587923125500}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8917643122669104627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644920330068219980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f946b15b449dd94880c968121d5fd1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arcadeGameCamera: {fileID: 0}
+  arcadeBackgroundObj: {fileID: 0}
+  _arcadePlayer: {fileID: 0}
+  _scoreText: {fileID: 0}
+  _scoreBG: {fileID: 0}
+  _titleSprite: {fileID: 0}
+  _subtitleSprite: {fileID: 0}
+  _obstaclePrefab: {fileID: 845957420589594166, guid: 1dab97da572278b40a43a5c26bb3a16a, type: 3}
+  obstacles: []
+  _detailPrefab: {fileID: 7696694923041629257, guid: e4355dc98d18e8c43bb04e0ad1b039bc, type: 3}
+  _cloudSprites:
+  - {fileID: 21300000, guid: f3422fa5aee8ae3479be6b4dde624edf, type: 3}
+  - {fileID: 21300000, guid: 9f9611dea62087c418a3c2b57d5272b4, type: 3}
+  - {fileID: 21300000, guid: 1e82dfda91ccfc94f8bc39ac8fabad7d, type: 3}
+  details: []
 --- !u!1 &6065042000595975270
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,7 +237,6 @@ GameObject:
   - component: {fileID: 1270902197188373494}
   - component: {fileID: 1825107150521856456}
   - component: {fileID: 2304805357495532240}
-  - component: {fileID: 6356705475027060748}
   m_Layer: 0
   m_Name: Screen (Game)
   m_TagString: Untagged
@@ -285,33 +312,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6356705475027060748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6065042000595975270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f946b15b449dd94880c968121d5fd1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arcadeGameCamera: {fileID: 0}
-  arcadeBackgroundObj: {fileID: 0}
-  _arcadePlayer: {fileID: 0}
-  _scoreText: {fileID: 0}
-  _scoreBG: {fileID: 0}
-  _titleSprite: {fileID: 0}
-  _subtitleSprite: {fileID: 0}
-  _obstaclePrefab: {fileID: 845957420589594166, guid: 1dab97da572278b40a43a5c26bb3a16a, type: 3}
-  obstacles: []
-  _detailPrefab: {fileID: 7696694923041629257, guid: e4355dc98d18e8c43bb04e0ad1b039bc, type: 3}
-  _cloudSprites:
-  - {fileID: 21300000, guid: f3422fa5aee8ae3479be6b4dde624edf, type: 3}
-  - {fileID: 21300000, guid: 9f9611dea62087c418a3c2b57d5272b4, type: 3}
-  - {fileID: 21300000, guid: 1e82dfda91ccfc94f8bc39ac8fabad7d, type: 3}
-  details: []
 --- !u!1 &6323604675279883518
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +481,7 @@ PrefabInstance:
     - target: {fileID: 6324648507982940456, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
       propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6356705475027060748}
+      objectReference: {fileID: 8917643122669104627}
     - target: {fileID: 6324648507982940456, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
       propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -498,6 +498,14 @@ PrefabInstance:
       propertyPath: OnButtonDown.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6704401934111546300, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849029804910104039, guid: 3f9d6bedfe7e079478921c48836fc86d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3a700b0c93621304bac3763f9df78924, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

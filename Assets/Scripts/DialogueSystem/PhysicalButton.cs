@@ -4,29 +4,32 @@ using TMPro;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 using ReadOnly = EditorAttributes.ReadOnlyAttribute;
 
 [SelectionBase] // Makes it so in scene view, clicking it selects this object, not like the base or top or whatever you physically click
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
-    [SerializeField] private LayerMask _interactableColliders;
-    [Range(0f, 1f), SerializeField] private float _buttonActivationThreshold = 0.98f; // How far the button needs to be pushed in to activate, as a percentage
+    [SerializeField] private LayerMask _interactableLayers;
 
-    [SerializeField] private float _pressCooldown = 0.05f;
-    private bool _isOnCooldown = false;
+    [Tooltip("How far the button needs to be pushed in to activate, as a percentage"), Range(0f, 1f), SerializeField]
+    private float _buttonActivationThreshold = 0.98f;
+    [Tooltip("How far the button needs to be pressed (after already pressing) to deactivate, as a percentage."), Range(0f, 1f), SerializeField]
+    private float _buttonReleaseThreshold = 0.1f;
+
     [SerializeField] private string labelText;
     private TMP_Text _buttonLabel;
 
-    [ButtonField(nameof(ButtonPress), buttonLabel: "Execute Press"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct0;
-    [ButtonField(nameof(ButtonRelease), buttonLabel: "Execute Release"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct1;
-    [ButtonField(nameof(ButtonHold), true, buttonLabel: "Execute Hold"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct2;
-
-    [field: SerializeField, Tooltip("Whether or not the button can be pressed.")] public bool IsInteractable { get; set; } = true;
+    [field: SerializeField, Tooltip("Whether or not the button can be pressed.")] 
+    public bool IsInteractable { get; set; } = true;
 
     [ReadOnly] public bool IsPressed;
     private bool _previousPressState;
+
+    // Buttons in the inspector
+    [ButtonField(nameof(ButtonPress), buttonLabel: "Execute Press"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct0;
+    [ButtonField(nameof(ButtonRelease), buttonLabel: "Execute Release"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct1;
+    [ButtonField(nameof(ButtonHold), true, buttonLabel: "Execute Hold"), SerializeField, HideInEditMode] private EditorAttributes.Void buttonStruct2;
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip _pressedSound;
@@ -93,20 +96,34 @@ public class PhysicalButton : MonoBehaviour
     {
         _button.transform.rotation = _buttonBase.transform.rotation; // Keep button aligned with base
 
-        // Set button position
-        Vector3 scale = transform.localScale.WithY(0.06f) * 0.5f;
+        // Adjust the button's up distance based on the scale of the button and its parents
+        float scaleMultiplier = 1;
+        foreach (Transform parent in transform.GetComponentsInParent<Transform>(true))
+        {
+            scaleMultiplier *= parent.localScale.x;
+        }
+
+        float upDistanceToScale = _buttonUpDistance * 9f * scaleMultiplier;
 
         // Check for valid collisions with the button
         float hitDistance = _buttonUpDistance;
-        if (IsInteractable && IsButtonObstructed(scale, _buttonUpDistance, out hitDistance)) { } // hitDistance is set by the out parameter, so the if can be empty
+        if (IsInteractable && IsButtonObstructed(Vector3.one.WithY(0.06f) * 0.5f * scaleMultiplier, upDistanceToScale, out hitDistance)) { } // hitDistance is set by the out parameter, so the if can be empty
 
-        _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitDistance);
+        _button.transform.position = _buttonBase.transform.position + (_button.transform.up * hitDistance*0.45f);
 
         // Set label position
-        _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * transform.localScale.y * _button.transform.up);
+        _buttonLabel.rectTransform.position = _button.transform.position + (_button.transform.localScale.y * 0.51f * scaleMultiplier * _button.transform.up);
 
-        // Set pressed state
-        IsPressed = IsInteractable && hitDistance < (1 - _buttonActivationThreshold) * _buttonUpDistance;
+        if (!IsPressed)
+        {
+            // If not pressed, check if it should become pressed (using activation threshold)
+            IsPressed = IsInteractable && hitDistance < (1 - _buttonActivationThreshold) * upDistanceToScale;
+        }
+        else
+        {
+            // If already pressed, check if it should be released (using release threshold)
+            IsPressed = IsInteractable && hitDistance < (1 - _buttonReleaseThreshold) * upDistanceToScale;
+        }
     }
 
     private bool IsButtonObstructed(Vector3 scale, float distance, out float hitPoint)
@@ -121,7 +138,7 @@ public class PhysicalButton : MonoBehaviour
             out RaycastHit hitInfo,
             transform.rotation,
             distance,
-            _interactableColliders);
+            _interactableLayers);
 
         // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
         bool overlapHit = Physics.OverlapBoxNonAlloc(
@@ -129,7 +146,7 @@ public class PhysicalButton : MonoBehaviour
             scale,
             _collisionResults,
             transform.rotation,
-            _interactableColliders) > 0;
+            _interactableLayers) > 0;
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
         bool isValidHit = boxCastHit &&
@@ -168,41 +185,33 @@ public class PhysicalButton : MonoBehaviour
 
     private void ButtonPress()
     {
-        if (!IsInteractable || _isOnCooldown) return;
+        if (!IsInteractable) return;
 
         if (_pressedSound != null)
         {
             PlaySound(_pressedSound);
         }
-        //Debug.Log("Pressed");
+        Debug.Log("Pressed");
         OnButtonDown?.Invoke();
-        ApplyCooldown();
     }
     private void ButtonHold()
     {
-        if (!IsInteractable || _isOnCooldown) return;
+        if (!IsInteractable) return;
 
-        //Debug.Log("Held");
+        Debug.Log("Held");
         OnButtonHold?.Invoke();
     }
 
     private void ButtonRelease()
     {
-        if (!IsInteractable || _isOnCooldown) return;
+        if (!IsInteractable) return;
 
         if (_releasedSound != null)
         {
             PlaySound(_releasedSound);
         }
-        //Debug.Log("Released");
+        Debug.Log("Released");
         OnButtonUp?.Invoke();
-    }
-
-    private async void ApplyCooldown()
-    {
-        _isOnCooldown = true;
-        await UniTask.Delay(Mathf.RoundToInt(_pressCooldown * 1000));
-        _isOnCooldown = false;
     }
 
     public void SetButtonText(string text)
