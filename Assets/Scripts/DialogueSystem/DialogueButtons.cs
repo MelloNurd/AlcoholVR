@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,29 +42,34 @@ public class DialogueButtons : MonoBehaviour
 
     public bool TryCreateDialogueButtons(DialogueSystem system, bool reverseOrder = false)
     {
-        Dialogue currentDialogue = system.currentDialogue;
+        if(system == null || system.currentTree == null || system.currentTree.currentDialogueText == null)
+        {
+            Debug.LogWarning("DialogueSystem or current tree/option is null. Cannot create buttons.");
+            return false;
+        }
+        DialogueTree tree = system.currentTree;
 
-        if(!TryGenerateSpawnPositions(currentDialogue.options.Count, out Vector3[] spawnPos))
+        if (!TryGenerateSpawnPositions(tree.currentDialogueText.options.Count, out Vector3[] spawnPos))
         {
             Debug.LogWarning("Failed to find valid spawn positions for dialogue buttons.");
             return false;
         }
 
-        int middleIndex = currentDialogue.options.Count / 2; // Calculate middle index for reverse order
+        int middleIndex = tree.currentDialogueText.options.Count / 2; // Calculate middle index for reverse order
 
-        for (int i = 0; i < currentDialogue.options.Count; i++)
+        for (int i = 0; i < tree.currentDialogueText.options.Count; i++)
         {
-            int index = reverseOrder ? currentDialogue.options.Count - 1 - i : i; // adjust index for reverse order
+            int index = reverseOrder ? tree.currentDialogueText.options.Count - 1 - i : i; // adjust index for reverse order
 
             Quaternion spawnRotation = Quaternion.LookRotation(spawnPos[i] - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
 
             PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, transform).GetComponent<PhysicalButton>();
-            optionButton.name = "DialogueButton: " + currentDialogue.options[index].text;
+            optionButton.name = "DialogueButton: " + tree.currentDialogueText.options[index].text;
 
             int closerIndex = i; // weird behavior needed with lambda function, called a closure
-            optionButton.OnButtonUp.AddListener(() => system.SwitchDialogue(closerIndex));
+            optionButton.OnButtonUp.AddListener(() => system.InitiateDialogue(tree.currentDialogueText.options[closerIndex].dialogue).Forget());
 
-            optionButton.SetButtonText(currentDialogue.options[index].text);
+            optionButton.SetButtonText(tree.currentDialogueText.options[index].text);
 
             if (i == middleIndex && _buttonAppearSound != null)
             {

@@ -14,9 +14,9 @@ namespace EditorAttributes
 		/// Attribute to hide a field based on a condition
 		/// </summary>
 		/// <param name="conditionName">The name of the condition to evaluate</param>
-		public HideFieldAttribute(string conditionName)
+		public HideFieldAttribute(string conditionName, bool applyToCollection = false)
 #if UNITY_2023_3_OR_NEWER
-        : base(true) 
+        : base(applyToCollection) 
 #endif
 			=> ConditionName = conditionName;
 
@@ -25,9 +25,9 @@ namespace EditorAttributes
 		/// </summary>
 		/// <param name="conditionName">The name of the condition to evaluate</param>
 		/// <param name="enumValue">The value of the enum</param>
-		public HideFieldAttribute(string conditionName, object enumValue)
+		public HideFieldAttribute(string conditionName, object enumValue, bool applyToCollection = false)
 #if UNITY_2023_3_OR_NEWER
-        : base(true) 
+        : base(applyToCollection) 
 #endif
 		{
 			ConditionName = conditionName;

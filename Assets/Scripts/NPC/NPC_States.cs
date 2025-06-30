@@ -52,7 +52,7 @@ public class NPC_WalkState : NPC_BaseState
         {
             if (!npc.agent.hasPath || npc.agent.velocity.sqrMagnitude == 0f)
             {
-                if (notFirstArrival) npc.actionsLeft = (npc.currentCheckpoint._actions.Count <= 0) ? 0 : Random.Range(npc.currentCheckpoint.minActions, npc.currentCheckpoint.maxActions + 1);
+                if (notFirstArrival) npc.actionsLeft = (npc.currentCheckpoint.container._actions.Count <= 0) ? 0 : Random.Range(npc.currentCheckpoint.container.minActions, npc.currentCheckpoint.container.maxActions + 1);
                 else npc.OnCheckpointArrive?.Invoke();
 
                 npc.SwitchState(NPC_SM.States.Checkpoint);
@@ -77,14 +77,14 @@ public class NPC_CheckpointState : NPC_BaseState
 
     private async void ProcessActions()
     {
-        await UniTask.Delay(npc.currentCheckpoint.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow(); // Always start with a delay
+        await UniTask.Delay(npc.currentCheckpoint.container.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow(); // Always start with a delay
         if (_cancelToken.IsCancellationRequested) return;
 
         int loops = npc.actionsLeft;
         for (int i = 0; i < loops; i++)
         {
             await ProcessNextAction(); // Wait for an action and delay again afterwards
-            await UniTask.Delay(npc.currentCheckpoint.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+            await UniTask.Delay(npc.currentCheckpoint.container.AnimationDelayInMS, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         }
 
         if (_cancelToken.IsCancellationRequested) return; // If we were cancelled, don't proceed to next checkpoint
@@ -151,7 +151,7 @@ public class NPC_InteractState : NPC_BaseState
     {
         base.ExitState();
         Tween.CompleteAll(this);
-        _interactableNPC.dialogueSystem.EndDialogue();
+        _interactableNPC.dialogueSystem.EndCurrentDialogue();
         _interactableNPC.agent.destination = storedDestination;
     }
 }

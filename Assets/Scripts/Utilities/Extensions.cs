@@ -486,6 +486,24 @@ public static class Extensions
     }
     #endregion
 
+    #region GameObject Extensions
+
+    /// <summary>
+    /// Gets a component of the given type attached to the GameObject. If that type of component does not exist, it adds one.
+    /// </summary>
+    /// <typeparam name="T">The type of the component to get or add.</typeparam>
+    /// <param name="gameObject">The GameObject to get the component from or add the component to.</param>
+    /// <returns>The existing component of the given type, or a new one if no such component exists.</returns>    
+    public static T GetOrAdd<T>(this GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+        if (!component) component = gameObject.AddComponent<T>();
+
+        return component;
+    }
+
+    #endregion
+
     #region Transform Extensions
     /// <summary>
     /// Sets position and rotation to zero and scale to one.

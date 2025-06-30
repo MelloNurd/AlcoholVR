@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using PrimeTween;
 using TMPro;
 using UnityEngine;
@@ -8,9 +9,9 @@ using UnityEngine.UI;
 
 public class DialogueSystem : MonoBehaviour
 {
-    // NOT a singleton
-    public Dialogue currentDialogue;
-    [SerializeField] private bool _useTypewriterEffect = true;
+    [HideProperty] public DialogueTree currentTree;
+
+    public bool useTypewriterEffect = true;
     public bool IsDialogueActive => _dialogueText.text.Length > 0;
 
     private Typewriter _typewriter;
@@ -26,72 +27,81 @@ public class DialogueSystem : MonoBehaviour
         _textBubble.SetActive(false);
     }
 
-    public async void StartDialogue(Dialogue dialogue)
+    public void BeginDialogueTree(DialogueTree tree) 
     {
-        if(dialogue == null)
+        if (tree == null)
         {
-            Debug.LogWarning("Dialogue is null. Cannot start dialogue.");
+            Debug.LogWarning("DialogueTree is null. Cannot start dialogue.");
             return;
         }
 
-        DialogueButtons.Instance.ClearButtons();
+        currentTree = tree;
+        currentTree.onDialogueStart.Invoke();
+        currentTree.currentDialogueText = currentTree.rootText;
+        InitiateDialogue(currentTree.currentDialogueText).Forget();
+    }
 
-        currentDialogue = dialogue;
-        if(_useTypewriterEffect && _typewriter != null) 
+    public async UniTask InitiateDialogue(DialogueText option)
+    {
+        if (currentTree == null)
+        {
+            Debug.LogWarning("No current tree to associate.");
+            return;
+        }
+        if (option == null)
+        {
+            Debug.LogWarning("DialogueOption is null. Cannot initiate dialogue.");
+            return;
+        }
+
+        currentTree.currentDialogueText = option;
+        option.onOptionSelected?.Invoke();
+
+        DialogueButtons.Instance.ClearButtons();
+        
+        await DisplayText(option.text);
+        
+        if (option.options != null && option.options.Count > 0)
+        {
+            DialogueButtons.Instance.TryCreateDialogueButtons(this);
+        }
+        else
+        {
+            EndCurrentDialogue();
+        }
+    }
+
+    private async UniTask DisplayText(string text)
+    {
+        if (useTypewriterEffect && _typewriter != null)
         {
             _textBubble.SetActive(true);
             Tween.CompleteAll(_textBubble.transform);
             Vector3 scale = _textBubble.transform.localScale;
             _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
             await UniTask.Delay(100); // Slight delay for bubble animation
-            await _typewriter.StartWritingAsync(currentDialogue.text);
+            await _typewriter.StartWritingAsync(text);
         }
-        else {
-            _dialogueText.text = currentDialogue.text;
+        else
+        {
+            _dialogueText.text = text;
             _textBubble.SetActive(true);
         }
 
         await UniTask.Delay(_typewriter.DefaultWritingSpeedInMS); // Wait slightly before showing buttons
-
-        DialogueButtons.Instance.TryCreateDialogueButtons(this);
     }
 
-    public void EndDialogue()
+    public void EndCurrentDialogue()
     {
-        if (currentDialogue != null)
+        if(currentTree == null)
         {
-            currentDialogue.onDialogueEnd?.Invoke();
-            currentDialogue = null;
+            Debug.LogWarning("No current dialogue to end.");
+            return;
         }
 
-        DialogueButtons.Instance.ClearButtons();
-        _dialogueText.text = string.Empty;
         _textBubble.SetActive(false);
-    }
+        _dialogueText.text = "";
 
-    public void SwitchDialogue(int optionIndex)
-    {
-        Dialogue nextDialogue = currentDialogue.options[optionIndex].SelectDialogueOption();
-        if (nextDialogue != null)
-        {
-            if (currentDialogue != null)
-            {
-                currentDialogue.onDialogueEnd?.Invoke();
-            }
-
-            currentDialogue = nextDialogue;
-
-            if (currentDialogue != null)
-            {
-                currentDialogue.onDialogueStart?.Invoke();
-            }
-
-            StartDialogue(nextDialogue);
-        }
-        else
-        {
-            // No further dialogue found, end current dialogue
-            EndDialogue();
-        }
+        currentTree.onDialogueEnd?.Invoke();
     }
 }
