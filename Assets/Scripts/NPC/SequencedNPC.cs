@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Triggers;
 using EditorAttributes;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using static Sequence;
+using static UnityEngine.Rendering.DebugUI;
 using Void = EditorAttributes.Void;
 
 [Serializable]
@@ -19,6 +18,7 @@ public class Sequence
         Animate,
         Dialogue,
         Walk,
+        Wait,
     }
 
     [Header("Sequence Settings")]
@@ -32,16 +32,20 @@ public class Sequence
     [ShowField(nameof(type), SequenceType.Walk)] public bool useDefaultWalkAnimation = true;
     [ShowField(nameof(type), SequenceType.Walk), HideField(nameof(useDefaultWalkAnimation))] public AnimationClip walkAnimation;
 
+    [ShowField(nameof(type), SequenceType.Wait)] public float secondsToWait;
+
     [Space]
     public bool nextSequenceOnEnd;
 
-    [Header("Events")]
-    public UnityEvent onSequenceStart = new();
-    public UnityEvent onSequenceEnd = new();
+    [FoldoutGroup("Events", nameof(onSequenceStart), nameof(onSequenceEnd))]
+    [SerializeField] private Void groupHolder;
+
+    [HideInInspector] public UnityEvent onSequenceStart = new();
+    [HideInInspector] public UnityEvent onSequenceEnd = new();
 }
 
 [SelectionBase]
-public class ManualNPC : MonoBehaviour
+public class SequencedNPC : MonoBehaviour
 {
     public List<Sequence> sequences = new List<Sequence>();
     private Sequence currentSequence;
@@ -59,6 +63,7 @@ public class ManualNPC : MonoBehaviour
     private DialogueSystem dialogueSystem;
 
     private CancellationTokenSource _cancelToken;
+    private bool _isAtDestination = true;
 
     private void Awake()
     {
@@ -86,9 +91,11 @@ public class ManualNPC : MonoBehaviour
         ApplyRotations();
 
         // Check if the current sequence is a walk sequence and if it has reached its destination
-        if (currentSequence.nextSequenceOnEnd && currentSequence.type == Sequence.SequenceType.Walk && CheckIfAtDestination())
+        if (currentSequence.type == Sequence.SequenceType.Walk && !_isAtDestination && CheckIfAtDestination())
         {
-            StartNextSequence();
+            _isAtDestination = true;
+            animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
+            if (currentSequence.nextSequenceOnEnd) StartNextSequence();
         }
     }
 
@@ -117,7 +124,10 @@ public class ManualNPC : MonoBehaviour
             case Sequence.SequenceType.Dialogue:
                 if(dialogueSystem.currentTree != null)
                 {
-                    dialogueSystem.currentTree.onDialogueEnd.RemoveListener(StartNextSequence);
+                    dialogueSystem.currentTree.onDialogueEnd.RemoveListener(async () => {
+                        await UniTask.Delay(250);
+                        StartNextSequence();
+                    });
                     dialogueSystem.EndCurrentDialogue();
                 }
 
@@ -126,17 +136,30 @@ public class ManualNPC : MonoBehaviour
                 dialogueSystem.BeginDialogueTree(sequence.dialogue);
                 if(sequence.nextSequenceOnEnd)
                 {
-                    dialogueSystem.currentTree.onDialogueEnd.AddListener(StartNextSequence);
+                    dialogueSystem.currentTree.onDialogueEnd.AddListener(async () => {
+                        await UniTask.Delay(250);
+                        StartNextSequence();
+                    });
                 }
 
                 break;
             case Sequence.SequenceType.Walk:
+                _isAtDestination = false;
                 agent.SetDestination(sequence.destination.position);
 
                 string walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null) 
                     ? sequence.walkAnimation.name 
                     : walkAnimation.name;
                 animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
+
+                break;
+            case Sequence.SequenceType.Wait:
+                animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
+                await UniTask.Delay(Mathf.RoundToInt(sequence.secondsToWait * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+                if (!_cancelToken.IsCancellationRequested && sequence.nextSequenceOnEnd)
+                {
+                    StartNextSequence();
+                }
 
                 break;
         }

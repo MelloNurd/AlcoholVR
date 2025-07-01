@@ -93,9 +93,10 @@ public class Phone : MonoBehaviour
         }
 
         // Assign component variables
-        _phoneObject = transform.Find("Physical Phone").gameObject;
+        _phoneObject = GameObject.Find("Physical Phone");
         _screenObject = _phoneObject.transform.Find("Screen").gameObject;
         _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
+
         _appearParticles = transform.Find("AppearParticles").GetComponent<ParticleSystem>();
 
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
