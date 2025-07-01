@@ -626,7 +626,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &6979600817310726020
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -713,6 +713,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2435367825771739126}
+  - component: {fileID: 7293257024923459092}
+  - component: {fileID: 7919046363010246443}
   m_Layer: 17
   m_Name: Neck
   m_TagString: Untagged
@@ -736,6 +738,52 @@ Transform:
   - {fileID: 3786907597264061397}
   m_Father: {fileID: 5030965681427046523}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &7293257024923459092
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874435895028877813}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0.02}
+--- !u!136 &7919046363010246443
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874435895028877813}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.05
+  m_Height: 0.41
+  m_Direction: 0
+  m_Center: {x: 0, y: -0.05, z: 0}
 --- !u!1 &1978183008817816319
 GameObject:
   m_ObjectHideFlags: 0
@@ -1114,9 +1162,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.23
+  m_Height: 0.31723362
   m_Direction: 1
-  m_Center: {x: 0, y: 0.20314093, z: 0}
+  m_Center: {x: -0.000000029894306, y: 0.1595242, z: -0.000000039033964}
 --- !u!54 &5268694902139619964
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1143,7 +1191,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &5767288359933262301
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -1463,7 +1511,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!1 &3515784615113305272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,7 +1628,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &7056205995801766465
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -1840,7 +1888,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &482641268049553779
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -1971,7 +2019,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &371721108826699790
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -2166,7 +2214,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &375977656107268208
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -2538,7 +2586,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &5246630579110579415
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -2884,7 +2932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5394fe5534882fb4c958fc964135c1d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterData: {fileID: 11400000, guid: 9956c034d6985bf4682b0a018de2f3e0, type: 2}
+  characterData: {fileID: 11400000, guid: 589fd26591a8e074386169ea5d3ddce9, type: 2}
   CharacterMaterial: {fileID: 0}
   Gender: 0
   ChestSize: 0
@@ -3087,7 +3135,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &3144189415301899115
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -3380,9 +3428,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.05
-  m_Height: 0.23
+  m_Height: 0.31680053
   m_Direction: 1
-  m_Center: {x: 0, y: -0.2031401, z: 0}
+  m_Center: {x: -0.000000059550764, y: -0.15974, z: 0.000000010669372}
 --- !u!54 &4588964681665044038
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3409,7 +3457,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!144 &5710664317341348337
 CharacterJoint:
   m_ObjectHideFlags: 0
