@@ -27,6 +27,7 @@ public class Dart : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        Debug.Log("Dart collided with: " + collision.gameObject.name);
         if (stuck)
         {
             // Release dart if it is stuck
@@ -63,6 +64,7 @@ public class Dart : MonoBehaviour
 
     void StickToMovingTarget(Collider collision)
     {
+        Debug.Log("Sticking dart to: " + collision.gameObject.name);
         // Joints rigidbodies together
         Rigidbody targetRb = collision.GetComponent<Rigidbody>();
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();
