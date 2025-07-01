@@ -9,7 +9,7 @@ public class PhoneScreen : MonoBehaviour
 
     private void Awake()
     {
-        _phone = GetComponentInParent<Phone>();
+        _phone = FindFirstObjectByType<Phone>();
     }
 
     private async void OnTriggerEnter(Collider other)

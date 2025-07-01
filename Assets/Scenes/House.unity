@@ -6754,6 +6754,23 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+--- !u!1 &1009880174 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6267386981356718611, guid: a73f7823ed1da55499d16a0065b8d200, type: 3}
+  m_PrefabInstance: {fileID: 1961228307}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1009880177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009880174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f7775447a7403458f06d60cb69d5cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1021303318
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8462,10 +8479,21 @@ PrefabInstance:
       propertyPath: m_PhysicsLayerMask.m_Bits
       value: 35841
       objectReference: {fileID: 0}
+    - target: {fileID: 6267386981356718611, guid: a73f7823ed1da55499d16a0065b8d200, type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7951631966789860526, guid: a73f7823ed1da55499d16a0065b8d200, type: 3}
+      propertyPath: m_Radius
+      value: 0.08
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6267386981356718611, guid: a73f7823ed1da55499d16a0065b8d200, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1009880177}
   m_SourcePrefab: {fileID: 100100000, guid: a73f7823ed1da55499d16a0065b8d200, type: 3}
 --- !u!1001 &2080984353
 PrefabInstance:
