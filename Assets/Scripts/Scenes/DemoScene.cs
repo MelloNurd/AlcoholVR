@@ -8,8 +8,6 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class DemoScene : MonoBehaviour
 {
-    [SceneDropdown, SerializeField] private string _sceneChange;
-
     [SerializeField] private Transform _fridgeTransform;
     [SerializeField] private Transform _backpackTransform;
     [SerializeField] private Transform _dadTransform;
@@ -100,7 +98,6 @@ public class DemoScene : MonoBehaviour
     {
         if (obj6 == null) return;
 
-        SceneManager.LoadScene(_sceneChange);
         obj6?.Complete();
     }
 }
