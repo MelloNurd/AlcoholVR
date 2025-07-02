@@ -6,8 +6,8 @@ public class BottleCap : MonoBehaviour
 {
     public UnityEvent<float> onOpen;
 
-    public FixedJoint fixedJoint;
-    public XRGrabInteractable grabInteractable;
+    [HideInInspector] public FixedJoint fixedJoint;
+    [HideInInspector] public XRGrabInteractable grabInteractable;
 
     private void Awake()
     {

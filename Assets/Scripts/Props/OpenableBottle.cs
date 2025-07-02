@@ -19,7 +19,6 @@ public class OpenableBottle : MonoBehaviour
     private void Awake()
     {
         _cap = GetComponentInChildren<BottleCap>();
-        _cap.grabInteractable.enabled = false;
 
         _grabInteractable = GetComponent<XRGrabInteractable>();
         _audioSource = gameObject.GetOrAdd<AudioSource>();
@@ -27,6 +26,8 @@ public class OpenableBottle : MonoBehaviour
 
     private void Start()
     {
+        _cap.grabInteractable.enabled = false;
+
         _cap.fixedJoint.breakForce = Mathf.Infinity;
 
         _grabInteractable.selectEntered.AddListener((_) => GrabBottle());
