@@ -290,7 +290,7 @@ public class Arcade : MonoBehaviour
 
             ArcadeDetail detail = SpawnDetail(
                 sprite, // sprite
-                Random.Range(0.25f, 0.5f), // alpha
+                Random.Range(0.25f, 0.5f) * GameSpeed, // alpha
                 5, // order in layer
                 size, // scale
                 speed // speed

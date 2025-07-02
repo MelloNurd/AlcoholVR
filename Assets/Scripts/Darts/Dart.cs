@@ -39,7 +39,7 @@ public class Dart : MonoBehaviour
         }
 
         // Don't stick to other darts
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Dart") || StickDelay > 0)
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Dart") || collision.gameObject.layer == LayerMask.NameToLayer("PlayerFace") || StickDelay > 0)
         {
             return;
         }

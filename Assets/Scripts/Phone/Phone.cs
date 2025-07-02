@@ -22,9 +22,8 @@ public class Phone : MonoBehaviour
     private DateTime _phoneTime = DateTime.Now;
     private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
-    [SerializeField] private Transform _handTransform;
     [SerializeField] private AudioClip _clickSound;
-    public bool IsActive => _phoneObject.activeSelf;
+    public bool IsActive => physicalPhoneObj != null && physicalPhoneObj.activeSelf;
     public bool IsInteractable { get; set; } = true;
     private Vector3 _phoneSize;
 
@@ -50,7 +49,8 @@ public class Phone : MonoBehaviour
     private TMP_Text _batteryLevelText;
     private Image _batteryFillImage;
 
-    private GameObject _phoneObject;
+    [SerializeField] private GameObject physicalPhoneObj;
+    private Transform _handTransform;
     private Camera _phonePhysicalCamera;
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
@@ -93,10 +93,6 @@ public class Phone : MonoBehaviour
         }
 
         // Assign component variables
-        _phoneObject = GameObject.Find("Physical Phone");
-        _screenObject = _phoneObject.transform.Find("Screen").gameObject;
-        _phonePhysicalCamera = _phoneObject.GetComponentInChildren<Camera>();
-
         _appearParticles = transform.Find("AppearParticles").GetComponent<ParticleSystem>();
 
         _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
@@ -149,25 +145,29 @@ public class Phone : MonoBehaviour
 
         }
         ApplyTheme(_currentTheme);
-
-        // Initialize screens (start at home)
-        HideAllScreens();
-        ShowHomeScreen();
     }
 
     private void Start()
     {
+        _handTransform = physicalPhoneObj.transform.parent;
+        _screenObject = physicalPhoneObj.transform.Find("Screen").gameObject;
+        _phonePhysicalCamera = physicalPhoneObj.GetComponentInChildren<Camera>();
+
+        // Initialize screens (start at home)
+        HideAllScreens();
+        ShowHomeScreen();
+
         // Set phone to follow hand position (set parent to hand)
         if (_handTransform != null)
         {
-            _phoneObject.transform.parent = _handTransform;
+            physicalPhoneObj.transform.parent = _handTransform;
         }
         else
         {
             Debug.LogError("_handTransform not found. Phone will not follow hand position.");
         }
 
-        _phoneSize = _phoneObject.transform.localScale;
+        _phoneSize = physicalPhoneObj.transform.localScale;
         DisablePhone(0f, false);
     }
 
@@ -218,13 +218,13 @@ public class Phone : MonoBehaviour
 
         if (_phoneAppearSound != null && effects)
         {
-            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
             _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        _phoneObject.SetActive(true);
-        _phoneObject.transform.localScale = Vector3.zero;
-        await Tween.Scale(_phoneObject.transform, _phoneSize, time, ease: Ease.OutBack);
+        physicalPhoneObj.SetActive(true);
+        physicalPhoneObj.transform.localScale = Vector3.zero;
+        await Tween.Scale(physicalPhoneObj.transform, _phoneSize, time, ease: Ease.OutBack);
         IsInteractable = true;
     }
 
@@ -233,16 +233,16 @@ public class Phone : MonoBehaviour
 
         if (_phoneDisappearSound != null && effects)
         {
-            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
             _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        await Tween.Scale(_phoneObject.transform, Vector3.zero, time, ease: Ease.InBack);
-        _phoneObject.SetActive(false);
+        await Tween.Scale(physicalPhoneObj.transform, Vector3.zero, time, ease: Ease.InBack);
+        physicalPhoneObj.SetActive(false);
         if (_appearParticles != null && effects)
         {
-            _appearParticles.transform.position = _phoneObject.transform.position; // Set particle position to phone position
-            _appearParticles.transform.rotation = _phoneObject.transform.rotation;
+            _appearParticles.transform.position = physicalPhoneObj.transform.position; // Set particle position to phone position
+            _appearParticles.transform.rotation = physicalPhoneObj.transform.rotation;
             _appearParticles.Play();
         }
 
@@ -394,7 +394,7 @@ public class Phone : MonoBehaviour
 
         if(_notificationSound != null)
         {
-            _phoneAudioSource.transform.position = _phoneObject.transform.position;
+            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
             _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
         }
     }

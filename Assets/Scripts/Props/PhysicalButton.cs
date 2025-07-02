@@ -58,6 +58,15 @@ public class PhysicalButton : MonoBehaviour
         _buttonLabel = transform.Find("Label").GetComponent<TMP_Text>();
         _buttonLabel.text = labelText;
 
+        var childColliders = GetComponentsInChildren<Collider>();
+        for (int i = 0; i < childColliders.Length; i++)
+        {
+            for (int j = i + 1; j < childColliders.Length; j++)
+            {
+                Physics.IgnoreCollision(childColliders[i], childColliders[j]);
+            }
+        }
+
         // Setting up distance (how far up from base)
         _buttonUpDistance = 0.03f;
 

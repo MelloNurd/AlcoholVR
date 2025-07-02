@@ -4,6 +4,9 @@ public class PlayerFace : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"PlayerFace collided with: {other.gameObject.name}");
+        if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen)
+        {
+            Debug.Log("Player drank booze omg!!!1!");
+        }
     }
 }
