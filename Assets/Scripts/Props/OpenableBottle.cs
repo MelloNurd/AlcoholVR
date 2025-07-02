@@ -11,6 +11,8 @@ public class OpenableBottle : MonoBehaviour
     [field: SerializeField, ReadOnly] public bool IsOpen { get; private set; } = false;
     [field: SerializeField] public bool IsFull { get; set; } = true;
 
+    [SerializeField] private bool _isLidRemovable = false;
+
     private BottleCap _cap;
 
     private XRGrabInteractable _grabInteractable;
@@ -22,29 +24,27 @@ public class OpenableBottle : MonoBehaviour
 
         _grabInteractable = GetComponent<XRGrabInteractable>();
         _audioSource = gameObject.GetOrAdd<AudioSource>();
-
-        // Disable collisions between all child colliders to prevent physics issues
-        var childColliders = GetComponentsInChildren<Collider>();
-        for (int i = 0; i < childColliders.Length; i++)
-        {
-            for (int j = i + 1; j < childColliders.Length; j++)
-            {
-                Physics.IgnoreCollision(childColliders[i], childColliders[j]);
-            }
-        }
     }
 
     private void Start()
     {
-        _cap.grabInteractable.enabled = false;
+        if (_cap.grabInteractable == null)
+        {
+            Debug.LogError("BottleCap does not have a XRGrabInteractable component attached.", _cap);
+            return;
+        }
 
-        _cap.fixedJoint.breakForce = Mathf.Infinity;
+        _cap.grabInteractable.enabled = false;
 
         _grabInteractable.selectEntered.AddListener((_) => GrabBottle());
         _grabInteractable.selectExited.AddListener((_) => ReleaseBottle());
 
-        _cap.grabInteractable.selectEntered.AddListener((_) => { SetCapBreakForce(5f); });
-        _cap.grabInteractable.selectExited.AddListener((_) => { SetCapBreakForce(Mathf.Infinity); });
+        if(_isLidRemovable)
+        {
+            SetCapBreakForce(Mathf.Infinity);
+            _cap.grabInteractable.selectEntered.AddListener((_) => { SetCapBreakForce(5f); });
+            _cap.grabInteractable.selectExited.AddListener((_) => { SetCapBreakForce(Mathf.Infinity); });
+        }
 
         _cap.onOpen.AddListener((_) => OpenBottle());
     }
@@ -54,6 +54,14 @@ public class OpenableBottle : MonoBehaviour
         if (_cap.fixedJoint == null) return;
 
         _cap.fixedJoint.breakForce = force;
+    }
+
+    public void TryOpenBottle()
+    {
+        if (_cap == null || _cap.grabInteractable == null) return;
+        if (!_cap.grabInteractable.isSelected || IsOpen) return;
+
+        OpenBottle();
     }
 
     private void OpenBottle()

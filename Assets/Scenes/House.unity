@@ -9487,6 +9487,7 @@ MonoBehaviour:
   _openSound: {fileID: 8300000, guid: ec4c23b01e834be4f93ac0def80b017f, type: 3}
   <IsOpen>k__BackingField: 0
   <IsFull>k__BackingField: 1
+  _isLidRemovable: 0
 --- !u!23 &1036200953464661914
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9757,6 +9758,7 @@ GameObject:
   - component: {fileID: 8911751437006499960}
   - component: {fileID: 8911751437006499959}
   - component: {fileID: 8911751437006499958}
+  - component: {fileID: 8911751437006499961}
   m_Layer: 0
   m_Name: Tab
   m_TagString: Untagged
@@ -10212,7 +10214,19 @@ MonoBehaviour:
       m_Calls: []
   m_FirstSelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 919132149587658874}
+        m_TargetAssemblyTypeName: OpenableBottle, Assembly-CSharp
+        m_MethodName: TryOpenBottle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_LastSelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -10349,6 +10363,22 @@ MonoBehaviour:
         m_CallState: 2
   fixedJoint: {fileID: 0}
   grabInteractable: {fileID: 0}
+--- !u!138 &8911751437006499961
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3209690677263208390}
+  serializedVersion: 1
+  m_ConnectedBody: {fileID: 919132149587658872}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
