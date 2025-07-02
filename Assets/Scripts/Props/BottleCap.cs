@@ -7,12 +7,12 @@ public class BottleCap : MonoBehaviour
     public UnityEvent<float> onOpen;
 
     [HideInInspector] public FixedJoint fixedJoint;
-    [HideInInspector] public XRGrabInteractable grabInteractable;
+    [HideInInspector] public XRBaseInteractable grabInteractable;
 
     private void Awake()
     {
         fixedJoint = GetComponent<FixedJoint>();
-        grabInteractable = GetComponent<XRGrabInteractable>();
+        grabInteractable = GetComponent<XRBaseInteractable>();
     }
 
     private void OnJointBreak(float breakForce)

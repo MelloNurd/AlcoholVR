@@ -11,8 +11,6 @@ public class OpenableBottle : MonoBehaviour
     [field: SerializeField, ReadOnly] public bool IsOpen { get; private set; } = false;
     [field: SerializeField] public bool IsFull { get; set; } = true;
 
-    [SerializeField] private bool _isLidRemovable = false;
-
     private BottleCap _cap;
 
     private XRGrabInteractable _grabInteractable;
@@ -39,7 +37,7 @@ public class OpenableBottle : MonoBehaviour
         _grabInteractable.selectEntered.AddListener((_) => GrabBottle());
         _grabInteractable.selectExited.AddListener((_) => ReleaseBottle());
 
-        if(_isLidRemovable)
+        if(_cap.grabInteractable is XRGrabInteractable)
         {
             SetCapBreakForce(Mathf.Infinity);
             _cap.grabInteractable.selectEntered.AddListener((_) => { SetCapBreakForce(5f); });
