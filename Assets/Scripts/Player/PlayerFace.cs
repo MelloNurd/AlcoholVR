@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -56,7 +57,8 @@ public class PlayerFace : MonoBehaviour
     {
         if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen && bottle.IsFull)
         {
-            if(Vector3.Dot(bottle.transform.up, transform.forward) < -0.5f) // Bottle top is facing player's face
+            Debug.Log($"Dot of {bottle.name}: {Vector3.Dot(bottle.transform.forward, transform.forward)}");
+            if(Vector3.Dot(bottle.transform.forward, transform.forward) < -0.5f) // Bottle top is facing player's face
             {
                 bottle.IsFull = false;
                 ApplyBlurEffect();

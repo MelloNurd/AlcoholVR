@@ -22,6 +22,16 @@ public class OpenableBottle : MonoBehaviour
 
         _grabInteractable = GetComponent<XRGrabInteractable>();
         _audioSource = gameObject.GetOrAdd<AudioSource>();
+
+        // Disable collisions between all child colliders to prevent physics issues
+        var childColliders = GetComponentsInChildren<Collider>();
+        for (int i = 0; i < childColliders.Length; i++)
+        {
+            for (int j = i + 1; j < childColliders.Length; j++)
+            {
+                Physics.IgnoreCollision(childColliders[i], childColliders[j]);
+            }
+        }
     }
 
     private void Start()
@@ -50,6 +60,7 @@ public class OpenableBottle : MonoBehaviour
     {
         IsOpen = true;
         _audioSource.PlayOneShot(_openSound);
+        _cap.grabInteractable.enabled = true;
     }
 
     private void GrabBottle()
@@ -59,6 +70,8 @@ public class OpenableBottle : MonoBehaviour
 
     private void ReleaseBottle()
     {
+        if (IsOpen) return;
+
         _cap.grabInteractable.enabled = false;
     }
 }
