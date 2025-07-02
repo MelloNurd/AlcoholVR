@@ -9,6 +9,7 @@ public class OpenableBottle : MonoBehaviour
     [SerializeField] private AudioClip _openSound;
 
     [field: SerializeField, ReadOnly] public bool IsOpen { get; private set; } = false;
+    [field: SerializeField] public bool IsFull { get; set; } = true;
 
     private BottleCap _cap;
 
