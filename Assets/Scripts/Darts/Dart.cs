@@ -27,7 +27,7 @@ public class Dart : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("Dart collided with: " + collision.gameObject.name);
+        //Debug.Log("Dart collided with: " + collision.gameObject.name);
         if (stuck)
         {
             // Release dart if it is stuck

@@ -4,19 +4,23 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class BottleCap : MonoBehaviour
 {
-    public UnityEvent<float> onOpen;
+    private OpenableBottle _bottle;
 
     [HideInInspector] public FixedJoint fixedJoint;
-    [HideInInspector] public XRBaseInteractable grabInteractable;
+    [HideInInspector] public XRBaseInteractable interactable;
 
     private void Awake()
     {
         fixedJoint = GetComponent<FixedJoint>();
-        grabInteractable = GetComponent<XRBaseInteractable>();
+        interactable = GetComponent<XRBaseInteractable>();
+
+        interactable.selectEntered.AddListener((_) => _bottle.onLidGrab?.Invoke());
+
+        _bottle = GetComponentInParent<OpenableBottle>();
     }
 
     private void OnJointBreak(float breakForce)
     {
-        onOpen?.Invoke(breakForce);
+        _bottle.onLidOpen?.Invoke();
     }
 }

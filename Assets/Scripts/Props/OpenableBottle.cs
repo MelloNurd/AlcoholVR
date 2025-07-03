@@ -1,6 +1,7 @@
 using EditorAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -16,6 +17,9 @@ public class OpenableBottle : MonoBehaviour
     private XRGrabInteractable _grabInteractable;
     private AudioSource _audioSource;
 
+    public UnityEvent onLidGrab = new();
+    public UnityEvent onLidOpen = new();
+
     private void Awake()
     {
         _cap = GetComponentInChildren<BottleCap>();
@@ -26,25 +30,26 @@ public class OpenableBottle : MonoBehaviour
 
     private void Start()
     {
-        if (_cap.grabInteractable == null)
+        if (_cap.interactable == null)
         {
             Debug.LogError("BottleCap does not have a XRGrabInteractable component attached.", _cap);
             return;
         }
 
-        _cap.grabInteractable.enabled = false;
+        _cap.interactable.enabled = false;
+        SetCollisions(false);
 
         _grabInteractable.selectEntered.AddListener((_) => GrabBottle());
         _grabInteractable.selectExited.AddListener((_) => ReleaseBottle());
 
-        if(_cap.grabInteractable is XRGrabInteractable)
+        if(_cap.interactable is XRGrabInteractable)
         {
             SetCapBreakForce(Mathf.Infinity);
-            _cap.grabInteractable.selectEntered.AddListener((_) => { SetCapBreakForce(5f); });
-            _cap.grabInteractable.selectExited.AddListener((_) => { SetCapBreakForce(Mathf.Infinity); });
+            _cap.interactable.selectEntered.AddListener((_) => { SetCapBreakForce(5f); });
+            _cap.interactable.selectExited.AddListener((_) => { SetCapBreakForce(Mathf.Infinity); });
         }
 
-        _cap.onOpen.AddListener((_) => OpenBottle());
+        onLidOpen.AddListener(OpenBottle);
     }
 
     private void SetCapBreakForce(float force)
@@ -56,8 +61,8 @@ public class OpenableBottle : MonoBehaviour
 
     public void TryOpenBottle()
     {
-        if (_cap == null || _cap.grabInteractable == null) return;
-        if (!_cap.grabInteractable.isSelected || IsOpen) return;
+        if (_cap == null || _cap.interactable == null) return;
+        if (!_cap.interactable.isSelected || IsOpen) return;
 
         OpenBottle();
     }
@@ -66,18 +71,32 @@ public class OpenableBottle : MonoBehaviour
     {
         IsOpen = true;
         _audioSource.PlayOneShot(_openSound);
-        _cap.grabInteractable.enabled = true;
+        _cap.interactable.enabled = (_cap.interactable is XRGrabInteractable); // disable/enable whether the cap is grabbable or not (determines whether it comes off)
+        if(_cap.interactable.enabled)
+        {
+            SetCollisions(true);
+        }
     }
 
     private void GrabBottle()
     {
-        _cap.grabInteractable.enabled = true;
+        _cap.interactable.enabled = true;
     }
 
     private void ReleaseBottle()
     {
         if (IsOpen) return;
 
-        _cap.grabInteractable.enabled = false;
+        _cap.interactable.enabled = false;
+    }
+
+    private void SetCollisions(bool state) // Enable or disable collisions between the bottle and the cap
+    {
+        var temp = GetComponents<Collider>();
+        Collider capCol = _cap.GetComponent<Collider>();
+        foreach (var col in temp)
+        {
+            Physics.IgnoreCollision(col, capCol, !state);
+        }
     }
 }

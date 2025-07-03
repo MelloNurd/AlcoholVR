@@ -30,7 +30,8 @@ public class PlayerFace : MonoBehaviour
 
         _audioSource = gameObject.GetOrAdd<AudioSource>();
 
-        _globalVolume = FindFirstObjectByType<Volume>();
+        _globalVolume = GameObject.Find("Global Volume").GetComponent<Volume>(); // Just doing FindFirstByType was getting the arcade volume...
+
         if (!_globalVolume.profile.TryGet(out dof))
         {
             dof = _globalVolume.profile.Add<DepthOfField>(true);
@@ -41,23 +42,27 @@ public class PlayerFace : MonoBehaviour
 
     public async void ApplyBlurEffect()
     {
+        Debug.Log("Applying blur effect to player face.... dof: " + dof);
+        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
         dof.active = true;
         dof.focusDistance.value = maxDistance;
+        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
 
         Tween.StopAll(dof.focusDistance);
         await Tween.Custom(1f, 0f, 1f, (float val) => { dof.focusDistance.value = val; }, Ease.OutCirc);
+        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
 
         Tween.StopAll(dof.focusDistance);
         await Tween.Custom(0f, maxDistance, 1.5f, (float val) => { dof.focusDistance.value = val; }, Ease.InCirc);
 
         dof.active = false;
+        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen && bottle.IsFull)
         {
-            Debug.Log($"Dot of {bottle.name}: {Vector3.Dot(bottle.transform.forward, transform.forward)}");
             if(Vector3.Dot(bottle.transform.forward, transform.forward) < -0.5f) // Bottle top is facing player's face
             {
                 bottle.IsFull = false;

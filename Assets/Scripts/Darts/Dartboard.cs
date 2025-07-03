@@ -44,7 +44,7 @@ public class Dartboard : MonoBehaviour
         ) * Mathf.Rad2Deg;
         if (angle < 0) angle += 360f;
         angle += degreeOffset; // Apply any additional offset
-        Debug.Log($"Radius: {radius:F4}, Angle: {angle:F1}, FlatHit: {flatHit}");
+        //Debug.Log($"Radius: {radius:F4}, Angle: {angle:F1}, FlatHit: {flatHit}");
 
         if (hitCount == 3)
         {
