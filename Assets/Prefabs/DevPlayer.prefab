@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4955128482294989904}
   - component: {fileID: 5043737928785919920}
   - component: {fileID: 269436506573876109}
+  - component: {fileID: 7563275932205502307}
   m_Layer: 6
   m_Name: DevPlayer
   m_TagString: Untagged
@@ -67,6 +68,19 @@ MonoBehaviour:
   xrOrigin: {fileID: 396169842335963061}
   cameraTransform: {fileID: 1344356157249294057}
   characterController: {fileID: 4960490923961160961}
+--- !u!114 &7563275932205502307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748051821869343632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89721f0c584d27943bab0c43f2daa099, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InputSimulator: {fileID: 8788761293475696703}
 --- !u!1 &2253858282463432047
 GameObject:
   m_ObjectHideFlags: 0
@@ -1341,6 +1355,11 @@ PrefabInstance:
 --- !u!4 &8788761293475696689 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6598815579406187027, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
+  m_PrefabInstance: {fileID: 2478176176808651298}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8788761293475696703 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
   m_PrefabInstance: {fileID: 2478176176808651298}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2541273585177512855
