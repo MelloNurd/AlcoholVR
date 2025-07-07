@@ -266,9 +266,9 @@ public class Phone : MonoBehaviour
         }
     }
 
-    public void SimulateScreenPressAtPoint(Vector3 point)
+    public bool SimulateScreenPressAtPoint(Vector3 point)
     {
-        if(!IsInteractable) return;
+        if(!IsInteractable) return false;
 
         Vector3 localHitPoint = _screenObject.transform.InverseTransformPoint(point);
 
@@ -301,6 +301,8 @@ public class Phone : MonoBehaviour
             Utilities.SimulatePress(obj);
             PlayerAudio.PlaySound(_clickSound, randomizePitch: true); // Play click sound
         }
+
+        return hitObjects.Length > 0; // Return true if any objects were hit
     }
     
     private void UpdateClock()
