@@ -8,8 +8,10 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 using Random = UnityEngine.Random;
 
 public class Phone : MonoBehaviour
@@ -41,6 +43,7 @@ public class Phone : MonoBehaviour
     [SerializeField] private GameObject _messagePrefab;
     private Transform _messagesContainer;
     private List<PhoneMessage> _messages = new();
+    private Queue<PhoneMessage> _messageQueue = new(); // For future use, if we want to queue messages
 
     [Header("Settings")]
     [SerializeField, InlineButton(nameof(ApplyCurrentTheme), "Apply", buttonWidth: 50)] private PhoneTheme _currentTheme;
@@ -176,7 +179,7 @@ public class Phone : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.N))
         {
             string msg = Input.GetKey(KeyCode.LeftShift) ? "This is a test message" : "This is a second test message";
-            ShowNotification("Test Sender", "This is a test message");
+            QueueNotification("Test Sender", "This is a test message");
         }
 
         if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed))
@@ -226,6 +229,8 @@ public class Phone : MonoBehaviour
         physicalPhoneObj.transform.localScale = Vector3.zero;
         await Tween.Scale(physicalPhoneObj.transform, _phoneSize, time, ease: Ease.OutBack);
         IsInteractable = true;
+
+        DisplayNotifications();
     }
 
     private async void DisablePhone(float time = 0.25f, bool effects = true)
@@ -372,11 +377,36 @@ public class Phone : MonoBehaviour
         PlayerPrefs.SetInt("PhoneThemeIndex", _availableThemes.IndexOf(theme));
     }
 
-    public void ShowNotification(string sender, string content) => ShowNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
-    public async void ShowNotification(PhoneMessage msg)
+    private void QueueNotification(string sender, string content) => QueueNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
+    public async void QueueNotification(PhoneMessage msg, bool showTutorial = false)
     {
-        Tween.StopAll(_notificationPanel); // Resets any existing tweens
-        // FIX THE ABOVE ^^^
+        // if showTutorial is true, show player how to open phone
+        _messageQueue.Enqueue(msg);
+
+        if(!IsActive)
+        {
+            _phoneAudioSource.PlayOneShot(_notificationSound);
+            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+            await UniTask.Delay(600);
+            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+        }
+        else
+        {
+            DisplayNotifications();
+        }
+    }
+
+    public async void DisplayNotifications()
+    {
+        while (_messageQueue.Count > 0 && IsActive)
+        {
+            await ShowNotification(_messageQueue.Dequeue());
+        }
+    }
+
+    private async UniTask ShowNotification(PhoneMessage msg)
+    {
+        Tween.StopAll(_notificationPanel);
 
         _notificationPanel.Find("Title").GetComponent<TMP_Text>().text = msg.Sender;
         _notificationPanel.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
@@ -388,15 +418,16 @@ public class Phone : MonoBehaviour
             ObjectiveManager.Instance.CreateObjectiveObject(msg.Objective);
         }
 
-        await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
-        await UniTask.Delay(3_000);
-        _ = Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f);
+        // notification sound + vibration
+        _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
+        _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.2f); // Vibrate left controller
 
-        if(_notificationSound != null)
-        {
-            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
-            _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
-        }
+        await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f); // move down
+
+        await UniTask.Delay(3_000); // wait
+
+        await Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f); // move up
     }
 
     public void AddMessage(PhoneMessage message)

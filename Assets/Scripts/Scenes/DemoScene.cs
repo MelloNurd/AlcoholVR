@@ -30,7 +30,7 @@ public class DemoScene : MonoBehaviour
             Content = "Hey! I'm throwing a party, can you bring snacks and beer?",
         };
 
-        Phone.Instance.ShowNotification(temp);
+        Phone.Instance.QueueNotification(temp);
 
         obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab snacks from the fridge.", 1, _fridgeTransform));
         obj2 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab beer from the fridge.", 1, _fridgeTransform));

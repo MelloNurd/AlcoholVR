@@ -14,7 +14,7 @@ public class PhoneScreen : MonoBehaviour
 
     private async void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("RightHand")) return;
+        if (!other.CompareTag("Index")) return; // Only check for index finger
         if(!_canInteract) return;
         if (Vector3.Dot((other.transform.position - transform.position).normalized, -transform.forward) <= 0) return; // Check if specifically the front of the screen was pressed (return otherwise)
 
