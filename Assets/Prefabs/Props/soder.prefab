@@ -64,8 +64,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d8862a44dd681b84eb61b89a06288e8b, type: 2}
-  - {fileID: 2100000, guid: 8d198c6ce5ec89e4fb26894285a4a878, type: 2}
+  - {fileID: 2100000, guid: 254444cb6c7535f41b7f7095ff803c4e, type: 2}
+  - {fileID: 2100000, guid: 8e03b98bb3cb496419db5d1ef9477537, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d8862a44dd681b84eb61b89a06288e8b, type: 2}
+  - {fileID: 2100000, guid: 254444cb6c7535f41b7f7095ff803c4e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -211,23 +211,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c63cd807de6aea544864fe3d5b413ebd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onOpen:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1857706486375291169}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   fixedJoint: {fileID: 0}
-  grabInteractable: {fileID: 0}
+  interactable: {fileID: 0}
 --- !u!54 &7525330149108304930
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -419,7 +404,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d8862a44dd681b84eb61b89a06288e8b, type: 2}
+  - {fileID: 2100000, guid: 254444cb6c7535f41b7f7095ff803c4e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -470,7 +455,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2298216628010615043}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 2.642965, y: 7.151743, z: 5.4372673}
   m_LocalScale: {x: 1.1494253, y: 1.1494249, z: 1.1494249}
   m_ConstrainProportionsScale: 0
@@ -479,7 +464,7 @@ Transform:
   - {fileID: 7165835480467517511}
   - {fileID: 2727259191733814827}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!136 &1057315653123128883
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -539,6 +524,12 @@ MonoBehaviour:
   _openSound: {fileID: 8300000, guid: ec4c23b01e834be4f93ac0def80b017f, type: 3}
   <IsOpen>k__BackingField: 0
   <IsFull>k__BackingField: 1
+  onLidGrab:
+    m_PersistentCalls:
+      m_Calls: []
+  onLidOpen:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &4696028306342325276
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -32,7 +32,7 @@ public class DialogueButtons : MonoBehaviour
         }
 
         _spotLight = GetComponentInChildren<Light>(true);
-        _spotLight.enabled = false;
+        if(_spotLight != null) _spotLight.enabled = false;
     }
 
     private void Start()
@@ -77,8 +77,11 @@ public class DialogueButtons : MonoBehaviour
             }
         }
 
-        _spotLight.transform.position = Camera.main.transform.position.WithY(_camPosition.y + 1f);
-        _spotLight.enabled = true;
+        if(_spotLight != null)
+        {
+            _spotLight.transform.position = Camera.main.transform.position.WithY(_camPosition.y + 1f);
+            _spotLight.enabled = true;
+        }
 
         return true;
     }
@@ -138,7 +141,7 @@ public class DialogueButtons : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            if(child == _spotLight.transform) continue; // Skip spotlight
+            if(_spotLight != null && child == _spotLight.transform) continue; // Skip spotlight
 
             if (child.TryGetComponent(out PhysicalButton button))
             {
@@ -161,6 +164,9 @@ public class DialogueButtons : MonoBehaviour
             Destroy(child.gameObject, 0.5f); // Destroy the child object after a delay to allow audio to play
         }
 
-        _spotLight.enabled = false;
+        if (_spotLight != null)
+        {
+            _spotLight.enabled = false;
+        }
     }
 }
