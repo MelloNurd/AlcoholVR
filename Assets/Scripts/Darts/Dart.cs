@@ -64,7 +64,6 @@ public class Dart : MonoBehaviour
 
     void StickToMovingTarget(Collider collision)
     {
-        Debug.Log("Sticking dart to: " + collision.gameObject.name);
         // Joints rigidbodies together
         Rigidbody targetRb = collision.GetComponent<Rigidbody>();
         FixedJoint joint = gameObject.AddComponent<FixedJoint>();

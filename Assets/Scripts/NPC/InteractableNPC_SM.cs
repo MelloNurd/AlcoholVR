@@ -8,7 +8,7 @@ using UnityEngine.Events;
 public class InteractableNPC_SM : NPC_SM // SM = State Machine
 {
     [Header("Interaction Settings")]
-    public bool isInteractable = true;
+    [field: SerializeField] public bool IsInteractable { get; set; } = true;
 
     public DialogueTree firstDialogue;
     public DialogueTree incompleteDialogue;
@@ -41,7 +41,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
             if (completeDialogue == null) completeDialogue = firstDialogue;
             if (failDialogue == null) failDialogue = firstDialogue;
         }
-        else if (isInteractable)
+        else if (IsInteractable)
         {
             Debug.LogError("First dialogue is not set for " + gameObject.name + ". Please assign a dialogue.");
         }
@@ -51,7 +51,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     [Button]
     public void Interact()
     {
-        if(!isInteractable) return;
+        if(!IsInteractable) return;
 
         if (currentState == states[States.Interact]) // if already in dialogue, exit it
         {
