@@ -26,6 +26,7 @@ public class Phone : MonoBehaviour
     private RectTransform _notificationPanel;
     [SerializeField] private AudioClip _clickSound;
     public bool IsActive => physicalPhoneObj != null && physicalPhoneObj.activeSelf;
+    public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, physicalPhoneObj.transform.position) < 0.3f;
     public bool IsInteractable { get; set; } = true;
     private Vector3 _phoneSize;
 
@@ -176,12 +177,12 @@ public class Phone : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.N))
         {
             string msg = Input.GetKey(KeyCode.LeftShift) ? "This is a test message" : "This is a second test message";
             QueueNotification("Test Sender", "This is a test message");
         }
-
+        
         if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed))
         {
             if (_buttonPressed && !_lastButtonState)
@@ -318,7 +319,7 @@ public class Phone : MonoBehaviour
 
     private void UpdateBattery()
     {
-        if(_useRealBattery)
+        if (_useRealBattery)
         {
             _batteryLevel = SystemInfo.batteryLevel == -1 ? _batteryLevel : SystemInfo.batteryLevel;
         }

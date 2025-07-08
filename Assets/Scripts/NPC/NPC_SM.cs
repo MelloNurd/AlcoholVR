@@ -28,9 +28,6 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     public Dictionary<States, NPC_BaseState> states = new();
     protected AudioSource _audioSource;
 
-    protected GameObject _playerObj;
-    public Vector3 playerPosition => _playerObj.transform.position;
-
     [Header("Checkpoint Settings")]
     [SerializeField] protected SortMode _checkpointSortMode; // How it determines the next checkpoint to move to
     public UnityEvent OnCheckpointLeave = new();
@@ -46,7 +43,6 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     protected void Awake()
     {
         bodyObj = transform.Find("Body").gameObject;
-        _playerObj = GameObject.Find("Main Camera"); // This may need changed later
         animator = GetComponentInChildren<Animator>();
         agent = GetComponentInChildren<NavMeshAgent>();
         agent.updateRotation = false;

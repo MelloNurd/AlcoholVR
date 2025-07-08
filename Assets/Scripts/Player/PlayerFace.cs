@@ -42,21 +42,16 @@ public class PlayerFace : MonoBehaviour
 
     public async void ApplyBlurEffect()
     {
-        Debug.Log("Applying blur effect to player face.... dof: " + dof);
-        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
         dof.active = true;
         dof.focusDistance.value = maxDistance;
-        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
 
         Tween.StopAll(dof.focusDistance);
         await Tween.Custom(1f, 0f, 1f, (float val) => { dof.focusDistance.value = val; }, Ease.OutCirc);
-        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
 
         Tween.StopAll(dof.focusDistance);
         await Tween.Custom(0f, maxDistance, 1.5f, (float val) => { dof.focusDistance.value = val; }, Ease.InCirc);
 
         dof.active = false;
-        Debug.Log($"dof active: {dof.active}, focusDistance: {dof.focusDistance.value}");
     }
 
     private void OnTriggerEnter(Collider other)

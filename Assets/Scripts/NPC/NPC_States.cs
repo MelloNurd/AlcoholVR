@@ -139,9 +139,9 @@ public class NPC_InteractState : NPC_BaseState
         storedDestination = _interactableNPC.agent.destination;
         _interactableNPC.agent.destination = _interactableNPC.bodyObj.transform.position;
 
-        Vector3 directionToPlayer = (_interactableNPC.playerPosition - _interactableNPC.bodyObj.transform.position).WithY(0);
+        Vector3 directionToPlayer = (Player.Instance.Position - _interactableNPC.bodyObj.transform.position).WithY(0);
 
-        await Tween.LocalRotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+        await Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
 
         if (_interactableNPC.currentState != _interactableNPC.states[NPC_SM.States.Interact]) return; // If state changed during the wait, don't start dialogue
         _interactableNPC.StartDialogue();

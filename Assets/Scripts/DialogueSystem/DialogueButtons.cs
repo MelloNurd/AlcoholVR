@@ -14,8 +14,6 @@ public class DialogueButtons : MonoBehaviour
     [SerializeField, Range(0, 360)] private float _buttonAngleSpacing = 30f;
     [SerializeField] private float _spawnDistanceFromPlayer = 0.6f;
 
-    private Vector3 _camPosition;
-
     private Light _spotLight;
 
     private void Awake()
@@ -33,11 +31,6 @@ public class DialogueButtons : MonoBehaviour
 
         _spotLight = GetComponentInChildren<Light>(true);
         if(_spotLight != null) _spotLight.enabled = false;
-    }
-
-    private void Start()
-    {
-        _camPosition = Camera.main.transform.position;
     }
 
     public bool TryCreateDialogueButtons(DialogueSystem system, bool reverseOrder = false)
@@ -79,10 +72,11 @@ public class DialogueButtons : MonoBehaviour
 
         if(_spotLight != null)
         {
-            _spotLight.transform.position = Camera.main.transform.position.WithY(_camPosition.y + 1f);
+            _spotLight.transform.position = Camera.main.transform.position.AddY(1f);
             _spotLight.enabled = true;
         }
 
+        Player.Instance.DisableMovement();
         return true;
     }
 
@@ -107,8 +101,8 @@ public class DialogueButtons : MonoBehaviour
             {
                 var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (amount * 0.5f - 0.5f)) + (offset); // angle in degrees
                 Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
-                Vector3 spawnPosition = Camera.main.transform.position.WithY(_camPosition.y) + angle * _spawnDistanceFromPlayer; // position in world
-                spawnPosition.y = _camPosition.y - 0.3f; // adjust height to be slightly below camera
+                Vector3 spawnPosition = Camera.main.transform.position + angle * _spawnDistanceFromPlayer; // position in world
+                spawnPosition.y -= 0.3f; // adjust height to be slightly below camera
 
                 spawnPositions[i] = spawnPosition;
             }
@@ -139,6 +133,8 @@ public class DialogueButtons : MonoBehaviour
 
     public void ClearButtons()
     {
+        Player.Instance.EnableMovement();
+
         foreach (Transform child in transform)
         {
             if(_spotLight != null && child == _spotLight.transform) continue; // Skip spotlight
