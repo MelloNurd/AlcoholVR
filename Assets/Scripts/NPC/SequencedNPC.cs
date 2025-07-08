@@ -55,6 +55,8 @@ public class SequencedNPC : MonoBehaviour
 
     public bool wrapAroundSequences = false; // If it should loop through the sequences or stop at the end
 
+    [ButtonField(nameof(StartNextSequence)), DisableInEditMode, SerializeField] private Void startNextSequenceButton;
+
     [HideInInspector] public GameObject bodyObj;
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public Animator animator;

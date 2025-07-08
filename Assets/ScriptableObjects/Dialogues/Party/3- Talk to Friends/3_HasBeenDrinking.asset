@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce17b99a3e9169f4eb4191aa1c397a6a, type: 3}
+  m_Name: 3_HasBeenDrinking
+  m_EditorClassIdentifier: 
+  rootText:
+    text: Hey, we were just talking about our favorite bands. You into anything lately?
+    options:
+    - text: '*hiccup*'
+      dialogue:
+        text: You good, bro? You're not making any sense.
+        options:
+        - text: i had some drinks!
+          dialogue:
+            text: 
+            options: []
+            onOptionSelected:
+              m_PersistentCalls:
+                m_Calls: []
+          onResponseSelected:
+            m_PersistentCalls:
+              m_Calls: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - text: h-hey.. guys
+      dialogue:
+        text: Um, hi.
+        options:
+        - text: "shhh.... i\u2019m thinking"
+          dialogue:
+            text: Chill out, you're being weird.
+            options: []
+            onOptionSelected:
+              m_PersistentCalls:
+                m_Calls: []
+          onResponseSelected:
+            m_PersistentCalls:
+              m_Calls: []
+        - text: heyy.. don't be so mean
+          dialogue:
+            text: Chill out, you're being weird.
+            options: []
+            onOptionSelected:
+              m_PersistentCalls:
+                m_Calls: []
+          onResponseSelected:
+            m_PersistentCalls:
+              m_Calls: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - text: '*burps*'
+      dialogue:
+        text: You good, bro? You're not making any sense.
+        options:
+        - text: i had some drinks!
+          dialogue:
+            text: 
+            options: []
+            onOptionSelected:
+              m_PersistentCalls:
+                m_Calls: []
+          onResponseSelected:
+            m_PersistentCalls:
+              m_Calls: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  currentDialogueText:
+    text: 
+    options: []
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []

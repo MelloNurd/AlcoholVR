@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce17b99a3e9169f4eb4191aa1c397a6a, type: 3}
+  m_Name: 3_HasNotBeenDrinking
+  m_EditorClassIdentifier: 
+  rootText:
+    text: Hey, we were just talking about our favorite bands. You into anything lately?
+    options:
+    - text: "Yeah, I\u2019m big into indie stuff."
+      dialogue:
+        text: Oh, nice.
+        options: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - text: I mostly listen to rap.
+      dialogue:
+        text: Same here.
+        options: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - text: Metal, all the way.
+      dialogue:
+        text: Good pick.
+        options: []
+        onOptionSelected:
+          m_PersistentCalls:
+            m_Calls: []
+      onResponseSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  currentDialogueText:
+    text: 
+    options: []
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
