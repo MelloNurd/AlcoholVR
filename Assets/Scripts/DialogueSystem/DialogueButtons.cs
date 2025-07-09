@@ -76,7 +76,6 @@ public class DialogueButtons : MonoBehaviour
             _spotLight.enabled = true;
         }
 
-        Player.Instance.DisableMovement();
         return true;
     }
 
@@ -133,8 +132,6 @@ public class DialogueButtons : MonoBehaviour
 
     public void ClearButtons()
     {
-        Player.Instance.EnableMovement();
-
         foreach (Transform child in transform)
         {
             if(_spotLight != null && child == _spotLight.transform) continue; // Skip spotlight

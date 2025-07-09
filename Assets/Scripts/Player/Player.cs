@@ -5,8 +5,8 @@ public class Player : MonoBehaviour
 {
     public static Player Instance { get; private set; }
 
-    public Camera playerCamera;
-    public CharacterController controller;
+    [HideInInspector] public Camera playerCamera;
+    [HideInInspector] public CharacterController controller;
 
     public Vector3 Position => playerCamera == null ? Vector3.zero : playerCamera.transform.position;
 

@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -18,6 +19,7 @@ public class Sequence
         Animate,
         Dialogue,
         Walk,
+        WalkToPlayer,
         Wait,
     }
 
@@ -29,11 +31,12 @@ public class Sequence
     [ShowField(nameof(type), SequenceType.Dialogue)] public DialogueTree dialogue;
 
     [ShowField(nameof(type), SequenceType.Walk)] public Transform destination;
-    [ShowField(nameof(type), SequenceType.Walk)] public bool useDefaultWalkAnimation = true;
-    [ShowField(nameof(type), SequenceType.Walk), HideField(nameof(useDefaultWalkAnimation))] public AnimationClip walkAnimation;
+    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer)] 
+    public bool useDefaultWalkAnimation = true;
+    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))] 
+    public AnimationClip walkAnimation;
 
     [ShowField(nameof(type), SequenceType.Wait)] public float secondsToWait;
-
     [Space]
     public bool nextSequenceOnEnd;
 
@@ -67,6 +70,8 @@ public class SequencedNPC : MonoBehaviour
     private CancellationTokenSource _cancelToken;
     private bool _isAtDestination = true;
 
+    private Vector3 _lastDestinationPosition;
+
     private void Awake()
     {
         bodyObj = transform.Find("Body").gameObject;
@@ -91,13 +96,33 @@ public class SequencedNPC : MonoBehaviour
     private void Update()
     {
         ApplyRotations();
+        RunWalkSequences();
+    }
 
-        // Check if the current sequence is a walk sequence and if it has reached its destination
-        if (currentSequence.type == Sequence.SequenceType.Walk && !_isAtDestination && CheckIfAtDestination())
+    private void RunWalkSequences()
+    {
+        if (!_isAtDestination && (currentSequence.type == Sequence.SequenceType.Walk || currentSequence.type == Sequence.SequenceType.WalkToPlayer))
         {
-            _isAtDestination = true;
-            animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
-            if (currentSequence.nextSequenceOnEnd) StartNextSequence();
+            bool isWalkToPlayer = currentSequence.type == Sequence.SequenceType.WalkToPlayer;
+
+            if (isWalkToPlayer)
+            {
+
+                Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized;
+                if (_lastDestinationPosition != inFrontOfPlayer)
+                {
+                    agent.SetDestinationToClosestPoint(inFrontOfPlayer);
+                    _lastDestinationPosition = inFrontOfPlayer;
+                }
+            }
+
+            if (agent.IsAtDestination())
+            {
+                Debug.Log($"{gameObject.name} has reached {(isWalkToPlayer ? "the player" : "its destination")}.");
+                _isAtDestination = true;
+                animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
+                if (currentSequence.nextSequenceOnEnd) StartNextSequence();
+            }
         }
     }
 
@@ -147,11 +172,23 @@ public class SequencedNPC : MonoBehaviour
                 break;
             case Sequence.SequenceType.Walk:
                 _isAtDestination = false;
-                agent.SetDestination(sequence.destination.position);
+                agent.SetDestinationToClosestPoint(sequence.destination.transform.position);
 
                 string walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null) 
                     ? sequence.walkAnimation.name 
                     : walkAnimation.name;
+
+                animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
+
+                break;
+            case Sequence.SequenceType.WalkToPlayer:
+                _isAtDestination = false;
+                agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized);
+
+                walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
+                    ? sequence.walkAnimation.name
+                    : walkAnimation.name;
+
                 animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
 
                 break;
@@ -213,17 +250,5 @@ public class SequencedNPC : MonoBehaviour
                 Time.deltaTime * agent.angularSpeed // turn speed
             );
         }
-    }
-
-    private bool CheckIfAtDestination()
-    {
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-        {
-            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

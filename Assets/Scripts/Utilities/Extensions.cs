@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Rendering;
 
 public enum Rarity
@@ -557,5 +558,97 @@ public static class Extensions
     {
         return group.alpha > 0f;
     }
+
     #endregion
+
+    #region NavMeshAgent Extensions
+
+    /// <summary>
+    /// Checks if the NavMeshAgent has reached its destination within a specified threshold.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to check</param>
+    /// <param name="threshold">The distance threshold to consider as "at destination" (default: 0.1f)</param>
+    /// <returns>True if the agent is at its destination, false otherwise</returns>
+    public static bool IsAtDestination(this UnityEngine.AI.NavMeshAgent agent, float threshold = 0.1f)
+    {
+        if (!agent.pathPending)
+        {
+            if (agent.remainingDistance <= threshold)
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Checks if the NavMeshAgent is currently moving based on its velocity.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to check</param>
+    /// <param name="threshold">The velocity threshold to consider as "moving" (default: 0.1f)</param>
+    /// <returns>True if the agent is moving, false otherwise</returns>
+    public static bool IsMoving(this UnityEngine.AI.NavMeshAgent agent, float threshold = 0.1f)
+    {
+        return agent.velocity.sqrMagnitude > threshold * threshold;
+    }
+
+    /// <summary>
+    /// Checks if the NavMeshAgent has a valid and complete path.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to check</param>
+    /// <returns>True if the agent has a complete path, false otherwise</returns>
+    public static bool HasPath(this UnityEngine.AI.NavMeshAgent agent)
+    {
+        return agent.hasPath && agent.pathStatus == UnityEngine.AI.NavMeshPathStatus.PathComplete;
+    }
+
+    /// <summary>
+    /// Checks if the NavMeshAgent is stopped or not moving.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to check</param>
+    /// <returns>True if the agent is stopped, false otherwise</returns>
+    public static bool IsStopped(this UnityEngine.AI.NavMeshAgent agent)
+    {
+        return agent.isStopped || !agent.hasPath || agent.velocity.sqrMagnitude == 0f;
+    }
+
+    /// <summary>
+    /// Stops the NavMeshAgent and makes it face towards a target position.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to stop and rotate</param>
+    /// <param name="targetPosition">The position to face towards</param>
+    public static void StopAndFace(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetPosition)
+    {
+        agent.isStopped = true;
+        Vector3 direction = (targetPosition - agent.transform.position).WithY(0).normalized;
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            agent.transform.rotation = Quaternion.Slerp(agent.transform.rotation, lookRotation, Time.deltaTime * 5f);
+        }
+    }
+
+    /// <summary>
+    /// Sets the destination to the closest valid point on the NavMesh near the target destination.
+    /// </summary>
+    /// <param name="agent">The NavMeshAgent to set the destination for</param>
+    /// <param name="targetDestination">The desired destination position</param>
+    /// <param name="checkRadius">The radius to search for at the targetDestination to check for a nav mesh</param>
+    /// <param name="areaMask">The area mask to use when sampling the NavMesh (default: NavMesh.AllAreas)</param>
+    /// <returns>The distance from the original destination to the closest valid point, or -1 if destination is null</returns>
+    public static float SetDestinationToClosestPoint(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 2f, int areaMask = NavMesh.AllAreas)
+    {
+        if (targetDestination == null) return -1;
+
+        NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask);
+
+        agent.SetDestination(hit.position);
+
+        return hit.distance;
+    }
+
+    #endregion  
 }

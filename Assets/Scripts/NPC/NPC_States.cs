@@ -145,6 +145,8 @@ public class NPC_InteractState : NPC_BaseState
 
         if (_interactableNPC.currentState != _interactableNPC.states[NPC_SM.States.Interact]) return; // If state changed during the wait, don't start dialogue
         _interactableNPC.StartDialogue();
+
+        Player.Instance.DisableMovement();
     }
 
     public override void ExitState()
@@ -153,5 +155,6 @@ public class NPC_InteractState : NPC_BaseState
         Tween.CompleteAll(this);
         _interactableNPC.dialogueSystem.EndCurrentDialogue();
         _interactableNPC.agent.destination = storedDestination;
+        Player.Instance.EnableMovement();
     }
 }
