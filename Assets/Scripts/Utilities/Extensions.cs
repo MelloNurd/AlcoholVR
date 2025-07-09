@@ -22,7 +22,7 @@ public static class Extensions
     // This is a collection of extension  methods made for using within the Unity Game Engine.
     // These are here simply to make code a little easier to read and write. You can use them as you would with any other function on the specified type.
 
-    #region Project Specific Extensions
+    #region Misc Extensions
     public static Color GetColor(this Rarity rarity)
     {
         switch (rarity)
@@ -145,6 +145,8 @@ public static class Extensions
     /// <returns>A file-name-friendly version of the string</returns>
     public static string FileNameFriendly(this string value, char replacementCharacter)
     {
+        value = value.Trim();
+
         foreach (var c in Path.GetInvalidFileNameChars())
         {
             value = value.Replace(c, replacementCharacter);
@@ -177,13 +179,70 @@ public static class Extensions
 
     #endregion
 
+    #region Float Extensions
+
+    /// <summary>
+    /// Rounds a float to the nearest whole number.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>-1 or 1, based on the sign of the float.</returns>
+    public static float Sign(this float value)
+    {
+        return value >= 0 ? 1f : -1f;
+    }
+    /// <summary>
+    /// Rounds a float to the nearest whole number, including zero.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>-1, 0, 1, based on the sign of the float. A value of zero will still return zero.</returns>
+    public static float SignZeroed(this float value)
+    {
+        return value > 0 ? 1f : value < 0 ? -1f : 0f;
+    }
+
+    /// <summary>
+    /// Converts a floating-point value representing seconds to an integer value representing milliseconds.
+    /// </summary>
+    /// <param name="value">The time duration in seconds to be converted to milliseconds.</param>
+    /// <returns>An integer representing the equivalent time duration in milliseconds.</returns>
+    public static int ToMS(this float value)
+    {
+        return Mathf.RoundToInt(value * 1000f);
+    }
+
+    #endregion
+
+    #region Int Extensions
+
+    /// <summary>
+    /// Rounds an int to the nearest whole number.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>-1 or 1, based on the sign of the int.</returns>
+    public static int Sign(this int value)
+    {
+        return value >= 0 ? 1 : -1;
+    }
+    /// <summary>
+    /// Rounds an int to the nearest whole number, including zero.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>-1, 0, 1, based on the sign of the int. A value of zero will still return zero.</returns>
+    public static int SignZeroed(this int value)
+    {
+        return value > 0 ? 1 : value < 0 ? -1 : 0;
+    }
+
+    #endregion
+
     #region List Extensions
     /// <summary>
     /// Gets a random value from the list
     /// </summary>
     /// <returns>A random value from the list, or the default value for an empty list.</returns>
-    public static T GetRandom<T>(this IList<T> list) {
-        if(list.Count == 0)
+    public static T GetRandom<T>(this IList<T> list)
+    {
+        if (list.Count == 0)
         {
             return default(T);
         }
@@ -197,7 +256,7 @@ public static class Extensions
     /// <returns>A random value from the list different from the previous item, or the default value if the list is empty.</returns>
     public static T GetRandomUnique<T>(this IList<T> list, T previousItem)
     {
-        if(previousItem == null)
+        if (previousItem == null)
         {
             return list.GetRandom(); // If previousItem is null, just return a random item
         }
@@ -524,6 +583,38 @@ public static class Extensions
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
     }
+
+    /// <summary>
+    /// Executes a specified action for each child of a given transform.
+    /// </summary>
+    /// <param name="parent">The parent transform.</param>
+    /// <param name="action">The action to be performed on each child.</param>
+    /// <remarks>
+    /// This method iterates over all child transforms in reverse order and executes a given action on them.
+    /// The action is a delegate that takes a Transform as parameter.
+    /// </remarks>
+    public static void ForEveryChild(this Transform parent, System.Action<Transform> action)
+    {
+        for (var i = parent.childCount - 1; i >= 0; i--)
+        {
+            action(parent.GetChild(i));
+        }
+    }
+    #endregion
+
+    #region Color Extensions
+
+    /// <summary>
+    /// Applies an alpha value to a color, clamping it between 0 and 1.
+    /// </summary>
+    /// <param name="alpha">The value to set the alpha to, clampped between 0 and 1.</param>
+    /// <returns>The color with the new alpha value</returns>
+    public static Color WithAlpha(this Color color, float alpha)
+    {
+        color.a = Mathf.Clamp01(alpha); // Ensure alpha is between 0 and 1
+        return color;
+    }
+
     #endregion
 
     #region CanvasGroup Extensions
@@ -558,7 +649,6 @@ public static class Extensions
     {
         return group.alpha > 0f;
     }
-
     #endregion
 
     #region NavMeshAgent Extensions

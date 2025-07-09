@@ -28,7 +28,7 @@ public class Sequence
 
     [ShowField(nameof(type), SequenceType.Animate)] public AnimationClip animation;
 
-    [ShowField(nameof(type), SequenceType.Dialogue)] public DialogueTree dialogue;
+    [ShowField(nameof(type), SequenceType.Dialogue)] public Dialogue dialogue;
 
     [ShowField(nameof(type), SequenceType.Walk)] public Transform destination;
     [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer)] 
@@ -149,25 +149,20 @@ public class SequencedNPC : MonoBehaviour
                 
                 break;
             case Sequence.SequenceType.Dialogue:
-                if(dialogueSystem.currentTree != null)
-                {
-                    dialogueSystem.currentTree.onDialogueEnd.RemoveListener(async () => {
-                        await UniTask.Delay(250);
-                        StartNextSequence();
-                    });
-                    dialogueSystem.EndCurrentDialogue();
-                }
+                dialogueSystem.onDialogueEnd.RemoveListener(async () => {
+                    await UniTask.Delay(1000);
+                    StartNextSequence();
+                });
 
                 Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
                 await Tween.LocalRotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
-                dialogueSystem.BeginDialogueTree(sequence.dialogue);
+                dialogueSystem.StartDialogue(sequence.dialogue);
                 if(sequence.nextSequenceOnEnd)
-                {
-                    dialogueSystem.currentTree.onDialogueEnd.AddListener(async () => {
-                        await UniTask.Delay(250);
-                        StartNextSequence();
-                    });
-                }
+
+                dialogueSystem.onDialogueEnd.AddListener(async () => {
+                    await UniTask.Delay(1000);
+                    StartNextSequence();
+                });
 
                 break;
             case Sequence.SequenceType.Walk:

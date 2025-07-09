@@ -9,10 +9,11 @@ using UnityEngine.UI;
 
 public class DialogueSystem : MonoBehaviour
 {
-    [HideProperty] public DialogueTree currentTree;
-
     public bool useTypewriterEffect = true;
     public bool IsDialogueActive => _dialogueText.text.Length > 0;
+
+    public UnityEvent onDialogueStart = new();
+    public UnityEvent onDialogueEnd = new();
 
     private Typewriter _typewriter;
     private TMP_Text _dialogueText;
@@ -27,43 +28,30 @@ public class DialogueSystem : MonoBehaviour
         _textBubble.SetActive(false);
     }
 
-    public void BeginDialogueTree(DialogueTree tree) 
+    public async void StartDialogue(Dialogue dialogue)
     {
-        if (tree == null)
-        {
-            Debug.LogWarning("DialogueTree is null. Cannot start dialogue.");
-            return;
-        }
-
-        currentTree = tree;
-        currentTree.onDialogueStart.Invoke();
-        currentTree.currentDialogueText = currentTree.rootText;
-        InitiateDialogue(currentTree.currentDialogueText).Forget();
-    }
-
-    public async UniTask InitiateDialogue(DialogueText option)
-    {
-        if (currentTree == null)
-        {
-            Debug.LogWarning("No current tree to associate.");
-            return;
-        }
-        if (option == null)
+        if (dialogue == null)
         {
             Debug.LogWarning("DialogueOption is null. Cannot initiate dialogue.");
             return;
         }
 
-        currentTree.currentDialogueText = option;
-        option.onOptionSelected?.Invoke();
+        dialogue.onDialogueStart.Invoke();
 
         DialogueButtons.Instance.ClearButtons();
         
-        await DisplayText(option.text);
-        
-        if (option.options != null && option.options.Count > 0)
+        await DisplayText(dialogue.dialogueText);
+
+        if (dialogue.options != null && dialogue.options.Count > 0)
         {
-            DialogueButtons.Instance.TryCreateDialogueButtons(this);
+            if (DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
+            {
+                onDialogueStart.Invoke();
+            }
+            else
+            {
+                EndCurrentDialogue();
+            }
         }
         else
         {
@@ -93,15 +81,8 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndCurrentDialogue()
     {
-        if(currentTree == null)
-        {
-            Debug.LogWarning("No current dialogue to end.");
-            return;
-        }
-
+        onDialogueEnd.Invoke();
         _textBubble.SetActive(false);
         _dialogueText.text = "";
-
-        currentTree.onDialogueEnd?.Invoke();
     }
 }

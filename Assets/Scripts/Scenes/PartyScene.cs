@@ -8,12 +8,12 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private SequencedNPC _soberFriendNPC;
 
     [Header("Dialogue References")]
-    [SerializeField] private DialogueTree _broughtAlcohol;
-    [SerializeField] private DialogueTree _broughtSnacks;
-    [SerializeField] private DialogueTree _broughtNothing;
+    [SerializeField] private Dialogue _broughtAlcohol;
+    [SerializeField] private Dialogue _broughtSnacks;
+    [SerializeField] private Dialogue _broughtNothing;
 
-    [SerializeField] private DialogueTree _couchDrunk;
-    [SerializeField] private DialogueTree _couchSober;
+    [SerializeField] private Dialogue _couchDrunk;
+    [SerializeField] private Dialogue _couchSober;
 
     public bool IsOnSecondFloor => Player.Instance.transform.position.y > 3f;
 

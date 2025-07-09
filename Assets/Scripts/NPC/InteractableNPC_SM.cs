@@ -10,10 +10,10 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     [Header("Interaction Settings")]
     [field: SerializeField] public bool IsInteractable { get; set; } = true;
 
-    public DialogueTree firstDialogue;
-    public DialogueTree incompleteDialogue;
-    public DialogueTree completeDialogue;
-    public DialogueTree failDialogue;
+    public Dialogue firstDialogue;
+    public Dialogue incompleteDialogue;
+    public Dialogue completeDialogue;
+    public Dialogue failDialogue;
 
     [Header("Interaction Events")]
     public UnityEvent onFirstInteraction = new();
@@ -74,23 +74,23 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         switch (objective.currentStatus)
         {
             case ObjectiveSystem.Statuses.ToDo:
-                dialogueSystem.BeginDialogueTree(firstDialogue);
+                dialogueSystem.StartDialogue(firstDialogue);
 
                 onFirstInteraction?.Invoke();
                 objective.Begin();
                 break;
             case ObjectiveSystem.Statuses.InProgress:
-                dialogueSystem.BeginDialogueTree(incompleteDialogue);
+                dialogueSystem.StartDialogue(incompleteDialogue);
 
                 onIncompleteInteraction?.Invoke();
                 break;
             case ObjectiveSystem.Statuses.Completed:
-                dialogueSystem.BeginDialogueTree(completeDialogue);
+                dialogueSystem.StartDialogue(completeDialogue);
 
                 onCompleteInteraction?.Invoke();
                 break;
             case ObjectiveSystem.Statuses.Failed:
-                dialogueSystem.BeginDialogueTree(failDialogue);
+                dialogueSystem.StartDialogue(failDialogue);
 
                 onFailInteraction?.Invoke();
                 break;
