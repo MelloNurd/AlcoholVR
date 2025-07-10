@@ -72,6 +72,8 @@ public class SequencedNPC : MonoBehaviour
 
     private Vector3 _lastDestinationPosition;
 
+    private float _lastDestinationUpdateTime = 0f;
+
     private void Awake()
     {
         bodyObj = transform.Find("Body").gameObject;
@@ -107,15 +109,16 @@ public class SequencedNPC : MonoBehaviour
 
             if (isWalkToPlayer)
             {
+                _lastDestinationUpdateTime += Time.deltaTime;
 
                 Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized;
-                if (_lastDestinationPosition != inFrontOfPlayer)
+                if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
+                    _lastDestinationUpdateTime = 0f;
                     agent.SetDestinationToClosestPoint(inFrontOfPlayer);
                     _lastDestinationPosition = inFrontOfPlayer;
                 }
             }
-
             if (agent.IsAtDestination())
             {
                 Debug.Log($"{gameObject.name} has reached {(isWalkToPlayer ? "the player" : "its destination")}.");
@@ -154,12 +157,14 @@ public class SequencedNPC : MonoBehaviour
                     StartNextSequence();
                 });
 
+                Player.Instance.DisableMovement();
+
                 Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
-                await Tween.LocalRotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+                await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
                 dialogueSystem.StartDialogue(sequence.dialogue);
-                if(sequence.nextSequenceOnEnd)
 
                 dialogueSystem.onDialogueEnd.AddListener(async () => {
+                    Player.Instance.EnableMovement();
                     await UniTask.Delay(1000);
                     StartNextSequence();
                 });

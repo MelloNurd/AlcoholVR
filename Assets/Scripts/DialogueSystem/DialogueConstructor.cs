@@ -8,7 +8,7 @@ public class DialogueConstructor : ScriptableObject
 {
     public bool IsCreated => AssetDatabase.AssetPathExists(folderPath);
 
-    [HelpBox(drawAbove: true, messageType: MessageMode.None, message: "Write out a dialogue tree and build all scriptable objects with the Construct Dialogue button.\n\nFormat your dialogue script as follows:\n\n• Each dialogue line should be on its own line\n• Use tabs to create dialogue options (1 tab = option for current dialogue)\n• You can nest multiple levels of dialogue this way\n\nExample:\nHello there, traveler!\n\tWho are you?\n\t\tI'm just a simple merchant passing through.\n\t\t\tA merchant? What do you sell?\n\t\t\t\tI sell rare artifacts and magical items.\n\tWhat brings you here?\n\t\tI'm looking for adventure.\n\t\t\tThen you've come to the right place!\n\nThis creates a branching conversation tree where the player can choose responses and the NPC can reply accordingly.")]
+    [HelpBox(drawAbove: true, messageType: MessageMode.None, message: "Write out a dialogue tree and build all scriptable objects with the Construct Dialogue button.\n\nFormat your dialogue script as follows:\n\n• Each dialogue line should be on its own line\n• Use tabs to create branching dialogue (even # of tabs = NPC dialogue, odd # of tabs = player dialogue options)\n\nExample:\nHello there, traveler!\n\tWho are you?\n\t\tI'm just a simple merchant passing through.\n\t\t\tA merchant? What do you sell?\n\t\t\t\tI sell rare artifacts and magical items.\n\tWhat brings you here?\n\t\tI'm looking for adventure.\n\t\t\tThen you've come to the right place!\n\nThis creates a branching conversation tree where the player can choose responses and the NPC can reply accordingly.")]
     public Void messageBox;
 
     [TextArea(10, 25)] public string dialogueScript;
@@ -34,21 +34,23 @@ public class DialogueConstructor : ScriptableObject
 
     private void DeleteDialogueFolder()
     {
+        if(folderPath == null)
+        {
+            string path = AssetDatabase.GetAssetPath(this);
+            folderPath = Path.GetDirectoryName(path) + "/" + this.name; // uses name of the scriptable object
+        }
+
         if (AssetDatabase.AssetPathExists(folderPath))
         {
             AssetDatabase.DeleteAsset(folderPath); // clear any existing data to rebuild
         }
-
-        AssetDatabase.AssetPathExists(folderPath); // ensure the path is refreshed
     }
 
     private void InitializeDialogueFolder()
     {
-        string path = AssetDatabase.GetAssetPath(this);
-        folderPath = Path.GetDirectoryName(path) + "/" + this.name; // uses name of the scriptable object
-        DeleteDialogueFolder();
+        DeleteDialogueFolder(); // folderPath initialized here
 
-        Directory.CreateDirectory(folderPath);
+        AssetDatabase.CreateFolder(Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)), folderPath);
         AssetDatabase.Refresh();
     }
 

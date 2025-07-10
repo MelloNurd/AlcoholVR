@@ -10,6 +10,7 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[SelectionBase]
 public class Arcade : MonoBehaviour
 {
     public enum GameState

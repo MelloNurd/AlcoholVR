@@ -147,7 +147,8 @@ public class PhysicalButton : MonoBehaviour
             out RaycastHit hitInfo,
             transform.rotation,
             distance,
-            _interactableLayers);
+            _interactableLayers,
+            QueryTriggerInteraction.Ignore);
 
         // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
         bool overlapHit = Physics.OverlapBoxNonAlloc(
@@ -155,7 +156,8 @@ public class PhysicalButton : MonoBehaviour
             scale,
             _collisionResults,
             transform.rotation,
-            _interactableLayers) > 0;
+            _interactableLayers,
+            QueryTriggerInteraction.Ignore) > 0;
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
         bool isValidHit = boxCastHit &&

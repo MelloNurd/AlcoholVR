@@ -54,6 +54,12 @@ public static class Extensions
         return text.Substring(0, count);
     }
 
+    public static char GetFirst(this string text)
+    {
+        if (string.IsNullOrEmpty(text)) return default(char);
+        return text[0];
+    }
+
     /// <summary>
     /// Gets the last x characters of a string.
     /// </summary>
@@ -62,6 +68,12 @@ public static class Extensions
     public static string GetLast(this string text, int count)
     {
         return text.Substring(text.Length - count, count);
+    }
+
+    public static char GetLast(this string text)
+    {
+        if (string.IsNullOrEmpty(text)) return default(char);
+        return text[text.Length - 1];
     }
 
     /// <summary>
@@ -143,15 +155,18 @@ public static class Extensions
     /// </summary>
     /// <param name="replacementCharacter">Character to replace any invalid characters</param>
     /// <returns>A file-name-friendly version of the string</returns>
-    public static string FileNameFriendly(this string value, char replacementCharacter)
+    public static string FileNameFriendly(this string value, char replacementCharacter, bool replaceSpaces = true)
     {
-        value = value.Trim();
-
-        foreach (var c in Path.GetInvalidFileNameChars())
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        foreach (char invalidChar in invalidChars)
         {
-            value = value.Replace(c, replacementCharacter);
+            value = value.Replace(invalidChar, replacementCharacter);
         }
-        return value;
+
+        value = value.TrimEnd('.'); // Remove trailing dots
+
+        // Replace spaces with underscores for better readability
+        return replaceSpaces ? value.Replace(' ', replacementCharacter).Trim() : value.Trim();
     }
 
     /// <summary>
@@ -733,7 +748,10 @@ public static class Extensions
     {
         if (targetDestination == null) return -1;
 
-        NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask);
+        if(!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
+        {
+            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent will not move.");
+        }
 
         agent.SetDestination(hit.position);
 

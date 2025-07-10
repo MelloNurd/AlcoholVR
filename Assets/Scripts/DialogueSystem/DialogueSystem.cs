@@ -30,30 +30,23 @@ public class DialogueSystem : MonoBehaviour
 
     public async void StartDialogue(Dialogue dialogue)
     {
-        if (dialogue == null)
+        DialogueButtons.Instance.ClearButtons();
+
+        if (dialogue == null || dialogue.options == null || dialogue.options.Count == 0)
         {
-            Debug.LogWarning("DialogueOption is null. Cannot initiate dialogue.");
+            EndCurrentDialogue();
             return;
         }
 
         dialogue.onDialogueStart.Invoke();
 
-        DialogueButtons.Instance.ClearButtons();
-        
         await DisplayText(dialogue.dialogueText);
 
-        if (dialogue.options != null && dialogue.options.Count > 0)
+        if (DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
         {
-            if (DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
-            {
-                onDialogueStart.Invoke();
-            }
-            else
-            {
-                EndCurrentDialogue();
-            }
+            onDialogueStart.Invoke();
         }
-        else
+        else // failed to create buttons, end dialogue as fallback
         {
             EndCurrentDialogue();
         }

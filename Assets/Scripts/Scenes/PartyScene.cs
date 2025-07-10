@@ -25,7 +25,8 @@ public class PartyScene : MonoBehaviour
         {
             _hasEnteredHouse = true;
             Debug.Log("Player has entered the house, starting intro sequence.");
-            _introNPC.StartNextSequence();
+            _introNPC.sequences[2].dialogue = _broughtAlcohol;
+            _introNPC.StartNextSequence(); // Will start walking to player
         }
     }
 }

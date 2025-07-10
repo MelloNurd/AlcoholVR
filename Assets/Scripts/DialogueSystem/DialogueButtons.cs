@@ -59,7 +59,9 @@ public class DialogueButtons : MonoBehaviour
             optionButton.name = "DialogueButton: " + dialogue.options[index].optionText;
 
             int closerIndex = i; // weird behavior needed with lambda function, called a closure
-            optionButton.OnButtonUp.AddListener(() => system.StartDialogue(dialogue.options[closerIndex].nextDialogue));
+            optionButton.OnButtonUp.AddListener(() => {
+                system.StartDialogue(dialogue.options[closerIndex].nextDialogue);
+            });
 
             optionButton.SetButtonText(dialogue.options[index].optionText);
 
@@ -107,7 +109,7 @@ public class DialogueButtons : MonoBehaviour
 
             foreach (Vector3 pos in spawnPositions)
             {
-                Collider[] colliders = Physics.OverlapSphere(pos, 0.1f); // Check for existing colliders at the position
+                Collider[] colliders = Physics.OverlapSphere(pos, 0.1f, -1, QueryTriggerInteraction.Ignore); // Check for existing colliders at the position
                 foreach (Collider col in colliders)
                 {
                     if (col.gameObject == gameObject) continue; // Avoid self-collision

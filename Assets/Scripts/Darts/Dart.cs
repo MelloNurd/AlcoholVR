@@ -8,6 +8,8 @@ public class Dart : MonoBehaviour
     private Rigidbody rb;
     private XRGrabInteractable grabInteractable;
 
+    public bool HasBeenGrabbed { get; set; } = false;
+
     private bool stuck = false;
     float StickDelay = 0;
 
@@ -27,6 +29,8 @@ public class Dart : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        if (!HasBeenGrabbed) return;
+
         //Debug.Log("Dart collided with: " + collision.gameObject.name);
         if (stuck)
         {
