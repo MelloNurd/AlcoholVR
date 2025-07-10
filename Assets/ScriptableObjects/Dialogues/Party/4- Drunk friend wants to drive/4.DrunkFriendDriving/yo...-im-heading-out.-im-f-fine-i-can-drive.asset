@@ -9,29 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce17b99a3e9169f4eb4191aa1c397a6a, type: 3}
-  m_Name: 5_3
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: yo...-im-heading-out.-im-f-fine-i-can-drive
   m_EditorClassIdentifier: 
-  rootText:
-    text: "Welp\u2026 party\u2019s gettin\u2019 wild. Let\u2019s just head to the
-      bonfire."
-    options:
-    - text: Sure, I'm right behind you.
-      dialogue:
-        text: 
-        options: []
-        onOptionSelected:
-          m_PersistentCalls:
-            m_Calls: []
-      onResponseSelected:
-        m_PersistentCalls:
-          m_Calls: []
+  dialogueText: yo... im heading out. im f-fine i can drive.
+  options:
+  - optionText: "You\u2019re not driving. Give me your keys."
+    nextDialogue: {fileID: 11400000, guid: 79b4e1168392e9c4ea88968bd4c9e55e, type: 2}
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-  currentDialogueText:
-    text: 
-    options: []
+  - optionText: Okay, your call...
+    nextDialogue: {fileID: 0}
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
