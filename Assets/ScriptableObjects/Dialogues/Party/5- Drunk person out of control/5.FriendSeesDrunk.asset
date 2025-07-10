@@ -10,11 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
-  m_Name: 2.StillLooking
+  m_Name: 5.FriendSeesDrunk
   m_EditorClassIdentifier: 
-  dialogueText: Did you find his phone?
+  dialogueText: "Yo, someone help him out. He\u2019s outta control."
   options:
-  - optionText: Haven't seen it yet.
+  - optionText: I'll go talk to him.
+    nextDialogue: {fileID: 0}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: Screw it, not my problem.
     nextDialogue: {fileID: 0}
     onOptionSelected:
       m_PersistentCalls:

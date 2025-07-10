@@ -74,25 +74,26 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         switch (objective.currentStatus)
         {
             case ObjectiveSystem.Statuses.ToDo:
+                onFirstInteraction?.Invoke();
+
                 dialogueSystem.StartDialogue(firstDialogue);
 
-                onFirstInteraction?.Invoke();
                 objective.Begin();
                 break;
             case ObjectiveSystem.Statuses.InProgress:
-                dialogueSystem.StartDialogue(incompleteDialogue);
-
                 onIncompleteInteraction?.Invoke();
+
+                dialogueSystem.StartDialogue(incompleteDialogue);
                 break;
             case ObjectiveSystem.Statuses.Completed:
-                dialogueSystem.StartDialogue(completeDialogue);
-
                 onCompleteInteraction?.Invoke();
+
+                dialogueSystem.StartDialogue(completeDialogue);
                 break;
             case ObjectiveSystem.Statuses.Failed:
-                dialogueSystem.StartDialogue(failDialogue);
-
                 onFailInteraction?.Invoke();
+
+                dialogueSystem.StartDialogue(failDialogue);
                 break;
         }
     }

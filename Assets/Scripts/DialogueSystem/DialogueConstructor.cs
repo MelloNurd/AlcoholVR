@@ -34,10 +34,10 @@ public class DialogueConstructor : ScriptableObject
 
     private void DeleteDialogueFolder()
     {
-        if(folderPath == null)
+        if(folderPath.IsBlank())
         {
             string path = AssetDatabase.GetAssetPath(this);
-            folderPath = Path.GetDirectoryName(path) + "/" + this.name; // uses name of the scriptable object
+            folderPath = Path.GetDirectoryName(path) + "/" + this.name.FileNameFriendly(); // uses name of the scriptable object
         }
 
         if (AssetDatabase.AssetPathExists(folderPath))
@@ -50,7 +50,10 @@ public class DialogueConstructor : ScriptableObject
     {
         DeleteDialogueFolder(); // folderPath initialized here
 
-        AssetDatabase.CreateFolder(Path.GetDirectoryName(AssetDatabase.GetAssetPath(this)), folderPath);
+        string parentDirectory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(this));
+        string folderName = this.name.FileNameFriendly();
+        
+        AssetDatabase.CreateFolder(parentDirectory, folderName);
         AssetDatabase.Refresh();
     }
 
@@ -58,26 +61,56 @@ public class DialogueConstructor : ScriptableObject
     {
         string[] lines = dialogueScript.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
         
+        if (lines.Length == 0) return;
+        
         int currentIndex = 0;
-        RecursiveConstruction(lines, ref currentIndex);
+        
+        // Check if the first line is indented
+        int firstLineIndent = CountLeadingTabs(lines[0]);
+        
+        if (firstLineIndent > 0)
+        {
+            // Create an empty dialogue and start processing from the expected indent level
+            RecursiveConstruction(lines, ref currentIndex, firstLineIndent - 1, null, true);
+        }
+        else
+        {
+            // Normal processing starting with NPC dialogue
+            RecursiveConstruction(lines, ref currentIndex);
+        }
     }
 
-    private Dialogue RecursiveConstruction(string[] lines, ref int currentIndex, int expectedIndent = 0, string parentFolderPath = null)
+    private Dialogue RecursiveConstruction(string[] lines, ref int currentIndex, int expectedIndent = 0, string parentFolderPath = null, bool createEmptyDialogue = false)
     {
         if (currentIndex >= lines.Length) return null;
         
         Dialogue dialogueAsset = ScriptableObject.CreateInstance<Dialogue>();
-        string dialogueText = lines[currentIndex].Trim();
-        dialogueAsset.dialogueText = dialogueText;
+        
+        string dialogueText = "";
+        string dialogueFileName = this.name.FileNameFriendly();
+        
+        if (createEmptyDialogue)
+        {
+            // Create empty dialogue with just options
+            dialogueAsset.dialogueText = "";
+            dialogueFileName = this.name.FileNameFriendly();
+        }
+        else
+        {
+            // Normal dialogue processing
+            dialogueText = lines[currentIndex].Trim();
+            dialogueAsset.dialogueText = dialogueText;
+            dialogueFileName = dialogueText.FileNameFriendly();
+            if (dialogueFileName.IsBlank()) dialogueFileName = this.name.FileNameFriendly();
+            currentIndex++;
+        }
 
         // determine the folder where this dialogue asset should be placed
         string currentFolderPath = parentFolderPath ?? folderPath;
         
         // create asset directly in the current folder (no subfolder for the dialogue itself)
-        string dialogueFileName = dialogueText.FileNameFriendly();
         string assetPath = Path.Combine(currentFolderPath, dialogueFileName + ".asset");
         
-        currentIndex++;
         int optionIndex = 1;
         
         while (currentIndex < lines.Length)
@@ -98,9 +131,19 @@ public class DialogueConstructor : ScriptableObject
                     string optionFolderName = optionText.FileNameFriendly();
                     string optionFolderPath = Path.Combine(currentFolderPath, optionFolderName);
                     
-                    if (!Directory.Exists(optionFolderPath))
+                    if (!AssetDatabase.AssetPathExists(optionFolderPath))
                     {
-                        Directory.CreateDirectory(optionFolderPath);
+                        // Create the folder using proper parent/child relationship
+                        string parentDir = Path.GetDirectoryName(optionFolderPath);
+                        string folderName = Path.GetFileName(optionFolderPath);
+                        
+                        // Ensure parent directory exists
+                        if (!AssetDatabase.AssetPathExists(parentDir))
+                        {
+                            CreateDirectoryRecursively(parentDir);
+                        }
+                        
+                        AssetDatabase.CreateFolder(parentDir, folderName);
                         AssetDatabase.Refresh();
                     }
                     
@@ -120,10 +163,37 @@ public class DialogueConstructor : ScriptableObject
             }
         }
         
+        // Ensure the directory exists before creating the asset
+        string assetDirectory = Path.GetDirectoryName(assetPath);
+        if (!AssetDatabase.AssetPathExists(assetDirectory))
+        {
+            CreateDirectoryRecursively(assetDirectory);
+        }
+        
         AssetDatabase.CreateAsset(dialogueAsset, assetPath);
         AssetDatabase.SaveAssets();
         
         return dialogueAsset;
+    }
+
+    private void CreateDirectoryRecursively(string path)
+    {
+        string[] pathParts = path.Split('/');
+        string currentPath = pathParts[0];
+        
+        for (int i = 1; i < pathParts.Length; i++)
+        {
+            string nextPath = currentPath + "/" + pathParts[i];
+            
+            if (!AssetDatabase.AssetPathExists(nextPath))
+            {
+                AssetDatabase.CreateFolder(currentPath, pathParts[i]);
+            }
+            
+            currentPath = nextPath;
+        }
+        
+        AssetDatabase.Refresh();
     }
 
     private int CountLeadingTabs(string line)

@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: Hey! Have you seen Marcus's phone? He's freaking out and he's drunk
     out of his mind...
-  options: []
+  options:
+  - optionText: I'll let you know if I find it.
+    nextDialogue: {fileID: 0}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []

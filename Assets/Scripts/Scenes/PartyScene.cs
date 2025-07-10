@@ -5,7 +5,8 @@ public class PartyScene : MonoBehaviour
     [Header("NPC References")]
     [SerializeField] private SequencedNPC _introNPC;
     [SerializeField] private SequencedNPC _drunkDrivingFriendNPC;
-    [SerializeField] private SequencedNPC _soberFriendNPC;
+    [SerializeField] private InteractableNPC_SM _couchFriend;
+    [SerializeField] private SequencedNPC _bonfireFriendNPC;
 
     [Header("Dialogue References")]
     [SerializeField] private Dialogue _broughtAlcohol;
@@ -28,5 +29,18 @@ public class PartyScene : MonoBehaviour
             _introNPC.sequences[2].dialogue = _broughtAlcohol;
             _introNPC.StartNextSequence(); // Will start walking to player
         }
+    }
+
+    public void SetCouchDialogue()
+    {
+        if(GlobalStats.DrinkCount > 0)
+        {
+            _couchFriend.firstDialogue = _couchDrunk; // sober is set in inspector by default
+        }
+        _couchFriend.firstDialogue.onDialogueEnd.AddListener(() =>
+        {
+            Debug.Log("Dialoge ended for couch friend, disabling interaction.");
+            _couchFriend.IsInteractable = false;
+        });
     }
 }

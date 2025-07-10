@@ -32,8 +32,9 @@ public class DialogueSystem : MonoBehaviour
     {
         DialogueButtons.Instance.ClearButtons();
 
-        if (dialogue == null || dialogue.options == null || dialogue.options.Count == 0)
+        if (dialogue == null || dialogue.options == null)
         {
+            Debug.LogWarning("Dialogue is null or has no options. Ending dialogue.");
             EndCurrentDialogue();
             return;
         }
@@ -42,12 +43,25 @@ public class DialogueSystem : MonoBehaviour
 
         await DisplayText(dialogue.dialogueText);
 
-        if (DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
+        if (dialogue.options.Count > 0)
         {
-            onDialogueStart.Invoke();
+            if(DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
+            {
+                onDialogueStart.Invoke();
+            }
+            else
+            {
+                // failed to create buttons, end dialogue as fallback
+                Debug.LogWarning("Failed to create dialogue buttons. Ending dialogue.");
+                EndCurrentDialogue();
+                return;
+            }
         }
-        else // failed to create buttons, end dialogue as fallback
+        else
         {
+            Player.Instance.EnableMovement();
+            await UniTask.Delay(3000); // Wait a bit before hiding text bubble
+            DialogueButtons.Instance.ClearButtons();
             EndCurrentDialogue();
         }
     }
@@ -74,6 +88,7 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndCurrentDialogue()
     {
+        Debug.Log("Ending current dialogue for " + gameObject.name);
         onDialogueEnd.Invoke();
         _textBubble.SetActive(false);
         _dialogueText.text = "";
