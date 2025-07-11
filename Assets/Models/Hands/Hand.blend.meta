@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 4f04638f9de194c40aac8bd662b6ecdd
 ModelImporter:
-  serializedVersion: 20200
+  serializedVersion: 22200
   internalIDToNameTable:
   - first:
       74: -623603649343465320
@@ -17,9 +17,8 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -59,22 +58,74 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events: []
-      transformMask: []
-      maskType: 3
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Hand 1
+        weight: 1
+      - path: Armature/Hand 1/Hand_end
+        weight: 1
+      - path: Armature/Middle.001
+        weight: 1
+      - path: Armature/Middle.001/Middle.002
+        weight: 1
+      - path: Armature/Middle.001/Middle.002/Middle.003
+        weight: 1
+      - path: Armature/Middle.001/Middle.002/Middle.003/Middle.003_end
+        weight: 1
+      - path: Armature/Pinky.001
+        weight: 1
+      - path: Armature/Pinky.001/Pinky.002
+        weight: 1
+      - path: Armature/Pinky.001/Pinky.002/Pinky.003
+        weight: 1
+      - path: Armature/Pinky.001/Pinky.002/Pinky.003/Pinky.003_end
+        weight: 1
+      - path: Armature/Pointer.001
+        weight: 1
+      - path: Armature/Pointer.001/Pointer.002
+        weight: 1
+      - path: Armature/Pointer.001/Pointer.002/Pointer.003
+        weight: 1
+      - path: Armature/Pointer.001/Pointer.002/Pointer.003/Pointer.003_end
+        weight: 1
+      - path: Armature/Ring.001
+        weight: 1
+      - path: Armature/Ring.001/Ring.002
+        weight: 1
+      - path: Armature/Ring.001/Ring.002/Ring.003
+        weight: 1
+      - path: Armature/Ring.001/Ring.002/Ring.003/Ring.003_end
+        weight: 1
+      - path: Armature/Thumb.001
+        weight: 1
+      - path: Armature/Thumb.001/Thumb.002
+        weight: 1
+      - path: Armature/Thumb.001/Thumb.002/Thumb.003
+        weight: 1
+      - path: Armature/Thumb.001/Thumb.002/Thumb.003/Thumb.003_end
+        weight: 1
+      - path: Hand
+        weight: 1
+      maskType: 0
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 10
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -86,6 +137,7 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -96,6 +148,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -117,7 +170,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1
+    globalScale: 10
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
@@ -128,6 +181,8 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
