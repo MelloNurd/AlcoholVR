@@ -10,15 +10,12 @@ namespace Bozo.ModularCharacters
     {
         public float spinDir;
         public Transform character;
-        private Animator anim;
-        float dizzyTimer = 1;
 
         bool spinning;
 
         public void SetCharacter(Transform character)
         {
             this.character = character;
-            anim = character.GetComponentInChildren<Animator>();
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -43,7 +40,6 @@ namespace Bozo.ModularCharacters
             if (spinning)
             {
                 spinDir = -Input.GetAxis("Mouse X") * 5;
-                dizzyTimer = 0.5f;
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -52,19 +48,6 @@ namespace Bozo.ModularCharacters
             }
             character.Rotate(0, spinDir, 0);
             spinDir = Mathf.Lerp(spinDir, 0, Time.deltaTime);
-            dizzyTimer -= Time.deltaTime;
-
-            if (dizzyTimer <= 0)
-            {
-                if (spinDir >= 5 || spinDir <= -5)
-                {
-                    anim.SetBool("Dizzy", true);
-                }
-                else
-                {
-                    anim.SetBool("Dizzy", false);
-                }
-            }
         }
     }
 }
