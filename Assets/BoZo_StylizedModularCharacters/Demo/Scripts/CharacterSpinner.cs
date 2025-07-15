@@ -49,5 +49,10 @@ namespace Bozo.ModularCharacters
             character.Rotate(0, spinDir, 0);
             spinDir = Mathf.Lerp(spinDir, 0, Time.deltaTime);
         }
+
+        public void Spin(float amount)
+        {
+            character.rotation = Quaternion.Euler(0, amount, 0);
+        }
     }
 }
