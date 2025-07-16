@@ -35,7 +35,7 @@ namespace Bozo.ModularCharacters
 
        [SerializeField] CharactersFiller charactersFiller;
        [SerializeField] GameObject confirmParent;
-       [SerializeField] TextMeshProUGUI savedPopUp;
+       [SerializeField] SliderManager sliderManager;
 
         private void Awake()
         {
@@ -295,6 +295,7 @@ namespace Bozo.ModularCharacters
             character.characterData = CharacterSave;
             character.LoadFromObject();
             Debug.Log("Character loaded successfully: " + assetName);
+            sliderManager.InitializeSliders();
         }
     }
 }

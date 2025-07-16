@@ -10,6 +10,7 @@ public class CharactersFiller : MonoBehaviour
     TextMeshProUGUI buttonText;
     DemoCharacterCreator demoCharacterCreator;
     TextMeshProUGUI characterNameText; // Changed from Text to TextMeshProUGUI
+    [SerializeField] GameObject loadMenu;
 
     void Awake()
     {
@@ -21,6 +22,10 @@ public class CharactersFiller : MonoBehaviour
     private void Start()
     {
         FillCharactersList();
+        Debug.Log("CharactersFiller Start called, filling characters list.");
+        ChangeNameField("Preset 1");
+        demoCharacterCreator.LoadCharacter();
+        loadMenu.SetActive(false);
     }
 
     public void FillCharactersList()

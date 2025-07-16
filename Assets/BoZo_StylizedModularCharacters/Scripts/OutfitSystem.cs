@@ -7,7 +7,7 @@ using UnityEngine.Events;
     {
         public BSMC_CharacterObject characterData;
         private BSMC_CharacterObject _characterData;
-        SkinnedMeshRenderer CharacterBody;
+        public SkinnedMeshRenderer CharacterBody;
         public Material CharacterMaterial;
         private Bounds CharacterRenderBounds;
         public Dictionary<OutfitType, Transform> Outfits = new Dictionary<OutfitType, Transform>();
