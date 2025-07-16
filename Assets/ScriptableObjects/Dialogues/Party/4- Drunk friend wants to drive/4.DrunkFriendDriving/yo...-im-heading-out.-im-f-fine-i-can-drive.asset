@@ -20,10 +20,22 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
   - optionText: Okay, your call...
-    nextDialogue: {fileID: 0}
+    nextDialogue: {fileID: 11400000, guid: 98f51864b7359f44f87905dd520fee9d, type: 2}
     onOptionSelected:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 11400000, guid: 5163c985089a42a4596f1ecae1faa722, type: 2}
+          m_TargetAssemblyTypeName: BoolValue, Assembly-CSharp
+          m_MethodName: set_Value
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []

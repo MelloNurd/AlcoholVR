@@ -1,15 +1,11 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.UI;
 using Unity.VisualScripting;
 using TMPro;
 using System.IO;
-using PrimeTween;
-using System.Xml;
-using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 
 namespace Bozo.ModularCharacters
@@ -224,6 +220,7 @@ namespace Bozo.ModularCharacters
 
             //check if file already exists
             string assetPath = savePath + "/" + CharacterName.text + ".asset";
+            assetPath = assetPath.Cleaned();
             if (File.Exists(assetPath))
             {
                 confirmParent.SetActive(true);
@@ -249,37 +246,22 @@ namespace Bozo.ModularCharacters
 
         public void LoadCharacter()
         {
-            var files = System.IO.Directory.GetFiles(savePath, "*.asset");
-            Debug.Log("Files found in save path: " + files.Length);
+            AssetDatabase.Refresh();
 
             string assetName = CharacterName.text.Trim();
 
-            // Ensure consistent path separators and proper AssetDatabase path format
-            string normalizedSavePath = savePath.Replace('\\', '/');
-            if (!normalizedSavePath.StartsWith("Assets/"))
-            {
-                normalizedSavePath = "Assets/" + normalizedSavePath.TrimStart('/');
-            }
+            string path = savePath + "/" + assetName + ".asset";
+            path = path.Cleaned();
+            Debug.Log("assetName: [" + assetName + "]");
 
-            string path = $"{normalizedSavePath}/{assetName}.asset";
-            Debug.Log("Attempting to load from path: " + path);
-
-            // First, let's list all files to see what's actually there
-            Debug.Log("Available files:");
-            foreach (var file in files)
+            if (!AssetDatabase.IsValidFolder(savePath))
             {
-                var fileName = System.IO.Path.GetFileName(file);
-                Debug.Log($"Found file: {fileName}");
-            }
-
-            if (!AssetDatabase.IsValidFolder(normalizedSavePath))
-            {
-                Debug.LogError($"The folder {normalizedSavePath} does not exist.");
+                Debug.LogWarning("Save path is not a valid folder: " + savePath);
                 return;
             }
 
             var CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(path);
-
+            
             if (CharacterSave == null)
             {
                 Debug.LogError("Couldn't load character from path: " + path);
@@ -295,7 +277,7 @@ namespace Bozo.ModularCharacters
                     Debug.LogError("Asset does not exist at the specified path");
 
                     // Let's try to find the asset with a different approach
-                    string[] guids = AssetDatabase.FindAssets($"{assetName} t:BSMC_CharacterObject", new[] { normalizedSavePath });
+                    string[] guids = AssetDatabase.FindAssets($"{assetName} t:BSMC_CharacterObject", new[] { savePath });
                     if (guids.Length > 0)
                     {
                         string foundPath = AssetDatabase.GUIDToAssetPath(guids[0]);

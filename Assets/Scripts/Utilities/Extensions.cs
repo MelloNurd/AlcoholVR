@@ -170,6 +170,28 @@ public static class Extensions
     }
 
     /// <summary>
+    /// Removes all control characters from a string, leaving only printable characters.
+    /// </summary>
+    /// <returns>The new version of the string with no control characters.</returns>
+    public static string Cleaned(this string value)
+    {
+        StringBuilder builder = new();
+
+        foreach (char c in value)
+        {
+            // Remove control characters AND format characters (includes zero-width spaces and other invisible Unicode)
+            if (char.IsControl(c) || char.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.Format) 
+                continue;
+
+            Debug.Log(c);
+
+            builder.Append(c);
+        }
+
+        return builder.ToString();
+    }
+
+    /// <summary>
     /// Automatically increments the file name number if there are existing files with the same name.
     /// </summary>
     /// <returns>The new, adjusted filePath. If no file with the same name exists, the original string.</returns>

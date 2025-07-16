@@ -12,8 +12,10 @@ public class DialogueSystem : MonoBehaviour
     public bool useTypewriterEffect = true;
     public bool IsDialogueActive => _dialogueText.text.Length > 0;
 
-    public UnityEvent onDialogueStart = new();
-    public UnityEvent onDialogueEnd = new();
+    public Dialogue currentDialogue;
+
+    public UnityEvent onStart;
+    public UnityEvent onEnd;
 
     private Typewriter _typewriter;
     private TMP_Text _dialogueText;
@@ -28,9 +30,14 @@ public class DialogueSystem : MonoBehaviour
         _textBubble.SetActive(false);
     }
 
-    public async void StartDialogue(Dialogue dialogue)
+    public async void StartDialogue(Dialogue dialogue, int depth = 0)
     {
         DialogueButtons.Instance.ClearButtons();
+
+        if (depth == 0)
+        {
+            onStart?.Invoke();
+        }
 
         if (dialogue == null || dialogue.options == null)
         {
@@ -39,7 +46,9 @@ public class DialogueSystem : MonoBehaviour
             return;
         }
 
-        dialogue.onDialogueStart.Invoke();
+        currentDialogue = dialogue;
+
+        currentDialogue.onDialogueStart?.Invoke();
 
         await DisplayText(dialogue.dialogueText);
 
@@ -47,7 +56,7 @@ public class DialogueSystem : MonoBehaviour
         {
             if(DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
             {
-                onDialogueStart.Invoke();
+                dialogue.onDialogueStart?.Invoke();
             }
             else
             {
@@ -88,8 +97,10 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndCurrentDialogue()
     {
-        Debug.Log("Ending current dialogue for " + gameObject.name);
-        onDialogueEnd.Invoke();
+        Debug.Log("Ending current dialogue: " + (currentDialogue?.name ?? "None"));
+        currentDialogue?.onDialogueEnd?.Invoke();
+        onEnd?.Invoke();
+        currentDialogue = null;
         _textBubble.SetActive(false);
         _dialogueText.text = "";
     }

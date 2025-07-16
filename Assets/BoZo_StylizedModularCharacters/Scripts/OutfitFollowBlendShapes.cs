@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Bozo.ModularCharacters
-{
     public class OutfitFollowBlendShapes : MonoBehaviour
     {
         SkinnedMeshRenderer mesh;
@@ -44,4 +42,3 @@ namespace Bozo.ModularCharacters
             }
         }
     }
-}

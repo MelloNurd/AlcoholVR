@@ -61,7 +61,8 @@ public class DialogueButtons : MonoBehaviour
             int closerIndex = i; // weird behavior needed with lambda function, called a closure
             optionButton.OnButtonDown.AddListener(async () => {
                 await UniTask.Delay(100); // small delay to allow button press sound to play
-                system.StartDialogue(dialogue.options[closerIndex].nextDialogue);
+                dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
+                system.StartDialogue(dialogue.options[closerIndex].nextDialogue, 1);
             });
 
             optionButton.SetButtonText(dialogue.options[index].optionText);

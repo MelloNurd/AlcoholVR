@@ -4,6 +4,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -51,7 +52,7 @@ public class Sequence
 public class SequencedNPC : MonoBehaviour
 {
     public List<Sequence> sequences = new List<Sequence>();
-    private Sequence currentSequence;
+    public Sequence currentSequence;
 
     [SerializeField, Required] private AnimationClip defaultAnimation;
     [SerializeField, Required] private AnimationClip walkAnimation;
@@ -65,7 +66,7 @@ public class SequencedNPC : MonoBehaviour
     [HideInInspector] public Animator animator;
     private AudioSource _audioSource;
     private GameObject _playerObj;
-    private DialogueSystem dialogueSystem;
+    public DialogueSystem dialogueSystem;
 
     private CancellationTokenSource _cancelToken;
     private bool _isAtDestination = true;
@@ -73,6 +74,8 @@ public class SequencedNPC : MonoBehaviour
     private Vector3 _lastDestinationPosition;
 
     private float _lastDestinationUpdateTime = 0f;
+
+    [HideInInspector] public UnityEvent onFinishSequences = new();
 
     private void Awake()
     {
@@ -152,8 +155,8 @@ public class SequencedNPC : MonoBehaviour
                 
                 break;
             case Sequence.SequenceType.Dialogue:
-                dialogueSystem.onDialogueEnd.RemoveListener(async () => {
-                    await UniTask.Delay(1000);
+                dialogueSystem.onEnd?.RemoveListener(async () => {
+                    await UniTask.Delay(100);
                     StartNextSequence();
                 });
 
@@ -163,7 +166,7 @@ public class SequencedNPC : MonoBehaviour
                 await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
                 dialogueSystem.StartDialogue(sequence.dialogue);
 
-                dialogueSystem.onDialogueEnd.AddListener(async () => {
+                dialogueSystem.onEnd?.AddListener(async () => {
                     Player.Instance.EnableMovement();
                     await UniTask.Delay(1000);
                     StartNextSequence();
@@ -216,6 +219,7 @@ public class SequencedNPC : MonoBehaviour
         if (nextIndex >= sequences.Count)
         {
             Debug.Log($"Reached end of sequences for {gameObject.name}.");
+            onFinishSequences?.Invoke();
             if (!wrapAroundSequences) return;
             nextIndex = 0;
         }

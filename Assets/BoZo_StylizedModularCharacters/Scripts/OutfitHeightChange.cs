@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-namespace Bozo.ModularCharacters
-{
     public class OutfitHeightChange : MonoBehaviour
     {
         [SerializeField] float HeightOffset;
@@ -24,4 +21,3 @@ namespace Bozo.ModularCharacters
             System.transform.localPosition = new Vector3(System.transform.localPosition.x, System.transform.localPosition.y - HeightOffset, System.transform.localPosition.z);
         }
     }
-}

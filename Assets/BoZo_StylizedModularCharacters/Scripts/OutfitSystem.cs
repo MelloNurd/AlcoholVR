@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Bozo.ModularCharacters
-{
     public enum OutfitType { Face, Head, HairFront, HairBack, Top, Bottom, Feet, LowerFace, Hat, Overall, Gloves }
     public class OutfitSystem : MonoBehaviour
     {
@@ -43,7 +41,6 @@ namespace Bozo.ModularCharacters
         [Space]
         [Range(0, 100)] public float MouthWide;
         [Range(0, 100)] public float MouthThin;
-
 
         private Transform eyeSocket_L;
         private Transform eyeSocket_R;
@@ -176,7 +173,10 @@ namespace Bozo.ModularCharacters
         public void RemoveAllOutfits()
         {
             List<Transform> list = new List<Transform>(Outfits.Values);
-            foreach (var item in list) { Destroy(item.gameObject); }
+            foreach (var item in list) 
+            {
+                Destroy(item.gameObject); 
+            }
             Outfits.Clear();
             OnOutfitChanged?.Invoke(null);
         }
@@ -634,4 +634,3 @@ namespace Bozo.ModularCharacters
 
 
     }
-}

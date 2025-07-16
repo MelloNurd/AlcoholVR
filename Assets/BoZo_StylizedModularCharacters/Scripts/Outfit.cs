@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Bozo.ModularCharacters
-{
     public class Outfit : MonoBehaviour
     {
         public bool Initalized;
@@ -136,5 +134,3 @@ namespace Bozo.ModularCharacters
             HiddenObjects.Clear();
         }
     }
-
-}
