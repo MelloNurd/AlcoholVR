@@ -90,7 +90,7 @@ public class HandAnimator : MonoBehaviour
 
     public void AnimateActionInput(Finger fingerToAnimate)
     {
-        Debug.Log($"Animating {fingerToAnimate.type} to {fingerToAnimate.target}");
+        //Debug.Log($"Animating {fingerToAnimate.type} to {fingerToAnimate.target}");
         var fingerName = fingerToAnimate.type.ToString();
         var animationBlendValue = fingerToAnimate.target;
         _handAnimator.SetFloat(fingerName, animationBlendValue);

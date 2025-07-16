@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace Bozo.ModularCharacters
 {
-    public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler
+    public class SVImageControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerClickHandler
     {
         [SerializeField] private Image PickerImage;
 
@@ -15,6 +15,9 @@ namespace Bozo.ModularCharacters
         private RectTransform rect;
         private RectTransform pickerTransform;
 
+        private bool isDragging = false;
+        private PointerEventData currentEventData;
+
         private void Awake()
         {
             SVImage = GetComponent<RawImage>();
@@ -22,15 +25,22 @@ namespace Bozo.ModularCharacters
             rect = GetComponent<RectTransform>();
             pickerTransform = PickerImage.GetComponent<RectTransform>();
 
-            // Initialize pickerTransform to bottom-left corner
             pickerTransform.localPosition = new Vector2(-(rect.sizeDelta.x * 0.5f), -(rect.sizeDelta.y * 0.5f));
+        }
+
+        private void Update()
+        {
+            if (isDragging && currentEventData != null)
+            {
+                UpdateColor(currentEventData);
+            }
         }
 
         private void UpdateColor(PointerEventData eventData)
         {
             if (eventData.pressEventCamera == null)
             {
-                Debug.LogWarning("EventData pressEventCamera is null. Check XR Ray Interactor setup.");
+                Debug.LogWarning("EventData pressEventCamera is null.");
                 return;
             }
 
@@ -51,14 +61,24 @@ namespace Bozo.ModularCharacters
 
                 CC.SetSV(xNorm, yNorm);
             }
-            else
-            {
-                Debug.LogWarning("Failed to convert screen point to local point.");
-            }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            isDragging = true;
+            currentEventData = eventData;
+            UpdateColor(eventData);
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            isDragging = false;
+            currentEventData = null;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            currentEventData = eventData; // Keep updating event data reference
             UpdateColor(eventData);
         }
 

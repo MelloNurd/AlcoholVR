@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using TMPro;
+using System.IO;
 
 
 namespace Bozo.ModularCharacters
@@ -29,8 +31,8 @@ namespace Bozo.ModularCharacters
         [SerializeField] CharacterSpinner Spinner;
 
         [Header("Save Options")]
-        public Text CharacterName;
-        [SerializeField] string savePath;
+        public TextMeshProUGUI CharacterName;
+        public string savePath;
 
         private void Awake()
         {
@@ -99,7 +101,7 @@ namespace Bozo.ModularCharacters
             skinIndex += 1;
             if (skinIndex >= skinPresets.Length) skinIndex = 0;
 
-            character.SetSkin(skinPresets[skinIndex],true);
+            character.SetSkin(skinPresets[skinIndex], true);
         }
 
         public void IndexDownSkin()
@@ -183,7 +185,7 @@ namespace Bozo.ModularCharacters
         {
             var color = character.CharacterMaterial.GetColor("_UnderwearTopColor_Opacity");
 
-            if(color.a == 1) { color.a = 0; }
+            if (color.a == 1) { color.a = 0; }
             else { color.a = 1; }
             character.GetCharacterBody().material.SetColor("_UnderwearTopColor_Opacity", color);
             character.SetSkin(character.GetCharacterBody().material);
@@ -208,7 +210,7 @@ namespace Bozo.ModularCharacters
         public void SaveCharacter()
         {
 #if UNITY_EDITOR
-            if(CharacterName.text.Length == 0)
+            if (CharacterName.text.Length == 0)
             {
                 Debug.LogWarning("Please enter in a name with at least one letter");
             }
@@ -224,17 +226,30 @@ namespace Bozo.ModularCharacters
         public void LoadCharacter()
         {
 #if UNITY_EDITOR
-            var CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>("Assets/" + savePath + "/" + CharacterName.text + ".asset");
+            string path = savePath + "/" + CharacterName.text + ".asset";
+            Debug.Log("Attempting to load from path: " + path);
+
+            var CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(path);
             if (CharacterSave == null)
             {
-                Debug.Log("Character Data does not exist. Please make sure that name is spelt correctly or path is correct");
+                Debug.LogError("Couldn't load character from path: " + path);
+
+                // Check if file exists at the path
+                if (System.IO.File.Exists(path))
+                {
+                    Debug.LogError("File exists but couldn't be loaded as BSMC_CharacterObject");
+                }
+                else
+                {
+                    Debug.LogError("File does not exist at the specified path");
+                }
                 return;
             }
 
             character.characterData = CharacterSave;
             character.LoadFromObject();
+            Debug.Log("Character loaded successfully: " + CharacterName.text);
 #endif
         }
-
     }
 }
