@@ -204,17 +204,32 @@ namespace Bozo.ModularCharacters
                 }
             }
 
-            if (colorMaterial == null)
+            //if (colorMaterial == null)
+            //{
+            //    colorObject = null;
+            //    foreach (var item in Swatches) { item.color = new Color(0, 0, 0, 0); }
+            //    return;
+            //}
+
+            for (int i = 0; i < Swatches.Length; i++)
             {
-                colorObject = null;
-                foreach (var item in Swatches) { item.color = new Color(0, 0, 0, 0); }
-                return;
+                string colorProperty = "_Color_" + (i + 1);
+                if (colorMaterial.HasProperty(colorProperty))
+                {
+                    Swatches[i].color = colorMaterial.GetColor(colorProperty);
+                }
+                else
+                {
+                    Swatches[i].color = new Color(0, 0, 0, 0);
+                }
             }
 
             for (int i = 0; i < Swatches.Length; i++)
             {
-                Swatches[i].color = colorMaterial.GetColor("_Color_" + (i + 1));
-
+                if (Swatches[i].color.a == 0)
+                {
+                    Swatches[i].gameObject.SetActive(false);
+                }
             }
 
             ChangeSwatch(0);

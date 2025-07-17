@@ -48,6 +48,7 @@ namespace Bozo.ModularCharacters
         [SerializeField] List<BSMC_CharacterObject> LockedPresets = new List<BSMC_CharacterObject>();
         GameObject lastSelectedButton;
         string lastSelectedPresetName;
+        TextMeshProUGUI lastSelectedPresetText;
         Image lastSelectedImage;
         public float fadeInTime = 2f;
 
@@ -59,6 +60,11 @@ namespace Bozo.ModularCharacters
             var ob = Resources.LoadAll("", typeof(Outfit));
             foreach (var item in ob)
             {
+                //If object name is named BSMC_Top_Naked, skip it
+                if (item.name.Contains("Top_Naked") || item.name.Contains("Bottom_Naked"))
+                {
+                    continue;
+                }
                 _outfits.Add(item.GameObject());
             }
 
@@ -353,15 +359,18 @@ namespace Bozo.ModularCharacters
         {
             Debug.Log("Button: " + lastSelectedButton);
             Debug.Log("Image: " + lastSelectedImage);
-            if (lastSelectedButton != null && lastSelectedImage != null)
+            if (lastSelectedButton != null && lastSelectedImage != null && lastSelectedPresetName != null && lastSelectedPresetText != null)
             {
                 Debug.Log("Deselecting last selected preset: " + lastSelectedPresetName);
                 lastSelectedImage.color = new Color32(43, 43, 43, 255);
+                lastSelectedPresetText.color = new Color32(255, 255, 255, 255);
             }
             lastSelectedButton = gameObject;
             lastSelectedPresetName = presetName;
             lastSelectedImage = gameObject.GetComponent<Image>();
-            lastSelectedImage.color = new Color(87, 87, 87, 255); // Set to white to indicate selection
+            lastSelectedPresetText = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+            lastSelectedImage.color = new Color32(87, 87, 87, 255); // Set to white to indicate selection
+            lastSelectedPresetText.color = new Color32(0, 0, 0, 255); 
         }
 
         public void DeleteLastSelectedPreset()

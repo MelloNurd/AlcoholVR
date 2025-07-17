@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR;
 
-public class LiveHeadsetChecker : MonoBehaviour
+public class AutoSim : MonoBehaviour
 {
     [SerializeField] GameObject InputSimulator;
 
@@ -11,6 +12,7 @@ public class LiveHeadsetChecker : MonoBehaviour
     {
         // Initialize the last device state
         lastDeviceState = XRSettings.enabled;
+
         // Set the initial state of InputSimulator based on the current device state
         InputSimulator.SetActive(!lastDeviceState);
     }

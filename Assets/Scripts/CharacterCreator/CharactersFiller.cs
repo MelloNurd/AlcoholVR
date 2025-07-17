@@ -11,6 +11,7 @@ public class CharactersFiller : MonoBehaviour
     DemoCharacterCreator demoCharacterCreator;
     TextMeshProUGUI characterNameText; // Changed from Text to TextMeshProUGUI
     [SerializeField] GameObject loadMenu;
+    bool firstTime = true;
 
     void Awake()
     {
@@ -46,9 +47,10 @@ public class CharactersFiller : MonoBehaviour
             button.GetComponent<Button>().onClick.AddListener(() => ChangeNameField(capturedFileName));
             button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.SetLastSelectedPreset(button, capturedFileName));
             button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.LoadCharacter());
-            if(fileName == "Preset 1")
+            if(fileName == "Preset 1" && firstTime)
             {
                 demoCharacterCreator.SetLastSelectedPreset(button, fileName);
+                firstTime = false;
             }
         }
     }
