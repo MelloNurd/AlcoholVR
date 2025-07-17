@@ -177,6 +177,12 @@ namespace Bozo.ModularCharacters
             {
                 return;
             }
+
+            for (int i = 0; i < Swatches.Length; i++)
+            {
+                Swatches[i].gameObject.SetActive(true);
+            }
+
             var renderers = ob.GetComponentsInChildren<Renderer>(true);
             if (renderers.Length == 0) return;
             colorObject = renderers[0];

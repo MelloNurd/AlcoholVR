@@ -14,7 +14,7 @@ public class SliderManager : MonoBehaviour
     [SerializeField] private Slider headSlider;
     [SerializeField] private Slider shoulderSlider;
 
-    [Header("Face Tab Sliders (Left)")]
+    [Header("Head Tab Sliders (Left)")]
     [SerializeField] private Slider faceShapeSlider;
     [SerializeField] private Slider bodySlider2;
     [SerializeField] private Slider lashSlider;
@@ -28,7 +28,7 @@ public class SliderManager : MonoBehaviour
     [SerializeField] private Slider eyeScaleYSlider;
     [SerializeField] private Slider eyeScaleZSlider;
 
-    [Header("Face Tab Sliders (Right)")]
+    [Header("Head Tab Sliders (Right)")]
     [SerializeField] private Slider eyeUpSlider;
     [SerializeField] private Slider eyeDownSlider;
     [SerializeField] private Slider eyeSquareSlider;
