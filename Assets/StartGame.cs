@@ -13,7 +13,7 @@ public class StartGame : MonoBehaviour
     public void SaveAndStart()
     {
         characterCreator.CharacterName.text = "PlayerCharacter";
-        characterCreator.SaveCharacter();
+        characterCreator.StartSave();
         UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName);
     }
 }

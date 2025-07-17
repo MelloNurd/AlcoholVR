@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using TMPro;
 using System.IO;
 using System.Linq;
+using Unity.Multiplayer.Center.Common;
 
 
 namespace Bozo.ModularCharacters
@@ -33,9 +34,12 @@ namespace Bozo.ModularCharacters
         public TextMeshProUGUI CharacterName;
         public string savePath;
 
-       [SerializeField] CharactersFiller charactersFiller;
-       [SerializeField] GameObject confirmParent;
-       [SerializeField] SliderManager sliderManager;
+        [SerializeField] CharactersFiller charactersFiller;
+        [SerializeField] GameObject confirmParent;
+        [SerializeField] SliderManager sliderManager;
+        GameObject lastSelectedButton;
+        string lastSelectedPresetName;
+        [SerializeField] List<BSMC_CharacterObject> LockedPresets = new List<BSMC_CharacterObject>();
 
         private void Awake()
         {
@@ -221,6 +225,16 @@ namespace Bozo.ModularCharacters
             //check if file already exists
             string assetPath = savePath + "/" + CharacterName.text + ".asset";
             assetPath = assetPath.Cleaned();
+
+            string name = CharacterName.text.Cleaned();
+
+            //if file already exists, ask for confirmation but not if it's a locked preset
+            if (LockedPresets.Any(p => p.name == name))
+            {
+                Debug.LogWarning("Cannot save over a locked preset: " + name);
+                return;
+            }
+
             if (File.Exists(assetPath))
             {
                 confirmParent.SetActive(true);
@@ -239,7 +253,20 @@ namespace Bozo.ModularCharacters
         {
             var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
             CharacterSave.SaveCharacter(character);
-            AssetDatabase.CreateAsset(CharacterSave, savePath + "/" + CharacterName.text + ".asset");
+            string assetPath = savePath + "/" + CharacterName.text + ".asset";
+            assetPath = assetPath.Cleaned();
+            AssetDatabase.CreateAsset(CharacterSave, assetPath);
+            AssetDatabase.Refresh();
+            charactersFiller.Refresh();
+        }
+
+        public void StartSave()
+        {
+            var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+            CharacterSave.SaveCharacter(character);
+            string assetPath = savePath + "/" + "Unaccessible/PlayerCharacter.asset";
+            assetPath = assetPath.Cleaned();
+            AssetDatabase.CreateAsset(CharacterSave, assetPath);
             AssetDatabase.Refresh();
             charactersFiller.Refresh();
         }
@@ -252,7 +279,6 @@ namespace Bozo.ModularCharacters
 
             string path = savePath + "/" + assetName + ".asset";
             path = path.Cleaned();
-            Debug.Log("assetName: [" + assetName + "]");
 
             if (!AssetDatabase.IsValidFolder(savePath))
             {
@@ -296,6 +322,37 @@ namespace Bozo.ModularCharacters
             character.LoadFromObject();
             Debug.Log("Character loaded successfully: " + assetName);
             sliderManager.InitializeSliders();
+        }
+
+        public void SetLastSelectedPreset(GameObject gameObject, string presetName)
+        {
+            lastSelectedButton = gameObject;
+            lastSelectedPresetName = presetName;
+        }
+
+        public void DeleteLastSelectedPreset()
+        {
+            if (lastSelectedButton != null)
+            {
+                string assetPath = savePath + "/" + CharacterName.text + ".asset";
+                assetPath = assetPath.Cleaned();
+
+                // Check if the Character Save is locked preset
+                if (LockedPresets.Any(p => p.name == lastSelectedPresetName))
+                {
+                    Debug.LogWarning("Cannot delete locked preset: " + lastSelectedPresetName);
+                    return;
+                }
+
+                AssetDatabase.DeleteAsset(assetPath);
+                AssetDatabase.Refresh();
+                charactersFiller.Refresh();
+                Debug.Log("Deleted preset: " + lastSelectedPresetName);
+
+                Destroy(lastSelectedButton);
+                lastSelectedButton = null;
+                lastSelectedPresetName = null;
+            }   
         }
     }
 }

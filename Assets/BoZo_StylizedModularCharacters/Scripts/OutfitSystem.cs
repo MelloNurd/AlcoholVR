@@ -175,6 +175,7 @@ using UnityEngine.Events;
             List<Transform> list = new List<Transform>(Outfits.Values);
             foreach (var item in list) 
             {
+                if (item == null) continue;
                 Destroy(item.gameObject); 
             }
             Outfits.Clear();

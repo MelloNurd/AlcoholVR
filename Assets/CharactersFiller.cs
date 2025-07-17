@@ -44,6 +44,7 @@ public class CharactersFiller : MonoBehaviour
             // Fix closure issue by capturing fileName in a local variable
             string capturedFileName = fileName;
             button.GetComponent<Button>().onClick.AddListener(() => ChangeNameField(capturedFileName));
+            button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.SetLastSelectedPreset(button, capturedFileName));
             button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.LoadCharacter());
         }
     }

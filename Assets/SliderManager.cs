@@ -49,11 +49,16 @@ public class SliderManager : MonoBehaviour
 
     public void Start()
     {
-        skinnedMeshRenderer = outfitSystem.CharacterBody;
+        SetRenderer();
     }
 
     public void InitializeSliders()
     {
+        if(skinnedMeshRenderer == null)
+        {
+            SetRenderer();
+        }
+
         bodySlider.value = outfitSystem.Gender;
         chestSlider.value = outfitSystem.ChestSize;
         heightSlider.value = outfitSystem.height;
@@ -90,5 +95,14 @@ public class SliderManager : MonoBehaviour
         var offset = skinnedMeshRenderer.materials[1].GetVector("_InnerIrisColorOffset");
         irisOffsetXSlider.value = offset.x;
         irisOffsetYSlider.value = offset.y;
+    }
+
+    public void SetRenderer()
+    {
+        // Only set skinnedMeshRenderer if outfitSystem and CharacterBody are not null
+        if (outfitSystem != null && outfitSystem.CharacterBody != null)
+        {
+            skinnedMeshRenderer = outfitSystem.CharacterBody;
+        }
     }
 }

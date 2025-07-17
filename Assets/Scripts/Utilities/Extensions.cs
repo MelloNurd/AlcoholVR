@@ -183,7 +183,7 @@ public static class Extensions
             if (char.IsControl(c) || char.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.Format) 
                 continue;
 
-            Debug.Log(c);
+            //Debug.Log(c);
 
             builder.Append(c);
         }
