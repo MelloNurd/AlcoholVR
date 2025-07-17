@@ -46,6 +46,10 @@ public class CharactersFiller : MonoBehaviour
             button.GetComponent<Button>().onClick.AddListener(() => ChangeNameField(capturedFileName));
             button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.SetLastSelectedPreset(button, capturedFileName));
             button.GetComponent<Button>().onClick.AddListener(() => demoCharacterCreator.LoadCharacter());
+            if(fileName == "Preset 1")
+            {
+                demoCharacterCreator.SetLastSelectedPreset(button, fileName);
+            }
         }
     }
 
