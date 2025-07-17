@@ -7,6 +7,8 @@ using TMPro;
 using System.IO;
 using System.Linq;
 using Unity.Multiplayer.Center.Common;
+using PrimeTween;
+using System.Xml;
 
 
 namespace Bozo.ModularCharacters
@@ -37,9 +39,15 @@ namespace Bozo.ModularCharacters
         [SerializeField] CharactersFiller charactersFiller;
         [SerializeField] GameObject confirmParent;
         [SerializeField] SliderManager sliderManager;
+        [SerializeField] GameObject popupPrompts;
+        TextMeshProUGUI savedPrompt;
+        TextMeshProUGUI noSavePrompt;
+        TextMeshProUGUI noDeletePrompt;
+        TextMeshProUGUI addCharacterPrompt;
+        [SerializeField] List<BSMC_CharacterObject> LockedPresets = new List<BSMC_CharacterObject>();
         GameObject lastSelectedButton;
         string lastSelectedPresetName;
-        [SerializeField] List<BSMC_CharacterObject> LockedPresets = new List<BSMC_CharacterObject>();
+        public float fadeInTime = 2f;
 
         private void Awake()
         {
@@ -69,6 +77,14 @@ namespace Bozo.ModularCharacters
                 }
             }
 
+            savedPrompt = popupPrompts.transform.Find("SavedPrompt").GetComponent<TextMeshProUGUI>();
+            noSavePrompt = popupPrompts.transform.Find("NoSavePrompt").GetComponent<TextMeshProUGUI>();
+            noDeletePrompt = popupPrompts.transform.Find("NoDeletePrompt").GetComponent<TextMeshProUGUI>();
+            addCharacterPrompt = popupPrompts.transform.Find("AddCharacterPrompt").GetComponent<TextMeshProUGUI>();
+            FadeTextInAndOut(savedPrompt, 0f, 0f);
+            FadeTextInAndOut(noSavePrompt, 0f, 0f);
+            FadeTextInAndOut(noDeletePrompt, 0f, 0f);
+            FadeTextInAndOut(addCharacterPrompt, 0f, 0f);
         }
 
         public void IndexUp(string catagory)
@@ -217,9 +233,11 @@ namespace Bozo.ModularCharacters
         public void SaveCharacter()
         {
 #if UNITY_EDITOR
-            if (CharacterName.text.Length == 0)
+            if (CharacterName.text.Cleaned().Length == 0)
             {
+                FadeTextInAndOut(addCharacterPrompt, 2f, fadeInTime);
                 Debug.LogWarning("Please enter in a name with at least one letter");
+                return;
             }
 
             //check if file already exists
@@ -231,6 +249,7 @@ namespace Bozo.ModularCharacters
             //if file already exists, ask for confirmation but not if it's a locked preset
             if (LockedPresets.Any(p => p.name == name))
             {
+                FadeTextInAndOut(noSavePrompt, 2f, fadeInTime);
                 Debug.LogWarning("Cannot save over a locked preset: " + name);
                 return;
             }
@@ -240,6 +259,8 @@ namespace Bozo.ModularCharacters
                 confirmParent.SetActive(true);
                 return;
             }
+
+            FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
 
             var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
             CharacterSave.SaveCharacter(character);
@@ -251,6 +272,8 @@ namespace Bozo.ModularCharacters
 
         public void ForceSave()
         {
+            FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
+
             var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
             CharacterSave.SaveCharacter(character);
             string assetPath = savePath + "/" + CharacterName.text + ".asset";
@@ -264,7 +287,7 @@ namespace Bozo.ModularCharacters
         {
             var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
             CharacterSave.SaveCharacter(character);
-            string assetPath = savePath + "/" + "Unaccessible/PlayerCharacter.asset";
+            string assetPath = savePath + "/Unaccessible/PlayerCharacter.asset";
             assetPath = assetPath.Cleaned();
             AssetDatabase.CreateAsset(CharacterSave, assetPath);
             AssetDatabase.Refresh();
@@ -340,6 +363,7 @@ namespace Bozo.ModularCharacters
                 // Check if the Character Save is locked preset
                 if (LockedPresets.Any(p => p.name == lastSelectedPresetName))
                 {
+                    FadeTextInAndOut(noDeletePrompt, 2f, fadeInTime);
                     Debug.LogWarning("Cannot delete locked preset: " + lastSelectedPresetName);
                     return;
                 }
@@ -353,6 +377,25 @@ namespace Bozo.ModularCharacters
                 lastSelectedButton = null;
                 lastSelectedPresetName = null;
             }   
+        }
+
+        public void FadeTextInAndOut(TextMeshProUGUI tmpText, float holdTime, float fadeDuration)
+        {
+            Color startColor = tmpText.color;
+            startColor.a = 0f;
+            tmpText.color = startColor;
+
+            Color visibleColor = tmpText.color;
+            visibleColor.a = 1f;
+
+            Tween.Color(tmpText, startColor, visibleColor, fadeDuration)
+                .OnComplete(() =>
+                {
+                    Tween.Delay(holdTime).OnComplete(() =>
+                    {
+                        Tween.Color(tmpText, visibleColor, startColor, fadeDuration);
+                    });
+                });
         }
     }
 }
