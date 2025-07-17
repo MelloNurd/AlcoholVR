@@ -255,6 +255,11 @@ namespace Bozo.ModularCharacters
 
             for (int i = 0; i < Swatches.Length; i++)
             {
+                Swatches[i].gameObject.SetActive(true);
+            }
+
+            for (int i = 0; i < Swatches.Length; i++)
+            {
                 if(ReferneceSet[ActiveReferneceSet][i] != "")
                 {
                     Swatches[i].color = colorMaterial.GetColor(ReferneceSet[ActiveReferneceSet][i]);
@@ -262,6 +267,7 @@ namespace Bozo.ModularCharacters
                 else
                 {
                     Swatches[i].color = new Color(0, 0, 0, 0);
+                    Swatches[i].gameObject.SetActive(false);
                 }
             }
 
@@ -279,6 +285,11 @@ namespace Bozo.ModularCharacters
             colorObject = system.GetCharacterBody();
             ActiveReferneceSet = 3;
 
+            for (int i = 0; i < Swatches.Length; i++)
+            {
+                Swatches[i].gameObject.SetActive(true);
+            }
+
             colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch],
             colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
             system.SetEyes(colorObject.materials[MaterialSlot]);
@@ -292,6 +303,7 @@ namespace Bozo.ModularCharacters
                 else
                 {
                     Swatches[i].color = new Color(0, 0, 0, 0);
+                    Swatches[i].gameObject.SetActive(false);
                 }
             }
 
