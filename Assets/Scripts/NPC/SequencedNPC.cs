@@ -243,7 +243,7 @@ public class SequencedNPC : MonoBehaviour
     public void StartSequence(Sequence sequence)
     {
         currentSequence?.onSequenceEnd?.Invoke();
-        dialogueSystem.EndCurrentDialogue();
+        if (dialogueSystem.IsDialogueActive) dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
         _cancelToken?.Cancel();
         HandleSequence(sequence);

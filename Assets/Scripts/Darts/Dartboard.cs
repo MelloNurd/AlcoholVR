@@ -112,8 +112,6 @@ public class Dartboard : MonoBehaviour
         int totalScore = scoreData.score.Sum() + newScore;
         int newCurrentScore = DartsScore.StartScore - totalScore;
 
-        Debug.Log($"Team {scoreData.team} scored {newScore}. Current score: {newCurrentScore}");
-
         if (newCurrentScore < 0) return; // Must get exactly zero to win
 
         scoreData.hitCount++;

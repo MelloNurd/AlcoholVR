@@ -13,7 +13,6 @@ public class MinigameCollider : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"Collision enter with {collision.gameObject.name} on layer {collision.gameObject.layer}");
         if ((_minigame.LayerMask & (1 << collision.gameObject.layer)) == 0) return;
 
         _minigame.AddScore(_scoringData.OnEnterScoreValue);
@@ -24,7 +23,6 @@ public class MinigameCollider : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        Debug.Log($"Collision exit with {collision.gameObject.name} on layer {collision.gameObject.layer}");
         if ((_minigame.LayerMask & (1 << collision.gameObject.layer)) == 0) return;
 
         _minigame.AddScore(_scoringData.OnLeaveScoreValue);
@@ -35,7 +33,6 @@ public class MinigameCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        Debug.Log($"Trigger enter with {collision.gameObject.name} on layer {collision.gameObject.layer}");
         if ((_minigame.LayerMask & (1 << collision.gameObject.layer)) == 0) return;
 
         _minigame.AddScore(_scoringData.OnEnterScoreValue);
@@ -46,7 +43,6 @@ public class MinigameCollider : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
-        Debug.Log($"Trigger exit with {collision.gameObject.name} on layer {collision.gameObject.layer}");
         if ((_minigame.LayerMask & (1 << collision.gameObject.layer)) == 0) return;
 
         _minigame.AddScore(_scoringData.OnLeaveScoreValue);

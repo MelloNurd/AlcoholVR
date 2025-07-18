@@ -160,9 +160,7 @@ public class PhysicalButton : MonoBehaviour
             QueryTriggerInteraction.Ignore) > 0;
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"
-        bool isValidHit = boxCastHit &&
-            (hitInfo.collider.gameObject.layer != LayerMask.NameToLayer("PlayerBody") ||
-             hitInfo.collider.CompareTag("Hand"));
+        bool isValidHit = boxCastHit && hitInfo.collider.gameObject.layer != LayerMask.NameToLayer("PlayerBody");
 
         if ((boxCastHit && isValidHit) || overlapHit)
         {
