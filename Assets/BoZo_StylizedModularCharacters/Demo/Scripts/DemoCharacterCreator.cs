@@ -299,7 +299,6 @@ namespace Bozo.ModularCharacters
             assetPath = assetPath.Cleaned();
             AssetDatabase.CreateAsset(CharacterSave, assetPath);
             AssetDatabase.Refresh();
-            charactersFiller.Refresh();
         }
 
         public void LoadCharacter()
