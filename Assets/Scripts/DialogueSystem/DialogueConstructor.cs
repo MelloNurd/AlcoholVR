@@ -37,7 +37,7 @@ public class DialogueConstructor : ScriptableObject
         if(folderPath.IsBlank())
         {
             string path = AssetDatabase.GetAssetPath(this);
-            folderPath = Path.GetDirectoryName(path) + "/" + this.name.FileNameFriendly(); // uses name of the scriptable object
+            folderPath = Path.GetDirectoryName(path) + "/" + GetClampedFileName(this.name); // uses name of the scriptable object
         }
 
         if (AssetDatabase.AssetPathExists(folderPath))
@@ -51,7 +51,7 @@ public class DialogueConstructor : ScriptableObject
         DeleteDialogueFolder(); // folderPath initialized here
 
         string parentDirectory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(this));
-        string folderName = this.name.FileNameFriendly();
+        string folderName = GetClampedFileName(this.name);
         
         AssetDatabase.CreateFolder(parentDirectory, folderName);
         AssetDatabase.Refresh();
@@ -87,21 +87,21 @@ public class DialogueConstructor : ScriptableObject
         Dialogue dialogueAsset = ScriptableObject.CreateInstance<Dialogue>();
         
         string dialogueText = "";
-        string dialogueFileName = this.name.FileNameFriendly();
+        string dialogueFileName = GetClampedFileName(this.name);
         
         if (createEmptyDialogue)
         {
             // Create empty dialogue with just options
             dialogueAsset.dialogueText = "";
-            dialogueFileName = this.name.FileNameFriendly();
+            dialogueFileName = GetClampedFileName(this.name);
         }
         else
         {
             // Normal dialogue processing
             dialogueText = lines[currentIndex].Trim();
             dialogueAsset.dialogueText = dialogueText;
-            dialogueFileName = dialogueText.FileNameFriendly();
-            if (dialogueFileName.IsBlank()) dialogueFileName = this.name.FileNameFriendly();
+            dialogueFileName = GetClampedFileName(dialogueText);
+            if (dialogueFileName.IsBlank()) dialogueFileName = GetClampedFileName(this.name);
             currentIndex++;
         }
 
@@ -128,7 +128,7 @@ public class DialogueConstructor : ScriptableObject
                 if (currentIndex < lines.Length && CountLeadingTabs(lines[currentIndex]) == expectedIndent + 2)
                 {
                     // create option subfolder for the next dialogue
-                    string optionFolderName = optionText.FileNameFriendly();
+                    string optionFolderName = GetClampedFileName(optionText);
                     string optionFolderPath = Path.Combine(currentFolderPath, optionFolderName);
                     
                     if (!AssetDatabase.AssetPathExists(optionFolderPath))
@@ -205,5 +205,16 @@ public class DialogueConstructor : ScriptableObject
             else break;
         }
         return count;
+    }
+
+    /// <summary>
+    /// Converts a string to a file-name-friendly format and clamps it to 8 characters maximum.
+    /// </summary>
+    /// <param name="value">The string to convert</param>
+    /// <returns>A file-name-friendly string clamped to 8 characters</returns>
+    private string GetClampedFileName(string value)
+    {
+        string friendlyName = value.FileNameFriendly();
+        return friendlyName.Length > 8 ? friendlyName.Substring(0, 8) : friendlyName;
     }
 }

@@ -127,14 +127,17 @@ public class SequencedNPC : MonoBehaviour
                 Debug.Log($"{gameObject.name} has reached {(isWalkToPlayer ? "the player" : "its destination")}.");
                 _isAtDestination = true;
                 animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
-                if (currentSequence.nextSequenceOnEnd) StartNextSequence();
+                if (currentSequence.nextSequenceOnEnd)
+                {
+                    StartNextSequence();
+                }
             }
         }
     }
 
     private async void HandleSequence(Sequence sequence)
     {
-        if(_cancelToken != null)
+        if (_cancelToken != null)
         {
             _cancelToken.Dispose();
         }
@@ -146,7 +149,6 @@ public class SequencedNPC : MonoBehaviour
                 animator.CrossFadeInFixedTime(sequence.animation.name, 0.4f);
                 if(sequence.nextSequenceOnEnd)
                 {
-                    Debug.Log($"Waiting {sequence.animation.length} seconds");
                     await UniTask.Delay(Mathf.RoundToInt(sequence.animation.length * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
                     if (_cancelToken.IsCancellationRequested) break;
                     animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
@@ -155,22 +157,14 @@ public class SequencedNPC : MonoBehaviour
                 
                 break;
             case Sequence.SequenceType.Dialogue:
-                dialogueSystem.onEnd?.RemoveListener(async () => {
-                    await UniTask.Delay(100);
-                    StartNextSequence();
-                });
+                dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
 
                 Player.Instance.DisableMovement();
 
                 Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
                 await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+                
                 dialogueSystem.StartDialogue(sequence.dialogue);
-
-                dialogueSystem.onEnd?.AddListener(async () => {
-                    Player.Instance.EnableMovement();
-                    await UniTask.Delay(1000);
-                    StartNextSequence();
-                });
 
                 break;
             case Sequence.SequenceType.Walk:
@@ -207,14 +201,29 @@ public class SequencedNPC : MonoBehaviour
         }
     }
 
-    public void StartNextSequence()
+    private async void DialogueEndHandler()
+    {
+        if (_cancelToken != null)
+        {
+            _cancelToken.Dispose();
+        }
+        _cancelToken = new CancellationTokenSource();
+
+        Player.Instance.EnableMovement();
+        await UniTask.Delay(1000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        if (_cancelToken.IsCancellationRequested) return;
+        StartNextSequence();
+    }
+
+    public void StartNextSequence() => StartNextSequence(1);
+    public void StartNextSequence(int indexIncrease)
     {
         if (currentSequence == null || sequences.Count == 0) return;
 
         int currentIndex = sequences.IndexOf(currentSequence);
         if (currentIndex < 0) return;
 
-        int nextIndex = currentIndex + 1;
+        int nextIndex = currentIndex + indexIncrease;
 
         if (nextIndex >= sequences.Count)
         {
@@ -224,6 +233,9 @@ public class SequencedNPC : MonoBehaviour
             nextIndex = 0;
         }
 
+        dialogueSystem.onEnd?.RemoveListener(DialogueEndHandler); // only need this for dialogue sequences
+
+        Debug.Log($"Starting next sequence for {gameObject.name}: {sequences[nextIndex].type}");
         StartSequence(sequences[nextIndex]);
     }
 
@@ -231,6 +243,7 @@ public class SequencedNPC : MonoBehaviour
     public void StartSequence(Sequence sequence)
     {
         currentSequence?.onSequenceEnd?.Invoke();
+        dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
         _cancelToken?.Cancel();
         HandleSequence(sequence);

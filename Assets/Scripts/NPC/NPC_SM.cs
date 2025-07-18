@@ -17,8 +17,8 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     }
 
     [HideInInspector] public GameObject bodyObj;
-    [SerializeField] protected AnimationClip _idleAnimation;
-    [SerializeField] protected AnimationClip _moveAnimation;
+    [SerializeField] public AnimationClip idleAnimation;
+    [SerializeField] public AnimationClip moveAnimation;
 
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public Animator animator;
@@ -63,16 +63,23 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
             _checkpoints.Add((_selfActionContainer, transform));
         }
 
-        StartAtFirstCheckpoint();
-
         // Initialize states dictionary
         states.Add(States.Idle, new NPC_IdleState(this));
         states.Add(States.Walk, new NPC_WalkState(this));
         states.Add(States.Checkpoint, new NPC_CheckpointState(this));
         states.Add(States.Interact, new NPC_InteractState(this));
 
-        // Start in idle state
-        SwitchState(States.Walk);
+        if (agent == null || agent.enabled == false)
+        {
+            PlayAnimation(idleAnimation.name);
+            SwitchState(States.Idle);
+            return;
+        }
+        else
+        {
+            StartAtFirstCheckpoint();
+            SwitchState(States.Walk);
+        }
     }
 
     protected virtual void Update()
@@ -101,8 +108,8 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     {
         animator.CrossFadeInFixedTime(animationName, 0.4f);
     }
-    public void PlayIdleAnimation() => PlayAnimation(_idleAnimation.name);
-    public void PlayWalkAnimation() => PlayAnimation(_moveAnimation.name);
+    public void PlayIdleAnimation() => PlayAnimation(idleAnimation.name);
+    public void PlayWalkAnimation() => PlayAnimation(moveAnimation.name);
     public int PlayNextAction()
     {
         Action temp = currentCheckpoint.container.GetNextAction(out int lengthMS);

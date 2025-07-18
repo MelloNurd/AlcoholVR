@@ -35,6 +35,13 @@ public class NPC_WalkState : NPC_BaseState
     {
         base.EnterState();
         npc.PlayWalkAnimation();
+
+        if(npc.agent == null || !npc.agent.enabled)
+        {
+            npc.SwitchState(NPC_SM.States.Idle);
+            return;
+        }
+
         npc.agent.destination = npc.currentCheckpoint.transform.position;
 
         CheckIfAtDestination(notFirstArrival: false); // Do an inital check in case we're already there. If we are, don't reset actions left (assume some may have played already)
@@ -137,7 +144,10 @@ public class NPC_InteractState : NPC_BaseState
 
         _interactableNPC.PlayIdleAnimation();
         storedDestination = _interactableNPC.agent.destination;
-        _interactableNPC.agent.destination = _interactableNPC.bodyObj.transform.position;
+        if(_interactableNPC.agent != null && _interactableNPC.agent.enabled)
+        {
+            _interactableNPC.agent.destination = _interactableNPC.bodyObj.transform.position;
+        }
 
         Vector3 directionToPlayer = (Player.Instance.Position - _interactableNPC.bodyObj.transform.position).WithY(0);
 

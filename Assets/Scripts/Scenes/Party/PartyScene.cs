@@ -8,6 +8,7 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private SequencedNPC _introNPC;
     [SerializeField] private SequencedNPC _drunkDrivingFriendNPC;
     [SerializeField] private InteractableNPC_SM _couchFriend;
+    [SerializeField] private InteractableNPC_SM _rageNPC;
     [SerializeField] private SequencedNPC _bonfireFriendNPC;
 
     [Header("Dialogue References")]
@@ -21,10 +22,14 @@ public class PartyScene : MonoBehaviour
     [Header("Misc References")]
     [SerializeField] private Transform _drunkFriendDrivingDestination;
     [SerializeField] private Transform _drunkFriendStayingDestination;
+    [SerializeField] private AnimationClip _rageAnimation;
+    [SerializeField] private AnimationClip _rageFinishAnimation;
 
-    public bool IsOnSecondFloor => Player.Instance.transform.position.y > 3f;
+    public bool IsOnSecondFloor => IsInHouse && Player.Instance.Position.y > 3.5f;
+    public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.Position.z > -7f; // On the specific side of the house
+    public bool IsInHouse { get; private set; } = false;
 
-    private bool _hasEnteredHouse = false;
+    private int _enterCount = 0;
 
     // sequence properties
     public BoolValue hasDoneIntro;
@@ -33,7 +38,9 @@ public class PartyScene : MonoBehaviour
     public BoolValue hasTalkedToDrunkFriend;
     public BoolValue hasTakenKeysFromFriend;
 
-    private bool isDrinkinFriendReady = false;
+    private bool _isDrinkinFriendReady = false;
+
+    private bool _isRageBegun = false;
 
     private void Start()
     {
@@ -45,40 +52,39 @@ public class PartyScene : MonoBehaviour
         hasTakenKeysFromFriend.Value = false;
 
         SetCouchDialogue();
-        SetDrunkFriendDestination();
         _introNPC.onFinishSequences.AddListener(() => hasDoneIntro.Value = true);
     }
 
     private void Update()
     {
-        if(!isDrinkinFriendReady && (hasDoneIntro.Value && hasTalkedToCouchFriend.Value))
+        if (Input.GetKeyDown(KeyCode.F2) || (!_isRageBegun && hasTalkedToDrunkFriend.Value && InViewOfRage))
         {
-            isDrinkinFriendReady = true;
+            Debug.Log("Rage sequence triggered.");
+            _isRageBegun = true;
+            BeginRageSequence();
+        }
+        if (!_isDrinkinFriendReady && (hasDoneIntro.Value && hasTalkedToCouchFriend.Value))
+        {
+            _isDrinkinFriendReady = true;
             InitiateDrunkFriend();
         }
     }
 
     private async void InitiateDrunkFriend()
     {
-        int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f));
-        Debug.Log($"Delaying drunk friend sequence for {delay} milliseconds.");
-        await UniTask.Delay(delay); // Random delay between 45 seconds and 2 minutes
-        _drunkDrivingFriendNPC.StartNextSequence();
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(!_hasEnteredHouse && other.gameObject.layer == LayerMask.NameToLayer("PlayerBody"))
+        int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
+        await UniTask.Delay(delay);
+        if(GlobalStats.BroughtToParty == GlobalStats.BroughtOptions.Alcohol)
         {
-            _hasEnteredHouse = true;
-            _introNPC.sequences[2].dialogue = _broughtAlcohol;
-            _introNPC.StartNextSequence(); // Will start walking to player
+            //TODO: Get text from parent saying you're grounded
         }
+        await UniTask.Delay(delay);
+        _drunkDrivingFriendNPC.StartNextSequence();
     }
 
     public void SetCouchDialogue()
     {
-        if(GlobalStats.DrinkCount > 0)
+        if (GlobalStats.DrinkCount > 0)
         {
             _couchFriend.firstDialogue = _couchDrunk; // sober is set in inspector by default
         }
@@ -97,6 +103,79 @@ public class PartyScene : MonoBehaviour
             _drunkDrivingFriendNPC.sequences[_drunkDrivingFriendNPC.sequences.Count - 1].destination = hasTakenKeysFromFriend.Value
                 ? _drunkFriendStayingDestination
                 : _drunkFriendDrivingDestination;
+
+            hasTalkedToDrunkFriend.Value = true;
         });
+    }
+
+    public void BeginRageSequence()
+    {
+        _rageNPC.idleAnimation = _rageAnimation; // Start the rage sequence
+        _bonfireFriendNPC.StartNextSequence(); // Start the bonfire friend sequence
+        foreach(var sequence in _bonfireFriendNPC.sequences)
+        {
+            if(sequence.dialogue != null)
+            {
+                for(int i = 0; i < sequence.dialogue.options.Count; i++)
+                {
+                    Debug.Log($"Option {i}: {sequence.dialogue.options[i].optionText}");
+                }
+
+                // This system is bad, but I don't have time to improve. Magic numbers for now.
+                sequence.dialogue.options[0].onOptionSelected.AddListener(() => // GOOD DECISION (try to calm down the rage)
+                {
+                    GlobalStats.HelpedRagingDrunk = true;
+                    _rageNPC.IsInteractable = true;
+                    _rageNPC.idleAnimation = _rageAnimation;
+                    _rageNPC.objective.Begin();
+                    _rageNPC.dialogueSystem.onEnd.AddListener(() =>
+                    {
+                        _rageNPC.idleAnimation = _rageFinishAnimation;
+                        _rageNPC.IsInteractable = false;
+                        _rageNPC.objective.Complete();
+                    });
+                });
+
+                sequence.dialogue.options[1].onOptionSelected.AddListener(() => // BAD DECISION (ignore drunk rage)
+                {
+                    GlobalStats.HelpedRagingDrunk = false;
+                    _bonfireFriendNPC.StartNextSequence(2);
+                });
+
+                break;
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!IsInHouse && other.gameObject.layer == LayerMask.NameToLayer("PlayerBody"))
+        {
+            IsInHouse = true;
+            if (_enterCount == 0)
+            {
+                SetDrunkFriendDestination();
+
+                Dialogue introDialogue = GlobalStats.BroughtToParty switch
+                {
+                    GlobalStats.BroughtOptions.Alcohol => _broughtAlcohol,
+                    GlobalStats.BroughtOptions.Snacks => _broughtSnacks,
+                    _ => _broughtNothing
+                };
+
+                _introNPC.sequences[2].dialogue = introDialogue;
+                _introNPC.StartNextSequence(); // Will start walking to player
+            }
+
+            _enterCount++;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (IsInHouse && other.gameObject.layer == LayerMask.NameToLayer("PlayerBody"))
+        {
+            IsInHouse = false;
+        }
     }
 }

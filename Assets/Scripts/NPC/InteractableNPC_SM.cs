@@ -26,7 +26,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
 
     //[Header("Objective Settings")]
     //[SerializeField] private bool hasObjective = false;
-    private ObjectiveSystem objective;
+    public ObjectiveSystem objective;
 
     private new void Awake()
     {

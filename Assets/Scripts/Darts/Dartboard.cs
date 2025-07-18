@@ -1,9 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using EditorAttributes;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
+using static Dartboard;
 
 public class Dartboard : MonoBehaviour
 {
+    public enum Team
+    {
+        Red,
+        Blue
+    }
+
+    [Serializable]
+    public struct DartsScore
+    {
+        public const int StartScore = 301; // Maximum number of scores to keep track of
+        public List<int> score; // We subtract, so we to keep each score earned
+        public int hitCount;
+        public TMP_Text scoreText;
+        public TMP_Text finalScoreText;
+        public Team team;
+    }
+
+    [Header("Score Data")]
+    public DartsScore red;
+    public DartsScore blue;
+
+    private Team? wonTeam = null;
+
+    [Header("Dartboard Settings")]
     public float doubleBullseyeRadius = 0.1f;
     public float bullseyeRadius = 0.2f; 
     public float firstSingleRingRadius = 0.3f; 
@@ -13,10 +45,6 @@ public class Dartboard : MonoBehaviour
 
     public float sphereOffset = 0.1f; // Offset to position the sphere correctly
     public float degreeOffset = 0f;
-    int hitCount = 0;
-    int score = 0;
-
-    [SerializeField] TextMeshPro currentScore;
 
     void OnTriggerEnter(Collider other)
     {
@@ -24,11 +52,34 @@ public class Dartboard : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Dart"))
         {
             Vector3 hitPoint = other.transform.position;
-            CalculateScore(hitPoint);
+            CalculateScore(hitPoint, other.CompareTag("Red") ? Team.Red : Team.Blue);
         }
     }
 
-    void CalculateScore(Vector3 worldHitPoint)
+    private void Start()
+    {
+        //todo initialize text here
+    }
+
+    [Button]
+    public void ResetGame()
+    {
+        wonTeam = null; // Reset the winning team
+        // Reset scores
+        red.score.Clear();
+        red.hitCount = 0;
+        red.finalScoreText.text = DartsScore.StartScore.ToString();
+        red.scoreText.text = $"{DartsScore.StartScore}\n";
+        blue.score.Clear();
+        blue.hitCount = 0;
+        blue.finalScoreText.text = DartsScore.StartScore.ToString();
+        blue.scoreText.text = $"{DartsScore.StartScore}\n";
+        // Reset final score text visibility
+        red.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = false;
+        blue.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = false;
+    }
+
+    void CalculateScore(Vector3 worldHitPoint, Team team)
     {
         Vector3 boardCenter = transform.position;
         Vector3 toHit = worldHitPoint - boardCenter;
@@ -46,15 +97,44 @@ public class Dartboard : MonoBehaviour
         angle += degreeOffset; // Apply any additional offset
         //Debug.Log($"Radius: {radius:F4}, Angle: {angle:F1}, FlatHit: {flatHit}");
 
-        if (hitCount == 3)
+        int score = GetScore(radius, angle);
+        if(score > 0)
         {
-            hitCount = 0; // Reset hit count after 3 hits
-            score = 0;
+            DartsScore teamScore = (team == Team.Red) ? red : blue;
+            IncrementScore(score, teamScore);
         }
-        
-        hitCount++;
-        score += GetScore(radius, angle);
-        currentScore.text = score.ToString();
+    }
+
+    private void IncrementScore(int newScore, DartsScore scoreData)
+    {
+        if (wonTeam.HasValue && scoreData.team == wonTeam.Value) return; // if you already won, cannot score more
+
+        int totalScore = scoreData.score.Sum() + newScore;
+        int newCurrentScore = DartsScore.StartScore - totalScore;
+
+        Debug.Log($"Team {scoreData.team} scored {newScore}. Current score: {newCurrentScore}");
+
+        if (newCurrentScore < 0) return; // Must get exactly zero to win
+
+        scoreData.hitCount++;
+        scoreData.score.Add(newScore);
+
+        StringBuilder scoreTextBuilder = new();
+        scoreTextBuilder.AppendLine($"{DartsScore.StartScore.ToString()}");
+
+        foreach (int score in scoreData.score)
+        {
+            scoreTextBuilder.AppendLine("-" + score.ToString());
+        }
+
+        scoreData.finalScoreText.text = newCurrentScore.ToString();
+        scoreData.scoreText.text = scoreTextBuilder.ToString();
+
+        if (newCurrentScore == 0 && !wonTeam.HasValue)
+        {
+            wonTeam = scoreData.team; // Set the winning team
+            scoreData.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = true;
+        }
     }
 
     int GetScore(float radius, float angle)

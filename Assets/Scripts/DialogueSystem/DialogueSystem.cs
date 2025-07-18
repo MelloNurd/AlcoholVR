@@ -70,7 +70,6 @@ public class DialogueSystem : MonoBehaviour
         {
             Player.Instance.EnableMovement();
             await UniTask.Delay(3000); // Wait a bit before hiding text bubble
-            DialogueButtons.Instance.ClearButtons();
             EndCurrentDialogue();
         }
     }
@@ -79,7 +78,7 @@ public class DialogueSystem : MonoBehaviour
     {
         if (useTypewriterEffect && _typewriter != null)
         {
-            _textBubble.SetActive(true);
+            if(!text.IsBlank()) _textBubble.SetActive(true);
             Tween.CompleteAll(_textBubble.transform);
             Vector3 scale = _textBubble.transform.localScale;
             _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
@@ -89,7 +88,7 @@ public class DialogueSystem : MonoBehaviour
         else
         {
             _dialogueText.text = text;
-            _textBubble.SetActive(true);
+            if (!text.IsBlank()) _textBubble.SetActive(true);
         }
 
         await UniTask.Delay(_typewriter.DefaultWritingSpeedInMS); // Wait slightly before showing buttons
@@ -97,7 +96,7 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndCurrentDialogue()
     {
-        Debug.Log("Ending current dialogue: " + (currentDialogue?.name ?? "None"));
+        DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
         onEnd?.Invoke();
         currentDialogue = null;
