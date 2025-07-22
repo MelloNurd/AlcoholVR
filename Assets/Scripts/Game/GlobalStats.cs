@@ -14,6 +14,7 @@ public class GlobalStats : MonoBehaviour
     public static int DrinkCount = 0;
 
     public static BroughtOptions BroughtToParty = BroughtOptions.None;
+    public static bool LetDrunkFriendDrive = false;
     public static bool HelpedRagingDrunk = false;
 
     private void Awake()

@@ -8,7 +8,7 @@ public class PhoneMessage : ScriptableObject
     public DateTime Timestamp;
     public string Content;
 
-    public Objective Objective; // optional
+    public Objective Objective = null; // optional
 
     private void Awake()
     {

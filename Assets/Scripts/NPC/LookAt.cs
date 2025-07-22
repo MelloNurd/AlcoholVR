@@ -9,6 +9,7 @@ public class LookAt : MonoBehaviour
     [Range(0, 1)] public float bodyWeight = 0.2f;
     [Range(0, 1)] public float headWeight = 1.0f;
     [Range(0, 1)] public float eyesWeight = 1.0f;
+    [Range(0, 1)] public float clampWeight = 0.5f;
     // Speed of head movement towards the target position
     public float smoothSpeed = 5f;
     // Speed of head snapping when within range
@@ -56,18 +57,22 @@ public class LookAt : MonoBehaviour
     {
         if (animator && objectToLookAt)
         {
-            animator.SetLookAtWeight(currentLookWeight, bodyWeight, headWeight, eyesWeight);
+            animator.SetLookAtWeight(currentLookWeight, bodyWeight, headWeight, eyesWeight, clampWeight);
             animator.SetLookAtPosition(lookPosition);
         }
     }
 
-    public void EnableLookingAtPlayer() => isLooking = true;
-    public void DisableLookingAtPlayer() => isLooking = false;
+    public void LookAtPlayer()
+    {
+        objectToLookAt = Player.Instance.playerCamera.transform;
+        isLooking = true;
+    }
+
     public void SetLookAtRange(float range) => lookAtRange = range;
 
     void OnDrawGizmos()
     {
-        if (objectToLookAt != null)
+        if (objectToLookAt != null && isLooking)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawLine(transform.position + Vector3.up * 1.5f, objectToLookAt.position);

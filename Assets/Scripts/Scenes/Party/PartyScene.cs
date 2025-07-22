@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class PartyScene : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private SequencedNPC _introNPC;
     [SerializeField] private SequencedNPC _drunkDrivingFriendNPC;
     [SerializeField] private InteractableNPC_SM _couchFriend;
+    [SerializeField] private InteractableNPC_SM _missingPhoneDrunkNPC;
     [SerializeField] private InteractableNPC_SM _rageNPC;
     [SerializeField] private SequencedNPC _bonfireFriendNPC;
 
@@ -24,6 +27,8 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private Transform _drunkFriendStayingDestination;
     [SerializeField] private AnimationClip _rageAnimation;
     [SerializeField] private AnimationClip _rageFinishAnimation;
+    [SerializeField] private XRGrabInteractable _missingPhoneObj;
+    [SerializeField] private Animator _carAnimator;
 
     public bool IsOnSecondFloor => IsInHouse && Player.Instance.Position.y > 3.5f;
     public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.Position.z > -7f; // On the specific side of the house
@@ -51,6 +56,7 @@ public class PartyScene : MonoBehaviour
         hasTalkedToDrunkFriend.Value = false;
         hasTakenKeysFromFriend.Value = false;
 
+        SetDrunkFriendDestination();
         _couchFriend.onFirstInteraction.AddListener(SetCouchDialogue);
         _introNPC.onFinishSequences.AddListener(() => hasDoneIntro.Value = true);
     }
@@ -77,7 +83,7 @@ public class PartyScene : MonoBehaviour
         await UniTask.Delay(delay);
         if(GlobalStats.BroughtToParty == GlobalStats.BroughtOptions.Alcohol)
         {
-            //TODO: Get text from parent saying you're grounded
+            Phone.Instance.QueueNotification("Mom", "We saw you take alcohol on the cameras. You are SO grounded!");
         }
         await UniTask.Delay(delay);
         _drunkDrivingFriendNPC.StartNextSequence();
@@ -105,9 +111,17 @@ public class PartyScene : MonoBehaviour
                 ? _drunkFriendStayingDestination
                 : _drunkFriendDrivingDestination;
 
-            Debug.Log($"Drunk friend dialogue ended...");
-
+            GlobalStats.LetDrunkFriendDrive = !hasTakenKeysFromFriend.Value;
             hasTalkedToDrunkFriend.Value = true;
+
+            _drunkDrivingFriendNPC.sequences[_drunkDrivingFriendNPC.sequences.Count - 1].onSequenceEnd.AddListener(() =>
+            {
+                Debug.Log($"Drunk driving friend end: has taken keys {hasTakenKeysFromFriend.Value}");
+                if (hasTakenKeysFromFriend.Value) return;
+
+                _carAnimator.SetTrigger("car");
+                _drunkDrivingFriendNPC.gameObject.SetActive(false);
+            });
         });
     }
 
@@ -152,6 +166,16 @@ public class PartyScene : MonoBehaviour
         }
     }
 
+    public void CheckFoundPhone()
+    {
+        if(_missingPhoneObj.isSelected && !hasFoundPhone.Value)
+        {
+            hasFoundPhone.Value = true;
+            _missingPhoneObj.gameObject.SetActive(false);
+            _missingPhoneDrunkNPC.objective.Complete();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!IsInHouse && other.gameObject.layer == LayerMask.NameToLayer("PlayerBody"))
@@ -159,8 +183,6 @@ public class PartyScene : MonoBehaviour
             IsInHouse = true;
             if (_enterCount == 0)
             {
-                SetDrunkFriendDestination();
-
                 Dialogue introDialogue = GlobalStats.BroughtToParty switch
                 {
                     GlobalStats.BroughtOptions.Alcohol => _broughtAlcohol,

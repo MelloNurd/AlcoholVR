@@ -17,25 +17,32 @@ public class ObjectiveUI : MonoBehaviour
 
     public void Initialize(Objective objective)
     {
-        Button button = transform.Find("Select Button").GetComponent<Button>();
-
         _objectiveText = transform.Find("Text").GetComponent<TMP_Text>();
-        _buttonImage = button.GetComponent<Image>();
-        _buttonText = button.GetComponentInChildren<TMP_Text>();
 
-        button.onClick.AddListener(ToggleButton);
-
-        _objectiveData = objective;
-        SetText(_objectiveData.text);
-        
-        if(objective.IsTracking)
+        Button button = transform.Find("Select Button").GetComponent<Button>();
+        if(objective.point != null)
         {
-            EnableButton();
-        }
+            _buttonImage = button.GetComponent<Image>();
+            _buttonText = button.GetComponentInChildren<TMP_Text>();
+
+            button.onClick.AddListener(ToggleButton);
+
+            if (objective.IsTracking)
+            {
+                EnableButton();
+            }
+            else
+            {
+                DisableButton();
+            }
+        } 
         else
         {
-            DisableButton();
+            button.gameObject.SetActive(false);
         }
+
+            _objectiveData = objective;
+        SetText(_objectiveData.text);
     }
 
     public void SetText(string text)

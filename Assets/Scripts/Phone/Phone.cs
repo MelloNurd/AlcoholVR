@@ -380,7 +380,7 @@ public class Phone : MonoBehaviour
         PlayerPrefs.SetInt("PhoneThemeIndex", _availableThemes.IndexOf(theme));
     }
 
-    private void QueueNotification(string sender, string content) => QueueNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
+    public void QueueNotification(string sender, string content) => QueueNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
     public async void QueueNotification(PhoneMessage msg, bool showTutorial = false)
     {
         // if showTutorial is true, show player how to open phone

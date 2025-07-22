@@ -22,6 +22,7 @@ public class Sequence
         Walk,
         WalkToPlayer,
         Wait,
+        TurnToFace,
     }
 
     [Header("Sequence Settings")]
@@ -32,12 +33,15 @@ public class Sequence
     [ShowField(nameof(type), SequenceType.Dialogue)] public Dialogue dialogue;
 
     [ShowField(nameof(type), SequenceType.Walk)] public Transform destination;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer)] 
+    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer)]
     public bool useDefaultWalkAnimation = true;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))] 
+    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))]
     public AnimationClip walkAnimation;
 
     [ShowField(nameof(type), SequenceType.Wait)] public float secondsToWait;
+
+    [ShowField(nameof(type), SequenceType.TurnToFace)] public float turnSpeed = 0.3f;
+    [ShowField(nameof(type), SequenceType.TurnToFace)] public Vector3 directionToFace;
     [Space]
     public bool nextSequenceOnEnd;
 
@@ -61,12 +65,16 @@ public class SequencedNPC : MonoBehaviour
 
     [ButtonField(nameof(StartNextSequence)), DisableInEditMode, SerializeField] private Void startNextSequenceButton;
 
+    public bool turnBodyToFacePlayer = true;
+    public bool turnHeadToFacePlayer = true;
+
     [HideInInspector] public GameObject bodyObj;
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public Animator animator;
     private AudioSource _audioSource;
     private GameObject _playerObj;
     public DialogueSystem dialogueSystem;
+    public LookAt lookAt;
 
     private CancellationTokenSource _cancelToken;
     private bool _isAtDestination = true;
@@ -85,11 +93,12 @@ public class SequencedNPC : MonoBehaviour
         agent = GetComponentInChildren<NavMeshAgent>();
         _audioSource = GetComponentInChildren<AudioSource>();
         dialogueSystem = GetComponent<DialogueSystem>();
+        lookAt = GetComponentInChildren<LookAt>();
     }
 
     private void Start()
     {
-        if(sequences.Count == 0)
+        if (sequences.Count == 0)
         {
             Debug.LogWarning("No sequences assigned to " + gameObject.name + ". Please assign at least one sequence.");
             return;
@@ -147,23 +156,32 @@ public class SequencedNPC : MonoBehaviour
         {
             case Sequence.SequenceType.Animate:
                 animator.CrossFadeInFixedTime(sequence.animation.name, 0.4f);
-                if(sequence.nextSequenceOnEnd)
+                if (sequence.nextSequenceOnEnd)
                 {
                     await UniTask.Delay(Mathf.RoundToInt(sequence.animation.length * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
                     if (_cancelToken.IsCancellationRequested) break;
                     animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
                     StartNextSequence();
                 }
-                
+
                 break;
             case Sequence.SequenceType.Dialogue:
                 dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
 
-                Player.Instance.DisableMovement();
+                if (turnBodyToFacePlayer)
+                {
+                    Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
+                    await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+                }
+                if (turnHeadToFacePlayer)
+                {
+                    lookAt.LookAtPlayer();
+                }
 
-                Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
-                await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
-                
+                // Wait until player is free (not interacting with an NPC) before starting dialogue
+                await UniTask.WaitUntil(() => !Player.Instance.IsInteractingWithNPC, cancellationToken: _cancelToken.Token);
+                if (_cancelToken.IsCancellationRequested) break;
+
                 dialogueSystem.StartDialogue(sequence.dialogue);
 
                 break;
@@ -171,8 +189,8 @@ public class SequencedNPC : MonoBehaviour
                 _isAtDestination = false;
                 agent.SetDestinationToClosestPoint(sequence.destination.transform.position);
 
-                string walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null) 
-                    ? sequence.walkAnimation.name 
+                string walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
+                    ? sequence.walkAnimation.name
                     : walkAnimation.name;
 
                 animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
@@ -198,7 +216,22 @@ public class SequencedNPC : MonoBehaviour
                 }
 
                 break;
+            case Sequence.SequenceType.TurnToFace:
+                Tween.StopAll(bodyObj.transform);
+                await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(sequence.directionToFace), sequence.turnSpeed);
+                if (sequence.nextSequenceOnEnd)
+                {
+                    StartNextSequence();
+                }
+                break;
         }
+    }
+
+    public void SitDown() // I don't relaly have a much better way of doing this at the moment, unfortunately
+    {
+        Vector3 pos = bodyObj.transform.position + (bodyObj.transform.forward * -0.25f) + new Vector3(0, 0.125f, 0);
+        Tween.StopAll(bodyObj.transform);
+        Tween.Position(bodyObj.transform, pos, 0.3f);
     }
 
     private async void DialogueEndHandler()
@@ -209,6 +242,10 @@ public class SequencedNPC : MonoBehaviour
         }
         _cancelToken = new CancellationTokenSource();
 
+        if (turnHeadToFacePlayer)
+        {
+            lookAt.isLooking = false;
+        }
         Player.Instance.EnableMovement();
         await UniTask.Delay(1000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
@@ -228,6 +265,7 @@ public class SequencedNPC : MonoBehaviour
         if (nextIndex >= sequences.Count)
         {
             Debug.Log($"Reached end of sequences for {gameObject.name}.");
+            currentSequence?.onSequenceEnd?.Invoke();
             onFinishSequences?.Invoke();
             if (!wrapAroundSequences) return;
             nextIndex = 0;

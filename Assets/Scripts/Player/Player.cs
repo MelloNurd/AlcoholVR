@@ -9,6 +9,9 @@ public class Player : MonoBehaviour
     [HideInInspector] public CharacterController controller;
 
     public Vector3 Position => playerCamera == null ? Vector3.zero : playerCamera.transform.position;
+    public Vector3 Forward => playerCamera == null ? Vector3.forward : playerCamera.transform.forward;
+
+    public bool IsInteractingWithNPC { get; set; } = false;
 
     public GameObject RightHand { get; private set; }
     public GameObject LeftHand { get; private set; }

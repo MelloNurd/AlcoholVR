@@ -40,14 +40,25 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     [SerializeField, ReadOnly, Rename("Current State (Debug)")] protected string _currentStateName;
 
+    [HideInInspector] public LookAt lookAt;
+    [HideInInspector] public GameObject lookAtPoint;
+    [HideInInspector] public GameObject headObj;
+
     protected void Awake()
     {
+        headObj = transform.Find("Body/BSMC_CharacterBase/Root/Hips/Spine/Spine1/Spine2/Neck/Head").gameObject;
         bodyObj = transform.Find("Body").gameObject;
         animator = GetComponentInChildren<Animator>();
         agent = GetComponentInChildren<NavMeshAgent>();
+        lookAt = GetComponentInChildren<LookAt>();
+
         agent.updateRotation = false;
         _audioSource = GetComponentInChildren<AudioSource>();
         _selfActionContainer = bodyObj.GetComponent<ActionContainer>(); // This acts as the universal ActionContainer, and is used when destinationDeterminedActions is false
+
+        lookAtPoint = new GameObject("LookAtPoint");
+        lookAtPoint.transform.SetParent(transform);
+        lookAt.objectToLookAt = lookAtPoint.transform;
 
         foreach (Transform child in transform)
         {
@@ -94,6 +105,11 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
             );
         }
         currentState?.UpdateState();
+    }
+
+    public bool IsInState(States state)
+    {
+        return currentState == states[state];
     }
 
     public void SwitchState(States newState)

@@ -16,6 +16,10 @@ public class DialogueButtons : MonoBehaviour
 
     private Light _spotLight;
 
+    private GameObject _buttonParentObj;
+
+    private int currentButtonCount = 0;
+
     private void Awake()
     {
         if(Instance == null)
@@ -31,6 +35,36 @@ public class DialogueButtons : MonoBehaviour
 
         _spotLight = GetComponentInChildren<Light>(true);
         if(_spotLight != null) _spotLight.enabled = false;
+
+        if (_buttonParentObj == null)
+        {
+            _buttonParentObj = new GameObject("DialogueButtons");
+        }
+    }
+
+    private void Update()
+    {
+        _buttonParentObj.transform.position = Player.Instance.Position.AddY(-0.2f);
+        
+        // Calculate deadzone effect based on current button count
+        if (currentButtonCount > 0)
+        {
+            float totalArcSpan = (currentButtonCount - 1) * _buttonAngleSpacing;
+            float deadzoneMultiplier = Mathf.Clamp01(1f - (totalArcSpan / 180f)); // Reduce rotation as arc gets wider
+            deadzoneMultiplier = Mathf.Max(deadzoneMultiplier, 0.1f); // Minimum 10% rotation to prevent complete lock
+            
+            Vector3 targetForward = Player.Instance.Forward.WithY(0);
+            Vector3 currentForward = _buttonParentObj.transform.forward;
+            
+            // Apply deadzone by reducing the rotation amount
+            Vector3 dampedForward = Vector3.Slerp(currentForward, targetForward, deadzoneMultiplier * Time.deltaTime * 2f);
+            _buttonParentObj.transform.rotation = Quaternion.LookRotation(dampedForward);
+        }
+        else
+        {
+            // No buttons, use normal rotation
+            _buttonParentObj.transform.rotation = Quaternion.LookRotation(Player.Instance.Forward.WithY(0));
+        }
     }
 
     public bool TryCreateDialogueButtons(DialogueSystem system, Dialogue dialogue, bool reverseOrder = false)
@@ -51,18 +85,21 @@ public class DialogueButtons : MonoBehaviour
 
         for (int i = 0; i < dialogue.options.Count; i++)
         {
+            currentButtonCount++;
+
             int index = reverseOrder ? dialogue.options.Count - 1 - i : i; // adjust index for reverse order
 
             Quaternion spawnRotation = Quaternion.LookRotation(spawnPos[i] - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
 
-            PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, transform).GetComponent<PhysicalButton>();
+            PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, _buttonParentObj.transform).GetComponent<PhysicalButton>();
             optionButton.name = "DialogueButton: " + dialogue.options[index].optionText;
+            optionButton.interactableLayers = LayerMask.GetMask("PlayerHand"); // only the player hand can interact with these buttons
 
-            int closerIndex = i; // weird behavior needed with lambda function, called a closure
+            int closureIndex = i; // weird behavior needed with lambda function, called a closure
             optionButton.OnButtonDown.AddListener(async () => {
                 await UniTask.Delay(100); // small delay to allow button press sound to play
                 dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
-                system.StartDialogue(dialogue.options[closerIndex].nextDialogue, 1);
+                system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);
             });
 
             optionButton.SetButtonText(dialogue.options[index].optionText);
@@ -104,7 +141,7 @@ public class DialogueButtons : MonoBehaviour
                 var angleCalculation = (i * _buttonAngleSpacing) - (_buttonAngleSpacing * (amount * 0.5f - 0.5f)) + (offset); // angle in degrees
                 Vector3 angle = Quaternion.AngleAxis(angleCalculation, Vector3.up) * Camera.main.transform.forward.WithY(0).normalized; // angle as a vector
                 Vector3 spawnPosition = Camera.main.transform.position + angle * _spawnDistanceFromPlayer; // position in world
-                spawnPosition.y -= 0.3f; // adjust height to be slightly below camera
+                spawnPosition.y -= 0.2f; // adjust height to be slightly below camera
 
                 spawnPositions[i] = spawnPosition;
             }
@@ -115,7 +152,9 @@ public class DialogueButtons : MonoBehaviour
                 foreach (Collider col in colliders)
                 {
                     if (col.gameObject == gameObject) continue; // Avoid self-collision
-                    validSpawn = false;
+
+                    // Just disabling this for now rather than refactoring, but this is no longer needed
+                    //validSpawn = false;
                 }
             }
 
@@ -135,7 +174,8 @@ public class DialogueButtons : MonoBehaviour
 
     public void ClearButtons()
     {
-        foreach (Transform child in transform)
+        currentButtonCount = 0;
+        foreach (Transform child in _buttonParentObj.transform)
         {
             if(_spotLight != null && child == _spotLight.transform) continue; // Skip spotlight
 

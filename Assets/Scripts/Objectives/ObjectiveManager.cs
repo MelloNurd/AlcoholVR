@@ -71,6 +71,8 @@ public class ObjectiveManager : MonoBehaviour
 
         objectives.Add((objective, lineRenderer));
         Phone.Instance.LoadObjectives();
+
+        Debug.Log("Added new objective: " + objective.text);
     }
 
     public void RemoveObjective(Objective objective)

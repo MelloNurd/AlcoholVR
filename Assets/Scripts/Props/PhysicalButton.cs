@@ -10,7 +10,7 @@ using ReadOnly = EditorAttributes.ReadOnlyAttribute;
 public class PhysicalButton : MonoBehaviour
 {
     [Header("Button Settings")]
-    [SerializeField] private LayerMask _interactableLayers;
+    public LayerMask interactableLayers;
 
     [Tooltip("How far the button needs to be pushed in to activate, as a percentage"), Range(0f, 1f), SerializeField]
     private float _buttonActivationThreshold = 0.98f;
@@ -147,7 +147,7 @@ public class PhysicalButton : MonoBehaviour
             out RaycastHit hitInfo,
             transform.rotation,
             distance,
-            _interactableLayers,
+            interactableLayers,
             QueryTriggerInteraction.Ignore);
 
         // Check if anything is overlapping with the button (needed because if the button is inside an object, the box cast won't hit it)
@@ -156,7 +156,7 @@ public class PhysicalButton : MonoBehaviour
             scale,
             _collisionResults,
             transform.rotation,
-            _interactableLayers,
+            interactableLayers,
             QueryTriggerInteraction.Ignore) > 0;
 
         // Only consider "PlayerBody" layer objects if they're tagged as "Hand"

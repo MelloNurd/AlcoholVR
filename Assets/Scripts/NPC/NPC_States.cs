@@ -1,6 +1,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public abstract class NPC_BaseState
@@ -30,7 +31,10 @@ public class NPC_IdleState : NPC_BaseState
 
 public class NPC_WalkState : NPC_BaseState
 {
+    private int cornerIndex = 0;
+
     public NPC_WalkState(NPC_SM npc) : base(npc) { } // constructor
+    
     public override void EnterState()
     {
         base.EnterState();
@@ -51,6 +55,12 @@ public class NPC_WalkState : NPC_BaseState
     {
         base.UpdateState();
         CheckIfAtDestination();
+    }
+
+    public override void ExitState()
+    {
+        base.ExitState();
+        npc.lookAt.isLooking = false;
     }
 
     private void CheckIfAtDestination(bool notFirstArrival = true)
@@ -131,6 +141,8 @@ public class NPC_InteractState : NPC_BaseState
     private InteractableNPC_SM _interactableNPC;
     Vector3 storedDestination;
 
+    Vector3 initialRotation;
+
     public override async void EnterState()
     {
         base.EnterState();
@@ -149,22 +161,35 @@ public class NPC_InteractState : NPC_BaseState
             _interactableNPC.agent.destination = _interactableNPC.bodyObj.transform.position;
         }
 
-        Vector3 directionToPlayer = (Player.Instance.Position - _interactableNPC.bodyObj.transform.position).WithY(0);
-
-        await Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+        if(_interactableNPC.turnBodyToFacePlayer)
+        {
+            initialRotation = _interactableNPC.bodyObj.transform.forward;
+            Vector3 directionToPlayer = (Player.Instance.Position - _interactableNPC.bodyObj.transform.position).WithY(0);
+            await Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+        }
+        if(_interactableNPC.turnHeadToFacePlayer)
+        {
+            _interactableNPC.lookAt.LookAtPlayer();
+        }
 
         if (_interactableNPC.currentState != _interactableNPC.states[NPC_SM.States.Interact]) return; // If state changed during the wait, don't start dialogue
         _interactableNPC.StartDialogue();
-
-        Player.Instance.DisableMovement();
     }
 
     public override void ExitState()
     {
         base.ExitState();
+        Player.Instance.IsInteractingWithNPC = false;
         Tween.CompleteAll(this);
-        _interactableNPC.dialogueSystem.EndCurrentDialogue();
-        _interactableNPC.agent.destination = storedDestination;
-        Player.Instance.EnableMovement();
+        if (_interactableNPC.agent != null && _interactableNPC.agent.enabled) _interactableNPC.agent.destination = storedDestination;
+
+        if (_interactableNPC.turnBodyToFacePlayer)
+        {
+            Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(initialRotation), 0.3f);
+        }
+        if(_interactableNPC.turnHeadToFacePlayer)
+        {
+            _interactableNPC.lookAt.isLooking = false;
+        }
     }
 }

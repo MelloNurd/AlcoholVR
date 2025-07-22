@@ -20,14 +20,25 @@ public class DialogueSystem : MonoBehaviour
     private Typewriter _typewriter;
     private TMP_Text _dialogueText;
     private GameObject _textBubble;
+    private GameObject _headObj;
 
     private void Awake()
     {
+        _headObj = transform.Find("Body/BSMC_CharacterBase/Root/Hips/Spine/Spine1/Spine2/Neck/Head").gameObject;
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
-        _textBubble = _dialogueText.transform.GetChild(0).gameObject;
+        _textBubble = _dialogueText.transform.parent.gameObject;
         _typewriter = GetComponentInChildren<Typewriter>();
 
         _textBubble.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (_textBubble.activeSelf)
+        {
+            _textBubble.transform.position = _textBubble.transform.position.WithY(_headObj.transform.position.y + 0.25f);
+            _textBubble.transform.parent.LookAt(Player.Instance.Position.WithY(_textBubble.transform.parent.position.y));
+        }
     }
 
     public async void StartDialogue(Dialogue dialogue, int depth = 0)
@@ -42,6 +53,7 @@ public class DialogueSystem : MonoBehaviour
         if (dialogue == null || dialogue.options == null)
         {
             Debug.LogWarning("Dialogue is null or has no options. Ending dialogue.");
+            Player.Instance.IsInteractingWithNPC = false;
             EndCurrentDialogue();
             return;
         }
@@ -63,12 +75,14 @@ public class DialogueSystem : MonoBehaviour
                 // failed to create buttons, end dialogue as fallback
                 Debug.LogWarning("Failed to create dialogue buttons. Ending dialogue.");
                 EndCurrentDialogue();
+                Player.Instance.IsInteractingWithNPC = false;
                 return;
             }
         }
         else
         {
             Player.Instance.EnableMovement();
+            Player.Instance.IsInteractingWithNPC = false;
             await UniTask.Delay(3000); // Wait a bit before hiding text bubble
             EndCurrentDialogue();
         }
@@ -96,6 +110,11 @@ public class DialogueSystem : MonoBehaviour
 
     public void EndCurrentDialogue()
     {
+        if (TryGetComponent<InteractableNPC_SM>(out var interactableNPC) && interactableNPC.IsInState(NPC_SM.States.Interact))
+        {
+            interactableNPC.SwitchState(NPC_SM.States.Walk);
+        }
+        Player.Instance.IsInteractingWithNPC = false;
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
         onEnd?.Invoke();

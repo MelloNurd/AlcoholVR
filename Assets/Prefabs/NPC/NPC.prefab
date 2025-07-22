@@ -64,6 +64,8 @@ MonoBehaviour:
   actionsLeft: 0
   _alwaysUnique: 1
   _currentStateName: 
+  lookAt: {fileID: 0}
+  lookAtPoint: {fileID: 0}
 --- !u!82 &7118078150561642470
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1942,10 +1944,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6468568422028442491}
   m_SourcePrefab: {fileID: 100100000, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
 --- !u!4 &1361699585910701334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7957609120742801846, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
   m_PrefabInstance: {fileID: 8974163167484083360}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1850533197997189036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+  m_PrefabInstance: {fileID: 8974163167484083360}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6468568422028442491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850533197997189036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5edc6f92ef0d4799bf05074208c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToLookAt: {fileID: 0}
+  lookAtRange: 3
+  weight: 0.642
+  bodyWeight: 0.2
+  headWeight: 1
+  eyesWeight: 1
+  clampWeight: 0.62
+  smoothSpeed: 5
+  weightSmoothSpeed: 2
+  isLooking: 0
+  lookWithinRange: 0

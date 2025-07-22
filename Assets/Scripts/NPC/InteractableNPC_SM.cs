@@ -15,6 +15,9 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     public Dialogue completeDialogue;
     public Dialogue failDialogue;
 
+    public bool turnBodyToFacePlayer = true;
+    public bool turnHeadToFacePlayer = true;
+
     [Header("Interaction Events")]
     public UnityEvent onFirstInteraction = new();
     public UnityEvent onCompleteInteraction = new();
@@ -27,13 +30,14 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     //[Header("Objective Settings")]
     //[SerializeField] private bool hasObjective = false;
     public ObjectiveSystem objective;
+    public bool autoStartObjective = true;
 
     private new void Awake()
     {
         base.Awake();
 
         dialogueSystem = GetComponent<DialogueSystem>();
-        objective = GetComponent<ObjectiveSystem>();
+        if (objective == null) objective = GetComponent<ObjectiveSystem>();
 
         if (firstDialogue != null)
         {
@@ -51,14 +55,16 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     [Button]
     public void Interact()
     {
-        if(!IsInteractable) return;
+        if(!IsInteractable || Player.Instance.IsInteractingWithNPC) return;
 
         if (currentState == states[States.Interact]) // if already in dialogue, exit it
         {
+            Player.Instance.IsInteractingWithNPC = false;
             SwitchState(States.Walk); // Walk will auto switch to checkpoint if already there, so this is kind of the same as resuming
         }
         else
         {
+            Player.Instance.IsInteractingWithNPC = true;
             SwitchState(States.Interact);
         }
     }
@@ -71,28 +77,39 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
             return;
         }
 
+        // First, we run events
+        // By doing these first, we can have dialogue/objective changes that affect the next dialogue shown
         switch (objective.currentStatus)
         {
             case ObjectiveSystem.Statuses.ToDo:
                 onFirstInteraction?.Invoke();
-
-                dialogueSystem.StartDialogue(firstDialogue);
-
-                objective.Begin();
                 break;
             case ObjectiveSystem.Statuses.InProgress:
                 onIncompleteInteraction?.Invoke();
-
-                dialogueSystem.StartDialogue(incompleteDialogue);
                 break;
             case ObjectiveSystem.Statuses.Completed:
                 onCompleteInteraction?.Invoke();
-
-                dialogueSystem.StartDialogue(completeDialogue);
                 break;
             case ObjectiveSystem.Statuses.Failed:
                 onFailInteraction?.Invoke();
+                break;
+        }
 
+        // Then, we run dialogue
+        switch (objective.currentStatus)
+        {
+            case ObjectiveSystem.Statuses.ToDo:
+                dialogueSystem.StartDialogue(firstDialogue);
+
+                if(autoStartObjective) objective.Begin();
+                break;
+            case ObjectiveSystem.Statuses.InProgress:
+                dialogueSystem.StartDialogue(incompleteDialogue);
+                break;
+            case ObjectiveSystem.Statuses.Completed:
+                dialogueSystem.StartDialogue(completeDialogue);
+                break;
+            case ObjectiveSystem.Statuses.Failed:
                 dialogueSystem.StartDialogue(failDialogue);
                 break;
         }

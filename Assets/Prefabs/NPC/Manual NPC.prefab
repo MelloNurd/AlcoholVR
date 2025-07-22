@@ -2353,6 +2353,8 @@ MonoBehaviour:
     useDefaultWalkAnimation: 1
     walkAnimation: {fileID: 0}
     secondsToWait: 0
+    turnSpeed: 0.3
+    directionToFace: {x: 0, y: 0, z: 0}
     nextSequenceOnEnd: 1
     onSequenceStart:
       m_PersistentCalls:
@@ -2367,6 +2369,8 @@ MonoBehaviour:
     useDefaultWalkAnimation: 0
     walkAnimation: {fileID: 0}
     secondsToWait: 0
+    turnSpeed: 0.3
+    directionToFace: {x: 0, y: 0, z: 0}
     nextSequenceOnEnd: 1
     onSequenceStart:
       m_PersistentCalls:
@@ -2381,6 +2385,8 @@ MonoBehaviour:
     useDefaultWalkAnimation: 1
     walkAnimation: {fileID: 0}
     secondsToWait: 0
+    turnSpeed: 0.3
+    directionToFace: {x: 0, y: 0, z: 0}
     nextSequenceOnEnd: 0
     onSequenceStart:
       m_PersistentCalls:
@@ -2395,7 +2401,26 @@ MonoBehaviour:
     useDefaultWalkAnimation: 0
     walkAnimation: {fileID: 0}
     secondsToWait: 0
+    turnSpeed: 0.3
+    directionToFace: {x: 0, y: 0, z: 0}
     nextSequenceOnEnd: 1
+    onSequenceStart:
+      m_PersistentCalls:
+        m_Calls: []
+    onSequenceEnd:
+      m_PersistentCalls:
+        m_Calls: []
+  currentSequence:
+    type: 0
+    animation: {fileID: 0}
+    dialogue: {fileID: 0}
+    destination: {fileID: 0}
+    useDefaultWalkAnimation: 1
+    walkAnimation: {fileID: 0}
+    secondsToWait: 0
+    turnSpeed: 0.3
+    directionToFace: {x: 0, y: 0, z: 0}
+    nextSequenceOnEnd: 0
     onSequenceStart:
       m_PersistentCalls:
         m_Calls: []
@@ -2405,9 +2430,16 @@ MonoBehaviour:
   defaultAnimation: {fileID: 7400000, guid: 956b5d5a4eb4c204681a202aa9940102, type: 2}
   walkAnimation: {fileID: 7400000, guid: 416c23b8ca959b3439d454553e56cb26, type: 2}
   wrapAroundSequences: 0
+  turnBodyToFacePlayer: 1
+  turnHeadToFacePlayer: 1
   bodyObj: {fileID: 0}
   agent: {fileID: 0}
   animator: {fileID: 0}
+  dialogueSystem: {fileID: 0}
+  lookAt: {fileID: 0}
+  onFinishSequences:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4039197234046120489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2421,10 +2453,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useTypewriterEffect: 1
-  onDialogueStart:
+  currentDialogue: {fileID: 0}
+  onStart:
     m_PersistentCalls:
       m_Calls: []
-  onDialogueEnd:
+  onEnd:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &2089778094454313544
@@ -4222,17 +4255,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3304936200196674600}
-  m_LocalRotation: {x: -0, y: 0.9820974, z: -0, w: -0.18837406}
-  m_LocalPosition: {x: 0, y: 0, z: 0.271}
-  m_LocalScale: {x: 0.59, y: 0.59, z: 0.59}
+  m_LocalRotation: {x: 0.5000008, y: 0.49999923, z: 0.49999923, w: 0.5000008}
+  m_LocalPosition: {x: 0, y: 0, z: 0.2503182}
+  m_LocalScale: {x: 1.881326, y: 3.1264765, z: 10.866822}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 8832317805244002621}
-  m_Father: {fileID: 3446336264166760275}
+  m_Children: []
+  m_Father: {fileID: 8832317805244002621}
   m_LocalEulerAnglesHint: {x: 0, y: 201.716, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.522, y: 1.849}
+  m_AnchoredPosition: {x: -0.6737456, y: 0.022575498}
   m_SizeDelta: {x: 0.9581, y: 0.7396}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &8828618150984104450
@@ -6397,7 +6429,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8431526479634986443}
+  - {fileID: 8832317805244002621}
   - {fileID: 6188984307364198487}
   m_Father: {fileID: 6921886255339276554}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8270,6 +8302,7 @@ GameObject:
   - component: {fileID: 6188984307364198487}
   - component: {fileID: 5019567395035718177}
   - component: {fileID: 4293061709811251588}
+  - component: {fileID: 7478757533738493735}
   m_Layer: 18
   m_Name: BSMC_CharacterBase
   m_TagString: Untagged
@@ -8333,6 +8366,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterData: {fileID: 11400000, guid: 2c6a21090326ba545a2660541b041c3c, type: 2}
+  CharacterBody: {fileID: 0}
   CharacterMaterial: {fileID: 0}
   Gender: 100
   ChestSize: 0
@@ -8355,6 +8389,29 @@ MonoBehaviour:
   NoseBridgeAngle: 0
   MouthWide: 0
   MouthThin: 0
+--- !u!114 &7478757533738493735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6361530818904507515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5e5edc6f92ef0d4799bf05074208c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToLookAt: {fileID: 0}
+  lookAtRange: 3
+  weight: 0.642
+  bodyWeight: 0.2
+  headWeight: 1
+  eyesWeight: 1
+  clampWeight: 0.62
+  smoothSpeed: 5
+  weightSmoothSpeed: 2
+  isLooking: 0
+  lookWithinRange: 0
 --- !u!1 &6373302914645248062
 GameObject:
   m_ObjectHideFlags: 0
@@ -10972,12 +11029,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7808791528539008072}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5000008, y: -0.49999928, z: -0.49999928, w: 0.5000008}
-  m_LocalPosition: {x: -0.012, y: -0.080064, z: 0.062}
-  m_LocalScale: {x: 0.092023194, y: 0.53154, z: 0.31984887}
+  m_LocalRotation: {x: -0.39686075, y: 0.5852363, z: 0.5852363, w: 0.39686075}
+  m_LocalPosition: {x: -0.52895737, y: 1.8017622, z: 0.23439598}
+  m_LocalScale: {x: 0.054293696, y: 0.31360862, z: 0.18871084}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8431526479634986443}
+  m_Children:
+  - {fileID: 8431526479634986443}
+  m_Father: {fileID: 3446336264166760275}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: -90}
 --- !u!33 &1375854545939017132
 MeshFilter:
