@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 97993560962768617}
   - component: {fileID: 223544103704379554}
   - component: {fileID: 7815563378844806989}
-  m_Layer: 6
+  m_Layer: 19
   m_Name: NavMeshModifier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1869,6 +1869,7 @@ MonoBehaviour:
   resetSpeed: 50
   resetThreshold: 0.01
   colliding: 0
+  exitReset: 1
 --- !u!1 &5635789835973783894 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -150083467244547809, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
@@ -2243,9 +2244,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 596597231770918399}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8604285055651607303}
     - targetCorrespondingSourceObject: {fileID: -7313494207517427282, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
       insertIndex: -1
@@ -2473,19 +2471,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
   m_PrefabInstance: {fileID: 4632244412583647270}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &596597231770918399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5514763373081470327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 572ad1467d86ce4479001b97a83f5340, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  physicsHand: {fileID: 6474891523938781850}
 --- !u!54 &8604285055651607303
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3255,6 +3240,7 @@ MonoBehaviour:
   resetSpeed: 50
   resetThreshold: 0.01
   colliding: 0
+  exitReset: 1
 --- !u!1 &8545543901478841124 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1075316100980669604, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
@@ -3476,9 +3462,6 @@ PrefabInstance:
     - {fileID: 2296393078715663276, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1134028775737017853}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8318182559303851859}
@@ -3781,19 +3764,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4f04638f9de194c40aac8bd662b6ecdd, type: 3}
   m_PrefabInstance: {fileID: 8958837859438787175}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1134028775737017853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8112467547961837366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 572ad1467d86ce4479001b97a83f5340, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  physicsHand: {fileID: 8425540608022870096}
 --- !u!54 &8318182559303851859
 Rigidbody:
   m_ObjectHideFlags: 0
