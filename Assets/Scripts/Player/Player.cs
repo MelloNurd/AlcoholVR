@@ -37,8 +37,8 @@ public class Player : MonoBehaviour
         _moveProvider = GetComponentInChildren<DynamicMoveProvider>();
         _initialSpeed = _moveProvider.moveSpeed;
 
-        RightHand = transform.Find("PhysicsRig/XR Origin (XR Rig)/Camera Offset/Right Controller/RightHand").gameObject;
-        LeftHand = transform.Find("PhysicsRig/XR Origin (XR Rig)/Camera Offset/Left Controller/LeftHand").gameObject;
+        RightHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Right Controller/RightHand").gameObject;
+        LeftHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Left Controller/LeftHand").gameObject;
 
         if (RightHand == null || LeftHand == null)
         {
