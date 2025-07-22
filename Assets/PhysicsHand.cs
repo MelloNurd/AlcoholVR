@@ -19,6 +19,7 @@ public class PhysicsHand : MonoBehaviour
     private Rigidbody body;
 
     public bool colliding = false;
+    public bool exitReset = true;
 
     void Start()
     {
@@ -39,9 +40,13 @@ public class PhysicsHand : MonoBehaviour
         {
             PhysicsMove();
         }
-        else
+        else if (exitReset)
         {
-            ResetToTarget();
+            bool done = ResetToTarget();
+            if (done)
+            {
+                exitReset = false;
+            }
         }
     }
 
@@ -67,9 +72,8 @@ public class PhysicsHand : MonoBehaviour
         }
     }
 
-    void ResetToTarget()
+    bool ResetToTarget()
     {
-        // Calculate target position with offset
         Vector3 targetPosition = followTarget.position + followTarget.TransformDirection(positionOffset);
         Vector3 toTarget = targetPosition - body.position;
         float distance = toTarget.magnitude;
@@ -90,12 +94,27 @@ public class PhysicsHand : MonoBehaviour
                 Vector3 angularVelocity = axis * angle * Mathf.Deg2Rad * rotationSpeed;
                 body.angularVelocity = angularVelocity;
             }
+
+            return false; // Not done resetting
         }
         else
         {
             // Close enough - stop all movement
             body.linearVelocity = Vector3.zero;
             body.angularVelocity = Vector3.zero;
+            return true; // Done resetting
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        colliding = true;
+        exitReset = false; // Reset exitReset when entering a collision
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        colliding = false;
+        exitReset = true; // Set exitReset to true when exiting the collision
     }
 }
