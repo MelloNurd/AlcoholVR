@@ -61,9 +61,13 @@ public class PlayerFace : MonoBehaviour
             if(Vector3.Dot(bottle.transform.forward, transform.forward) < -0.5f) // Bottle top is facing player's face
             {
                 bottle.IsFull = false;
-                ApplyBlurEffect();
-                GlobalStats.DrinkCount++;
                 if(_drinkSound != null) _audioSource.PlayOneShot(_drinkSound);
+
+                if(bottle.IsAlcoholic)
+                {
+                    ApplyBlurEffect();
+                    GlobalStats.DrinkCount++;
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ public class OpenableBottle : MonoBehaviour
 
     [field: SerializeField, ReadOnly] public bool IsOpen { get; private set; } = false;
     [field: SerializeField] public bool IsFull { get; set; } = true;
+    [field: SerializeField] public bool IsAlcoholic { get; set; } = true;
 
     private BottleCap _cap;
 
