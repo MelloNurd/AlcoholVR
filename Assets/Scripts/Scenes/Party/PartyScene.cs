@@ -85,7 +85,8 @@ public class PartyScene : MonoBehaviour
 
     private async void InitiateDrunkFriend()
     {
-        int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
+        int delay = Mathf.RoundToInt(Random.Range(15_000f, 45_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
+        //int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
         Debug.Log("Drunk driving friend delayed by " + delay * 2 + " ms");
         await UniTask.Delay(delay);
         if(GlobalStats.BroughtToParty == GlobalStats.BroughtOptions.Alcohol)
