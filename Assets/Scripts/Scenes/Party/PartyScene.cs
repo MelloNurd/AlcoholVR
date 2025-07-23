@@ -61,7 +61,11 @@ public class PartyScene : MonoBehaviour
 
         SetDrunkFriendDestination();
         _couchFriend.onFirstInteraction.AddListener(SetCouchDialogue);
-        _introNPC.onFinishSequences.AddListener(() => hasDoneIntro.Value = true);
+        _introNPC.dialogueSystem.onEnd.AddListener(() =>
+        {
+            hasDoneIntro.Value = true;
+            Debug.Log("Intro sequence completed.");
+        });
     }
 
     private void Update()
@@ -103,6 +107,7 @@ public class PartyScene : MonoBehaviour
         {
             _couchFriend.IsInteractable = false;
             hasTalkedToCouchFriend.Value = true;
+            Debug.Log("Couch friend dialogue ended. Has talked: " + hasTalkedToCouchFriend.Value);
         });
     }
 
