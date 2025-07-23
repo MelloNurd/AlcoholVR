@@ -1,3 +1,4 @@
+using PrimeTween;
 using UnityEngine;
 
 public class GlobalStats : MonoBehaviour
@@ -21,8 +22,15 @@ public class GlobalStats : MonoBehaviour
     public static bool LetDrunkFriendDrive = false;
     public static bool HelpedRagingDrunk = false;
 
+    public bool tweenWarnings = false;
+
     private void Awake()
     {
+        if(!tweenWarnings)
+        {
+            PrimeTweenConfig.warnZeroDuration = false;
+            PrimeTweenConfig.warnTweenOnDisabledTarget = false;
+        }
         if (Instance == null)
         {
             Instance = this;
