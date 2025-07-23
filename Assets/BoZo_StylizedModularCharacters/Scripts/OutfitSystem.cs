@@ -211,7 +211,7 @@ using UnityEngine.Events;
 
             //Assigning the skin material from the base character
             var renderer = outfit.GetComponentInChildren<SkinnedMeshRenderer>();
-            if (renderer)
+            if (renderer && renderer.sharedMaterial)
             {
                 var materialsSort = renderer.sharedMaterial.name.Split("_");
                 if (materialsSort[1] == "Skin")
