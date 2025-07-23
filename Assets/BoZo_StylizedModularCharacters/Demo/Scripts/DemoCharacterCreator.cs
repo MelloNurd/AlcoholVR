@@ -133,6 +133,7 @@ namespace Bozo.ModularCharacters
             if (skinIndex >= skinPresets.Length) skinIndex = 0;
 
             character.SetSkin(skinPresets[skinIndex], true);
+            colorPickerControl.SelectSkin(character.transform);
         }
 
         public void IndexDownSkin()
@@ -141,6 +142,7 @@ namespace Bozo.ModularCharacters
             if (skinIndex < 0) skinIndex = skinPresets.Length - 1;
 
             character.SetSkin(skinPresets[skinIndex], true);
+            colorPickerControl.SelectSkin(character.transform);
         }
 
         public void IndexUpEyes()

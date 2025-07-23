@@ -37,6 +37,9 @@ namespace Bozo.ModularCharacters
         [SerializeField] string[] AccessoryReferneceIDs;
         [SerializeField] string[] EyesReferneceIDs;
 
+        [SerializeField] HandColorer LeftHand;
+        [SerializeField] HandColorer RightHand;
+
         private void Start()
         {
             CreateHueImage();
@@ -110,6 +113,12 @@ namespace Bozo.ModularCharacters
         private void UpdateOutputImage()
         {
             Color currentColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
+
+            if (ActiveReferneceSet == 1)
+            {
+                LeftHand.UpdateHandColor(currentColor);
+                RightHand.UpdateHandColor(currentColor);
+            }
 
             for (int i = 0; i < outputTexture.height; i++)
             {
@@ -273,6 +282,8 @@ namespace Bozo.ModularCharacters
 
             colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch],
                 colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
+            LeftHand.UpdateHandColor(colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
+            RightHand.UpdateHandColor(colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
             system.SetSkin(colorObject.materials[MaterialSlot]);
         }
 

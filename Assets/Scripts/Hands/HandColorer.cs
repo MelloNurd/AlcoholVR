@@ -24,27 +24,27 @@ public class HandColorer : MonoBehaviour
         {
             SkinColor = new List<Color>(characterObject.SkinColor);
         }
-
-        var skinMaterial = GetComponent<Renderer>().material;
+ 
+        skin = GetComponent<Renderer>().material;
 
         // Ensure we have enough colors before applying them
         if (SkinColor.Count >= 10)
         {
-            skinMaterial.SetColor("_SkinTone", SkinColor[0]);
-            skinMaterial.SetColor("_SkinUnderTone", SkinColor[1]);
-            skinMaterial.SetColor("_BrowColor", SkinColor[2]);
-            skinMaterial.SetColor("_LashesColor", SkinColor[3]);
-            skinMaterial.SetColor("_FuzzColor", SkinColor[4]);
-            skinMaterial.SetColor("_UnderwearBottomColor_Opacity", SkinColor[5]);
-            skinMaterial.SetColor("_UnderwearTopColor_Opacity", SkinColor[6]);
-            skinMaterial.SetColor("_Acc_Color_1", SkinColor[7]);
-            skinMaterial.SetColor("_Acc_Color_2", SkinColor[8]);
-            skinMaterial.SetColor("_Acc_Color_3", SkinColor[9]);
+            skin.SetColor("_SkinTone", SkinColor[0]);
+            skin.SetColor("_SkinUnderTone", SkinColor[1]);
+            skin.SetColor("_BrowColor", SkinColor[2]);
+            skin.SetColor("_LashesColor", SkinColor[3]);
+            skin.SetColor("_FuzzColor", SkinColor[4]);
+            skin.SetColor("_UnderwearBottomColor_Opacity", SkinColor[5]);
+            skin.SetColor("_UnderwearTopColor_Opacity", SkinColor[6]);
+            skin.SetColor("_Acc_Color_1", SkinColor[7]);
+            skin.SetColor("_Acc_Color_2", SkinColor[8]);
+            skin.SetColor("_Acc_Color_3", SkinColor[9]);
 
             // Also set the accessory texture if available
             if (characterObject.skinAccessory != null)
             {
-                skinMaterial.SetTexture("_Accessory", characterObject.skinAccessory);
+                skin.SetTexture("_Accessory", characterObject.skinAccessory);
             }
         }
         else
@@ -53,9 +53,8 @@ public class HandColorer : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateHandColor(Color newColor)
     {
-
+        skin.SetColor("_SkinTone", newColor);
     }
 }
