@@ -183,7 +183,7 @@ public class NPC_InteractState : NPC_BaseState
         Tween.CompleteAll(this);
         if (_interactableNPC.agent != null && _interactableNPC.agent.enabled) _interactableNPC.agent.destination = storedDestination;
 
-        if (_interactableNPC.turnBodyToFacePlayer)
+        if (_interactableNPC.turnBodyToFacePlayer && _interactableNPC.turnBackAfterDialogue)
         {
             Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(initialRotation), 0.3f);
         }

@@ -27,6 +27,8 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private Transform _drunkFriendStayingDestination;
     [SerializeField] private AnimationClip _rageStartAnimation;
     [SerializeField] private AnimationClip _rageLoopAnimation;
+    [SerializeField] private AnimationClip _rageIdleAnimation;
+    [SerializeField] private AnimationClip _rageFinishAnimation;
     [SerializeField] private GameObject _rageBottle;
     [SerializeField] private XRGrabInteractable _missingPhoneObj;
     [SerializeField] private Animator _carAnimator;
@@ -131,13 +133,11 @@ public class PartyScene : MonoBehaviour
         _rageBottle.SetActive(false);
 
         _rageNPC.idleAnimation = _rageStartAnimation;
-        _rageNPC.moveAnimation = _rageStartAnimation;
         _rageNPC.PlayIdleAnimation();
 
         await UniTask.Delay(Mathf.RoundToInt(_rageStartAnimation.length * 1000));
 
         _rageNPC.idleAnimation = _rageLoopAnimation;
-        _rageNPC.moveAnimation = _rageLoopAnimation;
         _rageNPC.PlayIdleAnimation();
 
         _bonfireFriendNPC.StartNextSequence(); // Start the bonfire friend sequence
@@ -157,9 +157,18 @@ public class PartyScene : MonoBehaviour
                     _rageNPC.IsInteractable = true;
                     _rageNPC.objective.Begin();
 
+                    _rageNPC.onIncompleteInteraction.AddListener(() =>
+                    {
+                        _rageNPC.idleAnimation = _rageIdleAnimation;
+                        Debug.Log("Rage NPC idle animation set to idle.");
+                        _rageNPC.PlayIdleAnimation();
+                    });
+
                     _rageNPC.dialogueSystem.onEnd.AddListener(() =>
                     {
+                        _rageNPC.idleAnimation = _rageFinishAnimation;
                         _rageNPC.PlayIdleAnimation();
+
                         _rageNPC.IsInteractable = false;
                         _rageNPC.objective.Complete();
                         _bonfireFriendNPC.StartNextSequence();

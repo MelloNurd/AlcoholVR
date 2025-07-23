@@ -15,6 +15,8 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     public Dialogue completeDialogue;
     public Dialogue failDialogue;
 
+    public bool turnBackAfterDialogue = true;
+
     public bool turnBodyToFacePlayer = true;
     public bool turnHeadToFacePlayer = true;
 

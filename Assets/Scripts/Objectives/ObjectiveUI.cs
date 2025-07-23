@@ -72,7 +72,10 @@ public class ObjectiveUI : MonoBehaviour
         buttonState = true;
         _buttonImage.sprite = _enabledImage;
         _buttonText.color = Color.black;
-        _objectiveData.IsTracking = true;
+        if (_objectiveData != null)
+        {
+            _objectiveData.IsTracking = true;
+        }
     }
 
     public void DisableButton()
@@ -85,6 +88,10 @@ public class ObjectiveUI : MonoBehaviour
         buttonState = false;
         _buttonImage.sprite = _disabledImage;
         _buttonText.color = Color.white;
-        _objectiveData.IsTracking = false;
+
+        if(_objectiveData != null)
+        {
+            _objectiveData.IsTracking = false;
+        }
     }
 }
