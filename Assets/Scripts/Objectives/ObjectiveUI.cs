@@ -64,6 +64,11 @@ public class ObjectiveUI : MonoBehaviour
 
     public void EnableButton()
     {
+        if(_buttonImage == null || _buttonText == null)
+        {
+            return;
+        }
+
         buttonState = true;
         _buttonImage.sprite = _enabledImage;
         _buttonText.color = Color.black;
@@ -72,6 +77,11 @@ public class ObjectiveUI : MonoBehaviour
 
     public void DisableButton()
     {
+        if (_buttonImage == null || _buttonText == null)
+        {
+            return;
+        }
+
         buttonState = false;
         _buttonImage.sprite = _disabledImage;
         _buttonText.color = Color.white;

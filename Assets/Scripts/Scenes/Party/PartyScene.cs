@@ -25,8 +25,9 @@ public class PartyScene : MonoBehaviour
     [Header("Misc References")]
     [SerializeField] private Transform _drunkFriendDrivingDestination;
     [SerializeField] private Transform _drunkFriendStayingDestination;
-    [SerializeField] private AnimationClip _rageAnimation;
-    [SerializeField] private AnimationClip _rageFinishAnimation;
+    [SerializeField] private AnimationClip _rageStartAnimation;
+    [SerializeField] private AnimationClip _rageLoopAnimation;
+    [SerializeField] private GameObject _rageBottle;
     [SerializeField] private XRGrabInteractable _missingPhoneObj;
     [SerializeField] private Animator _carAnimator;
 
@@ -125,9 +126,20 @@ public class PartyScene : MonoBehaviour
         });
     }
 
-    public void BeginRageSequence()
+    public async void BeginRageSequence()
     {
-        _rageNPC.idleAnimation = _rageAnimation; // Start the rage sequence
+        _rageBottle.SetActive(false);
+
+        _rageNPC.idleAnimation = _rageStartAnimation;
+        _rageNPC.moveAnimation = _rageStartAnimation;
+        _rageNPC.PlayIdleAnimation();
+
+        await UniTask.Delay(Mathf.RoundToInt(_rageStartAnimation.length * 1000));
+
+        _rageNPC.idleAnimation = _rageLoopAnimation;
+        _rageNPC.moveAnimation = _rageLoopAnimation;
+        _rageNPC.PlayIdleAnimation();
+
         _bonfireFriendNPC.StartNextSequence(); // Start the bonfire friend sequence
         foreach(var sequence in _bonfireFriendNPC.sequences)
         {
@@ -143,11 +155,10 @@ public class PartyScene : MonoBehaviour
                 {
                     GlobalStats.HelpedRagingDrunk = true;
                     _rageNPC.IsInteractable = true;
-                    _rageNPC.idleAnimation = _rageAnimation;
                     _rageNPC.objective.Begin();
+
                     _rageNPC.dialogueSystem.onEnd.AddListener(() =>
                     {
-                        _rageNPC.idleAnimation = _rageFinishAnimation;
                         _rageNPC.PlayIdleAnimation();
                         _rageNPC.IsInteractable = false;
                         _rageNPC.objective.Complete();

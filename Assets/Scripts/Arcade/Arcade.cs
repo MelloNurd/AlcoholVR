@@ -188,6 +188,7 @@ public class Arcade : MonoBehaviour
         if( Score > highScore)
         {
             PlayerPrefs.SetInt("Arcade_HighScore", Score);
+            GlobalStats.arcadeScore = Score;
             PlayerPrefs.Save();
         }
 

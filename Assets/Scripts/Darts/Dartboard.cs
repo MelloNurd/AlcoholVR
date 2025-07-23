@@ -130,6 +130,7 @@ public class Dartboard : MonoBehaviour
 
         if (newCurrentScore == 0 && !wonTeam.HasValue)
         {
+            GlobalStats.wonDarts = true;
             wonTeam = scoreData.team; // Set the winning team
             scoreData.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = true;
         }
