@@ -262,6 +262,21 @@ namespace Bozo.ModularCharacters
             ActiveReferneceSet = 1;
             MaterialSlot = 0;
 
+            // Ensure ReferneceSet is properly initialized
+            if (ReferneceSet == null || ReferneceSet.Count <= ActiveReferneceSet)
+            {
+                Debug.LogError("ReferneceSet is not properly initialized or doesn't contain enough elements.");
+                return;
+            }
+
+            // Get the current reference array
+            string[] currentReferenceArray = ReferneceSet[ActiveReferneceSet];
+            if (currentReferenceArray == null)
+            {
+                Debug.LogError("SkinReferneceIDs array is null.");
+                return;
+            }
+
             for (int i = 0; i < Swatches.Length; i++)
             {
                 Swatches[i].gameObject.SetActive(true);
@@ -269,9 +284,19 @@ namespace Bozo.ModularCharacters
 
             for (int i = 0; i < Swatches.Length; i++)
             {
-                if(ReferneceSet[ActiveReferneceSet][i] != "")
+                // Add bounds checking for the reference array
+                if (i < currentReferenceArray.Length && currentReferenceArray[i] != "")
                 {
-                    Swatches[i].color = colorMaterial.GetColor(ReferneceSet[ActiveReferneceSet][i]);
+                    if (colorMaterial.HasProperty(currentReferenceArray[i]))
+                    {
+                        Swatches[i].color = colorMaterial.GetColor(currentReferenceArray[i]);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Material doesn't have property: {currentReferenceArray[i]}");
+                        Swatches[i].color = new Color(0, 0, 0, 0);
+                        Swatches[i].gameObject.SetActive(false);
+                    }
                 }
                 else
                 {
@@ -280,12 +305,74 @@ namespace Bozo.ModularCharacters
                 }
             }
 
-            colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch],
-                colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
-            LeftHand.UpdateHandColor(colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
-            RightHand.UpdateHandColor(colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
+            // Add bounds checking for currentSwatch
+            if (currentSwatch < currentReferenceArray.Length && currentReferenceArray[currentSwatch] != "")
+            {
+                string propertyName = currentReferenceArray[currentSwatch];
+                if (colorMaterial.HasProperty(propertyName))
+                {
+                    colorObject.materials[MaterialSlot].SetColor(propertyName,
+                        colorObject.materials[MaterialSlot].GetColor(propertyName));
+                }
+                else
+                {
+                    Debug.LogWarning($"Material doesn't have property for currentSwatch: {propertyName}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"currentSwatch ({currentSwatch}) is out of bounds for the reference array or the property is empty.");
+                // Reset currentSwatch to a valid index
+                currentSwatch = 0;
+            }
+
+            UpdateHandSkins();
             system.SetSkin(colorObject.materials[MaterialSlot]);
         }
+
+
+        public void UpdateHandSkins()
+        {
+            // Add null check to prevent UnassignedReferenceException
+            if (colorObject == null)
+            {
+                Debug.LogWarning("Cannot update hand skins: colorObject is not assigned yet.");
+                return;
+            }
+
+            // Add bounds checking for ReferneceSet and currentSwatch
+            if (ReferneceSet == null || ReferneceSet.Count <= ActiveReferneceSet)
+            {
+                Debug.LogWarning("Cannot update hand skins: ReferneceSet is not properly initialized.");
+                return;
+            }
+
+            string[] currentReferenceArray = ReferneceSet[ActiveReferneceSet];
+            if (currentReferenceArray == null || currentSwatch >= currentReferenceArray.Length)
+            {
+                Debug.LogWarning("Cannot update hand skins: currentSwatch is out of bounds or reference array is null.");
+                return;
+            }
+
+            string propertyName = currentReferenceArray[currentSwatch];
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                Debug.LogWarning("Cannot update hand skins: property name is empty.");
+                return;
+            }
+
+            if (colorObject.materials[MaterialSlot].HasProperty(propertyName))
+            {
+                Color handColor = colorObject.materials[MaterialSlot].GetColor(propertyName);
+                LeftHand.UpdateHandColor(handColor);
+                RightHand.UpdateHandColor(handColor);
+            }
+            else
+            {
+                Debug.LogWarning($"Cannot update hand skins: Material doesn't have property {propertyName}.");
+            }
+        }
+
 
         public void SelectEyes(Transform transform)
         {

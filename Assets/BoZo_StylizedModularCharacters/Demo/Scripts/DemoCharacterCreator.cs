@@ -319,7 +319,7 @@ namespace Bozo.ModularCharacters
             }
 
             var CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(path);
-            
+
             if (CharacterSave == null)
             {
                 Debug.LogError("Couldn't load character from path: " + path);
@@ -354,12 +354,25 @@ namespace Bozo.ModularCharacters
             character.LoadFromObject();
             Debug.Log("Character loaded successfully: " + assetName);
             sliderManager.InitializeSliders();
+
+            // Wait a frame or use a coroutine to ensure everything is initialized
+            StartCoroutine(DelayedSkinSelection());
         }
+
+        private System.Collections.IEnumerator DelayedSkinSelection()
+        {
+            yield return null; // Wait one frame
+
+            // Now it should be safe to call SelectSkin
+            if (colorPickerControl != null)
+            {
+                colorPickerControl.SelectSkin(character.transform);
+            }
+        }
+
 
         public void SetLastSelectedPreset(GameObject gameObject, string presetName)
         {
-            Debug.Log("Button: " + lastSelectedButton);
-            Debug.Log("Image: " + lastSelectedImage);
             if (lastSelectedButton != null && lastSelectedImage != null && lastSelectedPresetName != null && lastSelectedPresetText != null)
             {
                 Debug.Log("Deselecting last selected preset: " + lastSelectedPresetName);
