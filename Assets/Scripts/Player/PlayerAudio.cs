@@ -59,6 +59,7 @@ public class PlayerAudio : MonoBehaviour
 
         Instance.currentAudioSourceIndex = (Instance.currentAudioSourceIndex + 1) % Instance.audioSourceCount;
     }
+    public static void PlaySound(AudioClip audio) => PlaySound(audio);
 
     /// <summary>
     /// Play a sound that will loop forever. This will remove it from the pool of available audio sources.
@@ -80,6 +81,7 @@ public class PlayerAudio : MonoBehaviour
 
         return source;
     }
+    public static AudioSource PlayLoopingSound(AudioClip audio) => PlayLoopingSound(audio, 1f);
 
     /// <summary>
     /// Stops all currently playing sounds.
@@ -104,4 +106,5 @@ public class PlayerAudio : MonoBehaviour
             }
         }
     }
+    public static void StopAllSounds() => StopAllSounds(false);
 }
