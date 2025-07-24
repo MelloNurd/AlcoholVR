@@ -300,7 +300,7 @@ public class Phone : MonoBehaviour
         foreach (GameObject obj in hitObjects)
         {
             Utilities.SimulatePress(obj);
-            PlayerAudio.PlaySound(_clickSound, randomizePitch: true); // Play click sound
+            PlayerAudio.PlaySound(_clickSound, 1f, randomizePitch: true); // Play click sound
         }
 
         return hitObjects.Length > 0; // Return true if any objects were hit

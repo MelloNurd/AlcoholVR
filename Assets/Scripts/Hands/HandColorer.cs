@@ -55,6 +55,12 @@ public class HandColorer : MonoBehaviour
 
     public void UpdateHandColor(Color newColor)
     {
+        if (skin == null)
+        {
+            Debug.Log("HandColorer: skin material not initialized yet. Skipping color update.");
+            return;
+        }
+
         skin.SetColor("_SkinTone", newColor);
     }
 }
