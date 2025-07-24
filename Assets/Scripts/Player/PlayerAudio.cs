@@ -42,7 +42,7 @@ public class PlayerAudio : MonoBehaviour
     /// <param name="audio">Audio to play</param>
     /// <param name="volume">(0, 1f) volume to play the audio at</param>
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
-    public static void PlaySound(AudioClip audio, float volume = 1f, bool randomizePitch = false)
+    public static void PlaySound(AudioClip audio, float volume, bool randomizePitch)
     {
         if (Instance == null) return;
         if(audio == null)
@@ -59,13 +59,13 @@ public class PlayerAudio : MonoBehaviour
 
         Instance.currentAudioSourceIndex = (Instance.currentAudioSourceIndex + 1) % Instance.audioSourceCount;
     }
-    public static void PlaySound(AudioClip audio) => PlaySound(audio);
+    public static void PlaySound(AudioClip audio) => PlaySound(audio, 1f, false);
 
     /// <summary>
     /// Play a sound that will loop forever. This will remove it from the pool of available audio sources.
     /// </summary>
     /// <returns>The audio source dedicated to playing this sound.</returns>
-    public static AudioSource PlayLoopingSound(AudioClip audio, float volume = 1f)
+    public static AudioSource PlayLoopingSound(AudioClip audio, float volume)
     {
         if (Instance == null || audio == null) return null;
         if (Instance.audioSources.Count <= 0) return null;
