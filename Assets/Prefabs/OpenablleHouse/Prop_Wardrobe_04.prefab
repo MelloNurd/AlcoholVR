@@ -390,7 +390,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1950043270386313559}
+        m_TargetAssemblyTypeName: GrabbableAudioPlayer, Assembly-CSharp
+        m_MethodName: PlayGrabAudio
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -1051,7 +1063,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1950043270386313559}
+        m_TargetAssemblyTypeName: GrabbableAudioPlayer, Assembly-CSharp
+        m_MethodName: PlayGrabAudio
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -1138,6 +1162,7 @@ GameObject:
   - component: {fileID: 5977017146724114574}
   - component: {fileID: 4004218522251469421}
   - component: {fileID: 1902921972726490656}
+  - component: {fileID: 1950043270386313559}
   m_Layer: 12
   m_Name: Prop_Wardrobe_04
   m_TagString: Untagged
@@ -1238,3 +1263,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0507379, y: 2.0027776, z: 0.5014974}
   m_Center: {x: 0, y: 0.9388253, z: 0}
+--- !u!114 &1950043270386313559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9193851968853161288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e56a3813d9b19b244a8157eb6fc14b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
