@@ -10,7 +10,7 @@ public class PlayerAudio : MonoBehaviour
     private List<AudioSource> audioSources = new();
     private int currentAudioSourceIndex = 0;
 
-    public AudioMixerGroup SFXGroup;
+    AudioMixerGroup SFXGroup;
 
     private void Awake()
     {
@@ -22,6 +22,9 @@ public class PlayerAudio : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        AudioMixer audioMixer = Resources.Load<AudioMixer>("Audio/MainAudioMixer");
+        SFXGroup = audioMixer.FindMatchingGroups("SFX")[0]; // Find the SFX group in the audio mixer
 
         // Initialize audio sources
         audioSources = new List<AudioSource>();
