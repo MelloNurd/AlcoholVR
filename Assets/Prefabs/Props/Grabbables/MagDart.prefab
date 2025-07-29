@@ -51,8 +51,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9999998, y: 0.9999998, z: 6.9673285}
-  m_Center: {x: 0, y: 0, z: -7.196497}
+  m_Size: {x: 1, y: 1, z: 6.4868402}
+  m_Center: {x: 0, y: -1.7812656e-14, z: -7.4367585}
 --- !u!1 &2276686441209867623
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,12 +64,12 @@ GameObject:
   - component: {fileID: 1289408446555910875}
   - component: {fileID: 6290626615239834632}
   - component: {fileID: 8763976318179839813}
-  - component: {fileID: 1164964061270403605}
   - component: {fileID: 4483083632729906667}
   - component: {fileID: 365427913490161333}
   - component: {fileID: 5206269798988200618}
   - component: {fileID: 4799278755405654537}
   - component: {fileID: 8724924412938486116}
+  - component: {fileID: 4249219769114962886}
   m_Layer: 15
   m_Name: MagDart
   m_TagString: Red
@@ -283,29 +283,6 @@ MonoBehaviour:
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
   m_FarAttachMode: 0
---- !u!136 &1164964061270403605
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2276686441209867623}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.15
-  m_Height: 0.72
-  m_Direction: 2
-  m_Center: {x: 0, y: -0.0000024357666, z: -3.91}
 --- !u!33 &4483083632729906667
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -406,6 +383,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!136 &4249219769114962886
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2276686441209867623}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.48054594
+  m_Height: 0.96109205
+  m_Direction: 1
+  m_Center: {x: 0.013283125, y: -0.028157093, z: -4.22}
 --- !u!1 &4422322893798073560
 GameObject:
   m_ObjectHideFlags: 0
