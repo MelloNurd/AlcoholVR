@@ -12,12 +12,6 @@ using static Dartboard;
 
 public class Dartboard : MonoBehaviour
 {
-    public enum Team
-    {
-        Red,
-        Blue
-    }
-
     [Serializable]
     public struct DartsScore
     {
@@ -54,11 +48,6 @@ public class Dartboard : MonoBehaviour
             Vector3 hitPoint = other.transform.position;
             CalculateScore(hitPoint, other.CompareTag("Red") ? Team.Red : Team.Blue);
         }
-    }
-
-    private void Start()
-    {
-        //todo initialize text here
     }
 
     [Button]

@@ -5,6 +5,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum Team
+{
+    Red,
+    Blue,
+    Yellow,
+    Green
+}
+
 [Serializable]
 public struct ScoringCollider
 {
