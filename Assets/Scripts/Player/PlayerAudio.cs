@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerAudio : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class PlayerAudio : MonoBehaviour
     private int audioSourceCount = 8;
     private List<AudioSource> audioSources = new();
     private int currentAudioSourceIndex = 0;
+
+    AudioMixerGroup SFXGroup;
 
     private void Awake()
     {
@@ -19,6 +22,9 @@ public class PlayerAudio : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        AudioMixer audioMixer = Resources.Load<AudioMixer>("Audio/MainAudioMixer");
+        SFXGroup = audioMixer.FindMatchingGroups("SFX")[0]; // Find the SFX group in the audio mixer
 
         // Initialize audio sources
         audioSources = new List<AudioSource>();
@@ -33,6 +39,7 @@ public class PlayerAudio : MonoBehaviour
         AudioSource source = gameObject.AddComponent<AudioSource>();
         source.playOnAwake = false;
         source.loop = false;
+        source.outputAudioMixerGroup = SFXGroup; // Set the audio mixer group for the source
         audioSources.Add(source); // Fix: Add AudioSource to the List 
     }
 
