@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: Find-out
+  m_EditorClassIdentifier: 
+  dialogueText: Find out.
+  options:
+  - optionText: '*Drink*'
+    nextDialogue: {fileID: 11400000, guid: 8f9e21a53efa1f3409ab69f7c3cf7bf3, type: 2}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: '*Refuse*'
+    nextDialogue: {fileID: 11400000, guid: ac4347fff76308f4f9b02bbbd47390df, type: 2}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: y-youre-
+  m_EditorClassIdentifier: 
+  dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
+  options:
+  - optionText: Are you okay? Maybe you should sit down and get some water...
+    nextDialogue: {fileID: 11400000, guid: dbf337ca8afb3a043aee708cb977f822, type: 2}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: No thanks...
+    nextDialogue: {fileID: 11400000, guid: 6726a28562bba824f8e9eae72f370142, type: 2}
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []

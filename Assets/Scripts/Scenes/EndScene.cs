@@ -13,7 +13,7 @@ public class EndScene : MonoBehaviour
     {
         // Drunk driving outcome
         //_drunkDriverStayedPolaroid.SetActive(!GlobalStats.LetDrunkFriendDrive);
-        _drunkDriverCrashedPolaroid.SetActive(GlobalStats.LetDrunkFriendDrive);
+        _drunkDriverCrashedPolaroid.SetActive(GlobalStats.letDrunkFriendDrive);
 
         // Phone outcome
         _phoneFoundPolaroid.SetActive(_foundPhone.Value);

@@ -14,15 +14,18 @@ public class GlobalStats : MonoBehaviour
 
     public static int DrinkCount = 0;
 
+    public bool tweenWarnings = false;
+
+    // Party stats
     public static int hoopsScore = 0;
     public static bool wonDarts = false;
     public static int arcadeScore = 0;
+    public static BroughtOptions broughtToParty = BroughtOptions.None;
+    public static bool letDrunkFriendDrive = false;
+    public static bool helpedRagingDrunk = false;
 
-    public static BroughtOptions BroughtToParty = BroughtOptions.None;
-    public static bool LetDrunkFriendDrive = false;
-    public static bool HelpedRagingDrunk = false;
-
-    public bool tweenWarnings = false;
+    // Bonfire stats
+    public static bool playerGrabbedAlcohol = false; // This is for the first scenario, when at the cooler
 
     private void Awake()
     {

@@ -70,7 +70,7 @@ public class PartyScene : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F2) || (!_isRageBegun && hasTalkedToDrunkFriend.Value && InViewOfRage))
+        if (!_isRageBegun && hasTalkedToDrunkFriend.Value && InViewOfRage)
         {
             Debug.Log("Rage sequence triggered.");
             _isRageBegun = true;
@@ -89,7 +89,7 @@ public class PartyScene : MonoBehaviour
         //int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
         Debug.Log("Drunk driving friend delayed by " + delay * 2 + " ms");
         await UniTask.Delay(delay);
-        if(GlobalStats.BroughtToParty == GlobalStats.BroughtOptions.Alcohol)
+        if(GlobalStats.broughtToParty == GlobalStats.BroughtOptions.Alcohol)
         {
             Phone.Instance.QueueNotification("Mom", "We saw you take alcohol on the cameras. You are SO grounded!");
         }
@@ -120,7 +120,7 @@ public class PartyScene : MonoBehaviour
                 ? _drunkFriendStayingDestination
                 : _drunkFriendDrivingDestination;
 
-            GlobalStats.LetDrunkFriendDrive = !hasTakenKeysFromFriend.Value;
+            GlobalStats.letDrunkFriendDrive = !hasTakenKeysFromFriend.Value;
             hasTalkedToDrunkFriend.Value = true;
 
             _drunkDrivingFriendNPC.sequences[_drunkDrivingFriendNPC.sequences.Count - 1].onSequenceEnd.AddListener(() =>
@@ -159,7 +159,7 @@ public class PartyScene : MonoBehaviour
                 // This system is bad, but I don't have time to improve. Magic numbers for now.
                 sequence.dialogue.options[0].onOptionSelected.AddListener(() => // GOOD DECISION (try to calm down the rage)
                 {
-                    GlobalStats.HelpedRagingDrunk = true;
+                    GlobalStats.helpedRagingDrunk = true;
                     _rageNPC.IsInteractable = true;
                     _rageNPC.objective.Begin();
 
@@ -183,8 +183,8 @@ public class PartyScene : MonoBehaviour
 
                 sequence.dialogue.options[1].onOptionSelected.AddListener(() => // BAD DECISION (ignore drunk rage)
                 {
-                    GlobalStats.HelpedRagingDrunk = false;
-                    _bonfireFriendNPC.StartNextSequence(2);
+                    GlobalStats.helpedRagingDrunk = false;
+                    _bonfireFriendNPC.StartNextSequenceAsync(2);
                 });
 
                 break;
@@ -209,7 +209,7 @@ public class PartyScene : MonoBehaviour
             IsInHouse = true;
             if (_enterCount == 0)
             {
-                Dialogue introDialogue = GlobalStats.BroughtToParty switch
+                Dialogue introDialogue = GlobalStats.broughtToParty switch
                 {
                     GlobalStats.BroughtOptions.Alcohol => _broughtAlcohol,
                     GlobalStats.BroughtOptions.Snacks => _broughtSnacks,

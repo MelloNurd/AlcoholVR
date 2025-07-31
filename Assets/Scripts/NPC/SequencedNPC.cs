@@ -104,7 +104,7 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
-        StartSequence(0);
+        StartSequence(0).Forget();
     }
 
     private void Update()
@@ -144,7 +144,7 @@ public class SequencedNPC : MonoBehaviour
         }
     }
 
-    private async void HandleSequence(Sequence sequence)
+    private async UniTask HandleSequence(Sequence sequence)
     {
         if (_cancelToken != null)
         {
@@ -252,8 +252,10 @@ public class SequencedNPC : MonoBehaviour
         StartNextSequence();
     }
 
-    public void StartNextSequence() => StartNextSequence(1);
-    public void StartNextSequence(int indexIncrease)
+    public void StartNextSequence() => StartNextSequenceAsync(1).Forget();
+    public void StartNextSequence(int indexIncrease) => StartNextSequenceAsync(indexIncrease).Forget();
+    public async UniTask StartNextSequenceAsync() => await StartNextSequenceAsync(1);
+    public async UniTask StartNextSequenceAsync(int indexIncrease)
     {
         if (currentSequence == null || sequences.Count == 0) return;
 
@@ -264,7 +266,7 @@ public class SequencedNPC : MonoBehaviour
 
         if (nextIndex >= sequences.Count)
         {
-            Debug.Log($"Reached end of sequences for {gameObject.name}.");
+            //Debug.Log($"Reached end of sequences for {gameObject.name}.");
             currentSequence?.onSequenceEnd?.Invoke();
             onFinishSequences?.Invoke();
             if (!wrapAroundSequences) return;
@@ -273,18 +275,18 @@ public class SequencedNPC : MonoBehaviour
 
         dialogueSystem.onEnd?.RemoveListener(DialogueEndHandler); // only need this for dialogue sequences
 
-        Debug.Log($"Starting next sequence for {gameObject.name}: {sequences[nextIndex].type}");
-        StartSequence(sequences[nextIndex]);
+        //Debug.Log($"Starting next sequence for {gameObject.name}: {sequences[nextIndex].type}");
+        await StartSequence(sequences[nextIndex]);
     }
 
-    public void StartSequence(int index) => StartSequence(sequences[index]);
-    public void StartSequence(Sequence sequence)
+    public async UniTask StartSequence(int index) => await StartSequence(sequences[index]);
+    public async UniTask StartSequence(Sequence sequence)
     {
         currentSequence?.onSequenceEnd?.Invoke();
         if (dialogueSystem.IsDialogueActive) dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
         _cancelToken?.Cancel();
-        HandleSequence(sequence);
+        await HandleSequence(sequence);
         sequence.onSequenceStart?.Invoke();
     }
 
