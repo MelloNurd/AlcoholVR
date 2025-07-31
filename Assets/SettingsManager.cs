@@ -47,7 +47,9 @@ public class SettingsManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        SetMusicVolume(VolumePercentToDecibel(MusicVolume));
+        SetSFXVolume(VolumePercentToDecibel(SFXVolume));
+        SetMasterVolume(VolumePercentToDecibel(MasterVolume));
     }
 
     // Update is called once per frame
