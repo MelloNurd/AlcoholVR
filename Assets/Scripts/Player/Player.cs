@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
 {
     public static Player Instance { get; private set; }
 
+    [HideInInspector] public Loading loading;
+
     [HideInInspector] public Camera playerCamera;
     [HideInInspector] public CharacterController controller;
 
@@ -49,6 +51,7 @@ public class Player : MonoBehaviour
         controller = GetComponentInChildren<CharacterController>();
         _moveProvider = GetComponentInChildren<DynamicMoveProvider>();
         _initialSpeed = _moveProvider.moveSpeed;
+        loading = playerCamera.GetComponentInChildren<Loading>();
 
         RightHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Right Controller/RightHand").gameObject;
         LeftHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Left Controller/LeftHand").gameObject;
@@ -107,6 +110,9 @@ public class Player : MonoBehaviour
 
         continuousMoveProvider.moveSpeed = SettingsManager.Instance.SmoothTurningSpeed;
     }
+
+    public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);
+    public void OpenEyes(float speed = 1f) => loading?.OpenEyes(speed);
 
     public void DisableMovement()
     {

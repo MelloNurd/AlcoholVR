@@ -26,6 +26,7 @@ public class GlobalStats : MonoBehaviour
 
     // Bonfire stats
     public static bool playerGrabbedAlcohol = false; // This is for the first scenario, when at the cooler
+    public static bool playerWentWithFlirt = false;
 
     private void Awake()
     {

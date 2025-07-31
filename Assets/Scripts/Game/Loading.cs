@@ -19,7 +19,7 @@ public class Loading : MonoBehaviour
 
     IEnumerator LoadSceneAsync(int sceneId)
     {
-        UI.SetTrigger("Blink");
+        CloseEyes();
 
         // Wait for animator to enter the blink state
         yield return new WaitForEndOfFrame();
@@ -46,5 +46,17 @@ public class Loading : MonoBehaviour
             Debug.LogError("Failed to load scene with ID: " + sceneId);
             yield break;
         }
+    }
+
+    public void CloseEyes(float speed = 1f)
+    {
+        UI.speed = speed;
+        UI.SetTrigger("BlinkClose");
+    }
+
+    public void OpenEyes(float speed = 1f)
+    {
+        UI.speed = speed;
+        UI.SetTrigger("BlinkOpen");
     }
 }

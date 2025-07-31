@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
@@ -15,7 +16,7 @@ using Void = EditorAttributes.Void;
 [Serializable]
 public class Sequence
 {
-    public enum SequenceType
+    public enum Type
     {
         Animate,
         Dialogue,
@@ -26,22 +27,22 @@ public class Sequence
     }
 
     [Header("Sequence Settings")]
-    public SequenceType type;
+    public Type type;
 
-    [ShowField(nameof(type), SequenceType.Animate)] public AnimationClip animation;
+    [ShowField(nameof(type), Type.Animate)] public AnimationClip animation;
 
-    [ShowField(nameof(type), SequenceType.Dialogue)] public Dialogue dialogue;
+    [ShowField(nameof(type), Type.Dialogue)] public Dialogue dialogue;
 
-    [ShowField(nameof(type), SequenceType.Walk)] public Transform destination;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer)]
+    [ShowField(nameof(type), Type.Walk)] public Transform destination;
+    [ConditionalEnumField(ConditionType.OR, nameof(type), Type.Walk, nameof(type), Type.WalkToPlayer)]
     public bool useDefaultWalkAnimation = true;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), SequenceType.Walk, nameof(type), SequenceType.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))]
+    [ConditionalEnumField(ConditionType.OR, nameof(type), Type.Walk, nameof(type), Type.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))]
     public AnimationClip walkAnimation;
 
-    [ShowField(nameof(type), SequenceType.Wait)] public float secondsToWait;
+    [ShowField(nameof(type), Type.Wait)] public float secondsToWait;
 
-    [ShowField(nameof(type), SequenceType.TurnToFace)] public float turnSpeed = 0.3f;
-    [ShowField(nameof(type), SequenceType.TurnToFace)] public Vector3 directionToFace;
+    [ShowField(nameof(type), Type.TurnToFace)] public float turnSpeed = 0.3f;
+    [ShowField(nameof(type), Type.TurnToFace)] public Vector3 directionToFace;
     [Space]
     public bool nextSequenceOnEnd;
 
@@ -50,6 +51,47 @@ public class Sequence
 
     [HideInInspector] public UnityEvent onSequenceStart = new();
     [HideInInspector] public UnityEvent onSequenceEnd = new();
+
+    #region Constructors
+    public Sequence(Type type, AnimationClip animation, bool nextSequenceOnEnd = true)
+    {
+        this.type = type;
+        this.animation = animation;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    public Sequence(Type type, Dialogue dialogue, bool nextSequenceOnEnd = true)
+    {
+        this.type = type;
+        this.dialogue = dialogue;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    public Sequence(Type type, Transform destination, AnimationClip walkAnimation = null, bool useDefaultWalkAnimation = true, bool nextSequenceOnEnd = false)
+    {
+        this.type = type;
+        this.destination = destination;
+        this.walkAnimation = walkAnimation;
+        this.useDefaultWalkAnimation = useDefaultWalkAnimation;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    public Sequence(Type type, bool nextSequenceOnEnd = true)
+    {
+        this.type = type;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    public Sequence(Type type, float secondsToWait, bool nextSequenceOnEnd = true)
+    {
+        this.type = type;
+        this.secondsToWait = secondsToWait;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    public Sequence(Type type, Vector3 directionToFace, float turnSpeed = 0.3f, bool nextSequenceOnEnd = true)
+    {
+        this.type = type;
+        this.directionToFace = directionToFace;
+        this.turnSpeed = turnSpeed;
+        this.nextSequenceOnEnd = nextSequenceOnEnd;
+    }
+    #endregion
 }
 
 [SelectionBase]
@@ -57,6 +99,7 @@ public class SequencedNPC : MonoBehaviour
 {
     public List<Sequence> sequences = new List<Sequence>();
     public Sequence currentSequence;
+    public int currentSequenceIndex => sequences.IndexOf(currentSequence);
 
     [SerializeField, Required] private AnimationClip defaultAnimation;
     [SerializeField, Required] private AnimationClip walkAnimation;
@@ -88,7 +131,6 @@ public class SequencedNPC : MonoBehaviour
     private void Awake()
     {
         bodyObj = transform.Find("Body").gameObject;
-        _playerObj = GameObject.Find("Main Camera"); // This may need changed later
         animator = GetComponentInChildren<Animator>();
         agent = GetComponentInChildren<NavMeshAgent>();
         _audioSource = GetComponentInChildren<AudioSource>();
@@ -98,31 +140,35 @@ public class SequencedNPC : MonoBehaviour
 
     private void Start()
     {
+        _playerObj = Player.Instance.playerCamera.gameObject;
+
         if (sequences.Count == 0)
         {
             Debug.LogWarning("No sequences assigned to " + gameObject.name + ". Please assign at least one sequence.");
             return;
         }
 
-        StartSequence(0).Forget();
+        StartSequence(0);
     }
 
     private void Update()
     {
-        ApplyRotations();
-        RunWalkSequences();
+        ProcessWalking();
     }
 
-    private void RunWalkSequences()
+    private void ProcessWalking()
     {
-        if (!_isAtDestination && (currentSequence.type == Sequence.SequenceType.Walk || currentSequence.type == Sequence.SequenceType.WalkToPlayer))
+        ApplyWalkRotations();
+
+        if (!_isAtDestination && (currentSequence.type == Sequence.Type.Walk || currentSequence.type == Sequence.Type.WalkToPlayer))
         {
-            bool isWalkToPlayer = currentSequence.type == Sequence.SequenceType.WalkToPlayer;
+            bool isWalkToPlayer = currentSequence.type == Sequence.Type.WalkToPlayer;
 
             if (isWalkToPlayer)
             {
                 _lastDestinationUpdateTime += Time.deltaTime;
 
+                // Update destination to be in front of player every half second
                 Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized;
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
@@ -131,15 +177,11 @@ public class SequencedNPC : MonoBehaviour
                     _lastDestinationPosition = inFrontOfPlayer;
                 }
             }
+
             if (agent.IsAtDestination())
             {
-                Debug.Log($"{gameObject.name} has reached {(isWalkToPlayer ? "the player" : "its destination")}.");
                 _isAtDestination = true;
-                animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
-                if (currentSequence.nextSequenceOnEnd)
-                {
-                    StartNextSequence();
-                }
+                agent.isStopped = true;
             }
         }
     }
@@ -154,77 +196,136 @@ public class SequencedNPC : MonoBehaviour
 
         switch (sequence.type)
         {
-            case Sequence.SequenceType.Animate:
-                animator.CrossFadeInFixedTime(sequence.animation.name, 0.4f);
-                if (sequence.nextSequenceOnEnd)
-                {
-                    await UniTask.Delay(Mathf.RoundToInt(sequence.animation.length * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
-                    if (_cancelToken.IsCancellationRequested) break;
-                    animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
-                    StartNextSequence();
-                }
-
+            case Sequence.Type.Animate:
+                await ExecuteAnimateSequence(sequence);
                 break;
-            case Sequence.SequenceType.Dialogue:
-                dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
-
-                if (turnBodyToFacePlayer)
-                {
-                    Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
-                    await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
-                }
-                if (turnHeadToFacePlayer)
-                {
-                    lookAt.LookAtPlayer();
-                }
-
-                // Wait until player is free (not interacting with an NPC) before starting dialogue
-                await UniTask.WaitUntil(() => !Player.Instance.IsInteractingWithNPC, cancellationToken: _cancelToken.Token);
-                if (_cancelToken.IsCancellationRequested) break;
-
-                dialogueSystem.StartDialogue(sequence.dialogue);
-
+            case Sequence.Type.Dialogue:
+                await ExecuteDialogueSequence(sequence);
                 break;
-            case Sequence.SequenceType.Walk:
-                _isAtDestination = false;
-                agent.SetDestinationToClosestPoint(sequence.destination.transform.position);
-
-                string walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
-                    ? sequence.walkAnimation.name
-                    : walkAnimation.name;
-
-                animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
-
+            case Sequence.Type.Walk:
+                await ExecuteWalkSequence(sequence);
                 break;
-            case Sequence.SequenceType.WalkToPlayer:
-                _isAtDestination = false;
-                agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized);
-
-                walkAnimName = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
-                    ? sequence.walkAnimation.name
-                    : walkAnimation.name;
-
-                animator.CrossFadeInFixedTime(walkAnimName, 0.4f);
-
+            case Sequence.Type.WalkToPlayer:
+                await ExecuteWalkToPlayerSequence(sequence);
                 break;
-            case Sequence.SequenceType.Wait:
-                animator.CrossFadeInFixedTime(defaultAnimation.name, 0.4f);
-                await UniTask.Delay(Mathf.RoundToInt(sequence.secondsToWait * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
-                if (!_cancelToken.IsCancellationRequested && sequence.nextSequenceOnEnd)
-                {
-                    StartNextSequence();
-                }
-
+            case Sequence.Type.Wait:
+                await ExecuteWaitSequence(sequence);
                 break;
-            case Sequence.SequenceType.TurnToFace:
-                Tween.StopAll(bodyObj.transform);
-                await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(sequence.directionToFace), sequence.turnSpeed);
-                if (sequence.nextSequenceOnEnd)
-                {
-                    StartNextSequence();
-                }
+            case Sequence.Type.TurnToFace:
+                await ExecuteTurnToFaceSequence(sequence);
                 break;
         }
+    }
+    private async UniTask ExecuteTurnToFaceSequence(Sequence sequence)
+    {
+        Tween.StopAll(bodyObj.transform);
+
+        await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(sequence.directionToFace), sequence.turnSpeed);
+        
+        if (sequence.nextSequenceOnEnd)
+        {
+            StartNextSequence();
+        }
+    }
+    private async UniTask ExecuteWaitSequence(Sequence sequence)
+    {
+        PlayAnimation(defaultAnimation);
+
+        await UniTask.Delay(Mathf.RoundToInt(sequence.secondsToWait * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        if (_cancelToken.IsCancellationRequested) return;
+
+        if (currentSequence.nextSequenceOnEnd)
+        {
+            StartNextSequence();
+        }
+    }
+    private async UniTask ExecuteWalkToPlayerSequence(Sequence sequence)
+    {
+        _isAtDestination = false;
+        agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized);
+        agent.isStopped = false;
+
+        AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
+            ? sequence.walkAnimation
+            : walkAnimation;
+
+        PlayAnimation(walkAnim);
+
+        await UniTask.WaitUntil(() => agent.IsAtDestination(), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        if (_cancelToken.IsCancellationRequested) return;
+
+        PlayAnimation(defaultAnimation);
+        if (currentSequence.nextSequenceOnEnd)
+        {
+            StartNextSequence();
+        }
+    }
+    private async UniTask ExecuteWalkSequence(Sequence sequence)
+    {
+        _isAtDestination = false;
+        agent.SetDestinationToClosestPoint(sequence.destination.transform.position);
+        agent.isStopped = false;
+
+        AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
+            ? sequence.walkAnimation
+            : walkAnimation;
+
+        PlayAnimation(walkAnim);
+
+        await UniTask.WaitUntil(() => agent.IsAtDestination(), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        if (_cancelToken.IsCancellationRequested) return;
+
+        PlayAnimation(defaultAnimation);
+        if (currentSequence.nextSequenceOnEnd)
+        {
+            StartNextSequence();
+        }
+    }
+    private async UniTask ExecuteDialogueSequence(Sequence sequence)
+    {
+        dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
+
+        if (turnBodyToFacePlayer)
+        {
+            Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
+            await Tween.Rotation(bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
+        }
+        if (turnHeadToFacePlayer)
+        {
+            lookAt.LookAtPlayer();
+        }
+
+        // Wait until player is free (not interacting with an NPC) before starting dialogue
+        await UniTask.WaitUntil(() => !Player.Instance.IsInteractingWithNPC, cancellationToken: _cancelToken.Token);
+        if (_cancelToken.IsCancellationRequested) return;
+
+        dialogueSystem.StartDialogue(sequence.dialogue);
+
+        await UniTask.WaitUntil(() => !dialogueSystem.IsDialogueActive, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        if (_cancelToken.IsCancellationRequested) return;
+    }
+    private async UniTask ExecuteAnimateSequence(Sequence sequence)
+    {
+        if (sequence.animation == null)
+        {
+            Debug.LogWarning($"No animation assigned for Animate sequence on {gameObject.name}. Skipping.");
+            if (sequence.nextSequenceOnEnd)
+            {
+                StartNextSequence();
+            }
+            return;
+        }
+
+        PlayAnimation(sequence.animation);
+
+        if (sequence.nextSequenceOnEnd)
+        {
+            await UniTask.Delay(Mathf.RoundToInt(sequence.animation.length * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+            if (_cancelToken.IsCancellationRequested) return;
+
+            PlayAnimation(defaultAnimation);
+            StartNextSequence();
+        };
     }
 
     public void SitDown() // I don't relaly have a much better way of doing this at the moment, unfortunately
@@ -247,9 +348,14 @@ public class SequencedNPC : MonoBehaviour
             lookAt.isLooking = false;
         }
         Player.Instance.EnableMovement();
-        await UniTask.Delay(1000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+
+        await UniTask.Delay(500, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
-        StartNextSequence();
+
+        if (currentSequence.nextSequenceOnEnd)
+        {
+            StartNextSequence();
+        }
     }
 
     public void StartNextSequence() => StartNextSequenceAsync(1).Forget();
@@ -259,8 +365,7 @@ public class SequencedNPC : MonoBehaviour
     {
         if (currentSequence == null || sequences.Count == 0) return;
 
-        int currentIndex = sequences.IndexOf(currentSequence);
-        if (currentIndex < 0) return;
+        int currentIndex = Mathf.Max(0, sequences.IndexOf(currentSequence)); // in case currentSequence is not in sequences, start from 0
 
         int nextIndex = currentIndex + indexIncrease;
 
@@ -269,23 +374,32 @@ public class SequencedNPC : MonoBehaviour
             //Debug.Log($"Reached end of sequences for {gameObject.name}.");
             currentSequence?.onSequenceEnd?.Invoke();
             onFinishSequences?.Invoke();
-            if (!wrapAroundSequences) return;
+
+            if (!wrapAroundSequences)
+            {
+                return;
+            }
+
             nextIndex = 0;
         }
 
         dialogueSystem.onEnd?.RemoveListener(DialogueEndHandler); // only need this for dialogue sequences
 
         //Debug.Log($"Starting next sequence for {gameObject.name}: {sequences[nextIndex].type}");
-        await StartSequence(sequences[nextIndex]);
+        await StartSequenceAsync(sequences[nextIndex]);
     }
 
-    public async UniTask StartSequence(int index) => await StartSequence(sequences[index]);
-    public async UniTask StartSequence(Sequence sequence)
+    public void StartSequence(int index) => StartSequenceAsync(index).Forget();
+    public void StartSequence(Sequence sequence) => StartSequenceAsync(sequence).Forget();
+    public async UniTask StartSequenceAsync(int index) => await StartSequenceAsync(sequences[index]);
+    public async UniTask StartSequenceAsync(Sequence sequence)
     {
+        _cancelToken?.Cancel();
+        _isAtDestination = true;
+        if(agent != null && agent.enabled) agent.isStopped = true;
         currentSequence?.onSequenceEnd?.Invoke();
         if (dialogueSystem.IsDialogueActive) dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
-        _cancelToken?.Cancel();
         await HandleSequence(sequence);
         sequence.onSequenceStart?.Invoke();
     }
@@ -295,8 +409,24 @@ public class SequencedNPC : MonoBehaviour
         if (_audioSource == null) return;
         _audioSource.PlayOneShot(sound);
     }
+    public void PlayAnimation(AnimationClip clip)
+    {
+        if (clip == null)
+        {
+            Debug.LogWarning("No animation clip provided to PlayAnimation.");
+            return;
+        }
 
-    private void ApplyRotations()
+        if(animator == null)
+        {
+            Debug.LogWarning("No animator found on SequencedNPC.");
+            return;
+        }
+
+        animator.CrossFadeInFixedTime(clip.name, 0.4f);
+    }
+
+    private void ApplyWalkRotations()
     {
         if (agent.velocity.sqrMagnitude > 0.01f) // Makes rotation look a lot snappier, manually doing it
         {

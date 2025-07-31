@@ -10,9 +10,9 @@ using UnityEngine.UI;
 public class DialogueSystem : MonoBehaviour
 {
     public bool useTypewriterEffect = true;
-    public bool IsDialogueActive => _dialogueText.text.Length > 0;
+    public bool IsDialogueActive => currentDialogue != null;
 
-    public Dialogue currentDialogue;
+    public Dialogue currentDialogue = null;
 
     public UnityEvent onStart;
     public UnityEvent onEnd;
@@ -28,7 +28,10 @@ public class DialogueSystem : MonoBehaviour
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
         _textBubble = _dialogueText.transform.parent.gameObject;
         _typewriter = GetComponentInChildren<Typewriter>();
+    }
 
+    private void Start()
+    {
         _textBubble.SetActive(false);
     }
 
@@ -117,9 +120,9 @@ public class DialogueSystem : MonoBehaviour
         Player.Instance.IsInteractingWithNPC = false;
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
-        onEnd?.Invoke();
         currentDialogue = null;
         _textBubble.SetActive(false);
         _dialogueText.text = "";
+        onEnd?.Invoke();
     }
 }
