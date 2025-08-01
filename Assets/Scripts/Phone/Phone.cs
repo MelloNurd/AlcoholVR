@@ -119,7 +119,7 @@ public class Phone : MonoBehaviour
 
         _settingsScreenGroup = _phoneUICanvas.transform.Find("SettingsScreen").GetComponent<CanvasGroup>();
 
-        _notificationGroup = _phoneUICanvas.transform.Find("Notification").GetComponent<CanvasGroup>();
+        _notificationGroup = _phoneUICanvas.transform.Find("Notification Popup").GetComponentInChildren<CanvasGroup>();
         _notificationPanel = _notificationGroup.GetComponent<RectTransform>();
 
         _cameraScreenGroup = _phoneUICanvas.transform.Find("CameraScreen").GetComponent<CanvasGroup>();
@@ -153,7 +153,7 @@ public class Phone : MonoBehaviour
     private void Start()
     {
         _handTransform = transform.parent;
-        _screenObject = transform.Find("Screen").gameObject;
+        _screenObject = transform.Find("Screen (Canvas)").gameObject;
         _phonePhysicalCamera = GetComponentInChildren<Camera>();
 
         // Initialize screens (start at home)

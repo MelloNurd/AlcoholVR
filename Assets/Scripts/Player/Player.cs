@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     NearFarInteractor _rightNearFarInteractor;
     NearFarInteractor _leftNearFarInteractor;
     ControllerInputActionManager rightControllerInputActionManager;
-    ContinuousMoveProvider continuousMoveProvider;
+    ContinuousTurnProvider continuousTurnProvider;
 
     private void Awake()
     {
@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
         _leftNearFarInteractor = LeftController.GetComponentInChildren<NearFarInteractor>();
 
         rightControllerInputActionManager = RightController.GetComponent<ControllerInputActionManager>();
-        continuousMoveProvider = GetComponentInChildren<ContinuousMoveProvider>();
+        continuousTurnProvider = GetComponentInChildren<ContinuousTurnProvider>();
     }
 
     public void Start()
@@ -108,7 +108,7 @@ public class Player : MonoBehaviour
             rightControllerInputActionManager.smoothTurnEnabled = false;
         }
 
-        continuousMoveProvider.moveSpeed = SettingsManager.Instance.SmoothTurningSpeed;
+        continuousTurnProvider.turnSpeed = SettingsManager.Instance.SmoothTurningSpeed;
     }
 
     public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);
