@@ -65,12 +65,10 @@ public class Sequence
         this.dialogue = dialogue;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, Transform destination, AnimationClip walkAnimation = null, bool useDefaultWalkAnimation = true, bool nextSequenceOnEnd = false)
+    public Sequence(Type type, Transform destination, bool nextSequenceOnEnd = false)
     {
         this.type = type;
         this.destination = destination;
-        this.walkAnimation = walkAnimation;
-        this.useDefaultWalkAnimation = useDefaultWalkAnimation;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
     public Sequence(Type type, bool nextSequenceOnEnd = true)
@@ -180,9 +178,14 @@ public class SequencedNPC : MonoBehaviour
 
             if (agent.IsAtDestination())
             {
-                Debug.Log($"Reached destination for {gameObject.name}.");
+                if (gameObject.name.Contains("Stick"))
+                    Debug.Log($"Reached destination for {gameObject.name}.");
                 _isAtDestination = true;
                 agent.isStopped = true;
+            }
+            else if (gameObject.name.Contains("Stick"))
+            {
+                Debug.Log($"Walking to destination for {gameObject.name}... Current position: {bodyObj.transform.position}, Destination: {agent.destination}, Distance: {Vector3.Distance(bodyObj.transform.position, agent.destination)}");
             }
         }
     }
@@ -235,7 +238,7 @@ public class SequencedNPC : MonoBehaviour
         await UniTask.Delay(Mathf.RoundToInt(sequence.secondsToWait * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
-        if (currentSequence.nextSequenceOnEnd)
+        if (sequence.nextSequenceOnEnd)
         {
             StartNextSequence();
         }
@@ -256,7 +259,7 @@ public class SequencedNPC : MonoBehaviour
         if (_cancelToken.IsCancellationRequested) return;
 
         PlayAnimation(defaultAnimation);
-        if (currentSequence.nextSequenceOnEnd)
+        if (sequence.nextSequenceOnEnd)
         {
             StartNextSequence();
         }
@@ -276,10 +279,11 @@ public class SequencedNPC : MonoBehaviour
         await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
-        Debug.Log($"SUPPOSEDLY Reached walk destination for {gameObject.name}.");
+        if(gameObject.name.Contains("Stick"))
+            Debug.Log($"SUPPOSEDLY Reached walk destination for {gameObject.name}... _isAtDestination: {_isAtDestination}");
 
         PlayAnimation(defaultAnimation);
-        if (currentSequence.nextSequenceOnEnd)
+        if (sequence.nextSequenceOnEnd)
         {
             StartNextSequence();
         }
@@ -306,6 +310,12 @@ public class SequencedNPC : MonoBehaviour
 
         await UniTask.WaitUntil(() => !dialogueSystem.IsDialogueActive, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
+
+        if (sequence.nextSequenceOnEnd)
+        {
+            Debug.Log($"Dialogue ended for {gameObject.name}, starting next sequence.");
+            StartNextSequence();
+        }
     }
     private async UniTask ExecuteAnimateSequence(Sequence sequence)
     {
@@ -354,11 +364,6 @@ public class SequencedNPC : MonoBehaviour
 
         await UniTask.Delay(500, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
-
-        if (currentSequence.nextSequenceOnEnd)
-        {
-            StartNextSequence();
-        }
     }
 
     public void StartNextSequence() => StartNextSequenceAsync(1).Forget();
@@ -374,7 +379,7 @@ public class SequencedNPC : MonoBehaviour
 
         if (nextIndex >= sequences.Count)
         {
-            //Debug.Log($"Reached end of sequences for {gameObject.name}.");
+            Debug.Log($"Reached end of sequences for {gameObject.name}.");
             currentSequence?.onSequenceEnd?.Invoke();
             onFinishSequences?.Invoke();
 
@@ -397,7 +402,8 @@ public class SequencedNPC : MonoBehaviour
     public async UniTask StartSequenceAsync(int index) => await StartSequenceAsync(sequences[index]);
     public async UniTask StartSequenceAsync(Sequence sequence)
     {
-        Debug.Log($"Current sequence ended ? {currentSequence?.type}. Starting new sequence for {gameObject.name}: {sequence.type}");
+        if(gameObject.name.Contains("Stick"))
+            Debug.Log($"Current sequence ended ? {currentSequence?.type}. Starting new sequence for {gameObject.name}: {sequence.type}");
         _cancelToken?.Cancel();
         _isAtDestination = true;
         if(agent != null && agent.enabled) agent.isStopped = true;

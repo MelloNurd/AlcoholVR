@@ -36,6 +36,8 @@ public class BonfireScene : MonoBehaviour
 
     void Start()
     {
+        _deterredFireNPCs.Value = false;
+
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
 
@@ -70,6 +72,7 @@ public class BonfireScene : MonoBehaviour
         }
         else if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
+            Debug.Log("Starting fire stick sequence.");
             fireStickNPC.StartNextSequence();
         }
     }
@@ -140,8 +143,9 @@ public class BonfireScene : MonoBehaviour
 
     public void HandleFireNPCs()
     {
+        Debug.Log("Handling fire NPCs...");
         // check if player convinced them to stop
-        if(!_deterredFireNPCs.Value) return; // didn't deter, they stay where they are
+        if (!_deterredFireNPCs.Value) return; // didn't deter, they stay where they are
 
         // Disable the stick object
         fireStickNPC.GetComponentInChildren<Light>().transform.parent.gameObject.SetActive(false);
