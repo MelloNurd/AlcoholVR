@@ -77,6 +77,6 @@ public class PhysicsHand : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        exitReset = true; // Set exitReset to true when exiting the collision
+            exitReset = true; // Set exitReset to true when exiting the collision
     }
 }

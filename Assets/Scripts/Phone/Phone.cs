@@ -25,7 +25,7 @@ public class Phone : MonoBehaviour
     private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
     [SerializeField] private AudioClip _clickSound;
-    public bool IsActive => gameObject.activeSelf;
+    public bool IsActive => _phoneObj.activeSelf;
     public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, transform.position) < 0.3f;
     public bool IsInteractable { get; set; } = true;
     private Vector3 _phoneSize;
@@ -54,6 +54,7 @@ public class Phone : MonoBehaviour
     private Image _batteryFillImage;
 
     private Transform _handTransform;
+    private GameObject _phoneObj;
     private Camera _phonePhysicalCamera;
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
@@ -95,11 +96,13 @@ public class Phone : MonoBehaviour
             return;
         }
 
-        // Assign component variables
-        _appearParticles = transform.Find("AppearParticles").GetComponent<ParticleSystem>();
+        _phoneObj = transform.GetChild(0).gameObject;
 
-        _phoneUICamera = transform.Find("Camera Screen").GetComponent<Camera>();
-        _phoneUICanvas = transform.Find("Screen (Canvas)").GetComponent<Canvas>();
+        // Assign component variables
+        _appearParticles = _phoneObj.transform.Find("AppearParticles").GetComponent<ParticleSystem>();
+
+        _phoneUICamera = _phoneObj.transform.Find("Camera Screen").GetComponent<Camera>();
+        _phoneUICanvas = _phoneObj.transform.Find("Screen (Canvas)").GetComponent<Canvas>();
         _phoneBG = _phoneUICanvas.transform.Find("BG").GetComponent<Image>();
 
         _batteryLevelText = _phoneUICanvas.transform.Find("Battery/Text").GetComponent<TMP_Text>();
@@ -152,8 +155,8 @@ public class Phone : MonoBehaviour
 
     private void Start()
     {
-        _handTransform = transform.parent;
-        _screenObject = transform.Find("Screen (Canvas)").gameObject;
+        _handTransform = _phoneObj.transform.parent;
+        _screenObject = _phoneObj.transform.Find("Screen (Canvas)").gameObject;
         _phonePhysicalCamera = GetComponentInChildren<Camera>();
 
         // Initialize screens (start at home)
@@ -163,14 +166,14 @@ public class Phone : MonoBehaviour
         // Set phone to follow hand position (set parent to hand)
         if (_handTransform != null)
         {
-            transform.parent = _handTransform;
+            _phoneObj.transform.parent = _handTransform;
         }
         else
         {
             Debug.LogError("_handTransform not found. Phone will not follow hand position.");
         }
 
-        _phoneSize = transform.localScale;
+        _phoneSize = _phoneObj.transform.localScale;
         DisablePhone(0f, false);
     }
 
@@ -222,9 +225,9 @@ public class Phone : MonoBehaviour
             _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        gameObject.SetActive(true);
-        transform.localScale = Vector3.zero;
-        await Tween.Scale(transform, _phoneSize, time, ease: Ease.OutBack);
+        _phoneObj.SetActive(true);
+        _phoneObj.transform.localScale = Vector3.zero;
+        await Tween.Scale(_phoneObj.transform, _phoneSize, time, ease: Ease.OutBack);
         IsInteractable = true;
 
         DisplayNotifications();
@@ -239,8 +242,8 @@ public class Phone : MonoBehaviour
             _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        await Tween.Scale(transform, Vector3.zero, time, ease: Ease.InBack);
-        gameObject.SetActive(false);
+        await Tween.Scale(_phoneObj.transform, Vector3.zero, time, ease: Ease.InBack);
+        _phoneObj.SetActive(false);
         if (_appearParticles != null && effects)
         {
             _appearParticles.transform.position = transform.position; // Set particle position to phone position
