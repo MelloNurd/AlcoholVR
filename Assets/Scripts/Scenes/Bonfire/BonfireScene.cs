@@ -27,6 +27,8 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private GameObject _friendsAlcohol;
     [SerializeField] private AnimationClip _sittingAnimation;
     [SerializeField] private BoolValue _deterredFireNPCs;
+    [SerializeField] private Transform _fireNPCWalkTarget1;
+    [SerializeField] private Transform _fireNPCWalkTarget2;
 
     // Misc variables
     private bool _playerHasGrabbedDrink = false;
@@ -65,6 +67,10 @@ public class BonfireScene : MonoBehaviour
                     drunkFlirtNPC.StartSequence(sitSequence);
                 });
             }
+        }
+        else if (Keyboard.current.f2Key.wasPressedThisFrame)
+        {
+            fireStickNPC.StartNextSequence();
         }
     }
 
@@ -137,8 +143,23 @@ public class BonfireScene : MonoBehaviour
         // check if player convinced them to stop
         if(!_deterredFireNPCs.Value) return; // didn't deter, they stay where they are
 
-        // if so, create new sequence which is walking to point somewhere else
-        // add it to existing sequences and start it (so it has the proper index)
-        // additionally, create one more sequence which is sitting down and add that as well (should auto transition to this by index)
+        // Disable the stick object
+        fireStickNPC.GetComponentInChildren<Light>().transform.parent.gameObject.SetActive(false);
+
+        Sequence walkAwaySequence1 = new Sequence(Sequence.Type.Walk, _fireNPCWalkTarget1, nextSequenceOnEnd: true);
+        Sequence walkAwaySequence2 = new Sequence(Sequence.Type.Walk, _fireNPCWalkTarget2, nextSequenceOnEnd: true);
+        Sequence turnSequence = new Sequence(Sequence.Type.TurnToFace, directionToFace: new Vector3(1, 0, -1));
+        Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
+
+        fireStickNPC.sequences.Add(walkAwaySequence1);
+        fireStickNPC.sequences.Add(turnSequence);
+        //fireStickNPC.sequences.Add(sitSequence);
+
+        fireFriendNPC.sequences.Add(walkAwaySequence2);
+        fireFriendNPC.sequences.Add(turnSequence);
+        fireFriendNPC.sequences.Add(sitSequence);
+
+        fireStickNPC.StartSequence(walkAwaySequence1);
+        fireFriendNPC.StartSequence(walkAwaySequence2);
     }
 }

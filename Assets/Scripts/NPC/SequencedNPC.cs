@@ -180,6 +180,7 @@ public class SequencedNPC : MonoBehaviour
 
             if (agent.IsAtDestination())
             {
+                Debug.Log($"Reached destination for {gameObject.name}.");
                 _isAtDestination = true;
                 agent.isStopped = true;
             }
@@ -272,8 +273,10 @@ public class SequencedNPC : MonoBehaviour
 
         PlayAnimation(walkAnim);
 
-        await UniTask.WaitUntil(() => agent.IsAtDestination(), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
+
+        Debug.Log($"SUPPOSEDLY Reached walk destination for {gameObject.name}.");
 
         PlayAnimation(defaultAnimation);
         if (currentSequence.nextSequenceOnEnd)
@@ -394,6 +397,7 @@ public class SequencedNPC : MonoBehaviour
     public async UniTask StartSequenceAsync(int index) => await StartSequenceAsync(sequences[index]);
     public async UniTask StartSequenceAsync(Sequence sequence)
     {
+        Debug.Log($"Current sequence ended ? {currentSequence?.type}. Starting new sequence for {gameObject.name}: {sequence.type}");
         _cancelToken?.Cancel();
         _isAtDestination = true;
         if(agent != null && agent.enabled) agent.isStopped = true;

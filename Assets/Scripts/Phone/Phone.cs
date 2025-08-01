@@ -25,8 +25,8 @@ public class Phone : MonoBehaviour
     private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
     [SerializeField] private AudioClip _clickSound;
-    public bool IsActive => physicalPhoneObj != null && physicalPhoneObj.activeSelf;
-    public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, physicalPhoneObj.transform.position) < 0.3f;
+    public bool IsActive => gameObject.activeSelf;
+    public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, transform.position) < 0.3f;
     public bool IsInteractable { get; set; } = true;
     private Vector3 _phoneSize;
 
@@ -53,7 +53,6 @@ public class Phone : MonoBehaviour
     private TMP_Text _batteryLevelText;
     private Image _batteryFillImage;
 
-    [SerializeField] private GameObject physicalPhoneObj;
     private Transform _handTransform;
     private Camera _phonePhysicalCamera;
     private Camera _phoneUICamera; // The camera that renders the phone's UI
@@ -99,8 +98,8 @@ public class Phone : MonoBehaviour
         // Assign component variables
         _appearParticles = transform.Find("AppearParticles").GetComponent<ParticleSystem>();
 
-        _phoneUICamera = transform.Find("Phone Screen Camera").GetComponent<Camera>();
-        _phoneUICanvas = transform.Find("Phone Canvas").GetComponent<Canvas>();
+        _phoneUICamera = transform.Find("Camera Screen").GetComponent<Camera>();
+        _phoneUICanvas = transform.Find("Screen (Canvas)").GetComponent<Canvas>();
         _phoneBG = _phoneUICanvas.transform.Find("BG").GetComponent<Image>();
 
         _batteryLevelText = _phoneUICanvas.transform.Find("Battery/Text").GetComponent<TMP_Text>();
@@ -144,7 +143,7 @@ public class Phone : MonoBehaviour
 
         if (_currentTheme == null)
         {
-            int index = PlayerPrefs.GetInt("PhoneThemeIndex", -1);
+            int index = PlayerPrefs.GetInt("Phone_ThemeIndex", -1);
             _currentTheme = _availableThemes[index < 0 ? Random.Range(0, _availableThemes.Count) : index];
 
         }
@@ -153,9 +152,9 @@ public class Phone : MonoBehaviour
 
     private void Start()
     {
-        _handTransform = physicalPhoneObj.transform.parent;
-        _screenObject = physicalPhoneObj.transform.Find("Screen").gameObject;
-        _phonePhysicalCamera = physicalPhoneObj.GetComponentInChildren<Camera>();
+        _handTransform = transform.parent;
+        _screenObject = transform.Find("Screen").gameObject;
+        _phonePhysicalCamera = GetComponentInChildren<Camera>();
 
         // Initialize screens (start at home)
         HideAllScreens();
@@ -164,14 +163,14 @@ public class Phone : MonoBehaviour
         // Set phone to follow hand position (set parent to hand)
         if (_handTransform != null)
         {
-            physicalPhoneObj.transform.parent = _handTransform;
+            transform.parent = _handTransform;
         }
         else
         {
             Debug.LogError("_handTransform not found. Phone will not follow hand position.");
         }
 
-        _phoneSize = physicalPhoneObj.transform.localScale;
+        _phoneSize = transform.localScale;
         DisablePhone(0f, false);
     }
 
@@ -201,10 +200,7 @@ public class Phone : MonoBehaviour
         {
             ShowCameraScreen();
         }
-    }
 
-    private void FixedUpdate()
-    {
         UpdateClock();
         UpdateBattery();
     }
@@ -222,13 +218,13 @@ public class Phone : MonoBehaviour
 
         if (_phoneAppearSound != null && effects)
         {
-            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
+            _phoneAudioSource.transform.position = transform.position;
             _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        physicalPhoneObj.SetActive(true);
-        physicalPhoneObj.transform.localScale = Vector3.zero;
-        await Tween.Scale(physicalPhoneObj.transform, _phoneSize, time, ease: Ease.OutBack);
+        gameObject.SetActive(true);
+        transform.localScale = Vector3.zero;
+        await Tween.Scale(transform, _phoneSize, time, ease: Ease.OutBack);
         IsInteractable = true;
 
         DisplayNotifications();
@@ -239,16 +235,16 @@ public class Phone : MonoBehaviour
 
         if (_phoneDisappearSound != null && effects)
         {
-            _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
+            _phoneAudioSource.transform.position = transform.position;
             _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f); // Play phone appear sound
         }
         IsInteractable = false;
-        await Tween.Scale(physicalPhoneObj.transform, Vector3.zero, time, ease: Ease.InBack);
-        physicalPhoneObj.SetActive(false);
+        await Tween.Scale(transform, Vector3.zero, time, ease: Ease.InBack);
+        gameObject.SetActive(false);
         if (_appearParticles != null && effects)
         {
-            _appearParticles.transform.position = physicalPhoneObj.transform.position; // Set particle position to phone position
-            _appearParticles.transform.rotation = physicalPhoneObj.transform.rotation;
+            _appearParticles.transform.position = transform.position; // Set particle position to phone position
+            _appearParticles.transform.rotation = transform.rotation;
             _appearParticles.Play();
         }
 
@@ -267,45 +263,6 @@ public class Phone : MonoBehaviour
         }
     }
 
-    public bool SimulateScreenPressAtPoint(Vector3 point)
-    {
-        if(!IsInteractable) return false;
-
-        Vector3 localHitPoint = _screenObject.transform.InverseTransformPoint(point);
-
-        // Calculate normalized position (assuming screen mesh is centered and properly scaled)
-        // Adjust these calculations based on your phone screen's local orientation and dimensions
-        float normalizedX = 1 - (localHitPoint.x + 0.5f); // Map from -0.5 to 0.5 to 0-1 range and flip X
-        float normalizedY = 1 - (localHitPoint.y + 0.5f); // Map from -0.5 to 0.5 to 0-1 range and flip Y
-
-        // Convert to phone UI camera's texture coordinates
-        Vector2 virtualPos = new Vector2(
-            normalizedX * _phoneUICamera.targetTexture.width,
-            normalizedY * _phoneUICamera.targetTexture.height
-        );
-
-        // Create pointer event data for UI raycasting
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = virtualPos;
-
-        // Raycast against UI elements
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-
-        GameObject[] hitObjects = results
-            .Where(result => result.gameObject.CompareTag("AppIcon")) // Only get objects with the "AppIcon" tags
-            .Select(result => result.gameObject)
-            .ToArray();
-
-        foreach (GameObject obj in hitObjects)
-        {
-            Utilities.SimulatePress(obj);
-            PlayerAudio.PlaySound(_clickSound, 1f, randomizePitch: true); // Play click sound
-        }
-
-        return hitObjects.Length > 0; // Return true if any objects were hit
-    }
-    
     private void UpdateClock()
     {
         if (_useRealTimeClock)
@@ -354,10 +311,10 @@ public class Phone : MonoBehaviour
         _phoneClockTime.color = theme.PrimaryColor;
         _phoneClockDate.color = theme.PrimaryColor;
 
-        // This is ugly but not called often
+        // This is ugly but not called often... if ever expanded upon, implement this via an interface
         foreach(Image image in _phoneUICanvas.GetComponentsInChildren<Image>())
         {
-            if(!image.CompareTag("AppIcon") && !image.CompareTag("ColoredUI")) continue;
+            if(!image.CompareTag("ColoredUI")) continue;
 
             image.color = theme.PrimaryColor;
             if (image.name == "BG") image.color = theme.TertiaryColor;
@@ -365,19 +322,19 @@ public class Phone : MonoBehaviour
 
         foreach (Shadow shadow in _phoneUICanvas.GetComponentsInChildren<Shadow>())
         {
-            if (!shadow.CompareTag("AppIcon") && !shadow.CompareTag("ColoredUI")) continue;
+            if (!shadow.CompareTag("ColoredUI")) continue;
 
             shadow.effectColor = theme.SecondaryColor;
         }
 
         foreach (TMP_Text text in _phoneUICanvas.GetComponentsInChildren<TMP_Text>())
         {
-            if (!text.CompareTag("AppIcon") && !text.CompareTag("ColoredUI")) continue;
+            if (!text.CompareTag("ColoredUI")) continue;
 
             text.color = theme.PrimaryColor;
         }
 
-        PlayerPrefs.SetInt("PhoneThemeIndex", _availableThemes.IndexOf(theme));
+        PlayerPrefs.SetInt("Phone_ThemeIndex", _availableThemes.IndexOf(theme));
     }
 
     public void QueueNotification(string sender, string content) => QueueNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
@@ -422,7 +379,7 @@ public class Phone : MonoBehaviour
         }
 
         // notification sound + vibration
-        _phoneAudioSource.transform.position = physicalPhoneObj.transform.position;
+        _phoneAudioSource.transform.position = transform.position;
         _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
         InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.2f); // Vibrate left controller
 

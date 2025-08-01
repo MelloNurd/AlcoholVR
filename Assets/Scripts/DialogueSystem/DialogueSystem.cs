@@ -33,6 +33,7 @@ public class DialogueSystem : MonoBehaviour
     private void Start()
     {
         _textBubble.SetActive(false);
+        // Animate the text bubble popping out when hidden (reverse pop)
     }
 
     private void Update()
@@ -93,9 +94,11 @@ public class DialogueSystem : MonoBehaviour
 
     private async UniTask DisplayText(string text)
     {
+        if (text.IsBlank()) return;
+
         if (useTypewriterEffect && _typewriter != null)
         {
-            if(!text.IsBlank()) _textBubble.SetActive(true);
+            _textBubble.SetActive(true);
             Tween.CompleteAll(_textBubble.transform);
             Vector3 scale = _textBubble.transform.localScale;
             _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
@@ -104,14 +107,18 @@ public class DialogueSystem : MonoBehaviour
         }
         else
         {
+            _textBubble.SetActive(true);
+            Tween.CompleteAll(_textBubble.transform);
+            Vector3 scale = _textBubble.transform.localScale;
+            _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
+            await UniTask.Delay(100); // Slight delay for bubble animation
             _dialogueText.text = text;
-            if (!text.IsBlank()) _textBubble.SetActive(true);
         }
 
         await UniTask.Delay(_typewriter.DefaultWritingSpeedInMS); // Wait slightly before showing buttons
     }
 
-    public void EndCurrentDialogue()
+    public async void EndCurrentDialogue()
     {
         if (TryGetComponent<InteractableNPC_SM>(out var interactableNPC) && interactableNPC.IsInState(NPC_SM.States.Interact))
         {
@@ -121,8 +128,10 @@ public class DialogueSystem : MonoBehaviour
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
         currentDialogue = null;
-        _textBubble.SetActive(false);
-        _dialogueText.text = "";
         onEnd?.Invoke();
+        _dialogueText.text = "";
+        Tween.CompleteAll(_textBubble.transform);
+        await Tween.Scale(_textBubble.transform, 0, 0.2f, Ease.InBack);
+        _textBubble.SetActive(false);
     }
 }
