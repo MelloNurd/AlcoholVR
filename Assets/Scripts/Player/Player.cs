@@ -35,6 +35,8 @@ public class Player : MonoBehaviour
     ControllerInputActionManager rightControllerInputActionManager;
     ContinuousTurnProvider continuousTurnProvider;
 
+    bool queue = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -111,8 +113,30 @@ public class Player : MonoBehaviour
         continuousTurnProvider.turnSpeed = SettingsManager.Instance.SmoothTurningSpeed;
     }
 
+    public void Update()
+    {
+        if(queue && _rightNearFarInteractor.interactablesSelected.Count == 0)
+        {
+            _rightNearFarInteractor.enableFarCasting = true;
+            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+        }
+    }
+
     public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);
     public void OpenEyes(float speed = 1f) => loading?.OpenEyes(speed);
+
+    public void ToggleUIInteractor()
+    {
+        if(SettingsManager.Instance.RangedInteractors)
+        {
+            return;
+        }
+
+        _rightNearFarInteractor.enableFarCasting = false;
+        _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default");
+
+        queue = !queue;
+    }
 
     public void DisableMovement()
     {

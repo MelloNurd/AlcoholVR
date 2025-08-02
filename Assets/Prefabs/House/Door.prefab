@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1784146481037411028}
   - component: {fileID: 8239350998819271690}
   - component: {fileID: 6111917288100308232}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: RealKnob2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 1976093939922725239}
   - component: {fileID: 9043478186757526312}
   - component: {fileID: 8056461360843206323}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Knobs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,6 +184,60 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2704950292383099137
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5909955837898618852}
+  - component: {fileID: 1536798684422726858}
+  m_Layer: 12
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5909955837898618852
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2704950292383099137}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4723528768606273624}
+  m_LocalEulerAnglesHint: {x: -90, y: -90, z: 90}
+--- !u!64 &1536798684422726858
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2704950292383099137}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300168, guid: 8f9ab652ad6623d40aa8f5063b7a6e1b, type: 3}
 --- !u!1 &2793382515949845042
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +249,7 @@ GameObject:
   - component: {fileID: 4723528768606273624}
   - component: {fileID: 390474497087090505}
   - component: {fileID: 6295098783897021198}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,7 +268,8 @@ Transform:
   m_LocalPosition: {x: 0.006, y: 0.20180035, z: 0.052000046}
   m_LocalScale: {x: 1, y: 0.72467124, z: 0.77749646}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5909955837898618852}
   m_Father: {fileID: 8328072391586664984}
   m_LocalEulerAnglesHint: {x: -90, y: -90, z: 90}
 --- !u!33 &390474497087090505
@@ -714,7 +769,7 @@ GameObject:
   - component: {fileID: 3638783444510217759}
   - component: {fileID: 8702264493539001111}
   - component: {fileID: 585626413778781547}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: RealKnob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -794,7 +849,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -961,7 +1016,7 @@ GameObject:
   - component: {fileID: 871740702195028243}
   - component: {fileID: 8090655790205392367}
   - component: {fileID: 8333768090552399746}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
