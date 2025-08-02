@@ -27,6 +27,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private GameObject _friendsAlcohol;
     [SerializeField] private AnimationClip _sittingAnimation;
     [SerializeField] private BoolValue _deterredFireNPCs;
+    [SerializeField] private BoolValue _hasTalkedToMysteryDrink;
     [SerializeField] private Transform _fireNPCWalkTarget1;
     [SerializeField] private Transform _fireNPCWalkTarget2;
 
@@ -53,27 +54,33 @@ public class BonfireScene : MonoBehaviour
         if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
             drunkFlirtNPC.StartNextSequence();
-            if (GlobalStats.DrinkCount >= 0)
-            {
-                drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
-                { // Player is drunk, so they went with the NPC
-                    _isFlirtWaitingForPlayer = true;
-                    GlobalStats.playerWentWithFlirt = true;
-                });
-            }
-            else
-            {
-                drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
-                { // Player is not drunk, so they did not go with the NPC
-                    Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
-                    drunkFlirtNPC.StartSequence(sitSequence);
-                });
-            }
         }
         else if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            Debug.Log("Starting fire stick sequence.");
             fireStickNPC.StartNextSequence();
+        }
+    }
+
+    public void AssignDrunkFlirtOutcome()
+    {
+        if (GlobalStats.DrinkCount >= 0)
+        {
+            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtation;
+            drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
+            { // Player is drunk, so they went with the NPC
+                _isFlirtWaitingForPlayer = true;
+                GlobalStats.playerWentWithFlirt = true;
+            });
+        }
+        else
+        {
+            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = soberFlirtation;
+            drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
+            { // Player is not drunk, so they did not go with the NPC
+                Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
+                drunkFlirtNPC.sequences.Add(sitSequence);
+                drunkFlirtNPC.StartSequence(sitSequence);
+            });
         }
     }
 
@@ -111,7 +118,6 @@ public class BonfireScene : MonoBehaviour
 
         friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedSoda;
         await friendNPC.StartNextSequenceAsync();
-        //await UniTask.Delay(4500);
         _friendsSoda.SetActive(true);
 
         StartMysteryDrinkNPC();
@@ -126,7 +132,6 @@ public class BonfireScene : MonoBehaviour
 
         friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedAlcohol;
         await friendNPC.StartNextSequenceAsync();
-        //await UniTask.Delay(4500);
         _friendsAlcohol.SetActive(true);
 
         StartMysteryDrinkNPC();
@@ -139,6 +144,12 @@ public class BonfireScene : MonoBehaviour
         await UniTask.WaitUntil(() => _playerHasGrabbedDrink && !Player.Instance.IsInteractingWithNPC);
 
         mysteryDrinkNPC.StartNextSequence();
+        mysteryDrinkNPC.dialogueSystem.onEnd.AddListener(async () =>
+        {
+            _hasTalkedToMysteryDrink.Value = true;
+            await UniTask.Delay(Mathf.RoundToInt(Random.Range(30_000, 120_000)));
+            drunkFlirtNPC.StartNextSequence();
+        });
     }
 
     public void HandleFireNPCs()
