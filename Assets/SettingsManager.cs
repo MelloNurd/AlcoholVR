@@ -84,4 +84,8 @@ public class SettingsManager : MonoBehaviour
         return Mathf.Log10(volume01) * 20f;
     }
 
+    public void DisableTutorialSettings()
+    {
+        RangedInteractors = false;
+    }
 }
