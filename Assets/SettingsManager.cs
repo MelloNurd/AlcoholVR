@@ -43,13 +43,15 @@ public class SettingsManager : MonoBehaviour
         MasterAudio = audioMixer.FindMatchingGroups("Master")[0]; // Find the Master group in the audio mixer
         Music = audioMixer.FindMatchingGroups("Music")[0]; // Find the Music group in the audio mixer
         SFX = audioMixer.FindMatchingGroups("SFX")[0]; // Find the SFX group in the audio mixer
+
+        SetMusicVolume(MusicVolume);
+        SetSFXVolume(SFXVolume);
+        SetMasterVolume(MasterVolume);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetMusicVolume(VolumePercentToDecibel(MusicVolume));
-        SetSFXVolume(VolumePercentToDecibel(SFXVolume));
-        SetMasterVolume(VolumePercentToDecibel(MasterVolume));
+        
     }
 
     // Update is called once per frame
@@ -63,12 +65,14 @@ public class SettingsManager : MonoBehaviour
         MasterVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MasterVolume);
         MasterAudio.audioMixer.SetFloat("MasterVolume", decibelVolume);
+        Debug.Log($"Master Volume set to {decibelVolume} dB ({MasterVolume}%)");
     }
     public void SetMusicVolume(float volume)
     {
         MusicVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MusicVolume);
         Music.audioMixer.SetFloat("MusicVolume", decibelVolume);
+        Debug.Log($"Music Volume set to {decibelVolume} dB ({MusicVolume}%)");
     }
 
     public void SetSFXVolume(float volume)
@@ -76,12 +80,15 @@ public class SettingsManager : MonoBehaviour
         SFXVolume = volume;
         float decibelVolume = VolumePercentToDecibel(SFXVolume);
         SFX.audioMixer.SetFloat("SFXVolume", decibelVolume);
+        Debug.Log($"SFX Volume set to {decibelVolume} dB ({SFXVolume}%)");
     }
 
     float VolumePercentToDecibel(float volumePercent)
     {
-        float volume01 = Mathf.Clamp01(volumePercent / 100f);
-        return Mathf.Log10(volume01) * 20f;
+        if (volumePercent <= 0f)
+            return -80f;
+        Debug.Log($"Converting volume percent {volumePercent} to decibel.");
+        return Mathf.Log10(volumePercent/100) * 20f;
     }
 
     public void DisableTutorialSettings()

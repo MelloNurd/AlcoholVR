@@ -92,7 +92,9 @@ public class Player : MonoBehaviour
 
         if (SettingsManager.Instance.RangedInteractors)
         {
+            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
             _rightNearFarInteractor.enableFarCasting = true;
+            _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
             _leftNearFarInteractor.enableFarCasting = true;
         }
         else
@@ -136,6 +138,68 @@ public class Player : MonoBehaviour
         _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default");
 
         queue = !queue;
+    }
+
+    public void ToggleTunnelingVignette()
+    {
+        _tunnelingVignetteController.enabled = !_tunnelingVignetteController.enabled;
+        SettingsManager.Instance.TunnelingVignette = _tunnelingVignetteController.enabled;
+    }
+
+    public void SetTunnelingVignetteAperatureSize(float value)
+    {
+        _tunnelingVignetteController.defaultParameters.apertureSize = value;
+        SettingsManager.Instance.TunnelingVignetteAperatureSize = value;
+    }
+
+    public void SetTunnelingVignetteFeathering(float value)
+    {
+        _tunnelingVignetteController.defaultParameters.featheringEffect = value;
+        SettingsManager.Instance.TunnelingVignetteFeathering = value;
+    }
+
+    public void ToggleSmoothTurning(bool value)
+    {
+        SettingsManager.Instance.SmoothTurning = value;
+        rightControllerInputActionManager.smoothTurnEnabled = value;
+    }
+
+    public void SetSmoothTurningSpeed(float value)
+    {
+        SettingsManager.Instance.SmoothTurningSpeed = value;
+        continuousTurnProvider.turnSpeed = value;
+    }
+
+    public void ToggleGrabToggle(bool value)
+    {
+        SettingsManager.Instance.ToggleGrab = value;
+        if (value)
+        {
+            _rightNearFarInteractor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.Toggle;
+            _leftNearFarInteractor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.Toggle;
+        }
+        else
+        {
+            _rightNearFarInteractor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.StateChange;
+            _leftNearFarInteractor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.StateChange;
+        }
+    }
+
+    public void ToggleRangedInteractors(bool value)
+    {
+        SettingsManager.Instance.RangedInteractors = value;
+        if (value)
+        {
+            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
+            _rightNearFarInteractor.enableFarCasting = true;
+            _leftNearFarInteractor.enableFarCasting = true;
+        }
+        else
+        {
+            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+            _rightNearFarInteractor.enableFarCasting = false;
+            _leftNearFarInteractor.enableFarCasting = false;
+        }
     }
 
     public void DisableMovement()
