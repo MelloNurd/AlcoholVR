@@ -131,6 +131,7 @@ public class Player : MonoBehaviour
     {
         if(SettingsManager.Instance.RangedInteractors)
         {
+            Debug.Log("Ranged Interactors are enabled. Cannot toggle UI interactor.");
             return;
         }
 
@@ -192,12 +193,13 @@ public class Player : MonoBehaviour
         {
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
             _rightNearFarInteractor.enableFarCasting = true;
+            _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
             _leftNearFarInteractor.enableFarCasting = true;
         }
         else
         {
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
-            _rightNearFarInteractor.enableFarCasting = false;
+            _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
             _leftNearFarInteractor.enableFarCasting = false;
         }
     }
