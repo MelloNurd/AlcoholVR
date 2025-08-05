@@ -2384,6 +2384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonPrefab: {fileID: 3181673634099340323, guid: b660f67ce21698345aa886ea7a95792c, type: 3}
   loadMenu: {fileID: 127549706}
+  buttonClickSound: {fileID: 0}
 --- !u!114 &138379449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25912,6 +25913,8 @@ MonoBehaviour:
   - _ScleraColor
   - 
   - 
+  LeftHand: {fileID: 0}
+  RightHand: {fileID: 0}
 --- !u!1 &1528390031
 GameObject:
   m_ObjectHideFlags: 0
@@ -59762,6 +59765,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7630683439406129269, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 5b8b82fbef43c2f40b8812040c0b8e34, type: 2}
     - target: {fileID: 7630683439406129269, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
