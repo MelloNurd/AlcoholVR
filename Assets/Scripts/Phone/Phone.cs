@@ -83,6 +83,11 @@ public class Phone : MonoBehaviour
 
     private ParticleSystem _appearParticles;
 
+    bool enlarged = false;
+    [SerializeField] Sprite fullscreenSprite;
+    [SerializeField] Sprite minimizeSprite;
+    [SerializeField] Image fullscreenToggleImage;
+
     private void Awake()
     {
         // Singleton implementation
@@ -497,5 +502,25 @@ public class Phone : MonoBehaviour
         _phoneBG.enabled = false;
         _phonePhysicalCamera.enabled = true;
         _cameraScreenGroup.Show();
+    }
+
+    public void ToggleEnlarge(RectTransform rect)
+    {
+        if (enlarged)
+        {
+            rect.localPosition = new Vector3(0, 0.00024f, -0.00125f);
+            rect.localRotation = Quaternion.Euler(0f,0f,0f);
+            rect.localScale = new Vector3(3.62377796e-05f, 3.76863463e-05f, 3.76863427e-05f);
+            enlarged = false;
+            fullscreenToggleImage.sprite = fullscreenSprite;
+        }
+        else
+        {
+            rect.localPosition = new Vector3(0.234f, 0.051f, 0.04f);
+            rect.localRotation = Quaternion.Euler(-2.875f, 70f, -5.5f);
+            rect.localScale = new Vector3(0.0001687093f, 0.0001792871f, 0.0001817317f);
+            enlarged = true;
+            fullscreenToggleImage.sprite = minimizeSprite;
+        }
     }
 }
