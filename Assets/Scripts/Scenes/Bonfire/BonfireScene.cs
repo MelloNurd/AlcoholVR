@@ -22,11 +22,21 @@ public class BonfireScene : MonoBehaviour
     [Header("NPC References")]
     [SerializeField] private SequencedNPC friendNPC;
     [SerializeField] private SequencedNPC mysteryDrinkNPC;
+    [SerializeField] private SequencedNPC tableNPC;
     [SerializeField] private SequencedNPC drunkFlirtNPC;
     [SerializeField] private SequencedNPC fireStickNPC;
     [SerializeField] private SequencedNPC fireFriendNPC;
     [SerializeField] private SequencedNPC poisonedNPC;
     [SerializeField] private SequencedNPC miscNPC;
+
+    [Header("Game State References")]
+    [SerializeField] private BoolValue _deterredFireNPCs;
+    private bool _playerHasGrabbedDrink = false;
+    private bool _playerHasTalkedToFlirt = false;
+    private bool _playerHasTalkedToTable = false;
+    private bool _playerHasTalkedToMysteryDrink = false;
+    private bool _playerHasTalkedToFireNPCs = false;
+    private bool _isPoisonedNpcReady = false;
 
     [Header("Misc References")]
     [SerializeField] private GameObject _bonfire;
@@ -34,29 +44,23 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private GameObject _friendsAlcohol;
     [SerializeField] private AnimationClip _sittingAnimation;
     [SerializeField] private AnimationClip _faintAnimation;
-    [SerializeField] private BoolValue _deterredFireNPCs;
-    [SerializeField] private BoolValue _hasTalkedToMysteryDrink;
     [SerializeField] private Transform _fireNPCWalkTarget1;
     [SerializeField] private Transform _fireNPCWalkTarget2;
-    [SerializeField] private BoolValue _isPoisonedNpcReady;
     [SerializeField] private Transform _friendPoisoningReactionPoint;
     [SerializeField] private Transform _mysteryPoisoningReactionPoint;
     [SerializeField] private Transform _miscPoisoningReactionPoint;
     [SerializeField] private GameObject _flashingLightsObj;
 
     // Misc variables
-    private bool _playerHasGrabbedDrink = false;
     private bool _isFlirtWaitingForPlayer = false;
 
-    TriggerEventHandler poisonedInteractionTrigger;
+    TriggerEventHandler _poisonedInteractionTrigger;
 
     void Start()
     {
-        poisonedInteractionTrigger = poisonedNPC.transform.parent.GetOrAddComponent<TriggerEventHandler>();
+        _poisonedInteractionTrigger = poisonedNPC.transform.parent.GetOrAddComponent<TriggerEventHandler>();
 
         _deterredFireNPCs.Value = false;
-        _hasTalkedToMysteryDrink.Value = false;
-        _isPoisonedNpcReady.Value = false;
 
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
@@ -64,24 +68,28 @@ public class BonfireScene : MonoBehaviour
         PlayerAudio.PlayLoopingSound(_natureSound);
 
         fireStickNPC.dialogueSystem.onEnd.AddListener(HandleFireNPCs);
+        tableNPC.dialogueSystem.onEnd.AddListener(() =>
+        {
+            _playerHasTalkedToTable = true;
+            if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
+            {
+                _isPoisonedNpcReady = true;
+            }
+        });
     }
 
     private void Update()
     {
         CheckFlirtationProximity();
 
-        if (Keyboard.current.f2Key.wasPressedThisFrame)
+        if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
-            fireStickNPC.StartNextSequence();
-        }
-        else if (Keyboard.current.f3Key.wasPressedThisFrame)
-        {
-            _isPoisonedNpcReady.Value = true;
+            _isPoisonedNpcReady = true;
         }
 
-        if (_isPoisonedNpcReady.Value && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
+        if (_isPoisonedNpcReady && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
         {
-            _isPoisonedNpcReady.Value = false; // Only do this once
+            _isPoisonedNpcReady = false; // Only do this once
             StartAlcoholPoisoning();
         }
     }
@@ -114,16 +122,14 @@ public class BonfireScene : MonoBehaviour
         friendNPC.sequences.Add(turnToFace1);
         await friendNPC.StartSequenceAsync(friendWalkTo); // Wait for the friend to walk to the poisoned NPC
 
-        Debug.Log("Friend arrived, enabling trigger");
-
         friendNPC.turnBodyToFacePlayer = false;
 
-        poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener((Collider other) =>
+        _poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener((Collider other) =>
         {
             if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
                 return; // Only allow player to interact with the poisoned NPC
 
-            poisonedInteractionTrigger.EventsEnabled = false; // We only want this to run once
+            _poisonedInteractionTrigger.EventsEnabled = false; // We only want this to run once
 
             alcoholPoisoning.onDialogueEnd.AddListener(async () =>
             {
@@ -172,6 +178,12 @@ public class BonfireScene : MonoBehaviour
 
     public void AssignDrunkFlirtOutcome()
     {
+        _playerHasTalkedToFlirt = true;
+        if(_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
+        {
+            _isPoisonedNpcReady = true;
+        }
+
         if (GlobalStats.DrinkCount >= 0)
         {
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtation;
@@ -255,7 +267,11 @@ public class BonfireScene : MonoBehaviour
         mysteryDrinkNPC.StartNextSequence();
         mysteryDrinkNPC.dialogueSystem.onEnd.AddListener(async () =>
         {
-            _hasTalkedToMysteryDrink.Value = true;
+            _playerHasTalkedToMysteryDrink = true;
+            if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
+            {
+                _isPoisonedNpcReady = true;
+            }
             await UniTask.Delay(Mathf.RoundToInt(Random.Range(30_000, 120_000)));
             drunkFlirtNPC.StartNextSequence();
         });
@@ -266,6 +282,12 @@ public class BonfireScene : MonoBehaviour
         Debug.Log("Handling fire NPCs...");
         // check if player convinced them to stop
         if (!_deterredFireNPCs.Value) return; // didn't deter, they stay where they are
+
+        _playerHasTalkedToFireNPCs = true;
+        if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
+        {
+            _isPoisonedNpcReady = true;
+        }
 
         // Disable the stick object
         fireStickNPC.GetComponentInChildren<Light>().transform.parent.gameObject.SetActive(false);
