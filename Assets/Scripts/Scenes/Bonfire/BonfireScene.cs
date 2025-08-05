@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
@@ -69,11 +70,7 @@ public class BonfireScene : MonoBehaviour
     {
         CheckFlirtationProximity();
 
-        if (Keyboard.current.f1Key.wasPressedThisFrame)
-        {
-            drunkFlirtNPC.StartNextSequence();
-        }
-        else if (Keyboard.current.f2Key.wasPressedThisFrame)
+        if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
             fireStickNPC.StartNextSequence();
         }
@@ -82,7 +79,6 @@ public class BonfireScene : MonoBehaviour
             _isPoisonedNpcReady.Value = true;
         }
 
-            // temporary
         if (_isPoisonedNpcReady.Value && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
         {
             _isPoisonedNpcReady.Value = false; // Only do this once
@@ -127,7 +123,7 @@ public class BonfireScene : MonoBehaviour
             if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
                 return; // Only allow player to interact with the poisoned NPC
 
-            poisonedInteractionTrigger.IsEnabled = false; // We only want this to run once
+            poisonedInteractionTrigger.EventsEnabled = false; // We only want this to run once
 
             alcoholPoisoning.onDialogueEnd.AddListener(async () =>
             {
@@ -152,8 +148,20 @@ public class BonfireScene : MonoBehaviour
                 AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
                 if (sirenSource != null)
                 {
-                    _ = Tween.AudioVolume(sirenSource, 0.5f, 15f, Ease.InCirc);
+                    _ = Tween.AudioVolume(sirenSource, 0.4f, 15f, Ease.InCirc);
                 }
+
+                int quarterDelay = _sirensSound.length.ToMS() / 4;
+
+                await UniTask.Delay(quarterDelay * 3);
+
+                await Player.Instance.loading.CloseEyesAsync(0.25f);
+                
+                _ = Tween.AudioVolume(sirenSource, 0, 0.35f, Ease.InOutSine);
+                
+                await UniTask.Delay(500);
+
+                Player.Instance.loading.LoadSceneByName("EndScene");
             });
 
             Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
@@ -253,7 +261,7 @@ public class BonfireScene : MonoBehaviour
         });
     }
 
-    public void HandleFireNPCs()
+    public async void HandleFireNPCs()
     {
         Debug.Log("Handling fire NPCs...");
         // check if player convinced them to stop
@@ -276,6 +284,7 @@ public class BonfireScene : MonoBehaviour
         fireFriendNPC.sequences.Add(sitSequence);
 
         fireStickNPC.StartSequence(walkAwaySequence1);
+        await UniTask.Delay(270); // slight delay before second NPC starts walking away
         fireFriendNPC.StartSequence(walkAwaySequence2);
     }
 }

@@ -35,9 +35,9 @@ public class Cornhole : MonoBehaviour
         green.team = Team.Green;
 
         colliders = transform.Find("Board Colliders").GetOrAddComponent<ColliderEventHandler>();
-        colliders.CollisionCooldown = 0.025f;
+        colliders.EventsCooldown = 0.025f;
         triggers = transform.Find("Win Trigger").GetOrAddComponent<TriggerEventHandler>();
-        triggers.TriggerCooldown = 0.025f;
+        triggers.EventsCooldown = 0.025f;
 
         colliders.OnCollisionEnterEvent.AddListener(OnCollision);
         colliders.OnCollisionExitEvent.AddListener(OnCollisionLeave);
