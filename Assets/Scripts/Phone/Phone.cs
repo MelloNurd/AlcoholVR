@@ -256,13 +256,14 @@ public class Phone : MonoBehaviour
 
     private void TogglePhone()
     {
-        Player.Instance.ToggleUIInteractor(); // Toggle the UI interactor to allow interaction with the phone
         if (IsActive)
         {
+            Player.Instance.DisableUIInteractor(); // Disable the UI interactor to prevent interaction with the phone
             DisablePhone();
         }
         else
         {
+            Player.Instance.EnableUIInteractor(); // Enable the UI interactor to allow interaction with the phone
             EnablePhone();
         }
     }

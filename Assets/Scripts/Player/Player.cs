@@ -117,28 +117,40 @@ public class Player : MonoBehaviour
 
     public void Update()
     {
-        if(queue && _rightNearFarInteractor.interactablesSelected.Count == 0)
+        if (queue && _rightNearFarInteractor.interactablesSelected.Count == 0 && !SettingsManager.Instance.RangedInteractors)
         {
             _rightNearFarInteractor.enableFarCasting = true;
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+            queue = false;
         }
     }
 
     public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);
     public void OpenEyes(float speed = 1f) => loading?.OpenEyes(speed);
 
-    public void ToggleUIInteractor()
+    public void EnableUIInteractor()
     {
-        if(SettingsManager.Instance.RangedInteractors)
+        if (SettingsManager.Instance.RangedInteractors)
         {
-            Debug.Log("Ranged Interactors are enabled. Cannot toggle UI interactor.");
+            Debug.Log("Ranged Interactors are enabled. Shouldn't change interactors");
+            return;
+        }
+
+        queue = true;
+    }
+
+    public void DisableUIInteractor()
+    {
+        queue = false;
+
+        if (SettingsManager.Instance.RangedInteractors)
+        {
+            Debug.Log("Ranged Interactors are enabled. Shouldn't change interactors");
             return;
         }
 
         _rightNearFarInteractor.enableFarCasting = false;
         _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default");
-
-        queue = !queue;
     }
 
     public void ToggleTunnelingVignette()
@@ -173,7 +185,6 @@ public class Player : MonoBehaviour
 
     public void ToggleGrabToggle(bool value)
     {
-        SettingsManager.Instance.ToggleGrab = value;
         if (value)
         {
             _rightNearFarInteractor.selectActionTrigger = XRBaseInputInteractor.InputTriggerType.Toggle;

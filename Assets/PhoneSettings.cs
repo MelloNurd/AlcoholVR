@@ -77,6 +77,6 @@ public class PhoneSettings : MonoBehaviour
     public void OnRangedInteractorsChanged(bool value)
     {
         SettingsManager.Instance.RangedInteractors = value;
-        Player.Instance.ToggleUIInteractor();
+        Player.Instance.ToggleRangedInteractors(value);
     }
 }
