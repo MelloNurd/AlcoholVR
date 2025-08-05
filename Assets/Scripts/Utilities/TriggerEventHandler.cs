@@ -9,6 +9,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     [field: SerializeField] public bool IsEnabled { get; set; } = true;
     [field: SerializeField] public float TriggerCooldown { get; set; } = 0.1f; // Minimum time between trigger events
+    private bool isOnCooldown = false;
 
     public UnityEvent<Collider> OnTriggerEnterEvent = new();
     public UnityEvent<Collider> OnTriggerStayEvent = new();
@@ -26,14 +27,14 @@ public class TriggerEventHandler : MonoBehaviour
 
     public async void InvokeCooldown()
     {
-        IsEnabled = false;
+        isOnCooldown = true;
         await UniTask.Delay(Mathf.RoundToInt(TriggerCooldown * 1000));
-        IsEnabled = true;
+        isOnCooldown = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsEnabled) return;
+        if (!IsEnabled || isOnCooldown) return;
 
         OnTriggerEnterEvent?.Invoke(other);
         InvokeCooldown();
@@ -41,7 +42,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnTriggerEnter2DEvent?.Invoke(collision);
         InvokeCooldown();
@@ -49,7 +50,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnTriggerStayEvent?.Invoke(other);
         InvokeCooldown();
@@ -57,7 +58,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnTriggerStay2DEvent?.Invoke(collision);
         InvokeCooldown();
@@ -65,7 +66,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnTriggerExitEvent?.Invoke(other);
         InvokeCooldown();
@@ -73,7 +74,7 @@ public class TriggerEventHandler : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnTriggerExit2DEvent?.Invoke(collision);
         InvokeCooldown();

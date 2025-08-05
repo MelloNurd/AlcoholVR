@@ -49,13 +49,13 @@ public class PlayerAudio : MonoBehaviour
     /// <param name="audio">Audio to play</param>
     /// <param name="volume">(0, 1f) volume to play the audio at</param>
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
-    public static void PlaySound(AudioClip audio, float volume, bool randomizePitch)
+    public static AudioSource PlaySound(AudioClip audio, float volume, bool randomizePitch = false)
     {
-        if (Instance == null) return;
+        if (Instance == null) return null;
         if(audio == null)
         {
             Debug.LogWarning($"Could not find audio {audio.name}. Unable to play.");
-            return;
+            return null;
         }
 
         AudioSource source = Instance.audioSources[Instance.currentAudioSourceIndex];
@@ -65,6 +65,8 @@ public class PlayerAudio : MonoBehaviour
         source.Play();
 
         Instance.currentAudioSourceIndex = (Instance.currentAudioSourceIndex + 1) % Instance.audioSourceCount;
+
+        return source;
     }
     public static void PlaySound(AudioClip audio) => PlaySound(audio, 1f, false);
 

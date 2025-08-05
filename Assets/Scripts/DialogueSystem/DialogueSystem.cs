@@ -21,6 +21,7 @@ public class DialogueSystem : MonoBehaviour
     private TMP_Text _dialogueText;
     private GameObject _textBubble;
     private GameObject _headObj;
+    Vector3 _textBubbleScale;
 
     private void Awake()
     {
@@ -32,8 +33,8 @@ public class DialogueSystem : MonoBehaviour
 
     private void Start()
     {
+        _textBubbleScale = _textBubble.transform.localScale;
         _textBubble.SetActive(false);
-        // Animate the text bubble popping out when hidden (reverse pop)
     }
 
     private void Update()
@@ -60,6 +61,11 @@ public class DialogueSystem : MonoBehaviour
             Player.Instance.IsInteractingWithNPC = false;
             EndCurrentDialogue();
             return;
+        }
+
+        if(currentDialogue != null)
+        {
+            currentDialogue.onDialogueEnd?.Invoke();
         }
 
         currentDialogue = dialogue;
@@ -100,8 +106,7 @@ public class DialogueSystem : MonoBehaviour
         {
             _textBubble.SetActive(true);
             Tween.CompleteAll(_textBubble.transform);
-            Vector3 scale = _textBubble.transform.localScale;
-            _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
+            _ = Tween.Scale(_textBubble.transform, _textBubbleScale, 0.2f, Ease.OutBack);
             await UniTask.Delay(100); // Slight delay for bubble animation
             await _typewriter.StartWritingAsync(text);
         }
@@ -109,8 +114,7 @@ public class DialogueSystem : MonoBehaviour
         {
             _textBubble.SetActive(true);
             Tween.CompleteAll(_textBubble.transform);
-            Vector3 scale = _textBubble.transform.localScale;
-            _ = Tween.Scale(_textBubble.transform, scale * 1.1f, scale, 0.2f, Ease.OutBack);
+            _ = Tween.Scale(_textBubble.transform, _textBubbleScale, 0.2f, Ease.OutBack);
             await UniTask.Delay(100); // Slight delay for bubble animation
             _dialogueText.text = text;
         }

@@ -1,6 +1,7 @@
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
+using PrimeTween;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,12 +9,14 @@ public class BonfireScene : MonoBehaviour
 {
     [Header("Audio")]
     [SerializeField] private AudioClip _natureSound;
+    [SerializeField] private AudioClip _sirensSound;
 
     [Header("Dialogue References")]
     [SerializeField] private Dialogue grabbedSoda;
     [SerializeField] private Dialogue grabbedAlcohol;
     [SerializeField] private Dialogue soberFlirtation;
     [SerializeField] private Dialogue drunkFlirtation;
+    [SerializeField] private Dialogue alcoholPoisoning;
 
     [Header("NPC References")]
     [SerializeField] private SequencedNPC friendNPC;
@@ -21,23 +24,38 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private SequencedNPC drunkFlirtNPC;
     [SerializeField] private SequencedNPC fireStickNPC;
     [SerializeField] private SequencedNPC fireFriendNPC;
+    [SerializeField] private SequencedNPC poisonedNPC;
+    [SerializeField] private SequencedNPC miscNPC;
 
     [Header("Misc References")]
+    [SerializeField] private GameObject _bonfire;
     [SerializeField] private GameObject _friendsSoda;
     [SerializeField] private GameObject _friendsAlcohol;
     [SerializeField] private AnimationClip _sittingAnimation;
+    [SerializeField] private AnimationClip _faintAnimation;
     [SerializeField] private BoolValue _deterredFireNPCs;
     [SerializeField] private BoolValue _hasTalkedToMysteryDrink;
     [SerializeField] private Transform _fireNPCWalkTarget1;
     [SerializeField] private Transform _fireNPCWalkTarget2;
+    [SerializeField] private BoolValue _isPoisonedNpcReady;
+    [SerializeField] private Transform _friendPoisoningReactionPoint;
+    [SerializeField] private Transform _mysteryPoisoningReactionPoint;
+    [SerializeField] private Transform _miscPoisoningReactionPoint;
+    [SerializeField] private GameObject _flashingLightsObj;
 
     // Misc variables
     private bool _playerHasGrabbedDrink = false;
     private bool _isFlirtWaitingForPlayer = false;
 
+    TriggerEventHandler poisonedInteractionTrigger;
+
     void Start()
     {
+        poisonedInteractionTrigger = poisonedNPC.transform.parent.GetOrAddComponent<TriggerEventHandler>();
+
         _deterredFireNPCs.Value = false;
+        _hasTalkedToMysteryDrink.Value = false;
+        _isPoisonedNpcReady.Value = false;
 
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
@@ -59,6 +77,89 @@ public class BonfireScene : MonoBehaviour
         {
             fireStickNPC.StartNextSequence();
         }
+        else if (Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            _isPoisonedNpcReady.Value = true;
+        }
+
+            // temporary
+        if (_isPoisonedNpcReady.Value && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
+        {
+            _isPoisonedNpcReady.Value = false; // Only do this once
+            StartAlcoholPoisoning();
+        }
+    }
+
+    private async void StartAlcoholPoisoning()
+    {
+        poisonedNPC.wrapAroundSequences = false;
+        poisonedNPC.sequences.Clear();
+        Sequence faint = new Sequence(Sequence.Type.Animate, _faintAnimation, false);
+        poisonedNPC.sequences.Add(faint);
+        poisonedNPC.StartSequence(faint);
+
+        await UniTask.Delay(Mathf.RoundToInt(Random.Range(1000, 3000)));
+
+        Sequence mysteryWalkTo = new Sequence(Sequence.Type.Walk, _mysteryPoisoningReactionPoint);
+        Sequence turnToFace2 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _mysteryPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        mysteryDrinkNPC.sequences.Add(mysteryWalkTo);
+        mysteryDrinkNPC.sequences.Add(turnToFace2);
+        mysteryDrinkNPC.StartSequence(mysteryWalkTo);
+
+        Sequence miscWalkTo = new Sequence(Sequence.Type.Walk, _miscPoisoningReactionPoint);
+        Sequence turnToFace3 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _miscPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        miscNPC.sequences.Add(miscWalkTo);
+        miscNPC.sequences.Add(turnToFace3);
+        miscNPC.StartSequence(miscWalkTo);
+
+        Sequence friendWalkTo = new Sequence(Sequence.Type.Walk, _friendPoisoningReactionPoint);
+        Sequence turnToFace1 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _friendPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        friendNPC.sequences.Add(friendWalkTo);
+        friendNPC.sequences.Add(turnToFace1);
+        await friendNPC.StartSequenceAsync(friendWalkTo); // Wait for the friend to walk to the poisoned NPC
+
+        Debug.Log("Friend arrived, enabling trigger");
+
+        friendNPC.turnBodyToFacePlayer = false;
+
+        poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener((Collider other) =>
+        {
+            if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
+                return; // Only allow player to interact with the poisoned NPC
+
+            poisonedInteractionTrigger.IsEnabled = false; // We only want this to run once
+
+            alcoholPoisoning.onDialogueEnd.AddListener(async () =>
+            {
+                friendNPC.lookAt.isLooking = false;
+
+                await UniTask.Delay(3000);
+
+                foreach (Transform child in _flashingLightsObj.transform)
+                {
+                    if (child.TryGetComponent<FlashingLights>(out var flashingLights))
+                    {
+                        foreach (var light in flashingLights.lights)
+                        {
+                            _ = Tween.LightIntensity(light, 0f, 75f, 20f, Ease.InOutExpo);
+                        }
+                        flashingLights.StartLights();
+                    }
+                }
+
+                await UniTask.Delay(1000);
+
+                AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
+                if (sirenSource != null)
+                {
+                    _ = Tween.AudioVolume(sirenSource, 0.5f, 15f, Ease.InCirc);
+                }
+            });
+
+            Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
+            friendNPC.sequences.Add(poisoningDialogue);
+            friendNPC.StartSequence(poisoningDialogue);
+        });
     }
 
     public void AssignDrunkFlirtOutcome()

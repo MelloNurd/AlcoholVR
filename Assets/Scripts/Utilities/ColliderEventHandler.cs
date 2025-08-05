@@ -9,6 +9,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     [field: SerializeField] public bool IsEnabled { get; set; } = true;
     [field: SerializeField] public float CollisionCooldown { get; set; } = 0.1f; // Minimum time between collision events
+    private bool isOnCooldown = false;
 
     public UnityEvent<Collision> OnCollisionEnterEvent = new();
     public UnityEvent<Collision> OnCollisionStayEvent = new();
@@ -26,14 +27,14 @@ public class ColliderEventHandler : MonoBehaviour
 
     public async void InvokeCooldown()
     {
-        IsEnabled = false;
+        isOnCooldown = true;
         await UniTask.Delay(Mathf.RoundToInt(CollisionCooldown * 1000));
-        IsEnabled = true;
+        isOnCooldown = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!IsEnabled) return;
+        if (!IsEnabled || isOnCooldown) return;
 
         OnCollisionEnterEvent?.Invoke(collision);
         InvokeCooldown();
@@ -41,7 +42,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnCollisionEnter2DEvent?.Invoke(collision);
         InvokeCooldown();
@@ -49,7 +50,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnCollisionStayEvent?.Invoke(collision);
         InvokeCooldown();
@@ -57,7 +58,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnCollisionStay2DEvent?.Invoke(collision);
         InvokeCooldown();
@@ -65,7 +66,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnCollisionExitEvent?.Invoke(collision);
         InvokeCooldown();
@@ -73,7 +74,7 @@ public class ColliderEventHandler : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if(!IsEnabled) return;
+        if(!IsEnabled || isOnCooldown) return;
 
         OnCollisionExit2DEvent?.Invoke(collision);
         InvokeCooldown();
