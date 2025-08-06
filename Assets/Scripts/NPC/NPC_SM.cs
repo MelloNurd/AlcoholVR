@@ -122,7 +122,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     public void PlayAnimation(string animationName)
     {
-        animator.CrossFadeInFixedTime(animationName, 0.4f);
+        animator.CrossFade(animationName, 0.2f);
     }
     public void PlayIdleAnimation() => PlayAnimation(idleAnimation.name);
     public void PlayWalkAnimation() => PlayAnimation(moveAnimation.name);
