@@ -1,8 +1,7 @@
-using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class DialogueButtons : MonoBehaviour
 {
@@ -11,7 +10,9 @@ public class DialogueButtons : MonoBehaviour
     [SerializeField] private GameObject _dialogueButtonPrefab;
     [SerializeField] private AudioClip _buttonAppearSound;
 
-    [SerializeField, Range(0, 360)] private float _buttonAngleSpacing = 30f;
+    private List<PhysicalButton> _activeButtons = new List<PhysicalButton>();
+
+    [SerializeField, UnityEngine.Range(0, 360)] private float _buttonAngleSpacing = 30f;
     [SerializeField] private float _spawnDistanceFromPlayer = 0.6f;
 
     private Light _spotLight;
@@ -65,6 +66,50 @@ public class DialogueButtons : MonoBehaviour
             // No buttons, use normal rotation
             _buttonParentObj.transform.rotation = Quaternion.LookRotation(Player.Instance.Forward.WithY(0));
         }
+
+        if(currentButtonCount > 0)
+        {
+            if(Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.numpad1Key.wasPressedThisFrame)
+            {
+                _activeButtons[0].ButtonPress();
+            }
+            else if(currentButtonCount > 1 && (Keyboard.current.digit2Key.wasPressedThisFrame || Keyboard.current.numpad2Key.wasPressedThisFrame))
+            {
+                _activeButtons[1].ButtonPress();
+            }
+            else if(currentButtonCount > 2 && (Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.numpad3Key.wasPressedThisFrame))
+            {
+                _activeButtons[2].ButtonPress();
+            }
+            else if(currentButtonCount > 3 && (Keyboard.current.digit4Key.wasPressedThisFrame || Keyboard.current.numpad4Key.wasPressedThisFrame))
+            {
+                _activeButtons[3].ButtonPress();
+            }
+            else if(currentButtonCount > 4 && (Keyboard.current.digit5Key.wasPressedThisFrame || Keyboard.current.numpad5Key.wasPressedThisFrame))
+            {
+                _activeButtons[4].ButtonPress();
+            }
+            else if(currentButtonCount > 5 && (Keyboard.current.digit6Key.wasPressedThisFrame || Keyboard.current.numpad6Key.wasPressedThisFrame))
+            {
+                _activeButtons[5].ButtonPress();
+            }
+            else if(currentButtonCount > 6 && (Keyboard.current.digit7Key.wasPressedThisFrame || Keyboard.current.numpad7Key.wasPressedThisFrame))
+            {
+                _activeButtons[6].ButtonPress();
+            }
+            else if(currentButtonCount > 7 && (Keyboard.current.digit8Key.wasPressedThisFrame || Keyboard.current.numpad8Key.wasPressedThisFrame))
+            {
+                _activeButtons[7].ButtonPress();
+            }
+            else if(currentButtonCount > 8 && (Keyboard.current.digit9Key.wasPressedThisFrame || Keyboard.current.numpad9Key.wasPressedThisFrame))
+            {
+                _activeButtons[8].ButtonPress();
+            }
+            else if(currentButtonCount > 9 && Keyboard.current.digit0Key.wasPressedThisFrame)
+            {
+                _activeButtons[9].ButtonPress();
+            }
+        }
     }
 
     public bool TryCreateDialogueButtons(DialogueSystem system, Dialogue dialogue, bool reverseOrder = false)
@@ -94,6 +139,7 @@ public class DialogueButtons : MonoBehaviour
             PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, _buttonParentObj.transform).GetComponent<PhysicalButton>();
             optionButton.name = "DialogueButton: " + dialogue.options[index].optionText;
             optionButton.interactableLayers = LayerMask.GetMask("PlayerHand"); // only the player hand can interact with these buttons
+            _activeButtons.Add(optionButton);
 
             int closureIndex = i; // weird behavior needed with lambda function, called a closure
             optionButton.OnButtonDown.AddListener(async () => {
@@ -199,6 +245,8 @@ public class DialogueButtons : MonoBehaviour
 
             Destroy(child.gameObject, 0.5f); // Destroy the child object after a delay to allow audio to play
         }
+
+        _activeButtons.Clear();
 
         if (_spotLight != null)
         {

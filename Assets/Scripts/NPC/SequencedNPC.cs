@@ -436,7 +436,7 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
-        animator.CrossFadeInFixedTime(clip.name, 0.4f);
+        animator.CrossFade(clip.name, 0.2f);
     }
 
     private void ApplyWalkRotations()

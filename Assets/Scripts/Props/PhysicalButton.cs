@@ -192,7 +192,7 @@ public class PhysicalButton : MonoBehaviour
         _previousPressState = IsPressed;
     }
 
-    private void ButtonPress()
+    public void ButtonPress()
     {
         if (!IsInteractable) return;
 
@@ -203,7 +203,7 @@ public class PhysicalButton : MonoBehaviour
         //Debug.Log("Pressed");
         OnButtonDown?.Invoke();
     }
-    private void ButtonHold()
+    public void ButtonHold()
     {
         if (!IsInteractable) return;
 
@@ -211,7 +211,7 @@ public class PhysicalButton : MonoBehaviour
         OnButtonHold?.Invoke();
     }
 
-    private void ButtonRelease()
+    public void ButtonRelease()
     {
         if (!IsInteractable) return;
 
