@@ -40,6 +40,7 @@ public class DialogueButtons : MonoBehaviour
         if (_buttonParentObj == null)
         {
             _buttonParentObj = new GameObject("DialogueButtons");
+            DontDestroyOnLoad(_buttonParentObj);
         }
     }
 
