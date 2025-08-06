@@ -19,6 +19,24 @@ AudioMixerGroupController:
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
+--- !u!244 &-7548669096949973863
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 2c3f1327c158def40a6d60288cd1ec17
+  m_EffectName: Lowpass
+  m_MixLevel: bde4354d6ae935740a494e59500088d6
+  m_Parameters:
+  - m_ParameterName: Cutoff freq
+    m_GUID: 37be5850d7f6aab458014d6cc0709aa5
+  - m_ParameterName: Resonance
+    m_GUID: 7f2fbeba83aa0044b8cd88933409ba99
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &-6539523681813215983
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -49,8 +67,6 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
-  - guid: 1b553ea25e48b914bb14b9cb71e957be
-    name: MasterVolume
   - guid: 21cd98cb97b6b4b4d801678c4f3134ee
     name: MusicVolume
   - guid: 3c36df3f098ad864292b4f27b146c6ba
@@ -61,7 +77,12 @@ AudioMixerController:
     - a6c6a199e2e9c374ca426c8fb40d569d
     - 3d9a3464b379bf549bbaebb20218cc0c
     name: View
-  m_CurrentViewIndex: 0
+  - guids:
+    - 1cd47c6f7fbc9814caaef861617b772f
+    - a6c6a199e2e9c374ca426c8fb40d569d
+    - 3d9a3464b379bf549bbaebb20218cc0c
+    name: View - Copy
+  m_CurrentViewIndex: 1
   m_TargetSnapshot: {fileID: 24500006}
 --- !u!243 &24300002
 AudioMixerGroupController:
@@ -80,6 +101,7 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 24400004}
+  - {fileID: -7548669096949973863}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
@@ -107,7 +129,56 @@ AudioMixerSnapshotController:
   m_Name: Snapshot
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: c45ead6192d5e0d4584b1ee3bbd2c8cd
-  m_FloatValues: {}
+  m_FloatValues:
+    37be5850d7f6aab458014d6cc0709aa5: 376
+    70bac0800f633cb40a9b035dd01c7175: 1.44
+    01fb98909c1928e4c9a754f460c48da1: 20000
+    954fcaa027343ea4f8fda972087b617f: 603
+    8d7c68b0548984646a2b3834b283337e: 0
+    48ba7d11fd6fb01438a80ff978317d54: -432
+    7bc870328a103a949b1ef637d463e343: 100
+    c3032682b6d98984ca54eee007b393ca: 0.1
+    273d5da25beaf5144bcc53b2beb47306: 4
+    904ef273f3b6cf14597ddf1b35e14853: 12
+    41ae6ed347ca2d04ea9f7edc9d89b6ec: 1027
+    046b97340e2ea004495171c817e468de: 10
+    e6cbfa94c26b19440876f8aa883ca44e: 0.1
+    1a3778d4dc8224e47ad7c4eeccedffde: 100
+    384765f4a18a60444a5b49859252547b: 10
+    defcf7f40214e0c438df34ef9792526f: 21.3
+    a612d635c2c676d40ab89bf014cc3712: 31.8
+    d0dbba65daa38984490bfbb204dffdea: 0.473
+    49cdeb65607ef274e8d04df10e3bb55c: 0.568
+    89c74a85bd906e34a924bbe99b6ebc98: -3176
+    337de5e59d9c616409e4aaaf691cdfd4: 3218
+    c03be23631233d341a43c9e01f0b3f21: 0
+    68e34a86ea759b74f995bdfcbe024930: 0.0588
+    09aa7c966067aa4458d90025d27664e7: 0.513
+    eea949a6cb8485649a1c96d11965968e: 3.13
+    734bebc6311e6284ba50fd137ee3177a: -10000
+    4860d2b730dc91f48a7337b1d4081503: 0.635
+    a0f6bcc71925af8469d1214b5ee4d258: 1.97
+    dbb1d80881b293d4abf7bf2d196c9b46: 2000
+    e0477f18a4186d743acc86e8e6c2378a: 0.3
+    0260373854e16084796ddcc0e0f4b524: 0.3
+    7ae1fe584ac93a3418c413521a8f8afb: 1000
+    557df888dd0e5a648a434d86fb0edc59: 6.4
+    498df52a9d2b1cd498f2df0db6ecf3ff: 0.53400004
+    7f2fbeba83aa0044b8cd88933409ba99: 1.55
+    d88ad4caac216354bbe465dcd6875031: -878
+    b6681b9b50c1bdc44ade7beecad69114: 1000
+    79c79cab64b73804c94c06979b888145: -67
+    075c23cba7fc5294b813fa9dc02b42e2: 1629
+    2ddf17fb52d54a84a99eaee07798bbf2: 1000
+    1d113c4cccdfc0640a6383a34db212b0: 17.2
+    7a4b4cfc48935274ea72407b0a4fe2ce: 1000
+    18cb9b1ed779ef74b95e15107e7f06ef: -3108
+    3af2ce8e9aa445c4db7d0a0c924da73e: 256
+    b4b719bef4f0c2b4eac5565ac7ae65e5: 2
+    ffcdaace50065524db0086834776df4c: 96
+    40357bbf38584b04e8a2f27f79898ab6: 100
+    8821bbef13ac9a74bb8edf67cd54fadd: -0.8
+    fc4b3cef4a1f42345bc2f2cc9df36dd5: 1
   m_TransitionOverrides: {}
 --- !u!243 &4111130630787572806
 AudioMixerGroupController:

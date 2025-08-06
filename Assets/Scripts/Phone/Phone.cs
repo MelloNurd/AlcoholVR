@@ -26,6 +26,7 @@ public class Phone : MonoBehaviour
     private RectTransform _notificationPanel;
     [SerializeField] private AudioClip _clickSound;
     public bool IsActive => _phoneObj.activeSelf;
+    public bool CanToggle = true;
     public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, transform.position) < 0.3f;
     public bool IsInteractable { get; set; } = true;
     private Vector3 _phoneSize;
@@ -44,7 +45,7 @@ public class Phone : MonoBehaviour
     [SerializeField] private GameObject _messagePrefab;
     private Transform _messagesContainer;
     private List<PhoneMessage> _messages = new();
-    private Queue<PhoneMessage> _messageQueue = new(); // For future use, if we want to queue messages
+    private Queue<PhoneMessage> _messageQueue = new();
 
     [Header("Settings")]
     [SerializeField, InlineButton(nameof(ApplyCurrentTheme), "Apply", buttonWidth: 50)] private PhoneTheme _currentTheme;
@@ -72,6 +73,7 @@ public class Phone : MonoBehaviour
     private CanvasGroup _settingsScreenGroup;
     private CanvasGroup _notificationGroup;
     private CanvasGroup _cameraScreenGroup;
+    private CanvasGroup _emergencyScreenGroup;
 
     private AppButton _cameraButton;
     private AppButton _messagesButton;
@@ -131,6 +133,8 @@ public class Phone : MonoBehaviour
         _notificationPanel = _notificationGroup.GetComponent<RectTransform>();
 
         _cameraScreenGroup = _phoneUICanvas.transform.Find("CameraScreen").GetComponent<CanvasGroup>();
+
+        _emergencyScreenGroup = _phoneUICanvas.transform.Find("EmergencyScreen").GetComponent<CanvasGroup>();
 
         temp = _homeScreenGroup.transform.Find("Apps");
         _cameraButton = temp.Find("Camera").GetComponent<AppButton>();
@@ -213,8 +217,12 @@ public class Phone : MonoBehaviour
         UpdateBattery();
     }
 
-    private async void EnablePhone(float time = 0.25f, bool effects = true)
+    public void ClearNotifications() => _messageQueue.Clear();
+
+    public async void EnablePhone(float time = 0.25f, bool effects = true)
     {
+        if (IsActive) return;
+
         if (_messagesScreenGroup.IsVisible())
         {
             LoadMessages();
@@ -238,8 +246,9 @@ public class Phone : MonoBehaviour
         DisplayNotifications();
     }
 
-    private async void DisablePhone(float time = 0.25f, bool effects = true)
+    public async void DisablePhone(float time = 0.25f, bool effects = true)
     {
+        if(!IsActive) return;   
 
         if (_phoneDisappearSound != null && effects)
         {
@@ -251,16 +260,17 @@ public class Phone : MonoBehaviour
         _phoneObj.SetActive(false);
         if (_appearParticles != null && effects)
         {
-            _appearParticles.transform.position = transform.position; // Set particle position to phone position
-            _appearParticles.transform.rotation = transform.rotation;
             _appearParticles.Play();
         }
 
         ObjectiveManager.Instance.HideAllPaths();
     }
 
-    private void TogglePhone()
+    [Button]
+    public void TogglePhone()
     {
+        if (!CanToggle) return;
+
         if (IsActive)
         {
             Player.Instance.DisableUIInteractor(); // Disable the UI interactor to prevent interaction with the phone
@@ -454,6 +464,7 @@ public class Phone : MonoBehaviour
         _objectivesScreenGroup.Hide();
         _settingsScreenGroup.Hide();
         _cameraScreenGroup.Hide();
+        _emergencyScreenGroup.Hide();
         _phonePhysicalCamera.enabled = false;
         _phoneBG.enabled = true;
         _smallClockTime.enabled = true; // This should show on all screens, EXCEPT home
@@ -502,6 +513,29 @@ public class Phone : MonoBehaviour
         _phoneBG.enabled = false;
         _phonePhysicalCamera.enabled = true;
         _cameraScreenGroup.Show();
+    }
+
+    [Button]
+    public async void ShowEmergencyScreen()
+    {
+        HideAllScreens();
+
+        _emergencyScreenGroup.Show();
+
+
+        Image callButton = _emergencyScreenGroup.transform.Find("Call 911").GetComponent<Image>();
+        Image phoneImage = callButton.transform.Find("PhoneImg").GetComponent<Image>();
+
+        _ = Tween.Scale(callButton.transform, callButton.transform.localScale * 1.1f, 0.5f, Ease.InOutSine, -1, CycleMode.Yoyo);
+
+        _ = PrimeTween.Sequence.Create(-1)
+            .Chain(Tween.LocalRotation(phoneImage.transform, Vector3.forward, new Vector3(0f, 0f, 180f), 0.5f, Ease.InBack))
+            .Chain(Tween.LocalRotation(phoneImage.transform, new Vector3(0f, 0f, 181f), Vector3.zero, 0.5f, Ease.OutBack))
+            .ChainDelay(1.5f);
+
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+        await UniTask.Delay(600);
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
     }
 
     public void ToggleEnlarge(RectTransform rect)

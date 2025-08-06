@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
@@ -18,6 +19,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private Dialogue soberFlirtation;
     [SerializeField] private Dialogue drunkFlirtation;
     [SerializeField] private Dialogue alcoholPoisoning;
+    [SerializeField] private Dialogue poisoningResponse;
 
     [Header("NPC References")]
     [SerializeField] private SequencedNPC friendNPC;
@@ -53,11 +55,13 @@ public class BonfireScene : MonoBehaviour
 
     // Misc variables
     private bool _isFlirtWaitingForPlayer = false;
-
+    private CancellationTokenSource _cancelToken;
     TriggerEventHandler _poisonedInteractionTrigger;
 
     void Start()
     {
+        _cancelToken = new CancellationTokenSource();
+
         _poisonedInteractionTrigger = poisonedNPC.transform.parent.GetOrAddComponent<TriggerEventHandler>();
 
         _deterredFireNPCs.Value = false;
@@ -138,46 +142,79 @@ public class BonfireScene : MonoBehaviour
             alcoholPoisoning.onDialogueEnd.AddListener(async () =>
             {
                 friendNPC.lookAt.isLooking = false;
-
-                await UniTask.Delay(3000);
-
-                foreach (Transform child in _flashingLightsObj.transform)
-                {
-                    if (child.TryGetComponent<FlashingLights>(out var flashingLights))
-                    {
-                        foreach (var light in flashingLights.lights)
-                        {
-                            _ = Tween.LightIntensity(light, 0f, 75f, 20f, Ease.InOutExpo);
-                        }
-                        flashingLights.StartLights();
-                    }
-                }
-
-                await UniTask.Delay(1000);
-
-                AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
-                if (sirenSource != null)
-                {
-                    _ = Tween.AudioVolume(sirenSource, 0.4f, 15f, Ease.InCirc);
-                }
-
-                int quarterDelay = _sirensSound.length.ToMS() / 4;
-
-                await UniTask.Delay(quarterDelay * 3);
-
-                await Player.Instance.loading.CloseEyesAsync(0.25f);
-                
-                _ = Tween.AudioVolume(sirenSource, 0, 0.35f, Ease.InOutSine);
-                
-                await UniTask.Delay(500);
-
-                Player.Instance.loading.LoadSceneByName("EndScene");
             });
 
             Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
             friendNPC.sequences.Add(poisoningDialogue);
             friendNPC.StartSequence(poisoningDialogue);
+
+            alcoholPoisoning.options[0].onOptionSelected.AddListener(async () =>
+            {
+                await UniTask.Delay(2_500);
+
+                mysteryDrinkNPC.turnBodyToFacePlayer = false;
+                mysteryDrinkNPC.turnHeadToFacePlayer = false;
+
+                Sequence responseSequence = new Sequence(Sequence.Type.Dialogue, poisoningResponse, nextSequenceOnEnd: false);
+                mysteryDrinkNPC.sequences.Add(responseSequence);
+                mysteryDrinkNPC.StartSequence(responseSequence);
+
+                await UniTask.Delay(3_000);
+
+                Phone.Instance.CanToggle = false;
+                Phone.Instance.ClearNotifications();
+                Phone.Instance.EnablePhone();
+                Phone.Instance.ShowEmergencyScreen();
+
+                // Will be cancelled if player skips to sirens by calling 911, which means no wait
+                await UniTask.Delay(37_000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+
+                EndScene();
+
+                await UniTask.Delay(5000);
+
+                Phone.Instance.DisablePhone();
+            });
         });
+    }
+
+    public void SkipToSirens()
+    {
+        _cancelToken.Cancel();
+        GlobalStats.called911 = true;
+    }
+
+    public async void EndScene()
+    {
+        foreach (Transform child in _flashingLightsObj.transform)
+        {
+            if (child.TryGetComponent<FlashingLights>(out var flashingLights))
+            {
+                foreach (var light in flashingLights.lights)
+                {
+                    _ = Tween.LightIntensity(light, 0f, 10f, 20f, Ease.InOutExpo);
+                }
+                flashingLights.StartLights();
+            }
+        }
+
+        AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
+        if (sirenSource != null)
+        {
+            _ = Tween.AudioVolume(sirenSource, 0.4f, 15f, Ease.InCirc);
+        }
+
+        int quarterDelay = _sirensSound.length.ToMS() / 4;
+
+        await UniTask.Delay(quarterDelay * 3);
+
+        await Player.Instance.loading.CloseEyesAsync(0.25f);
+
+        _ = Tween.AudioVolume(sirenSource, 0, 0.35f, Ease.InOutSine);
+
+        await UniTask.Delay(500);
+
+        Player.Instance.loading.LoadSceneByName("EndScene");
     }
 
     public void AssignDrunkFlirtOutcome()
