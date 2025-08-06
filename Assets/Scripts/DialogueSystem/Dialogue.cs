@@ -10,12 +10,15 @@ public class DialogueOption // What the player can choose in a dialogue
 
     public Dialogue nextDialogue;
 
+    public bool DisableButton = false; // If true, the button will be disabled, making the option unselectable
+
     public UnityEvent onOptionSelected;
 
     public DialogueOption(string optionText, Dialogue nextDialogue = null)
     {
         this.optionText = optionText;
         this.nextDialogue = nextDialogue;
+        DisableButton = false;
     }
 }
 

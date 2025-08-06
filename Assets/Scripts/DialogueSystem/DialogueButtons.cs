@@ -72,43 +72,48 @@ public class DialogueButtons : MonoBehaviour
         {
             if(Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.numpad1Key.wasPressedThisFrame)
             {
+                //if (!_activeButtons[0].IsInteractable) return;
                 _activeButtons[0].ButtonPress();
             }
             else if(currentButtonCount > 1 && (Keyboard.current.digit2Key.wasPressedThisFrame || Keyboard.current.numpad2Key.wasPressedThisFrame))
             {
+                //if (!_activeButtons[1].IsInteractable) return;
                 _activeButtons[1].ButtonPress();
             }
             else if(currentButtonCount > 2 && (Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.numpad3Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[2].IsInteractable) return;
                 _activeButtons[2].ButtonPress();
             }
             else if(currentButtonCount > 3 && (Keyboard.current.digit4Key.wasPressedThisFrame || Keyboard.current.numpad4Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[3].IsInteractable) return;
                 _activeButtons[3].ButtonPress();
             }
             else if(currentButtonCount > 4 && (Keyboard.current.digit5Key.wasPressedThisFrame || Keyboard.current.numpad5Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[4].IsInteractable) return;
                 _activeButtons[4].ButtonPress();
             }
             else if(currentButtonCount > 5 && (Keyboard.current.digit6Key.wasPressedThisFrame || Keyboard.current.numpad6Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[5].IsInteractable) return;
                 _activeButtons[5].ButtonPress();
             }
             else if(currentButtonCount > 6 && (Keyboard.current.digit7Key.wasPressedThisFrame || Keyboard.current.numpad7Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[6].IsInteractable) return;
                 _activeButtons[6].ButtonPress();
             }
             else if(currentButtonCount > 7 && (Keyboard.current.digit8Key.wasPressedThisFrame || Keyboard.current.numpad8Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[7].IsInteractable) return;
                 _activeButtons[7].ButtonPress();
             }
             else if(currentButtonCount > 8 && (Keyboard.current.digit9Key.wasPressedThisFrame || Keyboard.current.numpad9Key.wasPressedThisFrame))
             {
+                if (!_activeButtons[8].IsInteractable) return;
                 _activeButtons[8].ButtonPress();
-            }
-            else if(currentButtonCount > 9 && Keyboard.current.digit0Key.wasPressedThisFrame)
-            {
-                _activeButtons[9].ButtonPress();
             }
         }
     }
@@ -142,8 +147,15 @@ public class DialogueButtons : MonoBehaviour
             optionButton.interactableLayers = LayerMask.GetMask("PlayerHand"); // only the player hand can interact with these buttons
             _activeButtons.Add(optionButton);
 
+            if (dialogue.options[i].DisableButton)
+            {
+                optionButton.DisableButton();
+            }
+
             int closureIndex = i; // weird behavior needed with lambda function, called a closure
             optionButton.OnButtonDown.AddListener(async () => {
+                if (!optionButton.IsInteractable) return;
+
                 await UniTask.Delay(100); // small delay to allow button press sound to play
                 dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
                 system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);

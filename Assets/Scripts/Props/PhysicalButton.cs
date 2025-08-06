@@ -42,6 +42,7 @@ public class PhysicalButton : MonoBehaviour
     public UnityEvent OnButtonHold; // Runs every frame the button is pressed
 
     private GameObject _button;
+    private GameObject _buttonDarkness;
     private GameObject _buttonBase;
 
     [SerializeField, ReadOnly] private float _buttonUpDistance;
@@ -49,9 +50,26 @@ public class PhysicalButton : MonoBehaviour
 
     private Collider[] _collisionResults = new Collider[8]; // Pre-allocated array for overlap detection
 
-    private async void Awake()
+    public void EnableButton()
+    {
+        _buttonDarkness.SetActive(false);
+        _buttonLabel.color = Color.white;
+        IsInteractable = true;
+        Debug.Log("Enabling button: " + gameObject.name);
+    }
+
+    public void DisableButton()
+    {
+        _buttonDarkness.SetActive(true);
+        _buttonLabel.color = Color.gray;
+        IsInteractable = false;
+        Debug.Log("Disabling button: " + gameObject.name);
+    }
+
+    private void Awake()
     {
         _button = transform.Find("Button").gameObject;
+        _buttonDarkness = _button.transform.Find("ButtonDarkness").gameObject;
 
         _buttonBase = transform.Find("Base").gameObject;
 
@@ -80,14 +98,18 @@ public class PhysicalButton : MonoBehaviour
         _button.transform.position = _upPosition;
         _buttonLabel.transform.position = _upPosition;
         _buttonLabel.rectTransform.sizeDelta = new Vector2(_button.transform.localScale.x, _button.transform.localScale.z);
-        
-        // Disable button briefly at the start to make sure it doesn't immediatley get pressed
-        if(IsInteractable)
+    }
+
+    private async void Start()
+    {
+        if (IsInteractable)
         {
+            EnableButton();
             IsInteractable = false;
-            await UniTask.Delay(500); // Wait a bit to ensure everything is set up before enabling the button
+            await UniTask.Delay(500); // Disable button briefly at the start to make sure it doesn't immediatley get pressed
             IsInteractable = true;
         }
+        else DisableButton();
     }
 
     void FixedUpdate()

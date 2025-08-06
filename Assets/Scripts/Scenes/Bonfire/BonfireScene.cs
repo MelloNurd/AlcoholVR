@@ -82,7 +82,11 @@ public class BonfireScene : MonoBehaviour
     {
         CheckFlirtationProximity();
 
-        if (Keyboard.current.f3Key.wasPressedThisFrame)
+        if(Keyboard.current.f1Key.wasPressedThisFrame)
+        {
+            drunkFlirtNPC.StartNextSequence();
+        }
+        else if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             _isPoisonedNpcReady = true;
         }

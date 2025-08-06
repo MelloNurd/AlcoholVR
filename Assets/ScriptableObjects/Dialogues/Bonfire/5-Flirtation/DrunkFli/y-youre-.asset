@@ -14,18 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
   options:
-  - optionText: okkay
-    nextDialogue: {fileID: 11400000, guid: 540e150a56859ee4d8b00638e411c64e, type: 2}
+  - optionText: No thanks...
+    nextDialogue: {fileID: 0}
+    DisableButton: 1
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: Are you okay? Maybe you should sit down and get some water...
+    nextDialogue: {fileID: 0}
+    DisableButton: 1
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: '*hiccup* suure'
     nextDialogue: {fileID: 11400000, guid: 2346d1d7043878e429930073a97d9f8f, type: 2}
-    onOptionSelected:
-      m_PersistentCalls:
-        m_Calls: []
-  - optionText: '*stumble and nod*'
-    nextDialogue: {fileID: 11400000, guid: c5af1fbfed3c04746af451417ad23560, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
