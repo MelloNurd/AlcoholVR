@@ -28,7 +28,7 @@ public class HandAnimator : MonoBehaviour
     public List<Finger> uiFingers;
 
     private Animator _handAnimator = null;
-    private NearFarInteractor _interactor;
+    [SerializeField] private NearFarInteractor _interactor;
 
     private InputDevice CurrentInputDevice => (hand == Hand.Left) 
         ? InputManager.Instance.leftController 
@@ -41,21 +41,24 @@ public class HandAnimator : MonoBehaviour
         uiFingers = new List<Finger> { Thumb, Middle, Ring, Pinky };
 
         _handAnimator = GetComponent<Animator>();
-        _interactor = transform.parent.GetComponentInChildren<NearFarInteractor>();
+        //_interactor = transform.parent.GetComponentInChildren<NearFarInteractor>();
     }
 
     private void Update()
     {
-        if (CurrentInputDevice == InputManager.Instance.leftController && Phone.Instance.IsActive)
+        if (Phone.Instance != null)
         {
-            AnimateFingers(fistFingers, 0f); // open all fingers
-            return;
-        }
+            if (CurrentInputDevice == InputManager.Instance.leftController && Phone.Instance.IsActive)
+            {
+                AnimateFingers(fistFingers, 0f); // open all fingers
+                return;
+            }
 
-        if(Phone.Instance.IsHandNearPhone)
-        {
-            AnimateFingers(uiFingers, 1.0f);
-            return;
+            if (Phone.Instance.IsHandNearPhone)
+            {
+                AnimateFingers(uiFingers, 1.0f);
+                return;
+            }
         }
 
         if(_interactor.hasSelection)

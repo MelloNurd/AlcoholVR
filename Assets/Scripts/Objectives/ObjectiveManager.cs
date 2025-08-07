@@ -117,7 +117,7 @@ public class ObjectiveManager : MonoBehaviour
     private void HandleTracking()
     {
 
-        if (!Phone.Instance.IsActive) return; // Only update paths when the phone is active
+        if (Phone.Instance == null || !Phone.Instance.IsActive) return; // Only update paths when the phone is active
 
         foreach ((Objective objective, LineRenderer lr) in objectives)
         {
