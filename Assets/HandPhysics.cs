@@ -18,6 +18,7 @@ public class HandPhysics : MonoBehaviour
     private Vector3 latestTargetPosition;
     private Quaternion latestTargetRotation;
     public bool isColliding = false;
+    private Vector3 lastCollisionNormal = Vector3.zero;
 
     void Start()
     {
@@ -37,34 +38,21 @@ public class HandPhysics : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Position
         Vector3 toTarget = latestTargetPosition - rb.position;
-        if(toTarget.magnitude > maxDistance)
+
+        // Default movement
+        Vector3 desiredVelocity = toTarget * positionStrength;
+
+        // If colliding, project movement onto surface plane
+        if (isColliding && lastCollisionNormal != Vector3.zero)
         {
-            // If too far, snap to target position
-            rb.position = latestTargetPosition;
-            rb.linearVelocity = Vector3.zero; // Stop any existing velocity
-
-            if (transform.name == "RightHand")
-            {
-                Player.Instance.ForceRelease("right");
-                Debug.Log("Right hand snapped to target position, releasing grip.");
-            }
-            else if (transform.name == "LeftHand")
-            {
-                Player.Instance.ForceRelease("left");
-                Debug.Log("Left hand snapped to target position, releasing grip.");
-            }
-            else
-            {
-                Debug.LogWarning("HandPhysics: Hand is not named correctly for snapping.");
-            }
-
-                return;
+            // Slide movement along the wall
+            desiredVelocity = Vector3.ProjectOnPlane(desiredVelocity, lastCollisionNormal);
         }
-        rb.linearVelocity = toTarget * positionStrength;
 
-        // Rotation
+        rb.linearVelocity = desiredVelocity;
+
+        // Rotation logic (unchanged)
         Quaternion deltaRotation = latestTargetRotation * Quaternion.Inverse(rb.rotation);
         deltaRotation.ToAngleAxis(out float angle, out Vector3 axis);
 
@@ -80,10 +68,18 @@ public class HandPhysics : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         isColliding = true;
+        lastCollisionNormal = collision.contacts[0].normal;
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        lastCollisionNormal = collision.contacts[0].normal;
     }
 
     private void OnCollisionExit(Collision collision)
     {
         isColliding = false;
+        lastCollisionNormal = Vector3.zero;
     }
+
 }
