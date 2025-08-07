@@ -71,6 +71,7 @@ public class HandAnimator : MonoBehaviour
         CurrentInputDevice.TryGetFeatureValue(CommonUsages.trigger, out float triggerPercent);
         CurrentInputDevice.TryGetFeatureValue(CommonUsages.grip, out float gripPercent);
 
+
         AnimateFingers(Thumb, touchingThumbstick ? 1.0f : 0.0f);
         AnimateFingers(grippingFingers, gripPercent);
         AnimateFingers(Index, triggerPercent);
