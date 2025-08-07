@@ -114,7 +114,7 @@ public class BonfireScene : MonoBehaviour
         poisonedNPC.sequences.Add(faint);
         poisonedNPC.StartSequence(faint);
 
-        await UniTask.Delay(Mathf.RoundToInt(Random.Range(1000, 3000)));
+        await UniTask.Delay(Mathf.RoundToInt(Random.Range(2000, 5000)));
 
         Sequence mysteryWalkTo = new Sequence(Sequence.Type.Walk, _mysteryPoisoningReactionPoint);
         Sequence turnToFace2 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _mysteryPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
