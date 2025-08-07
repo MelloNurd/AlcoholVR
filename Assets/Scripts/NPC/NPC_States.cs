@@ -31,20 +31,19 @@ public class NPC_IdleState : NPC_BaseState
 
 public class NPC_WalkState : NPC_BaseState
 {
-    private int cornerIndex = 0;
-
     public NPC_WalkState(NPC_SM npc) : base(npc) { } // constructor
     
     public override void EnterState()
     {
         base.EnterState();
-        npc.PlayWalkAnimation();
 
         if(npc.agent == null || !npc.agent.enabled)
         {
             npc.SwitchState(NPC_SM.States.Idle);
             return;
         }
+
+        npc.PlayWalkAnimation();
 
         npc.agent.destination = npc.currentCheckpoint.transform.position;
 
