@@ -55,8 +55,8 @@ public class Player : MonoBehaviour
         _initialSpeed = _moveProvider.moveSpeed;
         loading = playerCamera.GetComponentInChildren<Loading>();
 
-        RightHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Right Controller/RightHand").gameObject;
-        LeftHand = transform.Find("XR Origin (XR Rig)/Camera Offset/Left Controller/LeftHand").gameObject;
+        RightHand = transform.Find("RightHand").gameObject;
+        LeftHand = transform.Find("LeftHand").gameObject;
 
         if (RightHand == null || LeftHand == null)
         {
@@ -223,5 +223,25 @@ public class Player : MonoBehaviour
     public void EnableMovement()
     {
         _moveProvider.moveSpeed = _initialSpeed;
+    }
+
+    public void ForceRelease(string hand)
+    {
+        // make text all lowercase
+        hand = hand.ToLowerInvariant();
+        if (hand == "right")
+        {
+            _rightNearFarInteractor.enabled = false;
+            _rightNearFarInteractor.enabled = true;
+        }
+        else if (hand == "left")
+        {
+            _leftNearFarInteractor.enabled = false;
+            _leftNearFarInteractor.enabled = true;
+        }
+        else
+        {
+            Debug.LogError("Invalid hand specified for ForceRelease: " + hand);
+        }
     }
 }

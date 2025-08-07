@@ -103,7 +103,7 @@ public class Phone : MonoBehaviour
             return;
         }
 
-        _phoneObj = transform.GetChild(0).gameObject;
+        _phoneObj = transform.Find("Phone Parent").gameObject;
 
         // Assign component variables
         _appearParticles = _phoneObj.transform.Find("AppearParticles").GetComponent<ParticleSystem>();
@@ -184,6 +184,21 @@ public class Phone : MonoBehaviour
 
         _phoneSize = _phoneObj.transform.localScale;
         DisablePhone(0f, false);
+        
+        GameObject leftHand = GameObject.Find("LeftHand");
+
+        Collider[] phoneColliders = _phoneObj.GetComponentsInChildren<Collider>();
+        Collider[] leftHandColliders = leftHand.GetComponentsInChildren<Collider>();
+        foreach (var phoneCol in phoneColliders)
+        {
+            foreach (var handCol in leftHandColliders)
+            {
+                if (phoneCol != null && handCol != null)
+                {
+                    Physics.IgnoreCollision(phoneCol, handCol, true);
+                }
+            }
+        }
     }
 
     private void Update()
