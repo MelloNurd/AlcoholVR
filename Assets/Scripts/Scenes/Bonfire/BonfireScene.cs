@@ -90,6 +90,10 @@ public class BonfireScene : MonoBehaviour
         {
             drunkFlirtNPC.StartNextSequence();
         }
+        else if (Keyboard.current.f2Key.wasPressedThisFrame)
+        {
+            SkipToSirens();
+        }
         else if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
             _isPoisonedNpcReady = true;
@@ -182,6 +186,7 @@ public class BonfireScene : MonoBehaviour
     {
         _cancelToken.Cancel();
         GlobalStats.called911 = true;
+        Phone.Instance.DisablePhone();
     }
 
     public async void EndScene()
@@ -192,7 +197,7 @@ public class BonfireScene : MonoBehaviour
             {
                 foreach (var light in flashingLights.lights)
                 {
-                    _ = Tween.LightIntensity(light, 0f, 10f, 20f, Ease.InOutExpo);
+                    _ = Tween.LightIntensity(light, 0f, 10f, 15f, Ease.InOutExpo);
                 }
                 flashingLights.StartLights();
             }
@@ -201,7 +206,7 @@ public class BonfireScene : MonoBehaviour
         AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
         if (sirenSource != null)
         {
-            _ = Tween.AudioVolume(sirenSource, 0.4f, 15f, Ease.InCirc);
+            _ = Tween.AudioVolume(sirenSource, 0.6f, 15f, Ease.InOutSine);
         }
 
         int quarterDelay = _sirensSound.length.ToMS() / 4;
@@ -210,9 +215,9 @@ public class BonfireScene : MonoBehaviour
 
         await Player.Instance.loading.CloseEyesAsync(0.25f);
 
-        _ = Tween.AudioVolume(sirenSource, 0, 0.35f, Ease.InOutSine);
+        _ = Tween.AudioVolume(sirenSource, 0, 0.4f, Ease.InOutSine);
 
-        await UniTask.Delay(500);
+        await UniTask.Delay(550);
 
         Player.Instance.loading.LoadSceneByName("EndScene");
     }
