@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class HeadCollisionDetector : MonoBehaviour
 {
@@ -44,11 +45,27 @@ public class HeadCollisionDetector : MonoBehaviour
         {
             if (Physics.Raycast(position, direction, out hit, distance, mask))
             {
-                detectedHits.Add(hit);
+                if (!HasGrabInteractableComponent(hit.collider.gameObject))
+                {
+                    detectedHits.Add(hit);
+                }
             }
         }
 
         return detectedHits;
+    }
+
+    private bool HasGrabInteractableComponent(GameObject hitObject)
+    {
+        // Check if the hit object itself has an XRGrabInteractable component
+        if (hitObject.GetComponent<XRGrabInteractable>() != null)
+        {
+            return true;
+        }
+
+        // Check if any of the children have an XRGrabInteractable component
+        XRGrabInteractable grabInteractable = hitObject.GetComponentInChildren<XRGrabInteractable>();
+        return grabInteractable != null;
     }
 
     private void OnDrawGizmos()
