@@ -89,7 +89,7 @@ public class PartyScene : MonoBehaviour
         //int delay = Mathf.RoundToInt(Random.Range(45_000f, 120_000f) * 0.5f); // Random delay between 45 seconds and 2 minutes (halved to split up)
         Debug.Log("Drunk driving friend delayed by " + delay * 2 + " ms");
         await UniTask.Delay(delay);
-        if(GlobalStats.broughtToParty == GlobalStats.BroughtOptions.Alcohol)
+        if(GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
         {
             Phone.Instance.QueueNotification("Mom", "We saw you take alcohol on the cameras. You are SO grounded!");
         }
@@ -209,7 +209,7 @@ public class PartyScene : MonoBehaviour
             IsInHouse = true;
             if (_enterCount == 0)
             {
-                Dialogue introDialogue = GlobalStats.broughtToParty switch
+                Dialogue introDialogue = GlobalStats.broughtItems switch
                 {
                     GlobalStats.BroughtOptions.Alcohol => _broughtAlcohol,
                     GlobalStats.BroughtOptions.Snacks => _broughtSnacks,

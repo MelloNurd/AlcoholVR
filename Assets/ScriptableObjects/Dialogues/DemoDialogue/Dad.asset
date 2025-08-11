@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce17b99a3e9169f4eb4191aa1c397a6a, type: 3}
-  m_Name: First
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: Dad
   m_EditorClassIdentifier: 
-  text: Hey there. What's going on?
+  dialogueText: Hey kiddo, how's it going?
   options:
-  - text: I'm heading to a friend's place for a party.
-    nextDialogue: {fileID: 11400000, guid: c299a619e245a2642a35e1bae3c1d46b, type: 2}
+  - optionText: It's going good dad
+    nextDialogue: {fileID: 11400000, guid: ecd4103c5415a574cbf55ec82f53062b, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []

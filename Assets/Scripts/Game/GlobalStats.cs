@@ -16,11 +16,13 @@ public class GlobalStats : MonoBehaviour
 
     public bool tweenWarnings = false;
 
+    // House stats
+    public static BroughtOptions broughtItems = BroughtOptions.None;
+
     // Party stats
     public static int hoopsScore = 0;
     public static bool wonDarts = false;
     public static int arcadeScore = 0;
-    public static BroughtOptions broughtToParty = BroughtOptions.None;
     public static bool letDrunkFriendDrive = false;
     public static bool helpedRagingDrunk = false;
 

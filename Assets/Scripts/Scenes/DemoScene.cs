@@ -2,12 +2,16 @@ using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class DemoScene : MonoBehaviour
 {
+    [SerializeField] private SequencedNPC _dadNPC;
+    private bool hasDadStarted = false;
+
     [SerializeField] private Transform _fridgeTransform;
     [SerializeField] private Transform _backpackTransform;
     [SerializeField] private Transform _dadTransform;
@@ -27,13 +31,29 @@ public class DemoScene : MonoBehaviour
         var temp = new PhoneMessage
         {
             Sender = "Markus",
-            Content = "Hey! I'm throwing a party, can you bring snacks and beer?",
+            Content = "Hey! I'm throwing a party. Bring snacks. And do you think you can sneak some beer from your parents?",
         };
 
         Phone.Instance.QueueNotification(temp);
 
         obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab snacks from the fridge.", 1, _fridgeTransform));
         obj2 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab beer from the fridge.", 1, _fridgeTransform));
+    }
+
+    private void Update()
+    {
+        if(Keyboard.current.f1Key.wasPressedThisFrame)
+        {
+            StartDad();
+        }
+    }
+
+    public void StartDad()
+    {
+        if(hasDadStarted) return;
+        hasDadStarted = true;
+
+        _dadNPC.StartNextSequence();
     }
 
     // When you first GRAB the item
@@ -43,6 +63,12 @@ public class DemoScene : MonoBehaviour
         {
             if (interactable.name.Contains("Food"))
             {
+                // Only mark snacks if they havent brought anything yet (does not overwrite alcohol)
+                if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.None)
+                {
+                    GlobalStats.broughtItems = GlobalStats.BroughtOptions.Snacks;
+                }
+
                 obj1?.Complete();
                 if (obj3 == null)
                 {
@@ -51,6 +77,9 @@ public class DemoScene : MonoBehaviour
             }
             else if (interactable.name.Contains("Bottle"))
             {
+                // Mark as alcohol no matter what if you input beer
+                GlobalStats.broughtItems = GlobalStats.BroughtOptions.Alcohol;
+
                 obj2?.Complete();
                 if (obj4 == null)
                 {

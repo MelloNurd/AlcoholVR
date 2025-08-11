@@ -9,18 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce17b99a3e9169f4eb4191aa1c397a6a, type: 3}
-  m_Name: Second
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: Dad 2
   m_EditorClassIdentifier: 
-  text: A party, huh? Just make sure you're being responsible.
+  dialogueText: Great. Any plans this afternoon?
   options:
-  - text: Of course, I will.
-    nextDialogue: {fileID: 11400000, guid: f762495724761c94daa51d54c756f5c9, type: 2}
+  - optionText: I'm heading to a friends house.
+    nextDialogue: {fileID: 11400000, guid: 5feafaa2943aceb44a48e5932c747ebd, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-  - text: Don't worry, it's nothing crazy.
-    nextDialogue: {fileID: 11400000, guid: f762495724761c94daa51d54c756f5c9, type: 2}
+  - optionText: A friend is throwing a party.
+    nextDialogue: {fileID: 11400000, guid: 532078a5bc4499848b574c980e289a42, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
