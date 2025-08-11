@@ -21,6 +21,8 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private Dialogue alcoholPoisoning;
     [SerializeField] private Dialogue poisoningResponse;
 
+    [SerializeField] private Dialogue drankMysteryDrinkResponse;
+
     [Header("NPC References")]
     [SerializeField] private SequencedNPC friendNPC;
     [SerializeField] private SequencedNPC mysteryDrinkNPC;
@@ -33,12 +35,14 @@ public class BonfireScene : MonoBehaviour
 
     [Header("Game State References")]
     [SerializeField] private BoolValue _deterredFireNPCs;
+    [SerializeField] private BoolValue _drankMysteryDrink;
     private bool _playerHasGrabbedDrink = false;
     private bool _playerHasTalkedToFlirt = false;
     private bool _playerHasTalkedToTable = false;
     private bool _playerHasTalkedToMysteryDrink = false;
     private bool _playerHasTalkedToFireNPCs = false;
     private bool _isPoisonedNpcReady = false;
+    private bool _isMysteryDrinkReady = false;
 
     [Header("Misc References")]
     [SerializeField] private GameObject _bonfire;
@@ -52,6 +56,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private Transform _mysteryPoisoningReactionPoint;
     [SerializeField] private Transform _miscPoisoningReactionPoint;
     [SerializeField] private GameObject _flashingLightsObj;
+    [SerializeField] private Transform _playerDrankNewPoint;
 
     // Misc variables
     private bool _isFlirtWaitingForPlayer = false;
@@ -64,7 +69,9 @@ public class BonfireScene : MonoBehaviour
 
         _poisonedInteractionTrigger = poisonedNPC.transform.parent.GetOrAddComponent<TriggerEventHandler>();
 
+        // reset game states
         _deterredFireNPCs.Value = false;
+        _drankMysteryDrink.Value = false;
 
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
@@ -75,10 +82,7 @@ public class BonfireScene : MonoBehaviour
         tableNPC.dialogueSystem.onEnd.AddListener(() =>
         {
             _playerHasTalkedToTable = true;
-            if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
-            {
-                _isPoisonedNpcReady = true;
-            }
+            RunSequenceChecks();
         });
     }
 
@@ -88,21 +92,35 @@ public class BonfireScene : MonoBehaviour
 
         if(Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            drunkFlirtNPC.StartNextSequence();
+            tableNPC.StartNextSequence();
         }
         else if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            SkipToSirens();
-        }
-        else if (Keyboard.current.f3Key.wasPressedThisFrame)
-        {
-            _isPoisonedNpcReady = true;
+            fireStickNPC.StartNextSequence();
         }
 
+        if(_isMysteryDrinkReady)
+        {
+            _isMysteryDrinkReady = false; // Only do this once
+            StartMysteryDrinkNPC();
+        }
         if (_isPoisonedNpcReady && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
         {
             _isPoisonedNpcReady = false; // Only do this once
             StartAlcoholPoisoning();
+        }
+    }
+
+    private void RunSequenceChecks()
+    {
+        Debug.Log($"RunSequenceChecks: Player has talked to flirt: {_playerHasTalkedToFlirt}, fire NPCs: {_playerHasTalkedToFireNPCs}, table: {_playerHasTalkedToTable}, mystery drink: {_playerHasTalkedToMysteryDrink}, poison ready: {_isPoisonedNpcReady}");
+        if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
+        {
+            _isPoisonedNpcReady = true;
+        }
+        if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable)
+        {
+            _isMysteryDrinkReady = true;
         }
     }
 
@@ -143,7 +161,7 @@ public class BonfireScene : MonoBehaviour
 
             _poisonedInteractionTrigger.EventsEnabled = false; // We only want this to run once
 
-            alcoholPoisoning.onDialogueEnd.AddListener(async () =>
+            alcoholPoisoning.onDialogueEnd.AddListener(() =>
             {
                 friendNPC.lookAt.isLooking = false;
             });
@@ -225,12 +243,9 @@ public class BonfireScene : MonoBehaviour
     public void AssignDrunkFlirtOutcome()
     {
         _playerHasTalkedToFlirt = true;
-        if(_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
-        {
-            _isPoisonedNpcReady = true;
-        }
+        RunSequenceChecks();
 
-        if (GlobalStats.DrinkCount >= 0)
+        if (GlobalStats.DrinkCount >= 2)
         {
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtation;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
@@ -287,7 +302,14 @@ public class BonfireScene : MonoBehaviour
         await friendNPC.StartNextSequenceAsync();
         _friendsSoda.SetActive(true);
 
-        StartMysteryDrinkNPC();
+        int delay = Random.Range(45f, 60f).ToMS();
+        Debug.Log($"Drunk flirt NPC will start in {delay} ms");
+        await UniTask.Delay(delay);
+
+        await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
+
+        Debug.Log("Starting drunk flirt NPC sequence...");
+        drunkFlirtNPC.StartNextSequence();
     }
 
     [Button]
@@ -301,39 +323,61 @@ public class BonfireScene : MonoBehaviour
         await friendNPC.StartNextSequenceAsync();
         _friendsAlcohol.SetActive(true);
 
-        StartMysteryDrinkNPC();
+        int delay = Random.Range(45f, 60f).ToMS();
+        Debug.Log($"Drunk flirt NPC will start in {delay} ms");
+        await UniTask.Delay(delay);
+
+        await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
+
+        Debug.Log("Starting drunk flirt NPC sequence...");
+        drunkFlirtNPC.StartNextSequence();
     }
 
     public async void StartMysteryDrinkNPC()
     {
-        await UniTask.Delay(Mathf.RoundToInt(Random.Range(20_000, 45_000)));
-
-        await UniTask.WaitUntil(() => _playerHasGrabbedDrink && !Player.Instance.IsInteractingWithNPC);
-
-        mysteryDrinkNPC.StartNextSequence();
-        mysteryDrinkNPC.dialogueSystem.onEnd.AddListener(async () =>
+        mysteryDrinkNPC.dialogueSystem.onEnd.AddListener(() =>
         {
+            if (_drankMysteryDrink.Value)
+            {
+                return; // Different ending, no need to handle the rest
+            }
+
             _playerHasTalkedToMysteryDrink = true;
             if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
             {
                 _isPoisonedNpcReady = true;
             }
-            await UniTask.Delay(Mathf.RoundToInt(Random.Range(30_000, 120_000)));
-            drunkFlirtNPC.StartNextSequence();
         });
+
+        drankMysteryDrinkResponse.onDialogueStart.AddListener(async () => // dialogue that runs immediately after the player drinks the drink
+        {
+            _drankMysteryDrink.Value = true;
+
+            PlayerFace.Instance.BlurVision(5f);
+
+            await Player.Instance.loading.CloseEyesAsync(0.15f);
+
+            // Set new scene after eyes close
+            Player.Instance.loading.LoadSceneByName("BonfireCutscene");
+        });
+
+        int delay = Random.Range(20f, 45f).ToMS();
+        Debug.Log($"Mystery drink NPC will start in {delay} ms");
+        await UniTask.Delay(delay);
+
+        await UniTask.WaitUntil(() => _playerHasGrabbedDrink && !Player.Instance.IsInDialogue);
+
+        Debug.Log("Starting mystery drink NPC sequence...");
+        mysteryDrinkNPC.StartNextSequence();
     }
 
     public async void HandleFireNPCs()
     {
-        Debug.Log("Handling fire NPCs...");
+        _playerHasTalkedToFireNPCs = true;
+        RunSequenceChecks();
+
         // check if player convinced them to stop
         if (!_deterredFireNPCs.Value) return; // didn't deter, they stay where they are
-
-        _playerHasTalkedToFireNPCs = true;
-        if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
-        {
-            _isPoisonedNpcReady = true;
-        }
 
         // Disable the stick object
         fireStickNPC.GetComponentInChildren<Light>().transform.parent.gameObject.SetActive(false);

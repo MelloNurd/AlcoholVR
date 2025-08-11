@@ -5,23 +5,37 @@ using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
 {
+    [SerializeField] private float blinkSpeed = 1f; // This only applies to the beginning of the scene
+
     Animator UI;
     public AnimationClip blinkAnimation;
 
     public void Start()
     {
         UI = GetComponent<Animator>();
+        if (UI == null)
+        {
+            Debug.Log("Animator component not found on Loading object.");
+            return;
+        }
+        else
+        {
+            UI.speed = blinkSpeed;
+        }
     }
 
-    public async void TransitionSceneByName(string sceneName)
+    public void TransitionSceneByName(string sceneName) => TransitionSceneByName(sceneName, 1);
+    public async void TransitionSceneByName(string sceneName, float speed)
     {
-        await CloseEyesAsync();
+        await CloseEyesAsync(speed);
 
         LoadSceneByName(sceneName);
     }
-    public async void TransitionSceneById(int sceneId)
+
+    public void TransitionSceneById(int sceneId) => TransitionSceneById(sceneId, 1);
+    public async void TransitionSceneById(int sceneId, float speed)
     {
-        await CloseEyesAsync();
+        await CloseEyesAsync(speed);
 
         LoadSceneById(sceneId);
     }

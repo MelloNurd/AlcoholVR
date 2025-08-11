@@ -64,7 +64,7 @@ public class LookAt : MonoBehaviour
 
     public void LookAtPlayer()
     {
-        objectToLookAt = Player.Instance.playerCamera.transform;
+        objectToLookAt = Player.Instance.Camera.transform;
         isLooking = true;
     }
 

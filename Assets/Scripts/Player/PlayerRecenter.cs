@@ -16,6 +16,8 @@ public class PlayerRecenter : MonoBehaviour
 
     void LateUpdate()
     {
+        if (characterController == null || characterController.enabled == false) return;
+
         // Get headset movement in world space (horizontal only)
         Vector3 worldOffset = cameraTransform.position - lastCameraWorldPos;
         Vector3 horizontalOffset = new Vector3(worldOffset.x, 0, worldOffset.z);

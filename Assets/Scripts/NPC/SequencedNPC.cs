@@ -138,7 +138,7 @@ public class SequencedNPC : MonoBehaviour
 
     private void Start()
     {
-        _playerObj = Player.Instance.playerCamera.gameObject;
+        _playerObj = Player.Instance.Camera.gameObject;
 
         if (sequences.Count == 0)
         {
@@ -167,7 +167,7 @@ public class SequencedNPC : MonoBehaviour
                 _lastDestinationUpdateTime += Time.deltaTime;
 
                 // Update destination to be in front of player every half second
-                Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized;
+                Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized;
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
                     _lastDestinationUpdateTime = 0f;
@@ -246,7 +246,7 @@ public class SequencedNPC : MonoBehaviour
     private async UniTask ExecuteWalkToPlayerSequence(Sequence sequence)
     {
         _isAtDestination = false;
-        agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.playerCamera.transform.forward.WithY(0).normalized);
+        agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized);
         agent.isStopped = false;
 
         AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
@@ -306,7 +306,7 @@ public class SequencedNPC : MonoBehaviour
         }
 
         // Wait until player is free (not interacting with an NPC) before starting dialogue
-        await UniTask.WaitUntil(() => !Player.Instance.IsInteractingWithNPC, cancellationToken: _cancelToken.Token);
+        await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue, cancellationToken: _cancelToken.Token);
         if (_cancelToken.IsCancellationRequested) return;
 
         dialogueSystem.StartDialogue(sequence.dialogue);

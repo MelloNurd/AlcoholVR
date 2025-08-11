@@ -23,11 +23,12 @@ public class GlobalStats : MonoBehaviour
     public static BroughtOptions broughtToParty = BroughtOptions.None;
     public static bool letDrunkFriendDrive = false;
     public static bool helpedRagingDrunk = false;
-    public static bool called911 = false;
 
     // Bonfire stats
     public static bool playerGrabbedAlcohol = false; // This is for the first scenario, when at the cooler
     public static bool playerWentWithFlirt = false;
+    public static bool playerDrankMysteryDrink = false;
+    public static bool called911 = false;
 
     private void Awake()
     {

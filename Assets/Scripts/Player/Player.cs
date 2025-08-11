@@ -1,3 +1,5 @@
+﻿using Cysharp.Threading.Tasks;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
@@ -12,13 +14,18 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public Loading loading;
 
-    [HideInInspector] public Camera playerCamera;
+    [HideInInspector] public XROrigin xrOrigin;
     [HideInInspector] public CharacterController controller;
 
-    public Vector3 Position => playerCamera == null ? Vector3.zero : playerCamera.transform.position;
-    public Vector3 Forward => playerCamera == null ? Vector3.forward : playerCamera.transform.forward;
+    public Camera Camera => xrOrigin.Camera;
+
+    public Vector3 Position => Camera == null ? Vector3.zero : Camera.transform.position;
+    public Vector3 Forward => Camera == null ? Vector3.forward : Camera.transform.forward;
+    
+    private Transform _xrRig;
 
     public bool IsInteractingWithNPC { get; set; } = false;
+    public bool IsInDialogue { get; set; } = false;
 
     public GameObject RightHand { get; private set; }
     public GameObject LeftHand { get; private set; }
@@ -39,21 +46,14 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        //if (Instance == null)
-        //{
-            Instance = this;
-        //}
-        //else
-        //{
-        //    Destroy(gameObject);
-        //}
+        Instance = this;
 
-        playerCamera = Camera.main;
+        xrOrigin = GetComponentInChildren<XROrigin>();
 
         controller = GetComponentInChildren<CharacterController>();
         _moveProvider = GetComponentInChildren<DynamicMoveProvider>();
         _initialSpeed = _moveProvider.moveSpeed;
-        loading = playerCamera.GetComponentInChildren<Loading>();
+        loading = Camera.GetComponentInChildren<Loading>();
 
         RightHand = transform.Find("RightHand").gameObject;
         LeftHand = transform.Find("LeftHand").gameObject;
@@ -64,8 +64,9 @@ public class Player : MonoBehaviour
         }
 
         _tunnelingVignetteController = GetComponentInChildren<TunnelingVignetteController>();
-        RightController = transform.Find("XR Origin (XR Rig)/Camera Offset/Right Controller").gameObject;
-        LeftController = transform.Find("XR Origin (XR Rig)/Camera Offset/Left Controller").gameObject;
+        _xrRig = transform.Find("XR Origin (XR Rig)");
+        RightController = _xrRig.Find("Camera Offset/Right Controller").gameObject;
+        LeftController = _xrRig.Find("Camera Offset/Left Controller").gameObject;
         _rightNearFarInteractor = RightController.GetComponentInChildren<NearFarInteractor>();
         _leftNearFarInteractor = LeftController.GetComponentInChildren<NearFarInteractor>();
 

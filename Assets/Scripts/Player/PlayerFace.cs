@@ -7,9 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 public class PlayerFace : MonoBehaviour
 {
-    private const float maxDistance = 4f;
-
-    public PlayerFace Instance { get; private set; }
+    public static PlayerFace Instance { get; private set; }
 
     [SerializeField] private AudioClip _drinkSound;
     private AudioSource _audioSource;
@@ -17,20 +15,17 @@ public class PlayerFace : MonoBehaviour
     private Volume _globalVolume; // Assign this in the Inspector or find it at runtime
     private DepthOfField dof;
 
+    Tween blurTween;
+
     void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
 
         _audioSource = gameObject.GetOrAdd<AudioSource>();
 
         _globalVolume = GameObject.Find("Global Volume").GetComponent<Volume>(); // Just doing FindFirstByType was getting the arcade volume...
+
+        Debug.Log($"Found Global Volume: {_globalVolume != null}");
 
         if (!_globalVolume.profile.TryGet(out dof))
         {
@@ -40,18 +35,33 @@ public class PlayerFace : MonoBehaviour
         dof.active = false;
     }
 
-    public async void ApplyBlurEffect()
+    public void BlurVision(float duration = 1f) => BlurVisionAsync(duration).Forget();
+    public async UniTask BlurVisionAsync(float duration = 1f)
     {
+        dof.focalLength.value = 1;
         dof.active = true;
-        dof.focusDistance.value = maxDistance;
 
-        Tween.StopAll(dof.focusDistance);
-        await Tween.Custom(1f, 0f, 1f, (float val) => { dof.focusDistance.value = val; }, Ease.OutCirc);
+        blurTween.Stop();
+        blurTween = Tween.Custom(1f, 30f, duration, (float val) => { dof.focalLength.value = val; }, Ease.InSine);
+        await blurTween;
+    }
 
-        Tween.StopAll(dof.focusDistance);
-        await Tween.Custom(0f, maxDistance, 1.5f, (float val) => { dof.focusDistance.value = val; }, Ease.InCirc);
+    public void ClearBlur(float duration = 1f) => ClearBlurAsync(duration).Forget();
+    public async UniTask ClearBlurAsync(float duration = 1f)
+    {
+        dof.focusDistance.value = 30f;
+
+        blurTween.Stop();
+        blurTween = Tween.Custom(30f, 1f, duration, (float val) => { dof.focalLength.value = val; }, Ease.OutSine);
+        await blurTween;
 
         dof.active = false;
+    }
+
+    public async void ApplyBlurPulse()
+    {
+        await BlurVisionAsync();
+        await ClearBlurAsync(1.5f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -65,7 +75,7 @@ public class PlayerFace : MonoBehaviour
 
                 if(bottle.IsAlcoholic)
                 {
-                    ApplyBlurEffect();
+                    ApplyBlurPulse();
                     GlobalStats.DrinkCount++;
                 }
             }

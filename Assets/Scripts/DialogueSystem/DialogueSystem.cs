@@ -49,6 +49,7 @@ public class DialogueSystem : MonoBehaviour
     public async void StartDialogue(Dialogue dialogue, int depth = 0)
     {
         DialogueButtons.Instance.ClearButtons();
+        Player.Instance.IsInDialogue = true;
 
         if (depth == 0)
         {
@@ -57,7 +58,6 @@ public class DialogueSystem : MonoBehaviour
 
         if (dialogue == null || dialogue.options == null)
         {
-            Debug.LogWarning("Dialogue is null or has no options. Ending dialogue.");
             Player.Instance.IsInteractingWithNPC = false;
             EndCurrentDialogue();
             return;
@@ -128,7 +128,7 @@ public class DialogueSystem : MonoBehaviour
         {
             interactableNPC.SwitchState(NPC_SM.States.Walk);
         }
-        Player.Instance.IsInteractingWithNPC = false;
+        Player.Instance.IsInDialogue = false;
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
         currentDialogue = null;
