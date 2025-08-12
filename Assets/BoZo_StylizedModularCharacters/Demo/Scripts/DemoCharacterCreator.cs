@@ -274,6 +274,7 @@ namespace Bozo.ModularCharacters
             string fileName = CharacterName.text.Cleaned() + ".json";
             string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
             string name = CharacterName.text.Cleaned();
+            filePath = Path.GetFullPath(filePath); // Ensure the path is absolute
 
             // Check if it's a locked preset
             if (LockedPresets.Any(p => p.name == name))
@@ -342,6 +343,7 @@ namespace Bozo.ModularCharacters
 
             string fileName = CharacterName.text.Cleaned() + ".json";
             string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
+            filePath = Path.GetFullPath(filePath); // Ensure the path is absolute
 
             try
             {
