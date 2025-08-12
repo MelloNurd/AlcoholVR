@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Dialogue Constructor", menuName = "Dialogue/Constructor", order = 0)]
 public class DialogueConstructor : ScriptableObject
 {
+    #if UNITY_EDITOR
     public bool IsCreated => AssetDatabase.AssetPathExists(folderPath);
 
     [HelpBox(drawAbove: true, messageType: MessageMode.None, message: "Write out a dialogue tree and build all scriptable objects with the Construct Dialogue button.\n\nFormat your dialogue script as follows:\n\n• Each dialogue line should be on its own line\n• Use tabs to create branching dialogue (even # of tabs = NPC dialogue, odd # of tabs = player dialogue options)\n\nExample:\nHello there, traveler!\n\tWho are you?\n\t\tI'm just a simple merchant passing through.\n\t\t\tA merchant? What do you sell?\n\t\t\t\tI sell rare artifacts and magical items.\n\tWhat brings you here?\n\t\tI'm looking for adventure.\n\t\t\tThen you've come to the right place!\n\nThis creates a branching conversation tree where the player can choose responses and the NPC can reply accordingly.")]
@@ -217,4 +218,6 @@ public class DialogueConstructor : ScriptableObject
         string friendlyName = value.FileNameFriendly();
         return friendlyName.Length > 8 ? friendlyName.Substring(0, 8) : friendlyName;
     }
+
+    #endif
 }
