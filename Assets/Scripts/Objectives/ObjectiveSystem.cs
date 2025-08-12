@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 [Serializable]
 public class Objective

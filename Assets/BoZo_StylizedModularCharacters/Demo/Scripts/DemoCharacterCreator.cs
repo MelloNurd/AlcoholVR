@@ -35,7 +35,7 @@ namespace Bozo.ModularCharacters
 
         [Header("Save Options")]
         public TextMeshProUGUI CharacterName;
-        public string savePath;
+        public static string SaveDirectory => Path.Combine(Application.persistentDataPath, "SavedCharacters");
 
         [SerializeField] CharactersFiller charactersFiller;
         [SerializeField] GameObject confirmParent;
@@ -51,6 +51,8 @@ namespace Bozo.ModularCharacters
         TextMeshProUGUI lastSelectedPresetText;
         Image lastSelectedImage;
         public float fadeInTime = 2f;
+
+        // Unified save directory for both editor and runtime
 
         private void Awake()
         {
@@ -93,6 +95,18 @@ namespace Bozo.ModularCharacters
             FadeTextInAndOut(noSavePrompt, 0f, 0f);
             FadeTextInAndOut(noDeletePrompt, 0f, 0f);
             FadeTextInAndOut(addCharacterPrompt, 0f, 0f);
+
+            // Ensure save directory exists
+            EnsureSaveDirectoryExists();
+        }
+
+        private void EnsureSaveDirectoryExists()
+        {
+            if (!Directory.Exists(SaveDirectory))
+            {
+                Directory.CreateDirectory(SaveDirectory);
+                Debug.Log($"Created save directory: {SaveDirectory}");
+            }
         }
 
         public void IndexUp(string catagory)
@@ -242,7 +256,14 @@ namespace Bozo.ModularCharacters
         [ContextMenu("Save")]
         public void SaveCharacter()
         {
-#if UNITY_EDITOR
+            SaveCharacterData();
+        }
+
+        /// <summary>
+        /// Unified save method that works in both editor and runtime
+        /// </summary>
+        public void SaveCharacterData()
+        {
             if (CharacterName.text.Cleaned().Length == 0)
             {
                 FadeTextInAndOut(addCharacterPrompt, 2f, fadeInTime);
@@ -250,13 +271,11 @@ namespace Bozo.ModularCharacters
                 return;
             }
 
-            //check if file already exists
-            string assetPath = savePath + "/" + CharacterName.text + ".asset";
-            assetPath = assetPath.Cleaned();
-
+            string fileName = CharacterName.text.Cleaned() + ".json";
+            string filePath = Path.Combine(SaveDirectory, fileName);
             string name = CharacterName.text.Cleaned();
 
-            //if file already exists, ask for confirmation but not if it's a locked preset
+            // Check if it's a locked preset
             if (LockedPresets.Any(p => p.name == name))
             {
                 FadeTextInAndOut(noSavePrompt, 2f, fadeInTime);
@@ -264,99 +283,259 @@ namespace Bozo.ModularCharacters
                 return;
             }
 
-            if (File.Exists(assetPath))
+            // Check if file already exists and show confirmation if needed
+            if (File.Exists(filePath) && confirmParent != null)
             {
                 confirmParent.SetActive(true);
                 return;
             }
 
-            FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
+            try
+            {
+                // Create character save object
+                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                characterSave.SaveCharacter(character);
 
-            var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
-            CharacterSave.SaveCharacter(character);
-            AssetDatabase.CreateAsset(CharacterSave, assetPath);
-            AssetDatabase.Refresh();
-            charactersFiller.Refresh();
-#endif
+                // Convert to JSON
+                string jsonData = JsonUtility.ToJson(characterSave, true);
+
+                // Ensure directory exists
+                EnsureSaveDirectoryExists();
+
+                // Save to file
+                File.WriteAllText(filePath, jsonData);
+
+                FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
+                Debug.Log($"Character saved successfully to: {filePath}");
+
+                // Clean up temporary object
+                DestroyImmediate(characterSave);
+
+                // Refresh character list if available
+                if (charactersFiller != null)
+                {
+                    charactersFiller.Refresh();
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to save character: {e.Message}");
+                FadeTextInAndOut(noSavePrompt, 2f, fadeInTime);
+            }
         }
 
         public void ForceSave()
         {
-            FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
+            ForceSaveCharacterData();
+        }
 
-            var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
-            CharacterSave.SaveCharacter(character);
-            string assetPath = savePath + "/" + CharacterName.text + ".asset";
-            assetPath = assetPath.Cleaned();
-            AssetDatabase.CreateAsset(CharacterSave, assetPath);
-            AssetDatabase.Refresh();
-            charactersFiller.Refresh();
+        /// <summary>
+        /// Force save without confirmation, works in both editor and runtime
+        /// </summary>
+        public void ForceSaveCharacterData()
+        {
+            if (CharacterName.text.Cleaned().Length == 0)
+            {
+                Debug.LogWarning("Cannot save: Character name is empty");
+                return;
+            }
+
+            string fileName = CharacterName.text.Cleaned() + ".json";
+            string filePath = Path.Combine(SaveDirectory, fileName);
+
+            try
+            {
+                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                characterSave.SaveCharacter(character);
+
+                string jsonData = JsonUtility.ToJson(characterSave, true);
+
+                EnsureSaveDirectoryExists();
+                File.WriteAllText(filePath, jsonData);
+
+                FadeTextInAndOut(savedPrompt, 2f, fadeInTime);
+                Debug.Log($"Character force saved to: {filePath}");
+
+                DestroyImmediate(characterSave);
+
+                if (charactersFiller != null)
+                {
+                    charactersFiller.Refresh();
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to force save character: {e.Message}");
+            }
         }
 
         public void StartSave()
         {
-            var CharacterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
-            CharacterSave.SaveCharacter(character);
-            string assetPath = savePath + "/Unaccessible/PlayerCharacter.asset";
-            assetPath = assetPath.Cleaned();
-            AssetDatabase.CreateAsset(CharacterSave, assetPath);
-            AssetDatabase.Refresh();
+            StartSaveCharacterData();
+        }
+
+        /// <summary>
+        /// Auto-save default character, works in both editor and runtime
+        /// </summary>
+        public void StartSaveCharacterData()
+        {
+            try
+            {
+                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                characterSave.SaveCharacter(character);
+
+                string fileName = "PlayerCharacter.json";
+                string filePath = Path.Combine(SaveDirectory, fileName);
+
+                string jsonData = JsonUtility.ToJson(characterSave, true);
+
+                EnsureSaveDirectoryExists();
+                File.WriteAllText(filePath, jsonData);
+
+                Debug.Log($"Default character saved to: {filePath}");
+
+                DestroyImmediate(characterSave);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to save default character: {e.Message}");
+            }
         }
 
         public void LoadCharacter()
         {
-            AssetDatabase.Refresh();
+            LoadCharacterData();
+        }
 
+        /// <summary>
+        /// Unified load method that works in both editor and runtime
+        /// </summary>
+        public void LoadCharacterData()
+        {
             string assetName = CharacterName.text.Trim();
 
-            string path = savePath + "/" + assetName + ".asset";
-            path = path.Cleaned();
-
-            if (!AssetDatabase.IsValidFolder(savePath))
+            if (string.IsNullOrEmpty(assetName))
             {
-                Debug.LogWarning("Save path is not a valid folder: " + savePath);
+                Debug.LogWarning("Cannot load: Character name is empty");
                 return;
             }
 
-            var CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(path);
+            string fileName = assetName + ".json";
+            string filePath = Path.Combine(SaveDirectory, fileName).Cleaned();
 
-            if (CharacterSave == null)
+            if (!File.Exists(filePath))
             {
-                Debug.LogError("Couldn't load character from path: " + path);
-
-                // Check if asset exists using AssetDatabase API
-                var assetType = AssetDatabase.GetMainAssetTypeAtPath(path);
-                if (assetType != null)
-                {
-                    Debug.LogError($"Asset exists but couldn't be loaded as BSMC_CharacterObject. Asset type: {assetType}");
-                }
-                else
-                {
-                    Debug.LogError("Asset does not exist at the specified path");
-
-                    // Let's try to find the asset with a different approach
-                    string[] guids = AssetDatabase.FindAssets($"{assetName} t:BSMC_CharacterObject", new[] { savePath });
-                    if (guids.Length > 0)
-                    {
-                        string foundPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-                        Debug.Log($"Found asset at: {foundPath}");
-                        CharacterSave = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(foundPath);
-                    }
-                }
-
-                if (CharacterSave == null)
-                {
-                    return;
-                }
+                Debug.LogError($"Character file not found: {filePath}");
+                return;
             }
 
-            character.characterData = CharacterSave;
-            character.LoadFromObject();
-            Debug.Log("Character loaded successfully: " + assetName);
-            sliderManager.InitializeSliders();
+            try
+            {
+                // Read JSON data
+                string jsonData = File.ReadAllText(filePath);
 
-            // Wait a frame or use a coroutine to ensure everything is initialized
-            StartCoroutine(DelayedSkinSelection());
+                // Create temporary ScriptableObject and populate from JSON
+                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                JsonUtility.FromJsonOverwrite(jsonData, characterSave);
+
+                // Load the character
+                character.characterData = characterSave;
+                character.LoadFromObject();
+
+                Debug.Log($"Character loaded successfully: {assetName}");
+
+                if (sliderManager != null)
+                {
+                    sliderManager.InitializeSliders();
+                }
+
+                // Wait a frame to ensure everything is initialized
+                StartCoroutine(DelayedSkinSelection());
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to load character {assetName}: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Load the default player character
+        /// </summary>
+        public void LoadDefaultCharacter()
+        {
+            string fileName = "PlayerCharacter.json";
+            string filePath = Path.Combine(SaveDirectory, fileName);
+
+            if (!File.Exists(filePath))
+            {
+                Debug.LogWarning("Default character file not found");
+                return;
+            }
+
+            try
+            {
+                string jsonData = File.ReadAllText(filePath);
+                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                JsonUtility.FromJsonOverwrite(jsonData, characterSave);
+
+                character.characterData = characterSave;
+                character.LoadFromObject();
+
+                Debug.Log("Default character loaded successfully");
+
+                if (sliderManager != null)
+                {
+                    sliderManager.InitializeSliders();
+                }
+
+                StartCoroutine(DelayedSkinSelection());
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to load default character: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Get all saved character names
+        /// </summary>
+        public string[] GetSavedCharacterNames()
+        {
+            if (!Directory.Exists(SaveDirectory))
+            {
+                return new string[0];
+            }
+
+            try
+            {
+                string[] jsonFiles = Directory.GetFiles(SaveDirectory, "*.json");
+                string[] characterNames = new string[jsonFiles.Length];
+
+                for (int i = 0; i < jsonFiles.Length; i++)
+                {
+                    characterNames[i] = Path.GetFileNameWithoutExtension(jsonFiles[i]);
+                }
+
+                return characterNames;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to get saved character names: {e.Message}");
+                return new string[0];
+            }
+        }
+
+        /// <summary>
+        /// Check if a character file exists
+        /// </summary>
+        public bool CharacterExists(string characterName)
+        {
+            if (string.IsNullOrEmpty(characterName)) return false;
+
+            string fileName = characterName + ".json";
+            string filePath = Path.Combine(SaveDirectory, fileName);
+
+            return File.Exists(filePath);
         }
 
         private System.Collections.IEnumerator DelayedSkinSelection()
@@ -369,7 +548,6 @@ namespace Bozo.ModularCharacters
                 colorPickerControl.SelectSkin(character.transform);
             }
         }
-
 
         public void SetLastSelectedPreset(GameObject gameObject, string presetName)
         {
@@ -389,11 +567,8 @@ namespace Bozo.ModularCharacters
 
         public void DeleteLastSelectedPreset()
         {
-            if (lastSelectedButton != null)
+            if (lastSelectedButton != null && !string.IsNullOrEmpty(lastSelectedPresetName))
             {
-                string assetPath = savePath + "/" + CharacterName.text + ".asset";
-                assetPath = assetPath.Cleaned();
-
                 // Check if the Character Save is locked preset
                 if (LockedPresets.Any(p => p.name == lastSelectedPresetName))
                 {
@@ -402,14 +577,36 @@ namespace Bozo.ModularCharacters
                     return;
                 }
 
-                AssetDatabase.DeleteAsset(assetPath);
-                AssetDatabase.Refresh();
-                charactersFiller.Refresh();
-                Debug.Log("Deleted preset: " + lastSelectedPresetName);
+                string fileName = lastSelectedPresetName + ".json";
+                string filePath = Path.Combine(SaveDirectory, fileName);
 
-                Destroy(lastSelectedButton);
-                lastSelectedButton = null;
-                lastSelectedPresetName = null;
+                try
+                {
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                        Debug.Log("Deleted preset: " + lastSelectedPresetName);
+
+                        if (charactersFiller != null)
+                        {
+                            charactersFiller.Refresh();
+                        }
+
+                        Destroy(lastSelectedButton);
+                        lastSelectedButton = null;
+                        lastSelectedPresetName = null;
+                        lastSelectedPresetText = null;
+                        lastSelectedImage = null;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Character file not found for deletion: {filePath}");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Failed to delete character {lastSelectedPresetName}: {e.Message}");
+                }
             }   
         }
 

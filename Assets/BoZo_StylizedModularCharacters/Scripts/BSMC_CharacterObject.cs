@@ -1,13 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
+[Serializable]
 [CreateAssetMenu(fileName = "BSMC_CharacterObject", menuName = "BSMC_CharacterObject")]
 public class BSMC_CharacterObject : ScriptableObject
 {
-
     [SerializeField] List<OufitParam> outfits = new List<OufitParam>();
     public List<Color> SkinColor = new List<Color>();
     public List<Color> EyeColor = new List<Color>();

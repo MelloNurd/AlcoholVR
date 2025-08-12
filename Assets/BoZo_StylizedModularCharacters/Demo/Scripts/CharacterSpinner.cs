@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace Bozo.ModularCharacters
 {
@@ -42,7 +43,7 @@ namespace Bozo.ModularCharacters
                 spinDir = -Input.GetAxis("Mouse X") * 5;
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 spinning = false;
             }

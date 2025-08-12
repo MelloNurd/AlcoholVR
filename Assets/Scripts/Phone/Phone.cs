@@ -8,10 +8,12 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+using CommonUsages = UnityEngine.XR.CommonUsages;
 using Random = UnityEngine.Random;
 
 public class Phone : MonoBehaviour
@@ -203,7 +205,7 @@ public class Phone : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.N))
+        if (Keyboard.current.nKey.wasPressedThisFrame)
         {
             string msg = Input.GetKey(KeyCode.LeftShift) ? "This is a test message" : "This is a second test message";
             QueueNotification("Test Sender", "This is a test message");
@@ -223,7 +225,7 @@ public class Phone : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.C)) // Right click to show home screen
+        if(Keyboard.current.cKey.wasPressedThisFrame) // Right click to show home screen
         {
             ShowCameraScreen();
         }

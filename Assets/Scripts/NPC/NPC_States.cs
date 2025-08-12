@@ -1,7 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public abstract class NPC_BaseState
