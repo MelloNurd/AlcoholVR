@@ -36,7 +36,6 @@ namespace Bozo.ModularCharacters
 
         [Header("Save Options")]
         public TextMeshProUGUI CharacterName;
-        public static string SaveDirectory => Path.Combine(Application.persistentDataPath, "SavedCharacters");
 
         [SerializeField] CharactersFiller charactersFiller;
         [SerializeField] GameObject confirmParent;
@@ -103,10 +102,10 @@ namespace Bozo.ModularCharacters
 
         private void EnsureSaveDirectoryExists()
         {
-            if (!Directory.Exists(SaveDirectory))
+            if (!Directory.Exists(CharacterFileConverting.DestinationPath))
             {
-                Directory.CreateDirectory(SaveDirectory);
-                Debug.Log($"Created save directory: {SaveDirectory}");
+                Directory.CreateDirectory(CharacterFileConverting.DestinationPath);
+                Debug.Log($"Created save directory: {CharacterFileConverting.DestinationPath}");
             }
         }
 
@@ -273,7 +272,7 @@ namespace Bozo.ModularCharacters
             }
 
             string fileName = CharacterName.text.Cleaned() + ".json";
-            string filePath = Path.Combine(SaveDirectory, fileName);
+            string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
             string name = CharacterName.text.Cleaned();
 
             // Check if it's a locked preset
@@ -342,7 +341,7 @@ namespace Bozo.ModularCharacters
             }
 
             string fileName = CharacterName.text.Cleaned() + ".json";
-            string filePath = Path.Combine(SaveDirectory, fileName);
+            string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
 
             try
             {
@@ -386,7 +385,7 @@ namespace Bozo.ModularCharacters
                 characterSave.SaveCharacter(character);
 
                 string fileName = "PlayerCharacter.json";
-                string filePath = Path.Combine(SaveDirectory, "Unaccessible", fileName);
+                string filePath = Path.Combine(CharacterFileConverting.JsonOutputRoot, CharacterFileConverting.UnaccessibleCharactersFolder, fileName);
 
                 string jsonData = JsonUtility.ToJson(characterSave, true);
 
@@ -422,7 +421,7 @@ namespace Bozo.ModularCharacters
             }
 
             string fileName = assetName + ".json";
-            string filePath = Path.Combine(SaveDirectory, fileName).Cleaned();
+            string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName).Cleaned();
 
             filePath = Path.GetFullPath(filePath); // Ensure the path is absolute
 
@@ -469,7 +468,7 @@ namespace Bozo.ModularCharacters
         public void LoadDefaultCharacter()
         {
             string fileName = "PlayerCharacter.json";
-            string filePath = Path.Combine(SaveDirectory, fileName);
+            string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
 
             if (!File.Exists(filePath))
             {
@@ -506,14 +505,14 @@ namespace Bozo.ModularCharacters
         /// </summary>
         public string[] GetSavedCharacterNames()
         {
-            if (!Directory.Exists(SaveDirectory))
+            if (!Directory.Exists(CharacterFileConverting.DestinationPath))
             {
                 return new string[0];
             }
 
             try
             {
-                string[] jsonFiles = Directory.GetFiles(SaveDirectory, "*.json");
+                string[] jsonFiles = Directory.GetFiles(CharacterFileConverting.DestinationPath, "*.json");
                 string[] characterNames = new string[jsonFiles.Length];
 
                 for (int i = 0; i < jsonFiles.Length; i++)
@@ -538,7 +537,7 @@ namespace Bozo.ModularCharacters
             if (string.IsNullOrEmpty(characterName)) return false;
 
             string fileName = characterName + ".json";
-            string filePath = Path.Combine(SaveDirectory, fileName);
+            string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
 
             return File.Exists(filePath);
         }
@@ -583,7 +582,7 @@ namespace Bozo.ModularCharacters
                 }
 
                 string fileName = lastSelectedPresetName + ".json";
-                string filePath = Path.Combine(SaveDirectory, fileName);
+                string filePath = Path.Combine(CharacterFileConverting.DestinationPath, fileName);
 
                 try
                 {

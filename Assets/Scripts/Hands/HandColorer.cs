@@ -1,24 +1,27 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class HandColorer : MonoBehaviour
 {
     Material skin;
-    [SerializeField] BSMC_CharacterObject characterObject;
+    BSMC_CharacterObject characterObject;
     public List<Color> SkinColor = new List<Color>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (characterObject == null)
-        {
-            string path = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Unaccessible/PlayerCharacter.asset";
-            path = path.Cleaned();
+        string path = Path.Combine(CharacterFileConverting.JsonOutputRoot, CharacterFileConverting.UnaccessibleCharactersFolder, "PlayerCharacter.json");
 
-            // Get characterObject from Assets/BoZo_StylizedModularCharacters/CustomCharacters/Unaccessible/PlayerCharacter.asset
-            characterObject = AssetDatabase.LoadAssetAtPath<BSMC_CharacterObject>(path);
-        }
+        // Read JSON data
+        string jsonData = File.ReadAllText(path);
+
+        // Create temporary ScriptableObject and populate from JSON
+        characterObject = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+        JsonUtility.FromJsonOverwrite(jsonData, characterObject);
+
         // Load colors from the ScriptableObject if it's assigned
         if (characterObject != null && characterObject.SkinColor.Count > 0)
         {

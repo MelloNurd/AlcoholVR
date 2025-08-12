@@ -32,7 +32,7 @@ public class CharactersFiller : MonoBehaviour
 
     public void FillCharactersList()
     {
-        var files = System.IO.Directory.GetFiles(DemoCharacterCreator.SaveDirectory, "*.json");
+        var files = System.IO.Directory.GetFiles(CharacterFileConverting.DestinationPath, "*.json");
         foreach (var file in files)
         {
             var fileName = System.IO.Path.GetFileNameWithoutExtension(file);
