@@ -10,6 +10,7 @@ using Unity.Multiplayer.Center.Common;
 using PrimeTween;
 using System.Xml;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 
 namespace Bozo.ModularCharacters
@@ -385,7 +386,7 @@ namespace Bozo.ModularCharacters
                 characterSave.SaveCharacter(character);
 
                 string fileName = "PlayerCharacter.json";
-                string filePath = Path.Combine(SaveDirectory, fileName);
+                string filePath = Path.Combine(SaveDirectory, "Unaccessible", fileName);
 
                 string jsonData = JsonUtility.ToJson(characterSave, true);
 
@@ -423,6 +424,10 @@ namespace Bozo.ModularCharacters
             string fileName = assetName + ".json";
             string filePath = Path.Combine(SaveDirectory, fileName).Cleaned();
 
+            filePath = Path.GetFullPath(filePath); // Ensure the path is absolute
+
+            Debug.Log($"Attempting to load character from: {filePath}");
+
             if (!File.Exists(filePath))
             {
                 Debug.LogError($"Character file not found: {filePath}");
@@ -435,7 +440,7 @@ namespace Bozo.ModularCharacters
                 string jsonData = File.ReadAllText(filePath);
 
                 // Create temporary ScriptableObject and populate from JSON
-                var characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
+                BSMC_CharacterObject characterSave = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
                 JsonUtility.FromJsonOverwrite(jsonData, characterSave);
 
                 // Load the character
