@@ -32,7 +32,7 @@ public class ArcadeDetail : MonoBehaviour
         if (transform.position.x < arcade.arcadeGameCamera.transform.position.x - arcade.arcadeGameCamera.orthographicSize - 4) // optimize this
         {
             arcade.details.Remove(this);
-            Destroy(gameObject);
+            ObjectPoolManager.ReturnObjectToPool(gameObject);
         }
     }
 }

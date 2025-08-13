@@ -321,14 +321,14 @@ public class Arcade : MonoBehaviour
 
     public ArcadeObstacle SpawnObstacle()
     {
-        ArcadeObstacle obstacle = Instantiate(_obstaclePrefab, _obstacleSpawnPosition.AddY(Random.Range(-2.5f, 2.5f)), Quaternion.identity, _obstacleHolder).GetComponent<ArcadeObstacle>();
+        ArcadeObstacle obstacle = ObjectPoolManager.SpawnObject(_obstaclePrefab, _obstacleSpawnPosition.AddY(Random.Range(-2.5f, 2.5f)), Quaternion.identity, PoolType.Arcade).GetComponent<ArcadeObstacle>();
         obstacles.Add(obstacle);
         return obstacle;
     }
 
     public ArcadeDetail SpawnDetail(Sprite sprite, float alpha, int order, Vector3 scale, float speed)
     {
-        ArcadeDetail detail = Instantiate(_detailPrefab, _obstacleSpawnPosition.AddY(Random.Range(-4f, 4f)).AddX(3), Quaternion.identity, _detailHolder).GetComponent<ArcadeDetail>();
+        ArcadeDetail detail = ObjectPoolManager.SpawnObject(_detailPrefab, _obstacleSpawnPosition.AddY(Random.Range(-4f, 4f)).AddX(3), Quaternion.identity, PoolType.Arcade).GetComponent<ArcadeDetail>();
         detail.Initialize(sprite, alpha, order, scale, speed);
         details.Add(detail);
         return detail;

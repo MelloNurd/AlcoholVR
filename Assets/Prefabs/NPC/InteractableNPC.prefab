@@ -100,11 +100,15 @@ MonoBehaviour:
   actionsLeft: 0
   _alwaysUnique: 1
   _currentStateName: 
+  lookAt: {fileID: 0}
+  lookAtPoint: {fileID: 0}
+  headObj: {fileID: 0}
   <IsInteractable>k__BackingField: 1
   firstDialogue: {fileID: 11400000, guid: 10061aed67d77d44aa95cc2d1b8af237, type: 2}
   incompleteDialogue: {fileID: 11400000, guid: a02ca104442acb6479b06ba9a469b5a3, type: 2}
   completeDialogue: {fileID: 11400000, guid: b02fb5f652513cd4b96051c7e01aab54, type: 2}
   failDialogue: {fileID: 11400000, guid: 8373b416fd14b3f4cabb010a25e65e46, type: 2}
+  turnBackAfterDialogue: 1
   turnBodyToFacePlayer: 1
   turnHeadToFacePlayer: 1
   onFirstInteraction:
@@ -121,7 +125,6 @@ MonoBehaviour:
       m_Calls: []
   interactionCount: 0
   dialogueSystem: {fileID: 0}
-  lookAt: {fileID: 0}
   objective: {fileID: 0}
   autoStartObjective: 1
 --- !u!114 &4592959228423433359
@@ -537,12 +540,12 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.19
+  m_Height: 1.7908478
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.92213655, z: 0}
 --- !u!1 &5109779854276772152
 GameObject:
   m_ObjectHideFlags: 0

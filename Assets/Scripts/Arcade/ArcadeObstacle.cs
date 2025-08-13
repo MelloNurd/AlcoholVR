@@ -18,7 +18,7 @@ public class ArcadeObstacle : MonoBehaviour
         if(transform.position.x < arcade.arcadeGameCamera.transform.position.x - arcade.arcadeGameCamera.orthographicSize - 1) // optimize this
         {
             arcade.obstacles.Remove(this);
-            Destroy(gameObject);
+            ObjectPoolManager.ReturnObjectToPool(gameObject);
         }
     }
 
