@@ -216,6 +216,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void DisabledRangedInteractors()
+    {
+        _leftNearFarInteractor.enableFarCasting = false;
+        _rightNearFarInteractor.enableFarCasting = false;
+    }
+
     public void DisableMovement()
     {
         _moveProvider.moveSpeed = 0f;
