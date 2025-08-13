@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Bozo.ModularCharacters;
+using EditorAttributes;
 using NUnit.Framework.Internal;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class CharacterFileConverting : MonoBehaviour
 {
+    public static CharacterFileConverting Instance;
+
     public static string JsonOutputRoot => Path.Combine(Application.persistentDataPath);
     public static string CharactersFolder => "Characters";
     public static string UnaccessibleCharactersFolder => "X_" + CharactersFolder; // Folder for characters that are not accessible by the player
@@ -15,16 +18,45 @@ public class CharacterFileConverting : MonoBehaviour
 
     public static UnityEvent<bool> OnConversionFinish = new();
 
-    int conversionCount = 0;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(transform.root);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
+        ConvertAllCharacters();
+    }
+
+    [Button("Convert All Characters")]
+    public void ConvertAllCharacters()
+    {
+        int conversionCount = 0;
         conversionCount += ConvertCharactersFromResources(CharactersFolder);
-        conversionCount += ConvertCharactersFromResources("X_" + CharactersFolder); // Characters in X_folder are unaccessible by the player
+        conversionCount += ConvertCharactersFromResources(UnaccessibleCharactersFolder); // Characters in X_folder are unaccessible by the player
         Debug.Log($"Total converted characters: {conversionCount}");
     }
 
-    public int ConvertCharactersFromResources(string dir)
+    [Button("Open Destination Folder")]
+    public void OpenDestinationFolder()
+    {
+        string path = JsonOutputRoot;
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        Application.OpenURL("file://" + path);
+    }
+
+    public static int ConvertCharactersFromResources(string dir)
     {
         int localConversionCount = 0;
 
