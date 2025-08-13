@@ -63,6 +63,12 @@ public class BonfireScene : MonoBehaviour
     private CancellationTokenSource _cancelToken;
     TriggerEventHandler _poisonedInteractionTrigger;
 
+    private ObjectiveSystem _grabDrink;
+    private ObjectiveSystem _talkToTable;
+    private ObjectiveSystem _talkToFire;
+    private ObjectiveSystem _followFlirt;
+    private ObjectiveSystem _investigateGroup;
+
     void Start()
     {
         _cancelToken = new CancellationTokenSource();
@@ -78,7 +84,14 @@ public class BonfireScene : MonoBehaviour
 
         PlayerAudio.PlayLoopingSound(_natureSound);
 
+        ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the bonfire.", 0, null));
+        _grabDrink = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab a drink from the cooler.", 1, friendNPC.transform));
+        _talkToTable = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Talk to your peers at the picnic table.", 1, tableNPC.transform));
+        _talkToFire = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("See what your peers are doing by the bonfire.", 1, fireStickNPC.transform));
+
+        fireStickNPC.dialogueSystem.onStart.AddListener(() => _talkToFire.Complete());
         fireStickNPC.dialogueSystem.onEnd.AddListener(HandleFireNPCs);
+        tableNPC.dialogueSystem.onStart.AddListener(() => _talkToTable.Complete());
         tableNPC.dialogueSystem.onEnd.AddListener(() =>
         {
             _playerHasTalkedToTable = true;
@@ -113,7 +126,6 @@ public class BonfireScene : MonoBehaviour
 
     private void RunSequenceChecks()
     {
-        Debug.Log($"RunSequenceChecks: Player has talked to flirt: {_playerHasTalkedToFlirt}, fire NPCs: {_playerHasTalkedToFireNPCs}, table: {_playerHasTalkedToTable}, mystery drink: {_playerHasTalkedToMysteryDrink}, poison ready: {_isPoisonedNpcReady}");
         if (_playerHasTalkedToFlirt && _playerHasTalkedToFireNPCs && _playerHasTalkedToTable && _playerHasTalkedToMysteryDrink)
         {
             _isPoisonedNpcReady = true;
@@ -133,6 +145,8 @@ public class BonfireScene : MonoBehaviour
         poisonedNPC.StartSequence(faint);
 
         await UniTask.Delay(Mathf.RoundToInt(Random.Range(2000, 5000)));
+
+        _investigateGroup = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Investigate the commotion by the bonfire.", 1, poisonedNPC.transform));
 
         Sequence mysteryWalkTo = new Sequence(Sequence.Type.Walk, _mysteryPoisoningReactionPoint);
         Sequence turnToFace2 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _mysteryPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
@@ -156,6 +170,8 @@ public class BonfireScene : MonoBehaviour
 
         _poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener((Collider other) =>
         {
+            _investigateGroup.Complete();
+
             if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
                 return; // Only allow player to interact with the poisoned NPC
 
@@ -252,6 +268,7 @@ public class BonfireScene : MonoBehaviour
             { // Player is drunk, so they went with the NPC
                 _isFlirtWaitingForPlayer = true;
                 GlobalStats.playerWentWithFlirt = true;
+                _followFlirt = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Follow your peer.", 1, drunkFlirtNPC.transform));
             });
         }
         else
@@ -272,6 +289,8 @@ public class BonfireScene : MonoBehaviour
         {
             if (Vector3.Distance(Player.Instance.Position, drunkFlirtNPC.bodyObj.transform.position) < 2.5f)
             {
+                _followFlirt.Complete();
+
                 _isFlirtWaitingForPlayer = false;
                 Player.Instance.CloseEyes(1.5f);
                 Player.Instance.DisableMovement();
@@ -308,7 +327,8 @@ public class BonfireScene : MonoBehaviour
 
         await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
 
-        Debug.Log("Starting drunk flirt NPC sequence...");
+        _grabDrink.Complete();
+
         drunkFlirtNPC.StartNextSequence();
     }
 
@@ -324,12 +344,12 @@ public class BonfireScene : MonoBehaviour
         _friendsAlcohol.SetActive(true);
 
         int delay = Random.Range(45f, 60f).ToMS();
-        Debug.Log($"Drunk flirt NPC will start in {delay} ms");
         await UniTask.Delay(delay);
 
         await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
 
-        Debug.Log("Starting drunk flirt NPC sequence...");
+        _grabDrink.Complete();
+
         drunkFlirtNPC.StartNextSequence();
     }
 
@@ -367,7 +387,6 @@ public class BonfireScene : MonoBehaviour
 
         await UniTask.WaitUntil(() => _playerHasGrabbedDrink && !Player.Instance.IsInDialogue);
 
-        Debug.Log("Starting mystery drink NPC sequence...");
         mysteryDrinkNPC.StartNextSequence();
     }
 
