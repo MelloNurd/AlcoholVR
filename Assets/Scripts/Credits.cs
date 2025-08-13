@@ -26,14 +26,16 @@ public class Credits : MonoBehaviour
         }
     }
 
-    private void Start()
+    private async void Start()
     {
         if (_creditSections.Length == 0) return;
 
-        PlayCredits();
+        await PlayCredits();
+
+        Player.Instance.loading.TransitionSceneByName("MainMenu");
     }
 
-    private async void PlayCredits()
+    private async UniTask PlayCredits()
     {
         await UniTask.Delay(1000); // Initial delay
 
@@ -54,6 +56,8 @@ public class Credits : MonoBehaviour
             await UniTask.Delay(showDuration.ToMS());
             await HideGroup(_creditSections[i]);
         }
+
+        await UniTask.Delay(1000);
     }
 
     private async UniTask ShowGroup(CanvasGroup group)
