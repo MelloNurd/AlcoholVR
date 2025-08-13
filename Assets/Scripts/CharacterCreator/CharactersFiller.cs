@@ -1,4 +1,5 @@
 using Bozo.ModularCharacters;
+using Cysharp.Threading.Tasks;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -21,13 +22,16 @@ public class CharactersFiller : MonoBehaviour
         characterNameText = demoCharacterCreator.CharacterName;
     }
 
-    private void Start()
+    private async void Start()
     {
         FillCharactersList();
         Debug.Log("CharactersFiller Start called, filling characters list.");
         ChangeNameField("Preset 1");
-        demoCharacterCreator.LoadCharacter();
         loadMenu.SetActive(false);
+
+        await UniTask.Delay(50);
+
+        demoCharacterCreator.LoadCharacter();
     }
 
     public void FillCharactersList()
