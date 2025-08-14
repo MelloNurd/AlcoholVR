@@ -377,6 +377,8 @@ public class BonfireScene : MonoBehaviour
 
             await Player.Instance.loading.CloseEyesAsync(0.15f);
 
+            GlobalStats.called911 = true; // workaround to make obituary not show for this ending
+
             // Set new scene after eyes close
             Player.Instance.loading.LoadSceneByName("BonfireCutscene");
         });
