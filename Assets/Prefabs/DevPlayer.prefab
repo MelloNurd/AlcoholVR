@@ -3648,8 +3648,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 97993560962768617}
-  - component: {fileID: 223544103704379554}
-  - component: {fileID: 7815563378844806989}
+  - component: {fileID: 28121591950947323}
   m_Layer: 19
   m_Name: NavMeshModifier
   m_TagString: Untagged
@@ -3672,47 +3671,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 396169842335963061}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &223544103704379554
-MonoBehaviour:
+--- !u!208 &28121591950947323
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1718542374355117047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedVersion: 0
-  m_OverrideArea: 1
-  m_Area: 1
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
---- !u!135 &7815563378844806989
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1718542374355117047}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Shape: 0
+  m_Extents: {x: 0.21, y: 0.68072, z: 0.21}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 0.81, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1748051821869343632
 GameObject:
   m_ObjectHideFlags: 0
@@ -10690,8 +10664,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4082557289082788608}
   m_HandleRect: {fileID: 417092211455106224}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.99999964
+  m_Value: -7.75
+  m_Size: 0.9999989
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15399,7 +15373,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.008137912, y: 0.0012823432}
+  m_AnchoredPosition: {x: 0.008137912, y: 0.0038987265}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3419764243419918315
@@ -21729,8 +21703,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 844258676351859031}
   m_HandleRect: {fileID: 5454816868552488110}
   m_Direction: 2
-  m_Value: 0.9999978
-  m_Size: 0.68440974
+  m_Value: 0.99998885
+  m_Size: 0.68440944
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -22537,7 +22511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3074471628601745017, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_RaycastMask.m_Bits
-      value: 2147519521
+      value: 2147519777
       objectReference: {fileID: 0}
     - target: {fileID: 3533369827395663398, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
@@ -22609,7 +22583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4053579577978487484, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 297985
+      value: 298241
       objectReference: {fileID: 0}
     - target: {fileID: 4065709321064247272, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
@@ -22653,7 +22627,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5456733348963664102, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_RaycastMask.m_Bits
-      value: 2147519521
+      value: 2147519777
       objectReference: {fileID: 0}
     - target: {fileID: 5563199296126487199, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
@@ -22701,7 +22675,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6436123941575367715, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 297985
+      value: 298241
       objectReference: {fileID: 0}
     - target: {fileID: 6499517531677593257, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Layer
