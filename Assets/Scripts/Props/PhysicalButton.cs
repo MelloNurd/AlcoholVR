@@ -69,7 +69,7 @@ public class PhysicalButton : MonoBehaviour
     private void Awake()
     {
         _button = transform.Find("Button").gameObject;
-        _buttonDarkness = _button.transform.Find("ButtonDarkness").gameObject;
+        //_buttonDarkness = _button.transform.Find("ButtonDarkness").gameObject;
 
         _buttonBase = transform.Find("Base").gameObject;
 

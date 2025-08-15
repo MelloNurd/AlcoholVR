@@ -168,7 +168,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
         if (Physics.Raycast(checkPointPos, Vector3.down, out RaycastHit hit, Mathf.Infinity))
         {
             checkPointPos = hit.point;
-            checkPointPos.y += bodyObj.GetComponent<CapsuleCollider>().height * 0.5f; // Adjust for the height of the NPC
+            checkPointPos.y += bodyObj.GetComponent<NavMeshAgent>().height * 0.5f; // Adjust for the height of the NPC
         }
 
         bodyObj.transform.position = checkPointPos;
