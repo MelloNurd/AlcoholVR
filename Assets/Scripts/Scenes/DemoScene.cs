@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -23,6 +24,9 @@ public class DemoScene : MonoBehaviour
     ObjectiveSystem obj4; // Bring beer to your backpack
     ObjectiveSystem obj5; // Go talk to your dad
     ObjectiveSystem obj6; // Leave the house
+
+    [SerializeField] GameObject door;
+    [SerializeField] XRGrabInteractable exitInteractable;
 
     private async void Start()
     {
@@ -50,11 +54,30 @@ public class DemoScene : MonoBehaviour
 
     public void StartDad()
     {
-        if(hasDadStarted) return;
+        if (hasDadStarted) return;
         hasDadStarted = true;
+        StartCoroutine(DadDelay());
+    }
+
+    IEnumerator DadDelay()
+    {
+        Vector3 originalDoorPosition = door.transform.position;
+        Quaternion originalDoorRotation = door.transform.rotation;
+
+        yield return new WaitForSeconds(2f);
+        door.transform.localPosition = new Vector3(-.459f, .1377f, -.489f);
+        door.transform.localRotation = Quaternion.Euler(0, 90, 0);
 
         _dadNPC.StartNextSequence();
+
+        yield return new WaitForSeconds(1f);
+        door.transform.position = originalDoorPosition;
+        door.transform.rotation = originalDoorRotation;
+
+        yield return new WaitForSeconds(3f);
+        exitInteractable.enabled = true;
     }
+
 
     // When you first GRAB the item
     public void OnItemGrabbed(SelectEnterEventArgs args)
