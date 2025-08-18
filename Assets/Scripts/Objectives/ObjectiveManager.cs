@@ -66,7 +66,8 @@ public class ObjectiveManager : MonoBehaviour
             lineRenderer.useWorldSpace = true;
             lineRenderer.numCornerVertices = 6;
             lineRenderer.numCapVertices = 6;
-            lineRenderer.material = new Material(Shader.Find("Sprites/Default")); // Use a simple shader for visibility
+            lineRenderer.material = new Material(Shader.Find("Universal Render Pipeline/Unlit")); // Use a simple shader for visibility
+            lineRenderer.material.color = Color.white;
         }
 
         objectives.Add((objective, lineRenderer));
