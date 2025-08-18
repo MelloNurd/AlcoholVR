@@ -142,12 +142,13 @@ public class ObjectiveManager : MonoBehaviour
                 {
                     adjustedPathPoints[i] = AdjustPointToGround(densePath[i]);
                 }
-                
+
                 // Set the line renderer positions
                 lr.positionCount = adjustedPathPoints.Length + 1; // +1 for objective point
                 lr.SetPositions(adjustedPathPoints);
-                lr.SetPosition(lr.positionCount - 1, objective.point.position); // Set last position to objective
-                
+                // Adjust the final objective point to ground
+                lr.SetPosition(lr.positionCount - 1, AdjustPointToGround(objective.point.position));
+
                 // Scrolling effect
                 lr.material.mainTextureOffset = new Vector2(Time.time * 0.1f, 0);
             }
