@@ -6,6 +6,8 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _drunkDriverCrashedPolaroid;
     [SerializeField] private GameObject _obituary;
     [SerializeField] private GameObject _MiP;
+    [SerializeField] private GameObject _cowPlush;
+    [SerializeField] private GameObject _trashketballTrophy;
 
     [SerializeField] private GameObject _phoneFoundPolaroid;
     [SerializeField] private GameObject _phoneLostPolaroid;
@@ -16,6 +18,9 @@ public class EndScene : MonoBehaviour
 
     [SerializeField] private BoolValue _foundPhone;
 
+    public int MadCowMinScore = 20;
+    public int TrashketballMinScore = 10;
+
     void Start()
     {
         // Drunk driving outcome
@@ -24,6 +29,22 @@ public class EndScene : MonoBehaviour
         _obituary.SetActive(!GlobalStats.called911);
         _MiP.SetActive(GlobalStats.DrinkCount > 0);
         _reportCard.material = GlobalStats.DrinkCount > 0 ? _badGrades : _goodGrades;
+        if(GlobalStats.arcadeScore >= MadCowMinScore)
+        {
+            _cowPlush.SetActive(true);
+        }
+        else
+        {
+            _cowPlush.SetActive(false);
+        }
+        if (GlobalStats.hoopsScore >= TrashketballMinScore)
+        {
+            _trashketballTrophy.SetActive(true);
+        }
+        else
+        {
+            _trashketballTrophy.SetActive(false);
+        }
 
         // Phone outcome
         _phoneFoundPolaroid.SetActive(_foundPhone.Value);
