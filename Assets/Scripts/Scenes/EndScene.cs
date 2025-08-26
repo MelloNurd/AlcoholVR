@@ -32,7 +32,11 @@ public class EndScene : MonoBehaviour
         // Drunk driving outcome
         //_drunkDriverStayedPolaroid.SetActive(!GlobalStats.LetDrunkFriendDrive);
         _drunkDriverCrashedPolaroid.SetActive(GlobalStats.letDrunkFriendDrive);
-        _obituary.SetActive(!GlobalStats.called911);
+        if(!GlobalStats.playerDrankMysteryDrink)
+        {
+            _obituary.SetActive(!GlobalStats.called911);
+        }
+        
         _MiP.SetActive(GlobalStats.DrinkCount > 0);
         _reportCard.material = GlobalStats.DrinkCount > 0 ? _badGrades : _goodGrades;
         if(GlobalStats.arcadeScore >= MadCowMinScore)
