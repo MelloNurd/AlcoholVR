@@ -12,6 +12,9 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _phoneFoundPolaroid;
     [SerializeField] private GameObject _phoneLostPolaroid;
 
+    [SerializeField] private GameObject _concertPolaroid;
+    [SerializeField] private GameObject _bandShirt;
+
     [SerializeField] private MeshRenderer _reportCard;
     [SerializeField] private Material _goodGrades;
     [SerializeField] private Material _badGrades;
@@ -49,5 +52,16 @@ public class EndScene : MonoBehaviour
         // Phone outcome
         _phoneFoundPolaroid.SetActive(_foundPhone.Value);
         _phoneLostPolaroid.SetActive(!_foundPhone.Value);
+
+        if(GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
+        {
+            _concertPolaroid.SetActive(true);
+            _bandShirt.SetActive(false);
+        }
+        else
+        {
+            _concertPolaroid.SetActive(false);
+            _bandShirt.SetActive(true);
+        }
     }
 }
