@@ -6,6 +6,9 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _drunkDriverCrashedPolaroid;
     [SerializeField] private GameObject _obituary;
     [SerializeField] private GameObject _MiP;
+    [SerializeField] private GameObject _pregnancyTest;
+    [SerializeField] private GameObject _drugTest;
+
     [SerializeField] private GameObject _cowPlush;
     [SerializeField] private GameObject _trashketballTrophy;
 
@@ -63,5 +66,8 @@ public class EndScene : MonoBehaviour
             _concertPolaroid.SetActive(false);
             _bandShirt.SetActive(true);
         }
+
+        _pregnancyTest.SetActive(GlobalStats.playerWentWithFlirt);
+        _drugTest.SetActive(GlobalStats.playerDrankMysteryDrink);
     }
 }
