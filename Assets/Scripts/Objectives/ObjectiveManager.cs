@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 public class ObjectiveManager : MonoBehaviour
 {
@@ -13,8 +14,6 @@ public class ObjectiveManager : MonoBehaviour
     private List<Objective> _sortedObjectives = new();
 
     private NavMeshPath _navPath;
-
-    private Transform _playerTransform;
 
     private void Awake()
     {
@@ -27,13 +26,20 @@ public class ObjectiveManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        _playerTransform = Camera.main.transform;
     }
 
     private void Update()
     {
         HandleTracking();
+
+        if(Keyboard.current.hKey.wasPressedThisFrame)
+        {
+            if(objectives.Count > 0)
+            {
+                Debug.Log("Toggling tracking for objective: " + objectives[0].Item1.text + " to " + !objectives[0].Item1.IsTracking);
+                objectives[0].Item1.IsTracking = !objectives[0].Item1.IsTracking;
+            }
+        }
     }
 
     public ObjectiveSystem CreateObjectiveObject(Objective objective)
@@ -127,7 +133,7 @@ public class ObjectiveManager : MonoBehaviour
                 continue;
             }
 
-            if (objective.CalculatePath(_playerTransform.position, out NavMeshPath path))
+            if (objective.CalculatePath(Player.Instance.Position, out NavMeshPath path))
             {
                 // First smooth the original path
                 var smoothedPath = Utilities.BevelCorners(path.corners, radius: 0.75f);
