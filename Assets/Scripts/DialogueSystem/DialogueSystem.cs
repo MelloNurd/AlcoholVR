@@ -12,11 +12,14 @@ public class DialogueSystem : MonoBehaviour
     public bool useTypewriterEffect = true;
     public bool IsDialogueActive => currentDialogue != null;
 
+    public AudioClip defaultDialogueSound;
+
     public Dialogue currentDialogue = null;
 
     public UnityEvent onStart;
     public UnityEvent onEnd;
 
+    private AudioSource _audioSource;
     private Typewriter _typewriter;
     private TMP_Text _dialogueText;
     private GameObject _textBubble;
@@ -53,6 +56,7 @@ public class DialogueSystem : MonoBehaviour
 
         if (depth == 0)
         {
+            // This function calls recursively, so only at the topmost level (depth 0) do we run onStart
             onStart?.Invoke();
         }
 
@@ -72,6 +76,17 @@ public class DialogueSystem : MonoBehaviour
 
         currentDialogue.onDialogueStart?.Invoke();
 
+        // Play dialogue audio
+        if (dialogue.playedAudio != null)
+        {
+            _audioSource.PlayOneShot(dialogue.playedAudio);
+        }
+        else if (defaultDialogueSound != null)
+        {
+            _audioSource.PlayOneShot(defaultDialogueSound);
+        }
+
+        // Display dialogue text (takes time, so await)
         await DisplayText(dialogue.dialogueText);
 
         if (dialogue.options.Count > 0)

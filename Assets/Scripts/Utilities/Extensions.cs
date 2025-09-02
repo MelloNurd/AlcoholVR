@@ -780,5 +780,16 @@ public static class Extensions
         return hit.distance;
     }
 
+    public static Vector3 GetNearestPointOnNavMesh(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 2f, int areaMask = NavMesh.AllAreas)
+    {
+        if (targetDestination == null) return Vector3.zero;
+        if (!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
+        {
+            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Returning Vector3.zero.");
+            return Vector3.zero;
+        }
+        return hit.position;
+    }
+
     #endregion  
 }

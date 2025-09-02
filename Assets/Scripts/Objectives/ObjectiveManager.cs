@@ -66,8 +66,8 @@ public class ObjectiveManager : MonoBehaviour
         LineRenderer lineRenderer = temp.GetComponent<LineRenderer>();
         if (lineRenderer != null)
         {
-            lineRenderer.startWidth = 0.025f;
-            lineRenderer.endWidth = 0.025f;
+            lineRenderer.startWidth = 0.04f;
+            lineRenderer.endWidth = 0.04f;
             lineRenderer.positionCount = 0;
             lineRenderer.useWorldSpace = true;
             lineRenderer.numCornerVertices = 6;

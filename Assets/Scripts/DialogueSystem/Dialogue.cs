@@ -28,6 +28,8 @@ public class Dialogue : ScriptableObject // Dialogue node in a dialogue tree (sp
 {
     [TextArea(3, 15)] public string dialogueText;
 
+    public AudioClip playedAudio;
+
     public List<DialogueOption> options = new();
 
     public UnityEvent onDialogueStart;
