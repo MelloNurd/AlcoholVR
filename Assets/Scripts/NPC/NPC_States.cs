@@ -162,7 +162,7 @@ public class NPC_InteractState : NPC_BaseState
         if(_interactableNPC.turnBodyToFacePlayer)
         {
             initialRotation = _interactableNPC.bodyObj.transform.forward;
-            Vector3 directionToPlayer = (Player.Instance.Position - _interactableNPC.bodyObj.transform.position).WithY(0);
+            Vector3 directionToPlayer = (Player.Instance.CamPosition - _interactableNPC.bodyObj.transform.position).WithY(0);
             await Tween.Rotation(_interactableNPC.bodyObj.transform, Quaternion.LookRotation(directionToPlayer), 0.3f);
         }
         if(_interactableNPC.turnHeadToFacePlayer)

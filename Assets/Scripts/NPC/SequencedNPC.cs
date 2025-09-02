@@ -167,7 +167,7 @@ public class SequencedNPC : MonoBehaviour
                 _lastDestinationUpdateTime += Time.deltaTime;
 
                 // Update destination to be in front of player every half second
-                Vector3 inFrontOfPlayer = Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized;
+                Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized;
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
                     _lastDestinationUpdateTime = 0f;
@@ -245,8 +245,16 @@ public class SequencedNPC : MonoBehaviour
     }
     private async UniTask ExecuteWalkToPlayerSequence(Sequence sequence)
     {
-        _isAtDestination = false;
-        agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized);
+        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        temp.transform.position = Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized;
+        temp.GetComponent<Renderer>().material.color = Color.yellow;
+        temp.transform.localScale *= 0.5f;
+        Debug.Log($"player position: ({Player.Instance.Position}), cam forward: ({Player.Instance.Camera.transform.forward.WithY(0).normalized})");
+
+        Destroy(temp, 6f);
+
+        _isAtDestination = false; 
+        agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized, 1f);
         agent.isStopped = false;
 
         AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)

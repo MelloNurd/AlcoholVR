@@ -287,7 +287,7 @@ public class BonfireScene : MonoBehaviour
     {
         if (_isFlirtWaitingForPlayer && drunkFlirtNPC.currentSequence.type == Sequence.Type.Wait)
         {
-            if (Vector3.Distance(Player.Instance.Position, drunkFlirtNPC.bodyObj.transform.position) < 2.5f)
+            if (Vector3.Distance(Player.Instance.CamPosition, drunkFlirtNPC.bodyObj.transform.position) < 2.5f)
             {
                 _followFlirt.Complete();
 

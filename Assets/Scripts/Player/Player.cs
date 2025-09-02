@@ -19,8 +19,20 @@ public class Player : MonoBehaviour
 
     public Camera Camera => xrOrigin.Camera;
 
-    public Vector3 Position => Camera == null ? Vector3.zero : Camera.transform.position;
+    public Vector3 CamPosition => Camera == null ? Vector3.zero : Camera.transform.position;
+    public Vector3 Position => _xrRig == null ? Vector3.zero : _xrRig.transform.position;
     public Vector3 Forward => Camera == null ? Vector3.forward : Camera.transform.forward;
+    public float CameraHeight
+    {
+        get
+        {
+            if(Camera == null || _xrRig == null)
+            {
+                return -1f;
+            }
+            return Camera.transform.position.y - _xrRig.transform.position.y;
+        }
+    }
     
     private Transform _xrRig;
 
@@ -124,6 +136,8 @@ public class Player : MonoBehaviour
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
             queue = false;
         }
+
+        Debug.Log($"Cam position: world ({Camera.transform.position}), local ({Camera.transform.localPosition})");
     }
 
     public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);

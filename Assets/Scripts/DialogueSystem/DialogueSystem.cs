@@ -45,7 +45,7 @@ public class DialogueSystem : MonoBehaviour
         if (_textBubble.activeSelf)
         {
             _textBubble.transform.position = _textBubble.transform.position.WithY(_headObj.transform.position.y + 0.25f);
-            _textBubble.transform.parent.LookAt(Player.Instance.Position.WithY(_textBubble.transform.parent.position.y));
+            _textBubble.transform.parent.LookAt(Player.Instance.CamPosition.WithY(_textBubble.transform.parent.position.y));
         }
     }
 
