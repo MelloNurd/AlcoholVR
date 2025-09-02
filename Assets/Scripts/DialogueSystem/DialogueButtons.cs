@@ -46,7 +46,7 @@ public class DialogueButtons : MonoBehaviour
 
     private void Update()
     {
-        _buttonParentObj.transform.position = Player.Instance.Position.AddY(-0.2f);
+        _buttonParentObj.transform.position = Player.Instance.CamPosition.AddY(-0.2f);
         
         // Calculate deadzone effect based on current button count
         if (currentButtonCount > 0)

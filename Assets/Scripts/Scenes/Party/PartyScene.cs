@@ -2,6 +2,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class PartyScene : MonoBehaviour
@@ -33,8 +34,8 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private XRGrabInteractable _missingPhoneObj;
     [SerializeField] private Animator _carAnimator;
 
-    public bool IsOnSecondFloor => IsInHouse && Player.Instance.Position.y > 3.5f;
-    public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.Position.z > -7f; // On the specific side of the house
+    public bool IsOnSecondFloor => IsInHouse && Player.Instance.CamPosition.y > 3.5f;
+    public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.CamPosition.z > -7f; // On the specific side of the house
     public bool IsInHouse { get; private set; } = false;
 
     private int _enterCount = 0;
@@ -79,6 +80,11 @@ public class PartyScene : MonoBehaviour
         if (!_isDrinkinFriendReady && (hasDoneIntro.Value && hasTalkedToCouchFriend.Value))
         {
             _isDrinkinFriendReady = true;
+            InitiateDrunkFriend();
+        }
+
+        if(Keyboard.current.fKey.wasPressedThisFrame)
+        {
             InitiateDrunkFriend();
         }
     }

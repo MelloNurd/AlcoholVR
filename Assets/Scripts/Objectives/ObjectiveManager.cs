@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,6 +6,7 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ObjectiveManager : MonoBehaviour
 {
@@ -25,7 +27,17 @@ public class ObjectiveManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
+    }
+
+    private void Start()
+    {
+        SceneManager.sceneLoaded += (scene, mode) =>
+        {
+            // Clear all objectives when a new scene is loaded
+            RemoveAllObjectives();
+        };
     }
 
     private void Update()
@@ -77,9 +89,28 @@ public class ObjectiveManager : MonoBehaviour
         }
 
         objectives.Add((objective, lineRenderer));
-        Phone.Instance.LoadObjectives();
+        if (Phone.Instance != null)
+        {
+            Phone.Instance.LoadObjectives();
+        }
 
         Debug.Log("Added new objective: " + objective.text);
+    }
+
+    public void RemoveAllObjectives()
+    {
+        for(int i = objectives.Count - 1; i >= 0; i--)
+        {
+            // Destroy the LineRenderer GameObject
+            if (objectives[i].Item2 != null)
+            {
+                Destroy(objectives[i].Item2.gameObject);
+            }
+            objectives[i].Item2.positionCount = 0; // Clear the positions
+            objectives.RemoveAt(i);
+        }
+        objectives.Clear();
+        Phone.Instance.LoadObjectives();
     }
 
     public void RemoveObjective(Objective objective)
@@ -133,7 +164,7 @@ public class ObjectiveManager : MonoBehaviour
                 continue;
             }
 
-            if (objective.CalculatePath(Player.Instance.Position, out NavMeshPath path))
+            if (objective.CalculatePath(Player.Instance.CamPosition, out NavMeshPath path))
             {
                 // First smooth the original path
                 var smoothedPath = Utilities.BevelCorners(path.corners, radius: 0.75f);
