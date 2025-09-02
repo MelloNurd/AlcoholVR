@@ -245,14 +245,6 @@ public class SequencedNPC : MonoBehaviour
     }
     private async UniTask ExecuteWalkToPlayerSequence(Sequence sequence)
     {
-        GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        temp.transform.position = Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized;
-        temp.GetComponent<Renderer>().material.color = Color.yellow;
-        temp.transform.localScale *= 0.5f;
-        Debug.Log($"player position: ({Player.Instance.Position}), cam forward: ({Player.Instance.Camera.transform.forward.WithY(0).normalized})");
-
-        Destroy(temp, 6f);
-
         _isAtDestination = false; 
         agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized, 1f);
         agent.isStopped = false;
