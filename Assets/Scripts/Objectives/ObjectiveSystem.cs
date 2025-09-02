@@ -24,8 +24,8 @@ public class Objective
         path = new NavMeshPath();
 
         // Ensure both the start and end positions are on the NavMesh
-        position = NavMesh.SamplePosition(position, out NavMeshHit hit, 5f, NavMesh.AllAreas) ? hit.position : position;
-        point.position = NavMesh.SamplePosition(point.position, out hit, 5f, NavMesh.AllAreas) ? hit.position : point.position;
+        position = NavMesh.SamplePosition(position, out NavMeshHit hit, 8f, NavMesh.AllAreas) ? hit.position : position;
+        point.position = NavMesh.SamplePosition(point.position, out hit, 8f, NavMesh.AllAreas) ? hit.position : point.position;
 
         return NavMesh.CalculatePath(position, point.position, NavMesh.AllAreas, path);
     }
