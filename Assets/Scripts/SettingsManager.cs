@@ -94,6 +94,6 @@ public class SettingsManager : MonoBehaviour
     public void DisableTutorialSettings()
     {
         RangedInteractors = false;
-        Player.Instance.DisabledRangedInteractors();
+        Player.Instance.ToggleGrabToggle(false);
     }
 }
