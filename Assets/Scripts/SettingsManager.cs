@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 
 public class SettingsManager : MonoBehaviour
 {
-    public static SettingsManager Instance { get; private set; }
+    public static SettingsManager Instance { get; set; }
 
     [Header("Audio Settings")]
     [Range(0f, 100f)] public float MasterVolume = 100f;
