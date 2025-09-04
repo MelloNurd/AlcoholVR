@@ -6,4 +6,9 @@ public class MusicToggler : MonoBehaviour
     {
         ContinuousMusic.Instance?.ToggleMusicPlaying();
     }
+
+    public void StopMusic()
+    {
+        ContinuousMusic.Instance?.StopMusic();
+    }
 }

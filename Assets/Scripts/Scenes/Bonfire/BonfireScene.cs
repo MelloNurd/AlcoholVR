@@ -253,6 +253,8 @@ public class BonfireScene : MonoBehaviour
 
         await UniTask.Delay(550);
 
+        ContinuousMusic.Instance?.StopMusic();
+
         Player.Instance.loading.LoadSceneByName("EndScene");
     }
 
@@ -378,6 +380,8 @@ public class BonfireScene : MonoBehaviour
             await Player.Instance.loading.CloseEyesAsync(0.15f);
 
             GlobalStats.called911 = true; // workaround to make obituary not show for this ending
+
+            ContinuousMusic.Instance?.StopMusic();
 
             // Set new scene after eyes close
             Player.Instance.loading.LoadSceneByName("BonfireCutscene");
