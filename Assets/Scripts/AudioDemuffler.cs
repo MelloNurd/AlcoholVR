@@ -3,6 +3,14 @@ using UnityEngine;
 public class AudioDemuffler : MonoBehaviour
 {
     public AudioLowPassFilter[] audioLowPassFilters;
+    AudioLowPassFilter audioLowPassFilter;
+
+    private void Start()
+    {
+        audioLowPassFilter = ContinuousMusic.Instance.GetComponent<AudioLowPassFilter>();
+        //add the AudioLowPassFilter to the array
+        audioLowPassFilters = new AudioLowPassFilter[] { audioLowPassFilter };
+    }
 
     public void OnTriggerEnter(Collider other)
     {

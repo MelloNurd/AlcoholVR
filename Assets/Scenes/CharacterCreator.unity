@@ -7478,7 +7478,8 @@ GameObject:
   m_Component:
   - component: {fileID: 394433137}
   - component: {fileID: 394433138}
-  - component: {fileID: 394433139}
+  - component: {fileID: 394433140}
+  - component: {fileID: 394433141}
   m_Layer: 0
   m_Name: Lofi
   m_TagString: Untagged
@@ -7495,11 +7496,11 @@ Transform:
   m_GameObject: {fileID: 394433136}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.243, y: -4.889, z: -3.192}
+  m_LocalPosition: {x: -5.2630672, y: 0.8743901, z: 2.0098424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1857884606}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &394433138
 AudioSource:
@@ -7598,7 +7599,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &394433139
+--- !u!114 &394433140
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7607,9 +7608,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 394433136}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2021b40cd36758242b677da47fb9ad26, type: 3}
+  m_Script: {fileID: 11500000, guid: 48d1771013818c448b73ce633a03129f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!169 &394433141
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394433136}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.08140064
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!224 &404062362 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6354064963859130199, guid: 8f5525099bce610479501bdc4e668f79, type: 3}
@@ -17892,6 +17918,7 @@ GameObject:
   - component: {fileID: 865031233}
   - component: {fileID: 865031232}
   - component: {fileID: 865031231}
+  - component: {fileID: 865031234}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -17963,9 +17990,9 @@ MonoBehaviour:
   m_SelectEntered:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 394433139}
-        m_TargetAssemblyTypeName: Toggler, Assembly-CSharp
-        m_MethodName: ToggleActive
+      - m_Target: {fileID: 865031234}
+        m_TargetAssemblyTypeName: MusicToggler, Assembly-CSharp
+        m_MethodName: ToggleMusic
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -18097,6 +18124,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5917566, y: 2.371128, z: 1.5168481}
   m_Center: {x: -0.019174151, y: 1.1770287, z: 0.0008410877}
+--- !u!114 &865031234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 865031229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51b2ea0dbd2b06345b865a2446096c4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &865793099
 GameObject:
   m_ObjectHideFlags: 0
@@ -47762,7 +47801,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 394433137}
   - {fileID: 523918527}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -78330,6 +78368,7 @@ SceneRoots:
   - {fileID: 669564862}
   - {fileID: 1123899724}
   - {fileID: 1926450015}
+  - {fileID: 394433137}
   - {fileID: 1857884606}
   - {fileID: 1675925854}
   - {fileID: 1324890681}

@@ -100,4 +100,6 @@ public class Loading : MonoBehaviour
             await UniTask.Yield();
         }
     }
+
+    public void StopMusic() => ContinuousMusic.Instance?.StopMusic();
 }
