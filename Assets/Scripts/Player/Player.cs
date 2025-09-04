@@ -136,8 +136,6 @@ public class Player : MonoBehaviour
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
             queue = false;
         }
-
-        Debug.Log($"Cam position: world ({Camera.transform.position}), local ({Camera.transform.localPosition})");
     }
 
     public void CloseEyes(float speed = 1f) => loading?.CloseEyes(speed);

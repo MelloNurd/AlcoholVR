@@ -63,6 +63,7 @@ public class NPC_WalkState : NPC_BaseState
 
     private void CheckIfAtDestination(bool notFirstArrival = true)
     {
+        if (npc.agent.IsAtDestination())
         if (!npc.agent.pathPending && npc.agent.remainingDistance <= npc.agent.stoppingDistance)
         {
             if (!npc.agent.hasPath || npc.agent.velocity.sqrMagnitude == 0f)
@@ -70,7 +71,10 @@ public class NPC_WalkState : NPC_BaseState
                 if (notFirstArrival) npc.actionsLeft = (npc.currentCheckpoint.container._actions.Count <= 0) ? 0 : Random.Range(npc.currentCheckpoint.container.minActions, npc.currentCheckpoint.container.maxActions + 1);
                 else npc.OnCheckpointArrive?.Invoke();
 
-                npc.SwitchState(NPC_SM.States.Checkpoint);
+                if (npc.usesCheckpoints)
+                    npc.SwitchState(NPC_SM.States.Checkpoint);
+                else
+                    npc.SwitchState(NPC_SM.States.Idle);
             }
         }
     }

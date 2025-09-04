@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
@@ -50,6 +51,7 @@ public class PartyScene : MonoBehaviour
     private bool _isDrinkinFriendReady = false;
 
     private bool _isRageBegun = false;
+    [SerializeField] List<AudioClip> rageSlamSounds = new();
 
     private void Start()
     {
@@ -85,7 +87,7 @@ public class PartyScene : MonoBehaviour
 
         if(Keyboard.current.fKey.wasPressedThisFrame)
         {
-            InitiateDrunkFriend();
+            BeginRageSequence();
         }
     }
 

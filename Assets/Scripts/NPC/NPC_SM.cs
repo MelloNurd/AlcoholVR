@@ -29,6 +29,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     protected AudioSource _audioSource;
 
     [Header("Checkpoint Settings")]
+    [SerializeField] public bool usesCheckpoints = true;
     [SerializeField] protected SortMode _checkpointSortMode; // How it determines the next checkpoint to move to
     public UnityEvent OnCheckpointLeave = new();
     public UnityEvent OnCheckpointArrive = new();
@@ -114,6 +115,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     public void SwitchState(States newState)
     {
+        Debug.Log($"[NPC_SM] {name} switching from {_currentStateName} to {newState.ToString()}");
         currentState?.ExitState();
         currentState = states[newState];
         currentState?.EnterState();
@@ -122,7 +124,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     public void PlayAnimation(string animationName)
     {
-        animator.CrossFade(animationName, 0.2f);
+        animator.CrossFade(animationName, 0.1f);
     }
     public void PlayIdleAnimation() => PlayAnimation(idleAnimation.name);
     public void PlayWalkAnimation() => PlayAnimation(moveAnimation.name);
