@@ -2457,7 +2457,7 @@ SkinnedMeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
+  m_StaticShadowCaster: 1
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -4114,6 +4114,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7957609120742801846}
     m_Modifications:
+    - target: {fileID: 818283760584064464, guid: 43b08fd977183cd40b86dcc017aef761, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4879708360187888010, guid: 43b08fd977183cd40b86dcc017aef761, type: 3}
       propertyPath: m_Name
       value: BSMC_Top_Naked
