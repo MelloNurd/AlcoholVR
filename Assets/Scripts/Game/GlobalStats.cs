@@ -34,6 +34,8 @@ public class GlobalStats : MonoBehaviour
 
     private void Awake()
     {
+        DrinkCount = 5;
+
         if(!tweenWarnings)
         {
             PrimeTweenConfig.warnZeroDuration = false;

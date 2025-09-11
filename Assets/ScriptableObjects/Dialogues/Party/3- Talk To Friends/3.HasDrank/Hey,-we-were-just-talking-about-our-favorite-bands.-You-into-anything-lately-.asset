@@ -14,19 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: Hey, we were just talking about our favorite bands. You into anything
     lately?
+  playedAudio: {fileID: 8300000, guid: 5af79da38db795f4e87cf91dd37b9329, type: 3}
   options:
   - optionText: '*hiccup*'
     nextDialogue: {fileID: 11400000, guid: bd97df0ad3992134cb01761d781d8b7b, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: heeey guys
     nextDialogue: {fileID: 11400000, guid: 6f0958dbb5eb6de4190fbfa9e0a8de4f, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: '*burp*'
     nextDialogue: {fileID: 11400000, guid: 851be5680b6c8af44805d4474250166b, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []

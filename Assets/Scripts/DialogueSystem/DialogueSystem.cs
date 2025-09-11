@@ -12,7 +12,7 @@ public class DialogueSystem : MonoBehaviour
     public bool useTypewriterEffect = true;
     public bool IsDialogueActive => currentDialogue != null;
 
-    public AudioClip defaultDialogueSound;
+    public AudioClip[] defaultDialogueSound;
 
     public Dialogue currentDialogue = null;
 
@@ -32,6 +32,7 @@ public class DialogueSystem : MonoBehaviour
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
         _textBubble = _dialogueText.transform.parent.gameObject;
         _typewriter = GetComponentInChildren<Typewriter>();
+        _audioSource = GetComponentInChildren<AudioSource>();
     }
 
     private void Start()
@@ -81,9 +82,9 @@ public class DialogueSystem : MonoBehaviour
         {
             _audioSource.PlayOneShot(dialogue.playedAudio);
         }
-        else if (defaultDialogueSound != null)
+        else if (defaultDialogueSound.Length > 0)
         {
-            _audioSource.PlayOneShot(defaultDialogueSound);
+            _audioSource.PlayOneShot(defaultDialogueSound.GetRandom());
         }
 
         // Display dialogue text (takes time, so await)

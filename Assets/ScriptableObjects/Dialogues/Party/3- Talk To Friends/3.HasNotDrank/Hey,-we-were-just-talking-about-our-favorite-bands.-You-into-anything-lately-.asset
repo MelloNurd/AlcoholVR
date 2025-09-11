@@ -14,19 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueText: Hey, we were just talking about our favorite bands. You into anything
     lately?
+  playedAudio: {fileID: 8300000, guid: 5af79da38db795f4e87cf91dd37b9329, type: 3}
   options:
   - optionText: "Yeah, I\u2019m big into indie stuff."
     nextDialogue: {fileID: 11400000, guid: 18b6d4a74582a9440921d0cadc5417bb, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: I mostly listen to rap.
     nextDialogue: {fileID: 11400000, guid: 11b79b87b84f89d47adfda534b502136, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: Metal, all the way.
     nextDialogue: {fileID: 11400000, guid: 0c10ecd34bccdab47ac9e6d06258afdc, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
