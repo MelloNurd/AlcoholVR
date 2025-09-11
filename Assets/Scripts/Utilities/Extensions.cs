@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Android;
 using UnityEngine.Rendering;
 
 public enum Rarity
@@ -766,13 +767,13 @@ public static class Extensions
     /// <param name="checkRadius">The radius to search for at the targetDestination to check for a nav mesh</param>
     /// <param name="areaMask">The area mask to use when sampling the NavMesh (default: NavMesh.AllAreas)</param>
     /// <returns>The distance from the original destination to the closest valid point, or -1 if destination is null</returns>
-    public static float SetDestinationToClosestPoint(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 1f, int areaMask = NavMesh.AllAreas)
+    public static float SetDestinationToClosestPoint(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 1.5f, int areaMask = NavMesh.AllAreas)
     {
         if (targetDestination == null) return -1;
 
         if(!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
         {
-            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent will not move.");
+            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent {agent.transform.parent.gameObject.name} will not move.");
         }
 
         agent.SetDestination(hit.position);

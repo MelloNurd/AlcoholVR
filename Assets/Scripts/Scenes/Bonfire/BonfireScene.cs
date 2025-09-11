@@ -105,11 +105,11 @@ public class BonfireScene : MonoBehaviour
 
         if(Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            tableNPC.StartNextSequence();
+            StartMysteryDrinkNPC();
         }
         else if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            fireStickNPC.StartNextSequence();
+            StartAlcoholPoisoning();
         }
 
         if(_isMysteryDrinkReady)
