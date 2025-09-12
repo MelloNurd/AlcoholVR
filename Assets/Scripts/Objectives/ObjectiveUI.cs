@@ -41,7 +41,8 @@ public class ObjectiveUI : MonoBehaviour
             button.gameObject.SetActive(false);
         }
 
-            _objectiveData = objective;
+        _objectiveData = objective;
+        objective.Ui = this;
         SetText(_objectiveData.text);
     }
 

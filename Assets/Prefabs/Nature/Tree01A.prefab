@@ -69,12 +69,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 30019b34197ff6a408a65b22a315f85a, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 30019b34197ff6a408a65b22a315f85a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: ef6c1972dd7de5141a0ffaf15614bd2a, type: 2}
     - target: {fileID: 919132149155446097, guid: 30019b34197ff6a408a65b22a315f85a, type: 3}
       propertyPath: m_Name
       value: QuadCross
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 30019b34197ff6a408a65b22a315f85a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -227,6 +235,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: 3177037c4e10ce34fa6253dc4652e7aa, type: 2}
+    - target: {fileID: 6910540676686273148, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8997249630904668777, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
@@ -236,35 +248,61 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6132193337363787998}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 6910540676686273148, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5476663361335308227}
+      addedObject: {fileID: 8160867912241991254}
+    - targetCorrespondingSourceObject: {fileID: 6910540676686273148, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 593573834233062960}
   m_SourcePrefab: {fileID: 100100000, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
 --- !u!23 &1923330390724899117 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: -826304646921787292, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
   m_PrefabInstance: {fileID: 7942496524005939529}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7131453652126606360 stripped
+--- !u!1 &3593387207188267829 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6910540676686273148, guid: 6d2204d9b3a30bc4ea553622baf4bdee, type: 3}
   m_PrefabInstance: {fileID: 7942496524005939529}
   m_PrefabAsset: {fileID: 0}
---- !u!208 &5476663361335308227
+--- !u!136 &8160867912241991254
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3593387207188267829}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3016274
+  m_Height: 2.5739558
+  m_Direction: 1
+  m_Center: {x: -0.016229928, y: 0.89568007, z: -0.0028710961}
+--- !u!208 &593573834233062960
 NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7131453652126606360}
+  m_GameObject: {fileID: 3593387207188267829}
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 0
-  m_Extents: {x: 0.39, y: 1.925, z: 0.39}
+  m_Extents: {x: 0.32, y: 1.56, z: 0.32}
   m_MoveThreshold: 0.1
-  m_Carve: 1
+  m_Carve: 0
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 1.57, z: 0}
+  m_Center: {x: -0.009000001, y: 1.29, z: 0.043}
   m_TimeToStationary: 0.5
 --- !u!4 &7616664476675964578 stripped
 Transform:

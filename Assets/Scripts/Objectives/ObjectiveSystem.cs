@@ -11,6 +11,7 @@ public class Objective
     public Transform point;
     
     public bool IsTracking { get; set; } = false;
+    public ObjectiveUI Ui { get; set; }
 
     public Objective(string text, int priority, Transform position)
     {

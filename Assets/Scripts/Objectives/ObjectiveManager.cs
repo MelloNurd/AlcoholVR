@@ -44,13 +44,42 @@ public class ObjectiveManager : MonoBehaviour
     {
         HandleTracking();
 
-        if(Keyboard.current.hKey.wasPressedThisFrame)
+        // DEbug
+        if(Phone.Instance == null || !Phone.Instance.IsActive) return;
+        if (Keyboard.current.digit1Key.wasPressedThisFrame && objectives.Count > 0)
         {
-            if(objectives.Count > 0)
-            {
-                Debug.Log("Toggling tracking for objective: " + objectives[0].Item1.text + " to " + !objectives[0].Item1.IsTracking);
-                objectives[0].Item1.IsTracking = !objectives[0].Item1.IsTracking;
-            }
+            if (objectives[0].Item1.Ui.buttonState)
+                objectives[0].Item1.Ui.DisableButton();
+            else
+                objectives[0].Item1.Ui.EnableButton();
+        }
+        else if (Keyboard.current.digit2Key.wasPressedThisFrame && objectives.Count > 1)
+        {
+            if (objectives[1].Item1.Ui.buttonState)
+                objectives[1].Item1.Ui.DisableButton();
+            else
+                objectives[1].Item1.Ui.EnableButton();
+        }
+        else if (Keyboard.current.digit3Key.wasPressedThisFrame && objectives.Count > 2)
+        {
+            if (objectives[2].Item1.Ui.buttonState)
+                objectives[2].Item1.Ui.DisableButton();
+            else
+                objectives[2].Item1.Ui.EnableButton();
+        }
+        else if (Keyboard.current.digit4Key.wasPressedThisFrame && objectives.Count > 3)
+        {
+            if (objectives[3].Item1.Ui.buttonState)
+                objectives[3].Item1.Ui.DisableButton();
+            else
+                objectives[3].Item1.Ui.EnableButton();
+        }
+        else if (Keyboard.current.digit5Key.wasPressedThisFrame && objectives.Count > 4)
+        {
+            if (objectives[4].Item1.Ui.buttonState)
+                objectives[4].Item1.Ui.DisableButton();
+            else
+                objectives[4].Item1.Ui.EnableButton();
         }
     }
 
