@@ -94,9 +94,13 @@ public class PartyScene : MonoBehaviour
             InitiateDrunkFriend();
         }
 
-        if(Keyboard.current.fKey.wasPressedThisFrame)
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             BeginRageSequence();
+        }
+        else if (Keyboard.current.gKey.wasPressedThisFrame)
+        {
+            InitiateDrunkFriend();
         }
     }
 
@@ -205,6 +209,7 @@ public class PartyScene : MonoBehaviour
                 {
                     GlobalStats.helpedRagingDrunk = false;
                     _bonfireFriendNPC.StartNextSequence(2);
+
                     ObjectiveSystem leaveSceneObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Leave the party for the bonfire.", 1, _exitSceneTransform));
                     leaveSceneObjective.Begin();
                 });
