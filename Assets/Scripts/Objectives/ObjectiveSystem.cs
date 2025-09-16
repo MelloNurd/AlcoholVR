@@ -8,16 +8,25 @@ public class Objective
 {
     public string text = "Do something important";
     public int priority = 0;
-    public Transform point;
+    public Vector3 point;
     
     public bool IsTracking { get; set; } = false;
     public ObjectiveUI Ui { get; set; }
 
-    public Objective(string text, int priority, Transform position)
+    public bool IsComplete = false;
+
+    public Objective(string text, int priority, Vector3 position)
     {
         this.text = text;
         this.priority = priority;
         point = position;
+    }
+
+    public Objective(string text, int priority, Transform transform)
+    {
+        this.text = text;
+        this.priority = priority;
+        point = transform.position;
     }
 
     public bool CalculatePath(Vector3 position, out NavMeshPath path)
@@ -25,10 +34,10 @@ public class Objective
         path = new NavMeshPath();
 
         // Ensure both the start and end positions are on the NavMesh
-        position = NavMesh.SamplePosition(position, out NavMeshHit hit, 8f, NavMesh.AllAreas) ? hit.position : position;
-        point.position = NavMesh.SamplePosition(point.position, out hit, 8f, NavMesh.AllAreas) ? hit.position : point.position;
+        position = NavMesh.SamplePosition(position, out NavMeshHit hit, 2f, NavMesh.AllAreas) ? hit.position : position;
+        point = NavMesh.SamplePosition(point, out hit, 2f, NavMesh.AllAreas) ? hit.position : point;
 
-        return NavMesh.CalculatePath(position, point.position, NavMesh.AllAreas, path);
+        return NavMesh.CalculatePath(position, point, NavMesh.AllAreas, path);
     }
 }
 
@@ -101,6 +110,7 @@ public class ObjectiveSystem : MonoBehaviour
             ObjectiveManager.Instance.RemoveObjective(objective);
         }
 
+        objective.IsComplete = true;
         OnAdvance?.Invoke();
         OnCompletion?.Invoke();
     }

@@ -34,6 +34,7 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private GameObject _rageBottle;
     [SerializeField] private XRGrabInteractable _missingPhoneObj;
     [SerializeField] private Animator _carAnimator;
+    [SerializeField] private Transform _exitSceneTransform;
 
     public bool IsOnSecondFloor => IsInHouse && Player.Instance.CamPosition.y > 3.5f;
     public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.CamPosition.z > -7f; // On the specific side of the house
@@ -69,6 +70,14 @@ public class PartyScene : MonoBehaviour
             hasDoneIntro.Value = true;
             Debug.Log("Intro sequence completed.");
         });
+
+        ObjectiveSystem obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the party.", 0, Vector3.zero));
+        obj1.Begin();
+
+        ObjectiveSystem _talkToCouchObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Talk to your peers.", 0, _couchFriend.transform));
+        _talkToCouchObjective.Begin();
+
+        _couchFriend.dialogueSystem.onStart.AddListener(() => _talkToCouchObjective.Complete());
     }
 
     private void Update()
@@ -186,6 +195,9 @@ public class PartyScene : MonoBehaviour
                         _rageNPC.IsInteractable = false;
                         _rageNPC.objective.Complete();
                         _bonfireFriendNPC.StartNextSequence();
+
+                        ObjectiveSystem leaveSceneObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Leave the party for the bonfire.", 1, _exitSceneTransform));
+                        leaveSceneObjective.Begin();
                     });
                 });
 
@@ -193,6 +205,8 @@ public class PartyScene : MonoBehaviour
                 {
                     GlobalStats.helpedRagingDrunk = false;
                     _bonfireFriendNPC.StartNextSequence(2);
+                    ObjectiveSystem leaveSceneObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Leave the party for the bonfire.", 1, _exitSceneTransform));
+                    leaveSceneObjective.Begin();
                 });
 
                 break;
