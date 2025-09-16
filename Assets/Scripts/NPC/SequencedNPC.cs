@@ -147,21 +147,14 @@ public class SequencedNPC : MonoBehaviour
         }
 
         StartSequence(0);
-
-        // Doing this here instead of Update for better async/await compatibility
-        HandleWalking();
     }
 
-    private async void HandleWalking()
+    private void Update()
     {
-        while (true)
-        {
-            await ProcessWalking();
-            await UniTask.Yield();
-        }
+        ProcessWalking();
     }
 
-    private async UniTask ProcessWalking()
+    private void ProcessWalking()
     {
         ApplyWalkRotations();
 
@@ -178,7 +171,7 @@ public class SequencedNPC : MonoBehaviour
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
                     _lastDestinationUpdateTime = 0f;
-                    await agent.SetDestinationToClosestPoint(inFrontOfPlayer, 1.25f);
+                    agent.SetDestinationToClosestPoint(inFrontOfPlayer);
                     _lastDestinationPosition = inFrontOfPlayer;
                 }
             }

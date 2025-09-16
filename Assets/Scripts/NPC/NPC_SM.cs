@@ -115,7 +115,6 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     public void SwitchState(States newState)
     {
-        Debug.Log($"[NPC_SM] {name} switching from {_currentStateName} to {newState.ToString()}");
         currentState?.ExitState();
         currentState = states[newState];
         currentState?.EnterState();
