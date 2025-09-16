@@ -78,7 +78,6 @@ public class DemoScene : MonoBehaviour
         exitInteractable.enabled = true;
     }
 
-
     // When you first GRAB the item
     public void OnItemGrabbed(SelectEnterEventArgs args)
     {

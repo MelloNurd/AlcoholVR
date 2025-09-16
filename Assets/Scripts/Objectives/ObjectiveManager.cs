@@ -42,6 +42,7 @@ public class ObjectiveManager : MonoBehaviour
 
     private void Update()
     {
+        ClearCompleteObjectives();
         HandleTracking();
 
         // DEbug
@@ -142,6 +143,24 @@ public class ObjectiveManager : MonoBehaviour
         Phone.Instance.LoadObjectives();
     }
 
+    private void ClearCompleteObjectives()
+    {
+        for (int i = objectives.Count - 1; i >= 0; i--)
+        {
+            if (objectives[i].Item1.IsComplete == true)
+            {
+                // Destroy the LineRenderer GameObject
+                if (objectives[i].Item2 != null)
+                {
+                    Destroy(objectives[i].Item2.gameObject);
+                }
+                objectives[i].Item2.positionCount = 0; // Clear the positions
+                objectives.RemoveAt(i);
+            }
+        }
+        Phone.Instance.LoadObjectives();
+    }
+
     public void RemoveObjective(Objective objective)
     {
         if (objective == null) return;
@@ -206,7 +225,7 @@ public class ObjectiveManager : MonoBehaviour
                 
                 // Process each point to follow terrain
                 for (int i = 0; i < densePath.Count; i++)
-                {
+                {   
                     adjustedPathPoints[i] = AdjustPointToGround(densePath[i]);
                 }
 
@@ -214,7 +233,7 @@ public class ObjectiveManager : MonoBehaviour
                 lr.positionCount = adjustedPathPoints.Length + 1; // +1 for objective point
                 lr.SetPositions(adjustedPathPoints);
                 // Adjust the final objective point to ground
-                lr.SetPosition(lr.positionCount - 1, AdjustPointToGround(objective.point.position));
+                lr.SetPosition(lr.positionCount - 1, AdjustPointToGround(objective.point));
 
                 // Scrolling effect
                 lr.material.mainTextureOffset = new Vector2(Time.time * 0.1f, 0);
@@ -265,10 +284,10 @@ public class ObjectiveManager : MonoBehaviour
     private Vector3 AdjustPointToGround(Vector3 point)
     {
         // Start raycast from well above the point to handle elevation differences
-        float rayHeight = 10f;
+        float rayHeight = 1f;
         Vector3 rayOrigin = new Vector3(point.x, point.y + rayHeight, point.z);
         
-        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayHeight + 10f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayHeight + 10f, LayerMask.GetMask("Ground"), QueryTriggerInteraction.Ignore))
         {
             // Calculate slope angle from surface normal
             float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);

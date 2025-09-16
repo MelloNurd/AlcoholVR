@@ -20,7 +20,7 @@ public class ObjectiveUI : MonoBehaviour
         _objectiveText = transform.Find("Text").GetComponent<TMP_Text>();
 
         Button button = transform.Find("Select Button").GetComponent<Button>();
-        if(objective.point != null)
+        if(objective.point != Vector3.zero)
         {
             _buttonImage = button.GetComponent<Image>();
             _buttonText = button.GetComponentInChildren<TMP_Text>();

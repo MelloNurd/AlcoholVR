@@ -16,6 +16,8 @@ public class GlobalStats : MonoBehaviour
 
     public bool tweenWarnings = false;
 
+    [SerializeField] bool startDrunk = false;
+
     // House stats
     public static BroughtOptions broughtItems = BroughtOptions.None;
 
@@ -34,8 +36,6 @@ public class GlobalStats : MonoBehaviour
 
     private void Awake()
     {
-        DrinkCount = 5;
-
         if(!tweenWarnings)
         {
             PrimeTweenConfig.warnZeroDuration = false;
@@ -49,6 +49,12 @@ public class GlobalStats : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
+        }
+
+        if(startDrunk)
+        {
+            DrinkCount = 99;
         }
     }
 }
