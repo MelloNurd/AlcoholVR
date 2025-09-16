@@ -42,6 +42,8 @@ public class DemoScene : MonoBehaviour
 
         obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab snacks from the fridge.", 1, _fridgeTransform));
         obj2 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab beer from the fridge.", 1, _fridgeTransform));
+
+        _dadNPC.dialogueSystem.onStart.AddListener(OnDadTalkedTo);
     }
 
     private void Update()
@@ -125,10 +127,6 @@ public class DemoScene : MonoBehaviour
             if (interactable.name.Contains("Food"))
             {
                 obj3?.Complete();
-                if (obj5 == null)
-                {
-                    obj5 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Go talk to your dad.", 1, _dadTransform));
-                }
                 Phone.Instance.LoadObjectives();
             }
 
@@ -138,10 +136,10 @@ public class DemoScene : MonoBehaviour
 
     public void OnDadTalkedTo()
     {
-        obj5?.Complete();
         if (obj6 == null)
         {
             obj6 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Leave the house.", 1, _doorTransform));
+            obj6.Begin();
         }
     }
 

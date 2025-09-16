@@ -57,6 +57,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private Transform _miscPoisoningReactionPoint;
     [SerializeField] private GameObject _flashingLightsObj;
     [SerializeField] private Transform _playerDrankNewPoint;
+    [SerializeField] private Transform _cooler;
 
     // Misc variables
     private bool _isFlirtWaitingForPlayer = false;
@@ -84,8 +85,8 @@ public class BonfireScene : MonoBehaviour
 
         PlayerAudio.PlayLoopingSound(_natureSound);
 
-        ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the bonfire.", 0, null));
-        _grabDrink = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab a drink from the cooler.", 1, friendNPC.transform));
+        ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the bonfire.", 0, Vector3.zero));
+        _grabDrink = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab a drink from the cooler.", 1, _cooler));
         _talkToTable = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Talk to your peers at the picnic table.", 1, tableNPC.transform));
         _talkToFire = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("See what your peers are doing by the bonfire.", 1, fireStickNPC.transform));
 
