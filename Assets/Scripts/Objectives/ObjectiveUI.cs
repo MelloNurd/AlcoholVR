@@ -51,15 +51,16 @@ public class ObjectiveUI : MonoBehaviour
         _objectiveText.text = text;
     }
 
-    public void ToggleButton()
+    public void ToggleButton() => SetButton(!buttonState);
+    public void SetButton(bool newState)
     {
-        if (buttonState)
+        if (newState)
         {
-            DisableButton();
+            EnableButton();
         }
         else
         {
-            EnableButton();
+            DisableButton();
         }
     }
 
