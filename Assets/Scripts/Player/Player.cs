@@ -228,6 +228,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void DisableTutorialSettings()
+    {
+        _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+        _rightNearFarInteractor.enableFarCasting = false;
+        _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+        _leftNearFarInteractor.enableFarCasting = false;
+        SettingsManager.Instance.RangedInteractors = false;
+    }
+
     public void DisabledRangedInteractors()
     {
         _leftNearFarInteractor.enableFarCasting = false;
