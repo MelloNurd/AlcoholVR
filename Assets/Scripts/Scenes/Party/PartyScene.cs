@@ -68,7 +68,6 @@ public class PartyScene : MonoBehaviour
         _introNPC.dialogueSystem.onEnd.AddListener(() =>
         {
             hasDoneIntro.Value = true;
-            Debug.Log("Intro sequence completed.");
         });
 
         ObjectiveSystem obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the party.", 0, Vector3.zero));
@@ -77,14 +76,16 @@ public class PartyScene : MonoBehaviour
         ObjectiveSystem _talkToCouchObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Talk to your peers.", 0, _couchFriend.transform));
         _talkToCouchObjective.Begin();
 
-        _couchFriend.dialogueSystem.onStart.AddListener(() => _talkToCouchObjective.Complete());
+        _couchFriend.dialogueSystem.onStart.AddListener(() =>
+        {
+            _talkToCouchObjective.Complete();
+        });
     }
 
     private void Update()
     {
         if (!_isRageBegun && hasTalkedToDrunkFriend.Value && InViewOfRage)
         {
-            Debug.Log("Rage sequence triggered.");
             _isRageBegun = true;
             BeginRageSequence();
         }

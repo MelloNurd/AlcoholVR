@@ -36,13 +36,13 @@ public class ObjectiveManager : MonoBehaviour
         SceneManager.sceneLoaded += (scene, mode) =>
         {
             // Clear all objectives when a new scene is loaded
+            Debug.Log($"Scene loaded from ObjectiveManager script");
             RemoveAllObjectives();
         };
     }
 
     private void Update()
     {
-        ClearCompleteObjectives();
         HandleTracking();
 
         // DEbug
@@ -121,6 +121,7 @@ public class ObjectiveManager : MonoBehaviour
         objectives.Add((objective, lineRenderer));
         if (Phone.Instance != null)
         {
+            Debug.Log("Loading from objective addition");
             Phone.Instance.LoadObjectives();
         }
 
@@ -129,7 +130,8 @@ public class ObjectiveManager : MonoBehaviour
 
     public void RemoveAllObjectives()
     {
-        for(int i = objectives.Count - 1; i >= 0; i--)
+        Debug.Log("Removing all objectives");
+        for (int i = objectives.Count - 1; i >= 0; i--)
         {
             // Destroy the LineRenderer GameObject
             if (objectives[i].Item2 != null)
@@ -140,25 +142,17 @@ public class ObjectiveManager : MonoBehaviour
             objectives.RemoveAt(i);
         }
         objectives.Clear();
-        Phone.Instance.LoadObjectives();
     }
 
-    private void ClearCompleteObjectives()
+    public void ClearCompleteObjectives()
     {
         for (int i = objectives.Count - 1; i >= 0; i--)
         {
             if (objectives[i].Item1.IsComplete == true)
             {
-                // Destroy the LineRenderer GameObject
-                if (objectives[i].Item2 != null)
-                {
-                    Destroy(objectives[i].Item2.gameObject);
-                }
-                objectives[i].Item2.positionCount = 0; // Clear the positions
-                objectives.RemoveAt(i);
+                RemoveObjective(objectives[i].Item1);
             }
         }
-        Phone.Instance.LoadObjectives();
     }
 
     public void RemoveObjective(Objective objective)
@@ -180,7 +174,12 @@ public class ObjectiveManager : MonoBehaviour
                 return;
             }
         }
-        Phone.Instance.LoadObjectives();
+
+        if (Phone.Instance != null)
+        {
+            Debug.Log("Loading from objective addition");
+            Phone.Instance.LoadObjectives();
+        }
     }
 
     public void HideAllPaths()

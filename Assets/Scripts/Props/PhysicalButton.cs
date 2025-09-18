@@ -55,7 +55,6 @@ public class PhysicalButton : MonoBehaviour
         if (_buttonDarkness) _buttonDarkness.SetActive(false);
         _buttonLabel.color = Color.white;
         IsInteractable = true;
-        Debug.Log("Enabling button: " + gameObject.name);
     }
 
     public void DisableButton()
@@ -63,7 +62,6 @@ public class PhysicalButton : MonoBehaviour
         if(_buttonDarkness) _buttonDarkness.SetActive(true);
         _buttonLabel.color = Color.gray;
         IsInteractable = false;
-        Debug.Log("Disabling button: " + gameObject.name);
     }
 
     private void Awake()

@@ -246,6 +246,7 @@ public class Phone : MonoBehaviour
         }
         else if (_objectivesScreenGroup.IsVisible())
         {
+            Debug.Log("Loading objectives on phone enable...");
             LoadObjectives();
         }
 
@@ -459,7 +460,9 @@ public class Phone : MonoBehaviour
 
     public void LoadObjectives()
     {
-        foreach(Transform child in _objectivesContainer)
+        ObjectiveManager.Instance.ClearCompleteObjectives();
+
+        foreach (Transform child in _objectivesContainer)
         {
             Destroy(child.gameObject);
         }
@@ -467,7 +470,7 @@ public class Phone : MonoBehaviour
         var objectives = ObjectiveManager.Instance.GetSortedList();
         foreach (var objective in objectives)
         {
-            // Note for later: if point is null, we don't ahve the button to guide me
+            // if point is null, we don't ahve the button to guide me
 
             ObjectiveUI objectiveObject = Instantiate(_objectivePrefab, _objectivesContainer).GetComponent<ObjectiveUI>();
             objectiveObject.Initialize(objective);

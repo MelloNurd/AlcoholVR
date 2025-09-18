@@ -122,12 +122,10 @@ public class DemoScene : MonoBehaviour
             {
                 obj4?.Complete();
                 PlayerPrefs.SetInt("BroughtBeer", 1);
-                Phone.Instance.LoadObjectives();
             }
             if (interactable.name.Contains("Food"))
             {
                 obj3?.Complete();
-                Phone.Instance.LoadObjectives();
             }
 
             Destroy(interactable.gameObject);

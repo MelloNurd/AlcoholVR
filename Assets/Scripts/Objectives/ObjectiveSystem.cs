@@ -113,6 +113,11 @@ public class ObjectiveSystem : MonoBehaviour
         objective.IsComplete = true;
         OnAdvance?.Invoke();
         OnCompletion?.Invoke();
+
+        if (Phone.Instance != null)
+        {
+            Phone.Instance.LoadObjectives();
+        }
     }
 
     public void Fail()
