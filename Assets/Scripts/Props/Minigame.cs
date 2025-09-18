@@ -65,7 +65,13 @@ public class Minigame : MonoBehaviour
 
         foreach(var scoringCollider in _triggeredColliders)
         {
-             MinigameCollider temp = scoringCollider.Collider.gameObject.AddComponent<MinigameCollider>();
+            if (scoringCollider.Collider == null)
+            {
+                Debug.Log("One of the scoring colliders is null, skipping...");
+                continue;
+            }
+
+            MinigameCollider temp = scoringCollider.Collider.gameObject.AddComponent<MinigameCollider>();
             temp.Initialize(this, scoringCollider);
         }
     }
