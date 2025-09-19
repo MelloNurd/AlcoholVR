@@ -32,7 +32,12 @@ public class DialogueSystem : MonoBehaviour
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
         _textBubble = _dialogueText.transform.parent.gameObject;
         _typewriter = GetComponentInChildren<Typewriter>();
+        
         _audioSource = GetComponentInChildren<AudioSource>();
+        if(_audioSource != null)
+        {
+            _audioSource.enabled = false;
+        }
     }
 
     private void Start()
@@ -48,6 +53,26 @@ public class DialogueSystem : MonoBehaviour
             _textBubble.transform.position = _textBubble.transform.position.WithY(_headObj.transform.position.y + 0.25f);
             _textBubble.transform.parent.LookAt(Player.Instance.CamPosition.WithY(_textBubble.transform.parent.position.y));
         }
+    }
+
+    private async void PlayDialogueAudio(Dialogue dialogue)
+    {
+        if(_audioSource == null) return;
+
+        _audioSource.enabled = true;
+        if (dialogue.playedAudio != null)
+        {
+            _audioSource.PlayOneShot(dialogue.playedAudio);
+            await UniTask.Delay(dialogue.playedAudio.length.ToMS());
+        }
+        else if (defaultDialogueSound.Length > 0)
+        {
+            _audioSource.PlayOneShot(defaultDialogueSound.GetRandom());
+            await UniTask.Delay(defaultDialogueSound[0].length.ToMS());
+        }
+
+        await UniTask.Yield(); // just to be safe
+        _audioSource.enabled = false;   
     }
 
     public async void StartDialogue(Dialogue dialogue, int depth = 0)
@@ -78,14 +103,7 @@ public class DialogueSystem : MonoBehaviour
         currentDialogue.onDialogueStart?.Invoke();
 
         // Play dialogue audio
-        if (dialogue.playedAudio != null)
-        {
-            _audioSource.PlayOneShot(dialogue.playedAudio);
-        }
-        else if (defaultDialogueSound.Length > 0)
-        {
-            _audioSource.PlayOneShot(defaultDialogueSound.GetRandom());
-        }
+        PlayDialogueAudio(dialogue);
 
         // Display dialogue text (takes time, so await)
         await DisplayText(dialogue.dialogueText);
