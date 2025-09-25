@@ -13,19 +13,20 @@ MonoBehaviour:
   m_Name: Here,-tr
   m_EditorClassIdentifier: 
   dialogueText: Here, try this
+  playedAudio: {fileID: 8300000, guid: 7d0b9645f898c0847882c9b003cb19b0, type: 3}
   options:
   - optionText: What is it?
     nextDialogue: {fileID: 11400000, guid: e8810555993b90b42932b9e493a99fb0, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-    ButtonEnabled: 1
   - optionText: I'll get my own, thanks.
     nextDialogue: {fileID: 11400000, guid: cc3dbabad599bad4dbc58c37dee0487a, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-    ButtonEnabled: 1
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
