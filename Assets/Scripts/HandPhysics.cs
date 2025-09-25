@@ -91,4 +91,9 @@ public class HandPhysics : MonoBehaviour
         isColliding = false;
         lastCollisionNormal = Vector3.zero;
     }
+
+    public void ResetCollision()
+    {
+        isColliding = false;
+    }
 }
