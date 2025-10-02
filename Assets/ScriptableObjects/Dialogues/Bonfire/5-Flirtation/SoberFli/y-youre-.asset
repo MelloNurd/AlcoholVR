@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: y-youre-
   m_EditorClassIdentifier: 
   dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
+  playedAudio: {fileID: 8300000, guid: 514fb3c7e5074ca4c92e4c4d7f3167cb, type: 3}
   options:
   - optionText: Are you okay? Maybe you should sit down and get some water...
     nextDialogue: {fileID: 11400000, guid: dbf337ca8afb3a043aee708cb977f822, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: No thanks...
     nextDialogue: {fileID: 11400000, guid: 6726a28562bba824f8e9eae72f370142, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []

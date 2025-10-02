@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 
 public class EndScene : MonoBehaviour
@@ -29,38 +31,56 @@ public class EndScene : MonoBehaviour
 
     void Start()
     {
-        // Drunk driving outcome
-        //_drunkDriverStayedPolaroid.SetActive(!GlobalStats.LetDrunkFriendDrive);
-        _drunkDriverCrashedPolaroid.SetActive(GlobalStats.letDrunkFriendDrive);
-        if(!GlobalStats.playerDrankMysteryDrink)
+        ConfigureResults();
+    }
+
+    private void ConfigureResults()
+    {
+        DrunkDriverResults();
+        DrinkCountResults();
+        ArcadeResults();
+        TrashketballResults();
+        LostPhoneResults();
+        BroughtAlcoholResults();
+        PregnancyTestResults();
+        MysteryDrinkResults();
+    }
+
+    private void DrunkDriverResults()
+    {
+        if(GlobalStats.letDrunkFriendDrive)
         {
+            _drunkDriverCrashedPolaroid.SetActive(true);
+            _drunkDriverStayedPolaroid.SetActive(false);
+        }
+        else
+        {
+            _drunkDriverCrashedPolaroid.SetActive(false);
+            _drunkDriverStayedPolaroid.SetActive(true);
+        }
+    }
+
+    private void MysteryDrinkResults()
+    {
+        if (!GlobalStats.playerDrankMysteryDrink)
+        {
+            _drugTest.SetActive(false);
             _obituary.SetActive(!GlobalStats.called911);
         }
-        
-        _MiP.SetActive(GlobalStats.DrinkCount > 0);
-        _reportCard.material = GlobalStats.DrinkCount > 0 ? _badGrades : _goodGrades;
-        if(GlobalStats.arcadeScore >= MadCowMinScore)
-        {
-            _cowPlush.SetActive(true);
-        }
         else
         {
-            _cowPlush.SetActive(false);
+            _drugTest.SetActive(true);
         }
-        if (GlobalStats.hoopsScore >= TrashketballMinScore)
-        {
-            _trashketballTrophy.SetActive(true);
-        }
-        else
-        {
-            _trashketballTrophy.SetActive(false);
-        }
+    }
 
-        // Phone outcome
-        _phoneFoundPolaroid.SetActive(_foundPhone.Value);
-        _phoneLostPolaroid.SetActive(!_foundPhone.Value);
+    private void PregnancyTestResults()
+    {
+        _pregnancyTest.SetActive(GlobalStats.playerWentWithFlirt);
+    }
 
-        if(GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
+    private void BroughtAlcoholResults()
+    {
+        if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
         {
             _concertPolaroid.SetActive(true);
             _bandShirt.SetActive(false);
@@ -70,8 +90,59 @@ public class EndScene : MonoBehaviour
             _concertPolaroid.SetActive(false);
             _bandShirt.SetActive(true);
         }
+    }
 
-        _pregnancyTest.SetActive(GlobalStats.playerWentWithFlirt);
-        _drugTest.SetActive(GlobalStats.playerDrankMysteryDrink);
+    private void LostPhoneResults()
+    {
+        if (_foundPhone.Value)
+        {
+            _phoneFoundPolaroid.SetActive(true);
+            _phoneLostPolaroid.SetActive(false);
+        }
+        else
+        {
+            _phoneFoundPolaroid.SetActive(false);
+            _phoneLostPolaroid.SetActive(true);
+        }
+    }
+
+    private void TrashketballResults()
+    {
+        if (GlobalStats.hoopsScore >= TrashketballMinScore)
+        {
+            _trashketballTrophy.SetActive(true);
+        }
+        else
+        {
+            _trashketballTrophy.SetActive(false);
+        }
+    }
+
+    private void ArcadeResults()
+    {
+        if (GlobalStats.arcadeScore >= MadCowMinScore)
+        {
+            _cowPlush.SetActive(true);
+        }
+        else
+        {
+            _cowPlush.SetActive(false);
+        }
+    }
+
+    private void DrinkCountResults()
+    {
+        if (GlobalStats.DrinkCount > 0)
+        {
+            _MiP.SetActive(true);
+            _reportCard.material = _badGrades;
+            _reportCard.GetComponentInChildren<TMP_Text>().text = "Should have spent more time studying...";
+        }
+        else
+        {
+            _MiP.SetActive(false);
+            _reportCard.material = _goodGrades;
+            _reportCard.GetComponentInChildren<TMP_Text>().text = "All that hard work paid off!";
+        }
     }
 }
