@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 4783826763423090374}
   - component: {fileID: 4229264972186390479}
   - component: {fileID: 8510009458518423984}
-  - component: {fileID: 776265198269890037}
   - component: {fileID: 8789127089377333235}
   - component: {fileID: 4913497100391404210}
   - component: {fileID: 5400739991275954194}
+  - component: {fileID: 7302349535987800468}
   m_Layer: 0
   m_Name: PizzaCutter
   m_TagString: Untagged
@@ -90,28 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &776265198269890037
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7254816585806293}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4884499938385938750, guid: 1ada820b5b9d03b47b44f3582572bac8, type: 3}
 --- !u!54 &8789127089377333235
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -286,3 +264,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!65 &7302349535987800468
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254816585806293}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.092487045, y: 0.017484194, z: 0.24738964}
+  m_Center: {x: -0.000000011175871, y: 0, z: -0.06668382}

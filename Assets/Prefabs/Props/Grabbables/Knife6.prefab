@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1827133332568341429}
   - component: {fileID: 6997909389138641049}
   - component: {fileID: 1054461147877982177}
-  - component: {fileID: 5272518333739978953}
   - component: {fileID: 5577080288172061187}
   - component: {fileID: 2310544123665872752}
   - component: {fileID: 7194827623091461064}
+  - component: {fileID: 2809876732328605215}
   m_Layer: 0
   m_Name: Knife6
   m_TagString: Untagged
@@ -90,28 +90,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5272518333739978953
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1708397821871980095}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -8229719939538843548, guid: 21eec28d36244b94c8c1eea767acc69a, type: 3}
 --- !u!54 &5577080288172061187
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -286,3 +264,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!65 &2809876732328605215
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708397821871980095}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.03938451, y: 0.012253247, z: 0.30810332}
+  m_Center: {x: 0.0062332973, y: 0.0053368956, z: -0.06521173}
