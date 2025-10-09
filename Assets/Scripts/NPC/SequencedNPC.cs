@@ -350,9 +350,9 @@ public class SequencedNPC : MonoBehaviour
 
     public void SitDown() // I don't relaly have a much better way of doing this at the moment, unfortunately
     {
-        Vector3 pos = bodyObj.transform.position + (bodyObj.transform.forward * -0.25f) + new Vector3(0, 0.125f, 0);
+        Vector3 pos = bodyObj.transform.position + (bodyObj.transform.forward * -0.45f);
         Tween.StopAll(bodyObj.transform);
-        Tween.Position(bodyObj.transform, pos, 0.3f);
+        Tween.Position(bodyObj.transform, pos.AddY(0.15f), 0.3f, Ease.InOutSine);
     }
 
     private async void DialogueEndHandler()
@@ -413,8 +413,8 @@ public class SequencedNPC : MonoBehaviour
         currentSequence?.onSequenceEnd?.Invoke();
         if (dialogueSystem.IsDialogueActive) dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
-        await HandleSequence(sequence);
         sequence.onSequenceStart?.Invoke();
+        await HandleSequence(sequence);
     }
 
     public void PlaySound(AudioClip sound)
