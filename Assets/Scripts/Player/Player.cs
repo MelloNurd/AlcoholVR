@@ -133,7 +133,8 @@ public class Player : MonoBehaviour
         if (queue && _rightNearFarInteractor.interactablesSelected.Count == 0 && !SettingsManager.Instance.RangedInteractors)
         {
             _rightNearFarInteractor.enableFarCasting = true;
-            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+            //Set interaction layer to UI and Default
+            _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
             queue = false;
         }
     }

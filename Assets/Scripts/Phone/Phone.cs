@@ -281,7 +281,7 @@ public class Phone : MonoBehaviour
             _appearParticles.Play();
         }
 
-        ObjectiveManager.Instance.HideAllPaths();
+        //ObjectiveManager.Instance.HideAllPaths();
     }
 
     [Button]
