@@ -237,6 +237,7 @@ public class PartyScene : MonoBehaviour
             IsInHouse = true;
             if (_enterCount == 0)
             {
+                Debug.Log("Broguth: " + GlobalStats.broughtItems.ToString());
                 Dialogue introDialogue = GlobalStats.broughtItems switch
                 {
                     GlobalStats.BroughtOptions.Alcohol => _broughtAlcohol,
