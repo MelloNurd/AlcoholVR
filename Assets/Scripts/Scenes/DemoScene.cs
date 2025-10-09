@@ -87,12 +87,6 @@ public class DemoScene : MonoBehaviour
         {
             if (interactable.name.Contains("Food"))
             {
-                // Only mark snacks if they havent brought anything yet (does not overwrite alcohol)
-                if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.None)
-                {
-                    GlobalStats.broughtItems = GlobalStats.BroughtOptions.Snacks;
-                }
-
                 obj1?.Complete();
                 if (obj3 == null)
                 {
@@ -101,9 +95,6 @@ public class DemoScene : MonoBehaviour
             }
             else if (interactable.name.Contains("Bottle"))
             {
-                // Mark as alcohol no matter what if you input beer
-                GlobalStats.broughtItems = GlobalStats.BroughtOptions.Alcohol;
-
                 obj2?.Complete();
                 if (obj4 == null)
                 {
@@ -120,11 +111,18 @@ public class DemoScene : MonoBehaviour
         {
             if (interactable.name.Contains("Bottle"))
             {
+                // Mark as alcohol no matter what if you input beer
+                GlobalStats.broughtItems = GlobalStats.BroughtOptions.Alcohol;
                 obj4?.Complete();
                 PlayerPrefs.SetInt("BroughtBeer", 1);
             }
             if (interactable.name.Contains("Food"))
             {
+                // Only mark snacks if they havent brought anything yet (does not overwrite alcohol)
+                if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.None)
+                {
+                    GlobalStats.broughtItems = GlobalStats.BroughtOptions.Snacks;
+                }
                 obj3?.Complete();
             }
 
