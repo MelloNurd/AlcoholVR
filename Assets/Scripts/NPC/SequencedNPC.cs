@@ -176,7 +176,7 @@ public class SequencedNPC : MonoBehaviour
                 }
             }
 
-            if (agent.IsAtDestination())
+            if (agent.IsAtDestination(0.01f))
             {
                 _isAtDestination = true;
                 agent.isStopped = true;
