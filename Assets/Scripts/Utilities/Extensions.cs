@@ -773,7 +773,7 @@ public static class Extensions
 
         if (!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
         {
-            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent {agent.transform.parent.gameObject.name} will not move.");
+            Debug.LogWarning($"[{agent.gameObject.name}] No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent {agent.transform.parent.gameObject.name} will not move.");
         }
         else
         {

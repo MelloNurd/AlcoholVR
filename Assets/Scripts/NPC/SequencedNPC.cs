@@ -270,7 +270,7 @@ public class SequencedNPC : MonoBehaviour
     private async UniTask ExecuteWalkSequence(Sequence sequence)
     {
         _isAtDestination = false;
-        agent.SetDestinationToClosestPoint(sequence.destination.transform.position);
+        agent.SetDestinationToClosestPoint(sequence.destination.transform.position, 1.5f);
         agent.isStopped = false;
 
         AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
