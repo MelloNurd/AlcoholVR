@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: yo...-im-heading-out.-im-f-fine-i-can-drive
   m_EditorClassIdentifier: 
   dialogueText: yo... im heading out. im f-fine i can drive.
+  playedAudio: {fileID: 8300000, guid: deec3829e48ac8441aa8c8645ca8bdca, type: 3}
   options:
   - optionText: "You\u2019re not driving. Give me your keys."
     nextDialogue: {fileID: 11400000, guid: 79b4e1168392e9c4ea88968bd4c9e55e, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
   - optionText: Okay, your call...
     nextDialogue: {fileID: 11400000, guid: 98f51864b7359f44f87905dd520fee9d, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls:

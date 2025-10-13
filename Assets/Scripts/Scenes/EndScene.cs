@@ -26,6 +26,10 @@ public class EndScene : MonoBehaviour
 
     [SerializeField] private BoolValue _foundPhone;
 
+    [SerializeField] private BoolValue _stoppedFire;
+    [SerializeField] private GameObject _stoppedFirePicture;
+    [SerializeField] private GameObject _fireSpreadPicture;
+
     public int MadCowMinScore = 20;
     public int TrashketballMinScore = 10;
 
@@ -44,6 +48,7 @@ public class EndScene : MonoBehaviour
         BroughtAlcoholResults();
         PregnancyTestResults();
         MysteryDrinkResults();
+        FireResults();
     }
 
     private void DrunkDriverResults()
@@ -51,12 +56,12 @@ public class EndScene : MonoBehaviour
         if(GlobalStats.letDrunkFriendDrive)
         {
             _drunkDriverCrashedPolaroid.SetActive(true);
-            _drunkDriverStayedPolaroid.SetActive(false);
+            //_drunkDriverStayedPolaroid.SetActive(false);
         }
         else
         {
             _drunkDriverCrashedPolaroid.SetActive(false);
-            _drunkDriverStayedPolaroid.SetActive(true);
+            //_drunkDriverStayedPolaroid.SetActive(true);
         }
     }
 
@@ -143,6 +148,20 @@ public class EndScene : MonoBehaviour
             _MiP.SetActive(false);
             _reportCard.material = _goodGrades;
             _reportCard.GetComponentInChildren<TMP_Text>().text = "All that hard work paid off!";
+        }
+    }
+
+    private void FireResults()
+    {
+        if(_stoppedFire.Value)
+        {
+            _fireSpreadPicture.SetActive(false);
+            _stoppedFirePicture.SetActive(true);
+        }
+        else
+        {
+            _fireSpreadPicture.SetActive(true);
+            _stoppedFirePicture.SetActive(false);
         }
     }
 }

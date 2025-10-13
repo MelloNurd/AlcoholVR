@@ -32,6 +32,7 @@ public class GlobalStats : MonoBehaviour
     public static bool playerGrabbedAlcohol = false; // This is for the first scenario, when at the cooler
     public static bool playerWentWithFlirt = false;
     public static bool playerDrankMysteryDrink = false;
+    public static bool playerStoppedFire = false;
     public static bool called911 = false;
 
     private void Awake()

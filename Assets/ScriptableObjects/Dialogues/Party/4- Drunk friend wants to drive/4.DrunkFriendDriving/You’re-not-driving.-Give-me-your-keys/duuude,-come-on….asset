@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: "duuude,-come-on\u2026"
   m_EditorClassIdentifier: 
   dialogueText: "duuude, come on\u2026"
+  playedAudio: {fileID: 8300000, guid: eda635fd7eda6344597704d78a9cdc91, type: 3}
   options:
   - optionText: "Not happening. You\u2019ll thank me tomorrow."
     nextDialogue: {fileID: 11400000, guid: 444a7a13f1870a94fb4b52f2a0d10ff0, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls:
@@ -33,6 +35,7 @@ MonoBehaviour:
           m_CallState: 2
   - optionText: Okay, your call...
     nextDialogue: {fileID: 11400000, guid: 98f51864b7359f44f87905dd520fee9d, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls:
