@@ -129,6 +129,7 @@ public class PartyScene : MonoBehaviour
         _couchFriend.dialogueSystem.onEnd.AddListener(() =>
         {
             _couchFriend.IsInteractable = false;
+            _couchFriend._exclamationObj.SetActive(false);
             hasTalkedToCouchFriend.Value = true;
             Debug.Log("Couch friend dialogue ended. Has talked: " + hasTalkedToCouchFriend.Value);
         });
@@ -183,6 +184,7 @@ public class PartyScene : MonoBehaviour
                 {
                     GlobalStats.helpedRagingDrunk = true;
                     _rageNPC.IsInteractable = true;
+                    _rageNPC._exclamationObj.SetActive(true);
                     _rageNPC.objective.Begin();
 
                     _rageNPC.onIncompleteInteraction.AddListener(() =>
@@ -198,6 +200,7 @@ public class PartyScene : MonoBehaviour
                         _rageNPC.PlayIdleAnimation();
 
                         _rageNPC.IsInteractable = false;
+                        _rageNPC._exclamationObj.SetActive(false);
                         _rageNPC.objective.Complete();
                         _bonfireFriendNPC.StartNextSequence();
 
