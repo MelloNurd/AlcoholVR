@@ -2,6 +2,7 @@ using EditorAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -27,6 +28,13 @@ public class OpenableBottle : MonoBehaviour
 
         _grabInteractable = GetComponent<XRGrabInteractable>();
         _audioSource = gameObject.GetOrAdd<AudioSource>();
+
+        // Disable collisions between the bottle and any child colliders (like the cap)
+        Collider meshCol = GetComponent<Collider>();
+        foreach (Collider col in _cap.GetComponents<Collider>())
+        {
+            Physics.IgnoreCollision(meshCol, col);
+        }
     }
 
     private void Start()

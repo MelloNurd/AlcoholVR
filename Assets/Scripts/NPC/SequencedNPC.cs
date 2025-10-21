@@ -201,6 +201,7 @@ public class SequencedNPC : MonoBehaviour
                 await ExecuteDialogueSequence(sequence);
                 break;
             case Sequence.Type.Walk:
+                // ensure destination is world space position 
                 await ExecuteWalkSequence(sequence);
                 break;
             case Sequence.Type.WalkToPlayer:
@@ -270,7 +271,7 @@ public class SequencedNPC : MonoBehaviour
     private async UniTask ExecuteWalkSequence(Sequence sequence)
     {
         _isAtDestination = false;
-        agent.SetDestinationToClosestPoint(sequence.destination.transform.position, 1.5f);
+        agent.SetDestinationToClosestPoint(sequence.destination.position, 1.5f);
         agent.isStopped = false;
 
         AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)

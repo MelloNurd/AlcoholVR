@@ -58,6 +58,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private GameObject _flashingLightsObj;
     [SerializeField] private Transform _playerDrankNewPoint;
     [SerializeField] private Transform _cooler;
+    [SerializeField] private Transform _tent;
 
     // Misc variables
     private bool _isFlirtWaitingForPlayer = false;
@@ -112,8 +113,12 @@ public class BonfireScene : MonoBehaviour
         {
             StartAlcoholPoisoning();
         }
+        else if (Keyboard.current.f3Key.wasPressedThisFrame)
+        {
+            drunkFlirtNPC.StartNextSequence();
+        }
 
-        if(_isMysteryDrinkReady)
+        if (_isMysteryDrinkReady)
         {
             _isMysteryDrinkReady = false; // Only do this once
             StartMysteryDrinkNPC();
@@ -290,7 +295,7 @@ public class BonfireScene : MonoBehaviour
     {
         if (_isFlirtWaitingForPlayer && drunkFlirtNPC.currentSequence.type == Sequence.Type.Wait)
         {
-            if (Vector3.Distance(Player.Instance.CamPosition, drunkFlirtNPC.bodyObj.transform.position) < 2.5f)
+            if (Vector3.Distance(Player.Instance.CamPosition, _tent.position) < 2.75f)
             {
                 _followFlirt.Complete();
 
@@ -304,6 +309,7 @@ public class BonfireScene : MonoBehaviour
                 drunkFlirtNPC.bodyObj.transform.localPosition = Vector3.zero;
                 drunkFlirtNPC.transform.localEulerAngles = new Vector3(0, 203.75f, 0);
                 drunkFlirtNPC.bodyObj.transform.localEulerAngles = Vector3.zero;
+
                 Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
                 drunkFlirtNPC.StartSequence(sitSequence);
 

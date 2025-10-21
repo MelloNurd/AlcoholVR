@@ -38,9 +38,4 @@ public class CutsceneScript : MonoBehaviour
 
         Player.Instance.loading.LoadSceneByName("EndScene");
     }
-
-    private void FadeOutAudio()
-    {
-
-    }
 }
