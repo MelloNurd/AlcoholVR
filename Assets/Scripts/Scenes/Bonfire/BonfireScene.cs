@@ -12,6 +12,7 @@ public class BonfireScene : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip _natureSound;
     [SerializeField] private AudioClip _sirensSound;
+    [SerializeField] private AudioClip _tentRustleSound;
 
     [Header("Dialogue References")]
     [SerializeField] private Dialogue grabbedSoda;
@@ -300,10 +301,12 @@ public class BonfireScene : MonoBehaviour
                 _followFlirt.Complete();
 
                 _isFlirtWaitingForPlayer = false;
-                Player.Instance.CloseEyes(1.5f);
+                Player.Instance.CloseEyes(1f);
                 Player.Instance.DisableMovement();
 
-                await UniTask.Delay(2000);
+                await UniTask.Delay(1000);
+
+                AudioSource tempAudio = PlayerAudio.PlaySound(_tentRustleSound);
 
                 drunkFlirtNPC.transform.localPosition = new Vector3(10f, -1.25f, 4.33f);
                 drunkFlirtNPC.bodyObj.transform.localPosition = Vector3.zero;
@@ -312,6 +315,8 @@ public class BonfireScene : MonoBehaviour
 
                 Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
                 drunkFlirtNPC.StartSequence(sitSequence);
+
+                await UniTask.Delay(tempAudio.clip.length.ToMS());
 
                 Player.Instance.OpenEyes(0.75f);
                 Player.Instance.EnableMovement();

@@ -36,7 +36,8 @@ public class DialogueSystem : MonoBehaviour
         _audioSource = GetComponentInChildren<AudioSource>();
         if(_audioSource != null)
         {
-            _audioSource.enabled = false;
+            // This might've been breaking things so temporarily commenting out
+            //_audioSource.enabled = false;
         }
     }
 

@@ -761,38 +761,169 @@ public static class Extensions
 
     /// <summary>
     /// Sets the destination to the closest valid point on the NavMesh near the target destination.
+    /// This avoids picking points on different vertical floors by enforcing a max vertical difference.
+    /// Added optional visual debug parameters to show sampling and decisions.
     /// </summary>
-    /// <param name="agent">The NavMeshAgent to set the destination for</param>
-    /// <param name="targetDestination">The desired destination position</param>
-    /// <param name="checkRadius">The radius to search for at the targetDestination to check for a nav mesh</param>
-    /// <param name="areaMask">The area mask to use when sampling the NavMesh (default: NavMesh.AllAreas)</param>
-    /// <returns>The distance from the original destination to the closest valid point, or -1 if destination is null</returns>
-    public static float SetDestinationToClosestPoint(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 1.3f, int areaMask = NavMesh.AllAreas)
+    /// <returns>The newly found position on the NavMesh.</returns>
+    public static bool SetDestinationToClosestPoint(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 1.25f, bool startAtGround = true, bool limitHeight = true)
     {
-        if (targetDestination == null) return -1;
+        Vector3 result = GetNearestPointOnNavMesh(targetDestination, checkRadius, startAtGround, limitHeight);
 
-        if (!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
+        if (result == Vector3.zero)
         {
-            Debug.LogWarning($"[{agent.gameObject.name}] No valid NavMesh found near {targetDestination} in radius {checkRadius}. Agent {agent.transform.parent.gameObject.name} will not move.");
-        }
-        else
-        {
-            agent.SetDestination(hit.position);
+            Debug.LogWarning($"No valid NavMesh point found near target destination. Not setting position for {agent.gameObject.name}.");
+            return false;
         }
 
-        return hit.distance;
+        agent.SetDestination(result);
+        return true;
     }
 
-    public static Vector3 GetNearestPointOnNavMesh(this UnityEngine.AI.NavMeshAgent agent, Vector3 targetDestination, float checkRadius = 2f, int areaMask = NavMesh.AllAreas)
+    public static Vector3 GetNearestPointOnNavMesh(Vector3 targetDestination, float checkRadius = 1.25f, bool startOnGround = true, bool limitHeight = true)
     {
-        if (targetDestination == null) return Vector3.zero;
-        if (!NavMesh.SamplePosition(targetDestination, out NavMeshHit hit, checkRadius, areaMask))
+        Vector3 result = targetDestination;
+
+        if (startOnGround)
         {
-            Debug.LogWarning($"No valid NavMesh found near {targetDestination} in radius {checkRadius}. Returning Vector3.zero.");
-            return Vector3.zero;
+            if (Physics.Raycast(result, Vector3.down, out RaycastHit info, 5f))
+            {
+                result = info.point;
+            }
         }
-        return hit.position;
+
+        int checks = 80;
+        for (int i = 0; i < checks; i++)
+        {
+            float percent = (i + 1) / (checks / 2f); // Goes from 0 to 2 (so checkRadius doubles at the end)
+
+            Vector3 randomOffsetInSphere = Random.insideUnitSphere;
+            if(limitHeight) randomOffsetInSphere.y = Mathf.Clamp(randomOffsetInSphere.y, -0.5f, 0.5f); // Keep it flat on the XZ plane
+
+            Vector3 randomPoint = result + (percent * checkRadius * randomOffsetInSphere); // Basically, increase radius over time
+            if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+            {
+                DrawSphere(randomPoint, 0.25f, Color.green, duration: 10f);
+                result = hit.position;
+                Debug.Log($"Found position ({result}) in {i + 1} attempts.");
+                return result;
+            }
+            else
+            {
+                DrawSphere(randomPoint, 0.25f, Color.red, duration: 10f);
+            }
+        }
+
+        return Vector3.zero;
     }
 
+    // --- Debug helpers (XZ-plane visualizations using Debug.DrawLine) ---
+    private static void DrawCross(Vector3 position, Color color, float size = 0.1f, float duration = 0f)
+    {
+        Vector3 up = Vector3.up * (size * 0.1f);
+        Vector3 a = position + new Vector3(size, 0, 0) + up;
+        Vector3 b = position + new Vector3(-size, 0, 0) + up;
+        Vector3 c = position + new Vector3(0, 0, size) + up;
+        Vector3 d = position + new Vector3(0, 0, -size) + up;
+        Debug.DrawLine(a, b, color, duration);
+        Debug.DrawLine(c, d, color, duration);
+
+        // small vertical to indicate height
+        Debug.DrawLine(position, position + Vector3.up * (size * 0.5f), color, duration);
+    }
+
+    private static void DrawCircleXZ(Vector3 center, float radius, Color color, int segments = 24, float duration = 0f)
+    {
+        if (segments < 4) segments = 4;
+        float step = (Mathf.PI * 2f) / segments;
+        Vector3 prev = center + new Vector3(Mathf.Cos(0f) * radius, 0f, Mathf.Sin(0f) * radius);
+        for (int i = 1; i <= segments; i++)
+        {
+            float a = step * i;
+            Vector3 next = center + new Vector3(Mathf.Cos(a) * radius, 0f, Mathf.Sin(a) * radius);
+            Debug.DrawLine(prev, next, color, duration);
+            prev = next;
+        }
+    }
+
+    /// <summary>
+    /// Draws an approximate wireframe sphere using Debug.DrawLine.
+    /// </summary>
+    /// <param name="center">Sphere center in world space.</param>
+    /// <param name="radius">Sphere radius.</param>
+    /// <param name="color">Color for debug lines.</param>
+    /// <param name="segments">Segments per circle (horizontal / vertical resolution).</param>
+    /// <param name="latitudeRings">How many horizontal rings (parallel to XZ) to draw across the Y axis (includes top/bottom if >1).</param>
+    /// <param name="meridians">How many meridian lines (longitudinal) to draw.</param>
+    /// <param name="duration">Debug duration.</param>
+    private static void DrawSphere(Vector3 center, float radius, Color color, int segments = 24, int latitudeRings = 6, int meridians = 8, float duration = 0f)
+    {
+        if (radius <= 0f) return;
+        segments = Mathf.Max(4, segments);
+        latitudeRings = Mathf.Max(1, latitudeRings);
+        meridians = Mathf.Max(0, meridians);
+
+        // Helper to draw a circle in an arbitrary plane defined by two orthonormal axes
+        System.Action<Vector3, Vector3, Vector3, float, Color> DrawCircle = (c, axisA, axisB, r, col) =>
+        {
+            float step = (Mathf.PI * 2f) / segments;
+            Vector3 prev = c + (axisA * Mathf.Cos(0f) + axisB * Mathf.Sin(0f)) * r;
+            for (int i = 1; i <= segments; i++)
+            {
+                float a = step * i;
+                Vector3 next = c + (axisA * Mathf.Cos(a) + axisB * Mathf.Sin(a)) * r;
+                Debug.DrawLine(prev, next, col, duration);
+                prev = next;
+            }
+        };
+
+        // Great circles: XZ, XY, YZ
+        DrawCircle(center, Vector3.right, Vector3.forward, radius, color); // XZ (same as DrawCircleXZ)
+        DrawCircle(center, Vector3.right, Vector3.up, radius, color);      // XY
+        DrawCircle(center, Vector3.up, Vector3.forward, radius, color);    // YZ
+
+        // Latitudinal rings (parallel to XZ) at several Y heights to give sphere "thickness"
+        if (latitudeRings > 1)
+        {
+            for (int i = 0; i < latitudeRings; i++)
+            {
+                float t = i / (float)(latitudeRings - 1); // 0..1
+                float y = Mathf.Lerp(-radius, radius, t);
+                float ringRadius = Mathf.Sqrt(Mathf.Max(0f, radius * radius - y * y));
+                Vector3 ringCenter = center + Vector3.up * y;
+                // Slightly dim color for inner rings
+                Color ringColor = color * 0.9f;
+                DrawCircle(ringCenter, Vector3.right, Vector3.forward, ringRadius, ringColor);
+            }
+        }
+
+        // Meridians: lines from bottom to top along constant longitude
+        // For each meridian, step polar angle from -pi/2 to +pi/2 and connect points
+        if (meridians > 0)
+        {
+            int polarSteps = Mathf.Max(6, segments / 2); // vertical resolution along a meridian
+            for (int m = 0; m < meridians; m++)
+            {
+                float lon = (m / (float)meridians) * Mathf.PI * 2f;
+                Vector3 prev = Vector3.zero;
+                bool havePrev = false;
+                for (int p = 0; p <= polarSteps; p++)
+                {
+                    float t = p / (float)polarSteps; // 0..1
+                    float polar = Mathf.Lerp(-Mathf.PI * 0.5f, Mathf.PI * 0.5f, t); // -90 to +90 deg
+                    float cosP = Mathf.Cos(polar);
+                    float sinP = Mathf.Sin(polar);
+                    // Spherical coordinates to Cartesian
+                    Vector3 point = new Vector3(Mathf.Cos(lon) * cosP, sinP, Mathf.Sin(lon) * cosP) * radius;
+                    point += center;
+                    if (havePrev)
+                    {
+                        Debug.DrawLine(prev, point, color * 0.95f, duration);
+                    }
+                    prev = point;
+                    havePrev = true;
+                }
+            }
+        }
+    }
     #endregion  
 }

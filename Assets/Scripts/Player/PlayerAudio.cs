@@ -49,6 +49,7 @@ public class PlayerAudio : MonoBehaviour
     /// <param name="audio">Audio to play</param>
     /// <param name="volume">(0, 1f) volume to play the audio at</param>
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
+    /// <returns>The audio source playing the sound.</returns>
     public static AudioSource PlaySound(AudioClip audio, float volume, bool randomizePitch = false)
     {
         if (Instance == null) return null;
@@ -68,7 +69,7 @@ public class PlayerAudio : MonoBehaviour
 
         return source;
     }
-    public static void PlaySound(AudioClip audio) => PlaySound(audio, 1f, false);
+    public static AudioSource PlaySound(AudioClip audio) => PlaySound(audio, 1f, false);
 
     /// <summary>
     /// Play a sound that will loop forever. This will remove it from the pool of available audio sources.
