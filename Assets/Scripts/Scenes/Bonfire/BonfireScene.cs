@@ -330,6 +330,7 @@ public class BonfireScene : MonoBehaviour
         if (_playerHasGrabbedDrink || friendNPC.currentSequenceIndex < 3) return;
         _playerHasGrabbedDrink = true;
         GlobalStats.playerGrabbedAlcohol = false;
+        _grabDrink.Complete();
 
         friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedSoda;
         await friendNPC.StartNextSequenceAsync();
@@ -341,8 +342,6 @@ public class BonfireScene : MonoBehaviour
 
         await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
 
-        _grabDrink.Complete();
-
         drunkFlirtNPC.StartNextSequence();
     }
 
@@ -352,6 +351,7 @@ public class BonfireScene : MonoBehaviour
         if (_playerHasGrabbedDrink || friendNPC.currentSequenceIndex < 3) return;
         _playerHasGrabbedDrink = true;
         GlobalStats.playerGrabbedAlcohol = true;
+        _grabDrink.Complete();
 
         friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedAlcohol;
         await friendNPC.StartNextSequenceAsync();
@@ -361,8 +361,6 @@ public class BonfireScene : MonoBehaviour
         await UniTask.Delay(delay);
 
         await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
-
-        _grabDrink.Complete();
 
         drunkFlirtNPC.StartNextSequence();
     }
