@@ -2349,43 +2349,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.27817917
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.14
+      value: -0.042031903
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.27753368
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.8731892
+      value: 0.87293446
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.028965678
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.48738146
+      value: -0.4868622
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0.010568893
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 3.489
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -58.337
+      value: -58.317
       objectReference: {fileID: 0}
     - target: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -0.56
       objectReference: {fileID: 0}
     - target: {fileID: 4475757251424833554, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       propertyPath: m_Enabled
@@ -35489,7 +35489,7 @@ PrefabInstance:
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[3].destination
       value: 
-      objectReference: {fileID: 298352637}
+      objectReference: {fileID: 1349110665}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[4].destination
       value: 
@@ -82179,6 +82179,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
+--- !u!1 &1349110664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1349110665}
+  m_Layer: 0
+  m_Name: TentWalkPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1349110665
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1349110664}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: 1.19}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 298352637}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1368216902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94570,7 +94601,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 411942653ca34844bb814ef2ae9dcf20, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1349110665}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2674550977283092935, guid: c84b790582828c044b6d944a24b270f5, type: 3}
       insertIndex: -1
