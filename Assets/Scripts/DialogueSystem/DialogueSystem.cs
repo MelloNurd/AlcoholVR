@@ -61,9 +61,13 @@ public class DialogueSystem : MonoBehaviour
         if(_audioSource == null) return;
 
         _audioSource.enabled = true;
+
+        if (_audioSource.isPlaying) _audioSource.Stop();
+
         if (dialogue.playedAudio != null)
         {
-            _audioSource.PlayOneShot(dialogue.playedAudio);
+            _audioSource.clip = dialogue.playedAudio;
+            _audioSource.Play();
             await UniTask.Delay(dialogue.playedAudio.length.ToMS());
         }
         else if (defaultDialogueSound.Length > 0)
