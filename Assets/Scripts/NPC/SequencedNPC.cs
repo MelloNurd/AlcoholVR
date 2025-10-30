@@ -167,7 +167,7 @@ public class SequencedNPC : MonoBehaviour
                 _lastDestinationUpdateTime += Time.deltaTime;
 
                 // Update destination to be in front of player every half second
-                Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized;
+                Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized*1.5f;
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
                     _lastDestinationUpdateTime = 0f;
@@ -178,6 +178,13 @@ public class SequencedNPC : MonoBehaviour
 
             if (agent.IsAtDestination(0.01f))
             {
+                if(isWalkToPlayer && Vector3.Distance(agent.transform.position, Player.Instance.Position) > 2f)
+                {
+                    // If this happens, it's basically a false positive, and we want to keep the NPC walking to the player
+                    return;
+                }
+
+                Debug.Log($"{gameObject.name} reached destination!!!");
                 _isAtDestination = true;
                 agent.isStopped = true;
             }
@@ -256,7 +263,7 @@ public class SequencedNPC : MonoBehaviour
 
         PlayAnimation(walkAnim);
 
-        await UniTask.WaitUntil(() => agent.IsAtDestination(), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+        await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
         if (currentSequence == sequence)

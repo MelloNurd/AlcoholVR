@@ -802,15 +802,15 @@ public static class Extensions
             Vector3 randomPoint = result + (percent * checkRadius * randomOffsetInSphere); // Basically, increase radius over time
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
             {
-                //DrawSphere(randomPoint, 0.25f, Color.green, duration: 10f);
+                DrawSphere(randomPoint, 0.25f, Color.green, duration: 15f);
                 result = hit.position;
                 Debug.Log($"Found position ({result}) in {i + 1} attempts.");
                 return result;
             }
-            //else
-            //{
-            //    //DrawSphere(randomPoint, 0.25f, Color.red, duration: 10f);
-            //}
+            else
+            {
+                DrawSphere(randomPoint, 0.25f, Color.red, duration: 15f);
+            }
         }
 
         return Vector3.zero;

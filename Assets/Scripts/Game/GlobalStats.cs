@@ -53,9 +53,12 @@ public class GlobalStats : MonoBehaviour
             return;
         }
 
-        if(startDrunk)
+        // Only runs in editor so it won't accidentally set drink count for players
+#if UNITY_EDITOR
+        if (startDrunk)
         {
             DrinkCount = 99;
         }
+#endif
     }
 }

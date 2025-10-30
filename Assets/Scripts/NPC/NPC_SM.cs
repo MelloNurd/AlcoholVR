@@ -125,6 +125,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     {
         animator.CrossFade(animationName, 0.1f);
     }
+
     public void PlayIdleAnimation() => PlayAnimation(idleAnimation.name);
     public void PlayWalkAnimation() => PlayAnimation(moveAnimation.name);
     public int PlayNextAction()

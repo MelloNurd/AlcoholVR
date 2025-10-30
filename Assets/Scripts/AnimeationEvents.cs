@@ -22,7 +22,6 @@ public class AnimeationEvents : MonoBehaviour
 
     public void PlayFirstSlam()
     {
-        Debug.Log("[PartyScene] Playing first rage slam sound... audio index: " + audioIndex);
         audioIndex = GetRageSlamSounds();
         if (audioIndex == -1) return;
 
@@ -31,7 +30,6 @@ public class AnimeationEvents : MonoBehaviour
 
     public void PlaySecondSlam()
     {
-        Debug.Log("[PartyScene] Playing second rage slam sound... audio index: " + audioIndex);
         if (audioIndex == -1) return;
         if (audioIndex + 1 >= rageSlamSounds.Length)
         {
