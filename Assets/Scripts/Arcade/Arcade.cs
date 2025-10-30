@@ -5,6 +5,7 @@ using EditorAttributes;
 using PrimeTween;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -52,6 +53,19 @@ public class Arcade : MonoBehaviour
     [SerializeField] private Sprite[] _cloudSprites;
     [HideInInspector] public List<ArcadeDetail> details = new List<ArcadeDetail>();
 
+    [Header("Audio")]
+    [SerializeField] AudioClip _mooSound;
+    [SerializeField] AudioClip _huffSound;
+    [SerializeField] AudioClip _backgroundMusic;
+    [SerializeField] AudioClip _hitSound;
+    [SerializeField] AudioClip _scoreSound;
+    [SerializeField] AudioClip _runSound;
+    private AudioSource _musicSource;
+    private AudioSource _cowSource;
+    private AudioSource _scoreSource;
+    private AudioSource _hitSource;
+    private AudioSource _runSource;
+
     private MaterialScroll _bgScroll;
 
     private CancellationTokenSource _cancelToken;
@@ -89,6 +103,71 @@ public class Arcade : MonoBehaviour
 
         _titleStartPos = _titleSprite.transform.position;
         _subtitleStartPos = _subtitleSprite.transform.position;
+
+        // Music/SFX Setup
+        GameObject temp = transform.GetChild(0).gameObject; // Get the "screen" object
+
+        AudioRolloffMode mode = AudioRolloffMode.Custom;
+        float minDistance = 0.5f;
+        float maxDistance = 6f;
+
+        _musicSource = temp.AddComponent<AudioSource>();
+        _musicSource.clip = _backgroundMusic;
+        _musicSource.loop = true;
+        _musicSource.playOnAwake = false;
+        _musicSource.spatialBlend = 1f;
+        _musicSource.rolloffMode = mode;
+        _musicSource.minDistance = minDistance;
+        _musicSource.maxDistance = maxDistance;
+
+        _cowSource = temp.AddComponent<AudioSource>();
+        _cowSource.loop = false;
+        _cowSource.playOnAwake = false;
+        _cowSource.clip = _mooSound;
+        _cowSource.spatialBlend = 1f;
+        _cowSource.rolloffMode = mode;
+        _cowSource.minDistance = minDistance;
+        _cowSource.maxDistance = maxDistance;
+        _cowSource.volume = 0.5f;
+
+        _scoreSource = temp.AddComponent<AudioSource>();
+        _scoreSource.loop = false;
+        _scoreSource.playOnAwake = false;
+        _scoreSource.clip = _scoreSound;
+        _scoreSource.spatialBlend = 1f;
+        _scoreSource.rolloffMode = mode;
+        _scoreSource.minDistance = minDistance;
+        _scoreSource.maxDistance = maxDistance;
+
+        _hitSource = temp.AddComponent<AudioSource>();
+        _hitSource.loop = false;
+        _hitSource.playOnAwake = false;
+        _hitSource.clip = _hitSound;
+        _hitSource.spatialBlend = 1f;
+        _hitSource.rolloffMode = mode;
+        _hitSource.minDistance = minDistance;
+        _hitSource.maxDistance = maxDistance;
+
+        _runSource = temp.AddComponent<AudioSource>();
+        _runSource.loop = true;
+        _runSource.playOnAwake = false;
+        _runSource.clip = _runSound;
+        _runSource.spatialBlend = 1f;
+        _runSource.rolloffMode = mode;
+        _runSource.minDistance = minDistance;
+        _runSource.maxDistance = maxDistance;
+
+        _arcadePlayer.OnPlayerDeath.AddListener(() =>
+        {
+            _runSource.Stop();
+            _musicSource.Stop();
+            _hitSource.Play();
+        });
+
+        ArcadeObstacle.OnPlayerScore.AddListener(() =>
+        {
+            _scoreSource.Play();
+        });
     }
 
     private void Start()
@@ -128,6 +207,8 @@ public class Arcade : MonoBehaviour
 
         _arcadePlayer.RestartPlayer(arcadeGameCamera.transform.position.WithZ(0));
         _arcadePlayer.SetDirection(0);
+        _runSource.volume = 1f;
+        _runSource.Play();
 
         GameSpeed = 0.5f; // Reset game speed
         _bgScroll.SetScrollSpeed(-GameSpeed, 0);
@@ -146,6 +227,11 @@ public class Arcade : MonoBehaviour
         RunTitlePositionAnimations();
         RunTitleRotationAnimations();
         RunSubtitleScaleAnimations();
+
+        if (!restarting)
+        {
+            PlayCowSounds();
+        }
     }
 
     public async void StartGame()
@@ -165,6 +251,9 @@ public class Arcade : MonoBehaviour
         _ = Tween.UIAnchoredPosition(_scoreText.rectTransform, Vector2.zero, 0.5f, Ease.OutExpo);
         _arcadePlayer.SetDirection(1);
         StartSpawningObstacles();
+
+        _ = Tween.AudioVolume(_runSource, 0.5f, 0.25f);
+        _musicSource.Play();
     }
 
     // The "Update" of the game sequence logic
@@ -182,6 +271,7 @@ public class Arcade : MonoBehaviour
     public async void EndGame()
     {
         _bgScroll.ScrollingActive = false;
+
         State = GameState.Transition;
 
         int highScore = PlayerPrefs.GetInt("Arcade_HighScore", 0);
@@ -218,6 +308,38 @@ public class Arcade : MonoBehaviour
         await Tween.Scale(_scoreBG.transform, Vector3.right, 0.4f, Ease.OutExpo);
         _scoreBG.color = Color.black.WithAlpha(0.87f);
         State = GameState.Menu;
+    }
+
+    #endregion
+
+    #region Audio Methods
+
+    private async void PlayCowSounds()
+    {
+        while(true)
+        {
+            // Do not play cow sounds during these states
+            if (State == GameState.Transition || State == GameState.GameOver || State == GameState.Restarting)
+            {
+                await UniTask.Yield();
+                continue;
+            }
+
+            float waitTime = Random.Range(4f, 10f);
+
+            _cowSource.Play();
+
+            if(Random.Range(0, 3) == 0) // 33% chance to play huff sound after moo
+            {
+                await UniTask.Delay(_mooSound.length.ToMS());
+                await UniTask.Delay(0.5f.ToMS());
+                _cowSource.PlayOneShot(_huffSound, 1f);
+
+                waitTime -= 0.5f + _mooSound.length;
+            }
+
+            await UniTask.Delay(waitTime.ToMS());
+        }
     }
 
     #endregion

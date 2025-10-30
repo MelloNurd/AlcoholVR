@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ArcadeObstacle : MonoBehaviour
 {
     private Arcade arcade;
+    public static UnityEvent OnPlayerScore = new();
 
     private void Start()
     {
@@ -29,6 +31,7 @@ public class ArcadeObstacle : MonoBehaviour
         await UniTask.Delay(250);
         if(arcade.State == Arcade.GameState.Playing)
         {
+            OnPlayerScore?.Invoke();
             arcade.UpdateScore(arcade.Score + 1);
         }
     }
