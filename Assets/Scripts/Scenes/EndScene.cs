@@ -30,7 +30,7 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _stoppedFirePicture;
     [SerializeField] private GameObject _fireSpreadPicture;
 
-    public int MadCowMinScore = 20;
+    public int MadCowMinScore = 10;
     public int TrashketballMinScore = 10;
 
     void Start()
