@@ -50,26 +50,26 @@ public class PlayerAudio : MonoBehaviour
     /// <param name="volume">(0, 1f) volume to play the audio at</param>
     /// <param name="randomizePitch">Whether or not to randomize the pitch of the audio (from 0.9f to 1.1f).</param>
     /// <returns>The audio source playing the sound.</returns>
-    public static AudioSource PlaySound(AudioClip audio, float volume, bool randomizePitch = false)
+    public static void PlaySound(AudioClip audio, float volume, out AudioSource source,  bool randomizePitch = false)
     {
-        if (Instance == null) return null;
+        source = null;
+
+        if (Instance == null) return;
         if(audio == null)
         {
             Debug.LogWarning($"Could not find audio {audio.name}. Unable to play.");
-            return null;
+            return;
         }
 
-        AudioSource source = Instance.audioSources[Instance.currentAudioSourceIndex];
+        source = Instance.audioSources[Instance.currentAudioSourceIndex];
         source.clip = audio;
         source.pitch = randomizePitch ? Random.Range(0.9f, 1.1f) : 1f;
         source.volume = volume;
         source.Play();
 
         Instance.currentAudioSourceIndex = (Instance.currentAudioSourceIndex + 1) % Instance.audioSourceCount;
-
-        return source;
     }
-    public static AudioSource PlaySound(AudioClip audio) => PlaySound(audio, 1f, false);
+    public static void PlaySound(AudioClip audio) => PlaySound(audio, 1f, out _, false);
 
     /// <summary>
     /// Play a sound that will loop forever. This will remove it from the pool of available audio sources.

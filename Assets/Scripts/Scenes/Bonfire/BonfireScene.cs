@@ -244,7 +244,7 @@ public class BonfireScene : MonoBehaviour
             }
         }
 
-        AudioSource sirenSource = PlayerAudio.PlaySound(_sirensSound, 0f);
+        PlayerAudio.PlaySound(_sirensSound, 0f, out AudioSource sirenSource);
         if (sirenSource != null)
         {
             _ = Tween.AudioVolume(sirenSource, 0.6f, 15f, Ease.InOutSine);
@@ -306,7 +306,7 @@ public class BonfireScene : MonoBehaviour
 
                 await UniTask.Delay(1000);
 
-                AudioSource tempAudio = PlayerAudio.PlaySound(_tentRustleSound);
+                PlayerAudio.PlaySound(_tentRustleSound, 1f, out AudioSource tempAudio);
 
                 drunkFlirtNPC.transform.localPosition = new Vector3(10f, -1.25f, 4.33f);
                 drunkFlirtNPC.bodyObj.transform.localPosition = Vector3.zero;
