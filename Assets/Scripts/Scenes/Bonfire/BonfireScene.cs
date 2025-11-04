@@ -355,7 +355,7 @@ public class BonfireScene : MonoBehaviour
         await friendNPC.StartNextSequenceAsync();
         _friendsSoda.SetActive(true);
 
-        int delay = Random.Range(45f, 60f).ToMS();
+        int delay = Random.Range(30f, 50f).ToMS();
         Debug.Log($"Drunk flirt NPC will start in {delay} ms");
         await UniTask.Delay(delay);
 
@@ -376,7 +376,7 @@ public class BonfireScene : MonoBehaviour
         await friendNPC.StartNextSequenceAsync();
         _friendsAlcohol.SetActive(true);
 
-        int delay = Random.Range(45f, 60f).ToMS();
+        int delay = Random.Range(30f, 50f).ToMS();
         await UniTask.Delay(delay);
 
         await UniTask.WaitUntil(() => !Player.Instance.IsInDialogue);
