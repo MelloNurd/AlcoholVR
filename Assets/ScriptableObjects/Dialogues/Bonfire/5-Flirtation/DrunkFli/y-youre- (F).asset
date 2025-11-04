@@ -10,19 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
-  m_Name: y-youre-
+  m_Name: y-youre- (F)
   m_EditorClassIdentifier: 
   dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
   playedAudio: {fileID: 8300000, guid: c5e16d78b1a068f47ba365086e0a16b0, type: 3}
   options:
-  - optionText: Are you okay? Maybe you should sit down and get some water...
-    nextDialogue: {fileID: 11400000, guid: dbf337ca8afb3a043aee708cb977f822, type: 2}
-    DisableButton: 0
+  - optionText: No thanks...
+    nextDialogue: {fileID: 0}
+    DisableButton: 1
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-  - optionText: No thanks...
-    nextDialogue: {fileID: 11400000, guid: 6726a28562bba824f8e9eae72f370142, type: 2}
+  - optionText: Are you okay? Maybe you should sit down and get some water...
+    nextDialogue: {fileID: 0}
+    DisableButton: 1
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: '*hiccup* suure'
+    nextDialogue: {fileID: 11400000, guid: 2346d1d7043878e429930073a97d9f8f, type: 2}
     DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:

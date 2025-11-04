@@ -18,6 +18,9 @@ public class GlobalStats : MonoBehaviour
 
     [SerializeField] bool startDrunk = false;
 
+    // Used to determine flirt person's gender (0 = female, 100 = male)
+    public int Gender { get; set; } = 1;
+
     // House stats
     public static BroughtOptions broughtItems = BroughtOptions.None;
 

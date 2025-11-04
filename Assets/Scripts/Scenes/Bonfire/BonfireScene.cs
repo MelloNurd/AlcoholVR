@@ -17,8 +17,10 @@ public class BonfireScene : MonoBehaviour
     [Header("Dialogue References")]
     [SerializeField] private Dialogue grabbedSoda;
     [SerializeField] private Dialogue grabbedAlcohol;
-    [SerializeField] private Dialogue soberFlirtation;
-    [SerializeField] private Dialogue drunkFlirtation;
+    [SerializeField] private Dialogue soberFlirtationFemale;
+    [SerializeField] private Dialogue soberFlirtationMale;
+    [SerializeField] private Dialogue drunkFlirtationFemale;
+    [SerializeField] private Dialogue drunkFlirtationMale;
     [SerializeField] private Dialogue alcoholPoisoning;
     [SerializeField] private Dialogue poisoningResponse;
 
@@ -28,7 +30,9 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private SequencedNPC friendNPC;
     [SerializeField] private SequencedNPC mysteryDrinkNPC;
     [SerializeField] private SequencedNPC tableNPC;
-    [SerializeField] private SequencedNPC drunkFlirtNPC;
+    [SerializeField] private SequencedNPC drunkFlirtNPCfemale;
+    [SerializeField] private SequencedNPC drunkFlirtNPCmale;
+    private SequencedNPC drunkFlirtNPC;
     [SerializeField] private SequencedNPC fireStickNPC;
     [SerializeField] private SequencedNPC fireFriendNPC;
     [SerializeField] private SequencedNPC poisonedNPC;
@@ -84,6 +88,19 @@ public class BonfireScene : MonoBehaviour
 
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
+
+        // Choose flirt NPC based on
+        if(GlobalStats.Instance.Gender > 50)
+        {
+            drunkFlirtNPC = drunkFlirtNPCmale;
+            drunkFlirtNPCfemale.gameObject.SetActive(false);
+        }
+        else
+        {
+            drunkFlirtNPC = drunkFlirtNPCfemale;
+            drunkFlirtNPCmale.gameObject.SetActive(false);
+        }
+
 
         PlayerAudio.PlayLoopingSound(_natureSound);
 
@@ -272,7 +289,8 @@ public class BonfireScene : MonoBehaviour
 
         if (GlobalStats.DrinkCount >= 2)
         {
-            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtation;
+            Dialogue drunkFlirtDialogue = GlobalStats.Instance.Gender > 50 ? drunkFlirtationMale : drunkFlirtationFemale;
+            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is drunk, so they went with the NPC
                 _isFlirtWaitingForPlayer = true;
@@ -282,7 +300,8 @@ public class BonfireScene : MonoBehaviour
         }
         else
         {
-            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = soberFlirtation;
+            Dialogue soberFlirtDialogue = GlobalStats.Instance.Gender > 50 ? soberFlirtationMale : soberFlirtationFemale;
+            drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = soberFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is not drunk, so they did not go with the NPC
                 Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);

@@ -31,6 +31,9 @@ public class OpenableBottle : MonoBehaviour
 
         // Disable collisions between the bottle and any child colliders (like the cap)
         Collider meshCol = GetComponent<Collider>();
+
+        if (!_cap) return;
+
         foreach (Collider col in _cap.GetComponents<Collider>())
         {
             Physics.IgnoreCollision(meshCol, col);
