@@ -95,7 +95,7 @@ public class Phone : MonoBehaviour
     private void Awake()
     {
         // Singleton implementation
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -186,7 +186,7 @@ public class Phone : MonoBehaviour
 
         _phoneSize = _phoneObj.transform.localScale;
         DisablePhone(0f, false);
-        
+
         GameObject leftHand = GameObject.Find("LeftHand");
 
         Collider[] phoneColliders = _phoneObj.GetComponentsInChildren<Collider>();
@@ -210,8 +210,11 @@ public class Phone : MonoBehaviour
             string msg = Input.GetKey(KeyCode.LeftShift) ? "This is a test message" : "This is a second test message";
             QueueNotification("Test Sender", "This is a test message");
         }
-        
-        if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed))
+
+        if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed)
+            || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out _buttonPressed)
+            || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out _buttonPressed)
+            )
         {
             if (_buttonPressed && !_lastButtonState)
             {
