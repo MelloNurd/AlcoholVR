@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-public class DemoScene : MonoBehaviour
+public class House : MonoBehaviour
 {
     [SerializeField] private SequencedNPC _dadNPC;
     private bool hasDadStarted = false;
