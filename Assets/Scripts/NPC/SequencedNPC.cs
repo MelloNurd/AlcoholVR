@@ -138,6 +138,12 @@ public class SequencedNPC : MonoBehaviour
 
     private void Start()
     {
+        if (Player.Instance == null)
+        {
+            Debug.Log("Player camera object is is null");
+            return;
+        }
+            
         _playerObj = Player.Instance.Camera.gameObject;
 
         if (sequences.Count == 0)
