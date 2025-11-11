@@ -42,7 +42,6 @@ public class PhysicalButton : MonoBehaviour
     public UnityEvent OnButtonHold; // Runs every frame the button is pressed
 
     private GameObject _button;
-    private GameObject _buttonDarkness;
     private GameObject _buttonBase;
 
     [SerializeField, ReadOnly] private float _buttonUpDistance;
@@ -50,16 +49,40 @@ public class PhysicalButton : MonoBehaviour
 
     private Collider[] _collisionResults = new Collider[8]; // Pre-allocated array for overlap detection
 
+    // Objects for enabled/disabled states
+    private GameObject _enabledBaseObj;
+    private GameObject _disabledBaseObj;
+    private GameObject _enabledInnerObj;
+    private GameObject _disabledInnerObj;
+    private GameObject _enabledOuterObj;
+    private GameObject _disabledOuterObj;
+
     public void EnableButton()
     {
-        if (_buttonDarkness) _buttonDarkness.SetActive(false);
+        _enabledBaseObj.SetActive(true);
+        _disabledBaseObj.SetActive(false);
+
+        _enabledInnerObj.SetActive(true);
+        _disabledInnerObj.SetActive(false);
+
+        _enabledOuterObj.SetActive(true);
+        _disabledOuterObj.SetActive(false);
+
         _buttonLabel.color = Color.white;
         IsInteractable = true;
     }
 
     public void DisableButton()
     {
-        if(_buttonDarkness) _buttonDarkness.SetActive(true);
+        _enabledBaseObj.SetActive(false);
+        _disabledBaseObj.SetActive(true);
+
+        _enabledInnerObj.SetActive(false);
+        _disabledInnerObj.SetActive(true);
+
+        _enabledOuterObj.SetActive(false);
+        _disabledOuterObj.SetActive(true);
+
         _buttonLabel.color = Color.gray;
         IsInteractable = false;
     }
@@ -68,9 +91,14 @@ public class PhysicalButton : MonoBehaviour
     {
         _button = transform.Find("Button").gameObject;
 
-        _buttonDarkness = _button.transform.Find("ButtonDarkness")?.gameObject;
-
         _buttonBase = transform.Find("Base").gameObject;
+
+        _enabledOuterObj = transform.Find("Base/Base").gameObject;
+        _disabledBaseObj = transform.Find("Base/BaseDisabled").gameObject;
+        _enabledInnerObj = transform.Find("Button/ButtonInside").gameObject;
+        _disabledInnerObj = transform.Find("Button/ButtonInsideDisabled").gameObject;
+        _enabledBaseObj = transform.Find("Button/ButtonOutside").gameObject;
+        _disabledOuterObj = transform.Find("Button/ButtonOutsideDisabled").gameObject;
 
         _buttonLabel = transform.Find("Label").GetComponent<TMP_Text>();
         _buttonLabel.text = labelText;

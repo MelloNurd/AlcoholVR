@@ -15,8 +15,6 @@ public class DialogueButtons : MonoBehaviour
     [SerializeField, UnityEngine.Range(0, 360)] private float _buttonAngleSpacing = 30f;
     [SerializeField] private float _spawnDistanceFromPlayer = 0.6f;
 
-    private Light _spotLight;
-
     private GameObject _buttonParentObj;
 
     private int currentButtonCount = 0;
@@ -34,9 +32,6 @@ public class DialogueButtons : MonoBehaviour
             return;
         }
 
-        _spotLight = GetComponentInChildren<Light>(true);
-        if(_spotLight != null) _spotLight.enabled = false;
-
         if (_buttonParentObj == null)
         {
             _buttonParentObj = new GameObject("DialogueButtons");
@@ -47,17 +42,17 @@ public class DialogueButtons : MonoBehaviour
     private void Update()
     {
         _buttonParentObj.transform.position = Player.Instance.CamPosition.AddY(-0.2f);
-        
+
         // Calculate deadzone effect based on current button count
         if (currentButtonCount > 0)
         {
             float totalArcSpan = (currentButtonCount - 1) * _buttonAngleSpacing;
             float deadzoneMultiplier = Mathf.Clamp01(1f - (totalArcSpan / 180f)); // Reduce rotation as arc gets wider
             deadzoneMultiplier = Mathf.Max(deadzoneMultiplier, 0.1f); // Minimum 10% rotation to prevent complete lock
-            
+
             Vector3 targetForward = Player.Instance.Forward.WithY(0);
             Vector3 currentForward = _buttonParentObj.transform.forward;
-            
+
             // Apply deadzone by reducing the rotation amount
             Vector3 dampedForward = Vector3.Slerp(currentForward, targetForward, deadzoneMultiplier * Time.deltaTime * 2f);
             _buttonParentObj.transform.rotation = Quaternion.LookRotation(dampedForward);
@@ -68,52 +63,62 @@ public class DialogueButtons : MonoBehaviour
             _buttonParentObj.transform.rotation = Quaternion.LookRotation(Player.Instance.Forward.WithY(0));
         }
 
-        if(currentButtonCount > 0)
+#if UNITY_EDITOR
+        HandleEditorKeyInput();
+#endif
+    }
+
+    private void HandleEditorKeyInput()
+    {
+        void TryPressButton(int buttonIndex)
         {
-            if(Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.numpad1Key.wasPressedThisFrame)
+            if (buttonIndex < _activeButtons.Count && _activeButtons[buttonIndex].IsInteractable)
             {
-                //if (!_activeButtons[0].IsInteractable) return;
-                _activeButtons[0].ButtonPress();
+                _activeButtons[buttonIndex].ButtonPress();
             }
-            else if(currentButtonCount > 1 && (Keyboard.current.digit2Key.wasPressedThisFrame || Keyboard.current.numpad2Key.wasPressedThisFrame))
+        }
+
+        if (currentButtonCount > 0)
+        {
+            if (currentButtonCount > 1 && (Keyboard.current.digit2Key.wasPressedThisFrame || Keyboard.current.numpad2Key.wasPressedThisFrame))
             {
-                //if (!_activeButtons[1].IsInteractable) return;
-                _activeButtons[1].ButtonPress();
+                TryPressButton(1);
             }
-            else if(currentButtonCount > 2 && (Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.numpad3Key.wasPressedThisFrame))
+            else if (currentButtonCount > 2 && (Keyboard.current.digit3Key.wasPressedThisFrame || Keyboard.current.numpad3Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[2].IsInteractable) return;
-                _activeButtons[2].ButtonPress();
+                TryPressButton(2);
             }
-            else if(currentButtonCount > 3 && (Keyboard.current.digit4Key.wasPressedThisFrame || Keyboard.current.numpad4Key.wasPressedThisFrame))
+            else if (currentButtonCount > 3 && (Keyboard.current.digit4Key.wasPressedThisFrame || Keyboard.current.numpad4Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[3].IsInteractable) return;
-                _activeButtons[3].ButtonPress();
+                TryPressButton(3);
             }
-            else if(currentButtonCount > 4 && (Keyboard.current.digit5Key.wasPressedThisFrame || Keyboard.current.numpad5Key.wasPressedThisFrame))
+            else if (currentButtonCount > 4 && (Keyboard.current.digit5Key.wasPressedThisFrame || Keyboard.current.numpad5Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[4].IsInteractable) return;
-                _activeButtons[4].ButtonPress();
+                TryPressButton(4);
             }
-            else if(currentButtonCount > 5 && (Keyboard.current.digit6Key.wasPressedThisFrame || Keyboard.current.numpad6Key.wasPressedThisFrame))
+            else if (currentButtonCount > 5 && (Keyboard.current.digit6Key.wasPressedThisFrame || Keyboard.current.numpad6Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[5].IsInteractable) return;
-                _activeButtons[5].ButtonPress();
+                TryPressButton(5);
             }
-            else if(currentButtonCount > 6 && (Keyboard.current.digit7Key.wasPressedThisFrame || Keyboard.current.numpad7Key.wasPressedThisFrame))
+            else if (currentButtonCount > 6 && (Keyboard.current.digit7Key.wasPressedThisFrame || Keyboard.current.numpad7Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[6].IsInteractable) return;
-                _activeButtons[6].ButtonPress();
+                TryPressButton(6);
             }
-            else if(currentButtonCount > 7 && (Keyboard.current.digit8Key.wasPressedThisFrame || Keyboard.current.numpad8Key.wasPressedThisFrame))
+            else if (currentButtonCount > 7 && (Keyboard.current.digit8Key.wasPressedThisFrame || Keyboard.current.numpad8Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[7].IsInteractable) return;
-                _activeButtons[7].ButtonPress();
+                TryPressButton(7);
             }
-            else if(currentButtonCount > 8 && (Keyboard.current.digit9Key.wasPressedThisFrame || Keyboard.current.numpad9Key.wasPressedThisFrame))
+            else if (currentButtonCount > 8 && (Keyboard.current.digit9Key.wasPressedThisFrame || Keyboard.current.numpad9Key.wasPressedThisFrame))
             {
-                if (!_activeButtons[8].IsInteractable) return;
-                _activeButtons[8].ButtonPress();
+                TryPressButton(8);
+            }
+            else if (currentButtonCount > 9 && Keyboard.current.digit0Key.wasPressedThisFrame)
+            {
+                TryPressButton(9);
+            }
+            else if (Keyboard.current.digit1Key.wasPressedThisFrame || Keyboard.current.numpad1Key.wasPressedThisFrame)
+            {
+                TryPressButton(0);
             }
         }
     }
@@ -167,12 +172,6 @@ public class DialogueButtons : MonoBehaviour
             {
                 optionButton.PlaySound(_buttonAppearSound);
             }
-        }
-
-        if(_spotLight != null)
-        {
-            _spotLight.transform.position = Camera.main.transform.position.AddY(1f);
-            _spotLight.enabled = true;
         }
 
         return true;
@@ -236,8 +235,6 @@ public class DialogueButtons : MonoBehaviour
         currentButtonCount = 0;
         foreach (Transform child in _buttonParentObj.transform)
         {
-            if(_spotLight != null && child == _spotLight.transform) continue; // Skip spotlight
-
             if (child.TryGetComponent(out PhysicalButton button))
             {
                 button.OnButtonDown.RemoveAllListeners(); // Remove all listeners to prevent memory leaks
@@ -260,10 +257,5 @@ public class DialogueButtons : MonoBehaviour
         }
 
         _activeButtons.Clear();
-
-        if (_spotLight != null)
-        {
-            _spotLight.enabled = false;
-        }
     }
 }

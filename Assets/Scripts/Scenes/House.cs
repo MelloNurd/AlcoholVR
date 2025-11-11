@@ -48,35 +48,37 @@ public class House : MonoBehaviour
 
     private void Update()
     {
-        if(Keyboard.current.f1Key.wasPressedThisFrame)
+        if (Keyboard.current.f1Key.wasPressedThisFrame)
         {
-            StartDad();
+            PackedFood();
+            TryStartDad();
+        }
+        else if (Keyboard.current.f2Key.wasPressedThisFrame)
+        {
+            PackedAlcohol();
+            TryStartDad();
         }
     }
 
-    public void StartDad()
+    public async void TryStartDad()
     {
         if (hasDadStarted) return;
         hasDadStarted = true;
-        StartCoroutine(DadDelay());
-    }
 
-    IEnumerator DadDelay()
-    {
         Vector3 originalDoorPosition = door.transform.position;
         Quaternion originalDoorRotation = door.transform.rotation;
 
-        yield return new WaitForSeconds(2f);
+        await UniTask.Delay(2000);
         door.transform.localPosition = new Vector3(-.459f, .1377f, -.489f);
         door.transform.localRotation = Quaternion.Euler(0, 90, 0);
 
         _dadNPC.StartNextSequence();
 
-        yield return new WaitForSeconds(1f);
+        await UniTask.Delay(1000);
         door.transform.position = originalDoorPosition;
         door.transform.rotation = originalDoorRotation;
 
-        yield return new WaitForSeconds(3f);
+        await UniTask.Delay(3000);
         exitInteractable.enabled = true;
     }
 
@@ -105,29 +107,40 @@ public class House : MonoBehaviour
     }
 
     // When you DROP the item into the backpack
-    public void OnBackpackDrop(SelectEnterEventArgs args)
+    public void OnItemPacked(SelectEnterEventArgs args)
     {
-        if (args.interactableObject is XRBaseInteractable interactable)
-        {
-            if (interactable.name.Contains("Bottle"))
-            {
-                // Mark as alcohol no matter what if you input beer
-                GlobalStats.broughtItems = GlobalStats.BroughtOptions.Alcohol;
-                obj4?.Complete();
-                PlayerPrefs.SetInt("BroughtBeer", 1);
-            }
-            if (interactable.name.Contains("Food"))
-            {
-                // Only mark snacks if they havent brought anything yet (does not overwrite alcohol)
-                if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.None)
-                {
-                    GlobalStats.broughtItems = GlobalStats.BroughtOptions.Snacks;
-                }
-                obj3?.Complete();
-            }
+        if (!(args.interactableObject is XRBaseInteractable interactable)) return;
 
-            Destroy(interactable.gameObject);
+        if (interactable.name.Contains("Bottle")) PackedAlcohol();
+        if (interactable.name.Contains("Food")) PackedFood();
+
+        Destroy(interactable.gameObject);
+
+        TryStartDad();
+    }
+
+    private void PackedAlcohol()
+    {
+        // Mark as alcohol no matter what if you input beer
+        GlobalStats.broughtItems = GlobalStats.BroughtOptions.Alcohol;
+        PlayerPrefs.SetInt("BroughtBeer", 1);
+
+        obj4?.Complete();
+
+        Debug.Log("Packed Alcohol");
+    }
+
+    private void PackedFood()
+    {
+        // Only mark snacks if they havent brought anything yet (does not overwrite alcohol)
+        if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.None)
+        {
+            GlobalStats.broughtItems = GlobalStats.BroughtOptions.Snacks;
         }
+
+        obj3?.Complete();
+
+        Debug.Log("Packed Food");
     }
 
     public void OnDadTalkedTo()

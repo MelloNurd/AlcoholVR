@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 public static class Utilities
 {
@@ -265,6 +267,9 @@ public static class Utilities
             ExecuteEvents.pointerClickHandler);
     }
 
+    #endregion
+
+    #region Input Utilities
     #endregion
 
     #region Miscellaneous Utilities
