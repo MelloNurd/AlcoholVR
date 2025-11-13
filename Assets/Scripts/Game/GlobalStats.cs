@@ -1,6 +1,12 @@
 using PrimeTween;
 using UnityEngine;
 
+public enum Sex
+{
+    Male,
+    Female
+}
+
 public class GlobalStats : MonoBehaviour
 {
     public enum BroughtOptions
@@ -18,8 +24,16 @@ public class GlobalStats : MonoBehaviour
 
     [SerializeField] bool startDrunk = false;
 
-    // Used to determine flirt person's gender (0 = female, 100 = male)
-    public float Gender { get; set; } = 100; // 100 (male) by default because the first default character is female
+    [SerializeField] private Sex playerSex = Sex.Male;
+
+    public void SetSex(float value)
+    {
+        playerSex = value > 50 ? Sex.Male : Sex.Female; ;
+        Debug.Log($"Read value: {value}, Resulting gender: {playerSex}");
+    }
+
+    public bool IsMale => playerSex == Sex.Male;
+    public bool IsFemale => playerSex == Sex.Female;
 
     // House stats
     public static BroughtOptions broughtItems = BroughtOptions.None;

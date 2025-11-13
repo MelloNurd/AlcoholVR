@@ -90,7 +90,7 @@ public class BonfireScene : MonoBehaviour
         _friendsAlcohol.SetActive(false);
 
         // Choose flirt NPC based on
-        if(GlobalStats.Instance.Gender > 50)
+        if(GlobalStats.Instance.IsFemale)
         {
             drunkFlirtNPC = drunkFlirtNPCmale;
             drunkFlirtNPCfemale.gameObject.SetActive(false);
@@ -289,7 +289,7 @@ public class BonfireScene : MonoBehaviour
 
         if (GlobalStats.DrinkCount >= 2)
         {
-            Dialogue drunkFlirtDialogue = GlobalStats.Instance.Gender > 50 ? drunkFlirtationMale : drunkFlirtationFemale;
+            Dialogue drunkFlirtDialogue = GlobalStats.Instance.IsMale ? drunkFlirtationMale : drunkFlirtationFemale;
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is drunk, so they went with the NPC
@@ -300,7 +300,7 @@ public class BonfireScene : MonoBehaviour
         }
         else
         {
-            Dialogue soberFlirtDialogue = GlobalStats.Instance.Gender > 50 ? soberFlirtationMale : soberFlirtationFemale;
+            Dialogue soberFlirtDialogue = GlobalStats.Instance.IsMale ? soberFlirtationMale : soberFlirtationFemale;
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = soberFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is not drunk, so they did not go with the NPC
