@@ -49,8 +49,13 @@ public class EndScene : MonoBehaviour
         PregnancyTestResults();
         MysteryDrinkResults();
         FireResults();
+        Called911Results();
     }
 
+    private void Called911Results()
+    {
+        _obituary.SetActive(!GlobalStats.called911);
+    }
     private void DrunkDriverResults()
     {
         if(GlobalStats.letDrunkFriendDrive)
