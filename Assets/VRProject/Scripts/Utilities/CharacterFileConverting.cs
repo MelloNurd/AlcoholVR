@@ -1,0 +1,109 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using Bozo.ModularCharacters;
+using EditorAttributes;
+using NUnit.Framework.Internal;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class CharacterFileConverting : MonoBehaviour
+{
+    public static CharacterFileConverting Instance;
+
+    public static string JsonOutputRoot => Path.Combine(Application.persistentDataPath);
+    public static string CharactersFolder => "Characters";
+    public static string UnaccessibleCharactersFolder => "X_" + CharactersFolder; // Folder for characters that are not accessible by the player
+    public static string DestinationPath => Path.Combine(JsonOutputRoot, CharactersFolder);
+
+    public static UnityEvent<bool> OnConversionFinish = new();
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(transform.root);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        ConvertAllCharacters();
+    }
+
+    [Button("Convert All Characters")]
+    public void ConvertAllCharacters()
+    {
+        int conversionCount = 0;
+        conversionCount += ConvertCharactersFromResources(CharactersFolder);
+        conversionCount += ConvertCharactersFromResources(UnaccessibleCharactersFolder); // Characters in X_folder are unaccessible by the player
+        Debug.Log($"Total converted characters: {conversionCount}");
+    }
+
+    [Button("Open Destination Folder")]
+    public void OpenDestinationFolder()
+    {
+        string path = JsonOutputRoot;
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
+        Application.OpenURL("file://" + path);
+    }
+
+    public static int ConvertCharactersFromResources(string dir)
+    {
+        int localConversionCount = 0;
+
+        var destination = Path.Combine(JsonOutputRoot, dir);
+        Directory.CreateDirectory(destination);
+
+        BSMC_CharacterObject[] characterObjects = Resources.LoadAll<BSMC_CharacterObject>(dir);
+
+        if (characterObjects.Length == 0)
+        {
+            Debug.LogWarning("No character objects found in Resources/Characters. Please ensure you have characters to convert.");
+            return localConversionCount;
+        }
+
+        try
+        {
+            // Convert each character
+            for (int i = 0; i < characterObjects.Length; i++)
+            {
+                BSMC_CharacterObject characterObject = characterObjects[i];
+
+                string fileName = characterObject.name + ".json";
+                string targetFilePath = Path.Combine(destination, fileName);
+
+                if (File.Exists(targetFilePath))
+                {
+                    continue; // Skip already existing file
+                }
+
+                // Convert to JSON
+                string jsonData = JsonUtility.ToJson(characterObject, true);
+
+                // Save file
+                File.WriteAllText(targetFilePath, jsonData);
+                localConversionCount++;
+            }
+
+            OnConversionFinish.Invoke(true);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Error during character conversion: {ex.Message}");
+            OnConversionFinish.Invoke(false);
+            return localConversionCount;
+        }
+
+        Debug.Log($"Converted {localConversionCount} characters from \"Resources/{dir}\" to \"{destination}\"");
+        return localConversionCount;
+    }
+}
