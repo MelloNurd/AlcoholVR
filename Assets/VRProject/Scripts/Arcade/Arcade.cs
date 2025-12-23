@@ -65,6 +65,7 @@ public class Arcade : MonoBehaviour
     private AudioSource _scoreSource;
     private AudioSource _hitSource;
     private AudioSource _runSource;
+    private AudioLowPassFilter _lowPassFilter;
 
     private MaterialScroll _bgScroll;
 
@@ -72,6 +73,8 @@ public class Arcade : MonoBehaviour
 
     private Vector3 _titleStartPos;
     private Vector3 _subtitleStartPos;
+
+    private AudioDemuffler _audioDemuffler;
 
     private void Awake()
     {
@@ -109,10 +112,11 @@ public class Arcade : MonoBehaviour
 
         AudioRolloffMode mode = AudioRolloffMode.Custom;
         float minDistance = 0.5f;
-        float maxDistance = 6f;
+        float maxDistance = 4f;
 
         _musicSource = temp.AddComponent<AudioSource>();
         _musicSource.clip = _backgroundMusic;
+        _musicSource.outputAudioMixerGroup = SettingsManager.Instance.SFXMixerGroup;
         _musicSource.loop = true;
         _musicSource.playOnAwake = false;
         _musicSource.spatialBlend = 1f;
@@ -121,6 +125,7 @@ public class Arcade : MonoBehaviour
         _musicSource.maxDistance = maxDistance;
 
         _cowSource = temp.AddComponent<AudioSource>();
+        _cowSource.outputAudioMixerGroup = SettingsManager.Instance.SFXMixerGroup;
         _cowSource.loop = false;
         _cowSource.playOnAwake = false;
         _cowSource.clip = _mooSound;
@@ -131,6 +136,7 @@ public class Arcade : MonoBehaviour
         _cowSource.volume = 0.5f;
 
         _scoreSource = temp.AddComponent<AudioSource>();
+        _scoreSource.outputAudioMixerGroup = SettingsManager.Instance.SFXMixerGroup;
         _scoreSource.loop = false;
         _scoreSource.playOnAwake = false;
         _scoreSource.clip = _scoreSound;
@@ -140,6 +146,7 @@ public class Arcade : MonoBehaviour
         _scoreSource.maxDistance = maxDistance;
 
         _hitSource = temp.AddComponent<AudioSource>();
+        _hitSource.outputAudioMixerGroup = SettingsManager.Instance.SFXMixerGroup;
         _hitSource.loop = false;
         _hitSource.playOnAwake = false;
         _hitSource.clip = _hitSound;
@@ -149,6 +156,7 @@ public class Arcade : MonoBehaviour
         _hitSource.maxDistance = maxDistance;
 
         _runSource = temp.AddComponent<AudioSource>();
+        _runSource.outputAudioMixerGroup = SettingsManager.Instance.SFXMixerGroup;
         _runSource.loop = true;
         _runSource.playOnAwake = false;
         _runSource.clip = _runSound;
@@ -173,6 +181,11 @@ public class Arcade : MonoBehaviour
     private void Start()
     {
         InitializeGame();
+        _lowPassFilter = gameObject.transform.GetChild(0).gameObject.AddComponent<AudioLowPassFilter>();
+        _lowPassFilter.cutoffFrequency = 3000;
+        _lowPassFilter.lowpassResonanceQ = 1f;
+        _audioDemuffler = GameObject.FindFirstObjectByType<AudioDemuffler>();
+        _audioDemuffler.AddLowPassFilter(_lowPassFilter);
     }
 
     private void Update()

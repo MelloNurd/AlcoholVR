@@ -23,9 +23,9 @@ public class SettingsManager : MonoBehaviour
     public bool RangedInteractors = false;
 
     public AudioMixer audioMixer;
-    AudioMixerGroup MasterAudio;
-    AudioMixerGroup Music;
-    AudioMixerGroup SFX;
+    public AudioMixerGroup MasterAudioMixerGroup;
+    public AudioMixerGroup MusicMixerGroup;
+    public AudioMixerGroup SFXMixerGroup;
 
     private void Awake()
     {
@@ -40,9 +40,9 @@ public class SettingsManager : MonoBehaviour
         }
 
         AudioMixer audioMixer = Resources.Load<AudioMixer>("Audio/MainAudioMixer");
-        MasterAudio = audioMixer.FindMatchingGroups("Master")[0]; // Find the Master group in the audio mixer
-        Music = audioMixer.FindMatchingGroups("Music")[0]; // Find the Music group in the audio mixer
-        SFX = audioMixer.FindMatchingGroups("SFX")[0]; // Find the SFX group in the audio mixer
+        MasterAudioMixerGroup = audioMixer.FindMatchingGroups("Master")[0]; // Find the Master group in the audio mixer
+        MusicMixerGroup = audioMixer.FindMatchingGroups("Music")[0]; // Find the Music group in the audio mixer
+        SFXMixerGroup = audioMixer.FindMatchingGroups("SFX")[0]; // Find the SFX group in the audio mixer
 
         SetMusicVolume(MusicVolume);
         SetSFXVolume(SFXVolume);
@@ -64,14 +64,14 @@ public class SettingsManager : MonoBehaviour
     {
         MasterVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MasterVolume);
-        MasterAudio.audioMixer.SetFloat("MasterVolume", decibelVolume);
+        MasterAudioMixerGroup.audioMixer.SetFloat("MasterVolume", decibelVolume);
         Debug.Log($"Master Volume set to {decibelVolume} dB ({MasterVolume}%)");
     }
     public void SetMusicVolume(float volume)
     {
         MusicVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MusicVolume);
-        Music.audioMixer.SetFloat("MusicVolume", decibelVolume);
+        MusicMixerGroup.audioMixer.SetFloat("MusicVolume", decibelVolume);
         Debug.Log($"Music Volume set to {decibelVolume} dB ({MusicVolume}%)");
     }
 
@@ -79,7 +79,7 @@ public class SettingsManager : MonoBehaviour
     {
         SFXVolume = volume;
         float decibelVolume = VolumePercentToDecibel(SFXVolume);
-        SFX.audioMixer.SetFloat("SFXVolume", decibelVolume);
+        SFXMixerGroup.audioMixer.SetFloat("SFXVolume", decibelVolume);
         Debug.Log($"SFX Volume set to {decibelVolume} dB ({SFXVolume}%)");
     }
 

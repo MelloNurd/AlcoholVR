@@ -35,4 +35,19 @@ public class AudioDemuffler : MonoBehaviour
             }
         }
     }
+
+    public void AddLowPassFilter(AudioLowPassFilter filter)
+    {
+        // Create a new array with one more element
+        AudioLowPassFilter[] newArray = new AudioLowPassFilter[audioLowPassFilters.Length + 1];
+        // Copy the old array to the new array
+        for (int i = 0; i < audioLowPassFilters.Length; i++)
+        {
+            newArray[i] = audioLowPassFilters[i];
+        }
+        // Add the new filter to the end of the new array
+        newArray[newArray.Length - 1] = filter;
+        // Replace the old array with the new array
+        audioLowPassFilters = newArray;
+    }
 }
