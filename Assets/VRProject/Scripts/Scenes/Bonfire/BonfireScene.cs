@@ -289,7 +289,7 @@ public class BonfireScene : MonoBehaviour
 
         if (GlobalStats.DrinkCount >= 2)
         {
-            Dialogue drunkFlirtDialogue = GlobalStats.Instance.IsMale ? drunkFlirtationMale : drunkFlirtationFemale;
+            Dialogue drunkFlirtDialogue = GlobalStats.Instance.IsMale ? drunkFlirtationFemale : drunkFlirtationMale;
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = drunkFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is drunk, so they went with the NPC
