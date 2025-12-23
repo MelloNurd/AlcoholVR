@@ -60,6 +60,7 @@ public class SliderManager : MonoBehaviour
         }
 
         bodySlider.value = outfitSystem.Gender;
+        GlobalStats.Instance.SetSex(outfitSystem.Gender);
         chestSlider.value = outfitSystem.ChestSize;
         heightSlider.value = outfitSystem.height;
         headSlider.value = outfitSystem.headSize;

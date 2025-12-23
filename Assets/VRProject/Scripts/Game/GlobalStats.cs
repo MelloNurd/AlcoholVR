@@ -47,7 +47,7 @@ public class GlobalStats : MonoBehaviour
 
     // Bonfire stats
     public static bool playerGrabbedAlcohol = false; // This is for the first scenario, when at the cooler
-    public static bool playerWentWithFlirt = true;
+    public static bool playerWentWithFlirt = false;
     public static bool playerDrankMysteryDrink = false;
     public static bool playerStoppedFire = false;
     public static bool called911 = false;
@@ -77,5 +77,10 @@ public class GlobalStats : MonoBehaviour
             DrinkCount = 99;
         }
 #endif
+    }
+
+    public void IncrementHoopsScored()
+    {
+        hoopsScore++;
     }
 }
