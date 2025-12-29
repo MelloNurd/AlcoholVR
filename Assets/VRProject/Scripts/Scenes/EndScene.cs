@@ -61,12 +61,12 @@ public class EndScene : MonoBehaviour
         if(GlobalStats.letDrunkFriendDrive)
         {
             _drunkDriverCrashedPolaroid.SetActive(true);
-            //_drunkDriverStayedPolaroid.SetActive(false);
+            _drunkDriverStayedPolaroid.SetActive(false);
         }
         else
         {
             _drunkDriverCrashedPolaroid.SetActive(false);
-            //_drunkDriverStayedPolaroid.SetActive(true);
+            _drunkDriverStayedPolaroid.SetActive(true);
         }
     }
 
