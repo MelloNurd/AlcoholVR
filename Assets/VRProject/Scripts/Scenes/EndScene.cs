@@ -54,6 +54,11 @@ public class EndScene : MonoBehaviour
 
     private void Called911Results()
     {
+        if(GlobalStats.playerDrankMysteryDrink)
+        {
+            _obituary.SetActive(false);
+            return;
+        }
         _obituary.SetActive(!GlobalStats.called911);
     }
     private void DrunkDriverResults()
@@ -72,15 +77,7 @@ public class EndScene : MonoBehaviour
 
     private void MysteryDrinkResults()
     {
-        if (!GlobalStats.playerDrankMysteryDrink)
-        {
-            _drugTest.SetActive(false);
-            _obituary.SetActive(!GlobalStats.called911);
-        }
-        else
-        {
-            _drugTest.SetActive(true);
-        }
+        _drugTest.SetActive(GlobalStats.playerDrankMysteryDrink);
     }
 
     private void PregnancyTestResults()

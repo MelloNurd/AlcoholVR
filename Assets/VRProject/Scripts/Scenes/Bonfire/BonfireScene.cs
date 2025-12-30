@@ -409,6 +409,7 @@ public class BonfireScene : MonoBehaviour
             await Player.Instance.loading.CloseEyesAsync(0.15f);
 
             GlobalStats.called911 = true; // workaround to make obituary not show for this ending
+            GlobalStats.playerDrankMysteryDrink = true;
 
             ContinuousMusic.Instance?.StopMusic();
 
