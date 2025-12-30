@@ -359,9 +359,9 @@ public class BonfireScene : MonoBehaviour
         GlobalStats.playerGrabbedAlcohol = false;
         _grabDrink.Complete();
 
-        friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedSoda;
-        _friendsSoda.SetActive(true);
+        friendNPC.sequences[friendNPC.sequences.Count - 3].dialogue = grabbedSoda;
         await friendNPC.StartNextSequenceAsync();
+        _friendsSoda.SetActive(true);
 
         int delay = Random.Range(30f, 50f).ToMS();
         Debug.Log($"Drunk flirt NPC will start in {delay} ms");
@@ -380,7 +380,8 @@ public class BonfireScene : MonoBehaviour
         GlobalStats.playerGrabbedAlcohol = true;
         _grabDrink.Complete();
 
-        friendNPC.sequences[friendNPC.sequences.Count - 2].dialogue = grabbedAlcohol;
+        friendNPC.sequences[friendNPC.sequences.Count - 3].dialogue = grabbedAlcohol;
+        await friendNPC.StartNextSequenceAsync();
         _friendsAlcohol.SetActive(true);
         await friendNPC.StartSequenceAsync(friendNPC.sequences[friendNPC.sequences.Count - 1]);
 
