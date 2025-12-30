@@ -95663,15 +95663,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1759746596}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.71126556, y: 0.14649913, z: 0.68535686, w: 0.05408719}
-  m_LocalPosition: {x: -0.115, y: 0.069, z: 0.064}
+  m_LocalRotation: {x: 0.6855649, y: 0.37604207, z: 0.5914122, w: -0.19704045}
+  m_LocalPosition: {x: -0.0976, y: -0.0611, z: 0.1084}
   m_LocalScale: {x: 0.9689173, y: 0.9682138, z: 0.9079142}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 180694957}
   - {fileID: 956431003}
   m_Father: {fileID: 1555162643}
-  m_LocalEulerAnglesHint: {x: 187.115, y: -86.83899, z: -16.543}
+  m_LocalEulerAnglesHint: {x: 225.64, y: -71.41699, z: -23.835022}
 --- !u!114 &1759746598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114289,6 +114289,10 @@ PrefabInstance:
       propertyPath: startDrunk
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9078546457032375716, guid: 36ea8c045cb9210419e942ab894e8c22, type: 3}
+      propertyPath: RangedInteractors
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2294349267047733106, guid: 36ea8c045cb9210419e942ab894e8c22, type: 3}
@@ -114386,7 +114390,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 0d9586393e1096f43a0f58c0d6c1f180, type: 2}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].type
@@ -114433,6 +114437,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 20e194a40a5cff84d87e8a4915d4ae85, type: 2}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: sequences.Array.data[6].dialogue
+      value: 
+      objectReference: {fileID: 11400000, guid: 20e194a40a5cff84d87e8a4915d4ae85, type: 2}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[4].animation
       value: 
       objectReference: {fileID: 7400000, guid: 4a64170d537186c4487d4f127380542c, type: 2}
@@ -114446,6 +114454,14 @@ PrefabInstance:
       objectReference: {fileID: 7400000, guid: 96ea2a7095296534ea0c3563a5bbd489, type: 2}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[5].turnSpeed
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: sequences.Array.data[6].animation
+      value: 
+      objectReference: {fileID: 7400000, guid: 1055b168e12d5f349ad966395968d549, type: 2}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: sequences.Array.data[6].turnSpeed
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
@@ -114518,6 +114534,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[5].useDefaultWalkAnimation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: sequences.Array.data[6].useDefaultWalkAnimation
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6921886255339276554, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
