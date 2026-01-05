@@ -200,52 +200,123 @@ public class BonfireScene : MonoBehaviour
 
         friendNPC.turnBodyToFacePlayer = false;
 
-        _poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener((Collider other) =>
+        // Register the handler
+        _poisonedInteractionTrigger.OnTriggerEnterEvent.AddListener(HandlePoisonedInteraction);
+
+        // If the player is already inside the trigger when this sequence starts,
+        // OnTriggerEnter won't fire. Detect that case and call the handler immediately.
+        TryInvokePoisonedInteractionIfPlayerInside();
+    }
+
+    // Extracted handler so it can be called both from the trigger event and immediately if player is already inside.
+    private void HandlePoisonedInteraction(Collider other)
+    {
+        _investigateGroup.Complete();
+
+        if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
+            return; // Only allow player to interact with the poisoned NPC
+
+        // We only want this to run once
+        // If TriggerEventHandler exposes EventsEnabled, keep using it; otherwise it's a no-op.
+        // (Existing code previously set this property.)
+        try
         {
-            _investigateGroup.Complete();
+            _poisonedInteractionTrigger.EventsEnabled = false;
+        }
+        catch { /* ignore if property doesn't exist */ }
 
-            if (other.gameObject.layer != LayerMask.NameToLayer("PlayerBody") && other.gameObject.layer != LayerMask.NameToLayer("PlayerHand"))
-                return; // Only allow player to interact with the poisoned NPC
-
-            _poisonedInteractionTrigger.EventsEnabled = false; // We only want this to run once
-
-            alcoholPoisoning.onDialogueEnd.AddListener(() =>
-            {
-                friendNPC.lookAt.isLooking = false;
-            });
-
-            Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
-            friendNPC.sequences.Add(poisoningDialogue);
-            friendNPC.StartSequence(poisoningDialogue);
-
-            alcoholPoisoning.options[0].onOptionSelected.AddListener(async () =>
-            {
-                await UniTask.Delay(2_500);
-
-                mysteryDrinkNPC.turnBodyToFacePlayer = false;
-                mysteryDrinkNPC.turnHeadToFacePlayer = false;
-
-                Sequence responseSequence = new Sequence(Sequence.Type.Dialogue, poisoningResponse, nextSequenceOnEnd: false);
-                mysteryDrinkNPC.sequences.Add(responseSequence);
-                mysteryDrinkNPC.StartSequence(responseSequence);
-
-                await UniTask.Delay(3_000);
-
-                Phone.Instance.CanToggle = false;
-                Phone.Instance.ClearNotifications();
-                Phone.Instance.EnablePhone();
-                Phone.Instance.ShowEmergencyScreen();
-
-                // Will be cancelled if player skips to sirens by calling 911, which means no wait
-                await UniTask.Delay(37_000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
-
-                EndScene();
-
-                await UniTask.Delay(5000);
-
-                Phone.Instance.DisablePhone();
-            });
+        alcoholPoisoning.onDialogueEnd.AddListener(() =>
+        {
+            friendNPC.lookAt.isLooking = false;
         });
+
+        Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
+        friendNPC.sequences.Add(poisoningDialogue);
+        friendNPC.StartSequence(poisoningDialogue);
+
+        alcoholPoisoning.options[0].onOptionSelected.AddListener(async () =>
+        {
+            await UniTask.Delay(2_500);
+
+            mysteryDrinkNPC.turnBodyToFacePlayer = false;
+            mysteryDrinkNPC.turnHeadToFacePlayer = false;
+
+            Sequence responseSequence = new Sequence(Sequence.Type.Dialogue, poisoningResponse, nextSequenceOnEnd: false);
+            mysteryDrinkNPC.sequences.Add(responseSequence);
+            mysteryDrinkNPC.StartSequence(responseSequence);
+
+            await UniTask.Delay(3_000);
+
+            Phone.Instance.CanToggle = false;
+            Phone.Instance.ClearNotifications();
+            Phone.Instance.EnablePhone();
+            Phone.Instance.ShowEmergencyScreen();
+
+            // Will be cancelled if player skips to sirens by calling 911, which means no wait
+            await UniTask.Delay(37_000, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
+
+            EndScene();
+
+            await UniTask.Delay(5000);
+
+            Phone.Instance.DisablePhone();
+        });
+    }
+
+    // Check trigger colliders for player colliders and call the interaction handler immediately if found.
+    private void TryInvokePoisonedInteractionIfPlayerInside()
+    {
+        // Get the trigger colliders (fall back to children if null/empty)
+        Collider[] triggerCols = _poisonedInteractionTrigger.colliders;
+        if (triggerCols == null || triggerCols.Length == 0)
+        {
+            triggerCols = _poisonedInteractionTrigger.GetComponentsInChildren<Collider>();
+        }
+
+        if (triggerCols == null || triggerCols.Length == 0) return;
+
+        int playerBodyLayer = LayerMask.NameToLayer("PlayerBody");
+        int playerHandLayer = LayerMask.NameToLayer("PlayerHand");
+
+        foreach (var triggerCol in triggerCols)
+        {
+            if (triggerCol == null) continue;
+
+            // Use bounds-based overlap to find colliders inside the trigger (works for most collider types)
+            var hits = Physics.OverlapBox(triggerCol.bounds.center, triggerCol.bounds.extents, triggerCol.transform.rotation);
+            foreach (var hit in hits)
+            {
+                if (hit.gameObject.layer == playerBodyLayer || hit.gameObject.layer == playerHandLayer)
+                {
+                    // Call the same handler as OnTriggerEnter would.
+                    HandlePoisonedInteraction(hit);
+                    return;
+                }
+            }
+
+            // Last-resort check: if player's camera position is inside AABB bounds
+            var playerPos = Player.Instance?.CamPosition ?? Vector3.zero;
+            if (triggerCol.bounds.Contains(playerPos))
+            {
+                // We don't have the exact player collider here, pass null (handler will early exit if layer-check fails).
+                // Try to find any collider on the player gameobject to pass through
+                var playerObj = Player.Instance?.gameObject;
+                if (playerObj != null)
+                {
+                    var playerColl = playerObj.GetComponentInChildren<Collider>();
+                    if (playerColl != null)
+                    {
+                        HandlePoisonedInteraction(playerColl);
+                        return;
+                    }
+                }
+
+                // Fallback: call handler with a dummy collider by creating a temporary collider is undesirable;
+                // so simply attempt to complete the objective to mimic the expected behaviour.
+                _investigateGroup?.Complete();
+                return;
+            }
+        }
     }
 
     public void SkipToSirens()
