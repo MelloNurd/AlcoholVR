@@ -129,7 +129,7 @@ public class BonfireScene : MonoBehaviour
         }
         else if (Keyboard.current.f2Key.wasPressedThisFrame)
         {
-            StartAlcoholPoisoning();
+            _isPoisonedNpcReady = true;
         }
         else if (Keyboard.current.f3Key.wasPressedThisFrame)
         {
@@ -149,7 +149,7 @@ public class BonfireScene : MonoBehaviour
             _isMysteryDrinkReady = false; // Only do this once
             StartMysteryDrinkNPC();
         }
-        if (_isPoisonedNpcReady && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.1f)
+        if (_isPoisonedNpcReady && Vector3.Distance(poisonedNPC.bodyObj.transform.position, _bonfire.transform.position) < 4.2f)
         {
             _isPoisonedNpcReady = false; // Only do this once
             StartAlcoholPoisoning();
@@ -175,6 +175,8 @@ public class BonfireScene : MonoBehaviour
         Sequence faint = new Sequence(Sequence.Type.Animate, _faintAnimation, false);
         poisonedNPC.sequences.Add(faint);
         poisonedNPC.StartSequence(faint);
+        poisonedNPC.agent.enabled = false;
+        _ = Tween.Position(poisonedNPC.bodyObj.transform, poisonedNPC.bodyObj.transform.position + Vector3.up*0.1f, 3f, startDelay: 1f);
 
         await UniTask.Delay(Mathf.RoundToInt(Random.Range(2000, 5000)));
 
