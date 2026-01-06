@@ -473,14 +473,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 17811166}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -700,6 +700,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
 --- !u!114 &18082862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1036,6 +1038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &55671030
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,14 +1109,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 55671030}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -1640,6 +1643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &121703988
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1886,14 +1890,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121820042}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -2241,6 +2245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &127937775
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,6 +2758,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
 --- !u!114 &161403954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2958,6 +2965,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &180694959
 MeshFilter:
@@ -3037,14 +3045,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 182579845}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 128.23453
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -3383,7 +3391,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &216244053
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3429,6 +3437,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -3460,7 +3469,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &216244054
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -8190,6 +8198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &244918833 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2972183469875354440, guid: 76e42147ad5c4d3408da3a92a2406518, type: 3}
@@ -8207,6 +8216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!4 &245820334 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1790780381175374700, guid: e70f1fa672e55b04589aaab9339bc5e3, type: 3}
@@ -8387,6 +8397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &261160479
 GameObject:
   m_ObjectHideFlags: 0
@@ -8422,7 +8433,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &261160481
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -8468,6 +8479,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -8499,7 +8511,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &261160482
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -13335,7 +13346,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &273317529
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -13381,6 +13392,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -13412,7 +13424,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &273317530
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -18090,6 +18101,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -18177,6 +18190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!4 &298352637 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3338919245807463293, guid: c84b790582828c044b6d944a24b270f5, type: 3}
@@ -18219,6 +18233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &302120144
 GameObject:
   m_ObjectHideFlags: 0
@@ -18289,14 +18304,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 302120144}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -18416,14 +18431,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307241329}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.03
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -18508,7 +18523,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &314791954
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -18554,6 +18569,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -18585,7 +18601,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &314791955
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -23369,14 +23384,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 319413579}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -23573,14 +23588,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355483259}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 165.45947
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -23647,6 +23662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &358657833
 GameObject:
   m_ObjectHideFlags: 0
@@ -23933,7 +23949,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &376994935
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -23979,6 +23995,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -24010,7 +24027,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &376994936
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -28606,6 +28622,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &396894845
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28774,14 +28791,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 427179950}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -28975,6 +28992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &443967641
 GameObject:
   m_ObjectHideFlags: 0
@@ -29171,14 +29189,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 450673976}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 165.45947
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -29911,6 +29929,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -29998,6 +30018,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &501659846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30442,7 +30463,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &510716377
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -30488,6 +30509,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -30519,7 +30541,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &510716378
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -35655,6 +35676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &603874422
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36065,6 +36087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &606720004
 GameObject:
   m_ObjectHideFlags: 0
@@ -36329,6 +36352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &662827589
 GameObject:
   m_ObjectHideFlags: 0
@@ -36430,14 +36454,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663956364}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -36522,7 +36546,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &666920915
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -36568,6 +36592,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -36599,7 +36624,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &666920916
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -41996,14 +42020,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 739852716}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 128.23453
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -42203,7 +42227,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &743947049
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -42249,6 +42273,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -42280,7 +42305,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &743947050
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -47941,14 +47965,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817694611}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -48158,14 +48182,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828901063}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 57.56
   m_Range: 35.8
   m_SpotAngle: 152.37756
   m_InnerSpotAngle: 152.37756
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -48295,14 +48319,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854868918}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 63.81
   m_Range: 9.57
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -48391,7 +48415,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &858643539
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -48437,6 +48461,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -48468,7 +48493,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &858643540
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -53187,14 +53211,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 877465691}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0.03
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -53557,14 +53581,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912976513}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -54089,6 +54113,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -54248,6 +54274,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &956431010
 MeshFilter:
@@ -54269,6 +54296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &970469539
 GameObject:
   m_ObjectHideFlags: 0
@@ -54468,6 +54496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &984237325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54668,14 +54697,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998449499}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -54832,6 +54861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1014194893
 GameObject:
   m_ObjectHideFlags: 0
@@ -55031,6 +55061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1025218572
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55131,6 +55162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1030577402
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55518,7 +55550,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1073873129
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -55564,6 +55596,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -55595,7 +55628,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1073873130
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -61165,14 +61197,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1123211550}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 10
   m_Range: 40
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -61292,14 +61324,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142786736}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 128.23453
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -61528,14 +61560,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153870556}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -61895,6 +61927,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1177415249
 GameObject:
   m_ObjectHideFlags: 0
@@ -61930,7 +61963,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1177415251
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -61976,6 +62009,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -62007,7 +62041,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1177415252
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -66711,7 +66744,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1185765761
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -66757,6 +66790,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -66788,7 +66822,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1185765762
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -71611,6 +71644,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -71698,6 +71733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1208897972
 GameObject:
   m_ObjectHideFlags: 0
@@ -71768,14 +71804,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208897972}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -71895,14 +71931,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1220236777}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -72072,7 +72108,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &1248625573
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -72118,6 +72154,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -72149,7 +72186,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1248625574
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -76930,6 +76966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1249730912
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77371,14 +77408,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1326160877}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 147.9
   m_Range: 22.41
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -77465,7 +77502,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1333493162
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -77511,6 +77548,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -77542,7 +77580,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1333493163
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -82532,6 +82569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1340269921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83448,6 +83486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!114 &1380723851 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 857734798674112803, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
@@ -83690,6 +83729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1401095811
 GameObject:
   m_ObjectHideFlags: 0
@@ -83760,14 +83800,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1401095811}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -84177,14 +84217,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1430257281}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -84714,14 +84754,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1459984547}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -84868,7 +84908,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1468148734
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -84914,6 +84954,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -84945,7 +84986,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1468148735
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -89798,6 +89838,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -89885,6 +89927,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1519840079
 GameObject:
   m_ObjectHideFlags: 0
@@ -89920,7 +89963,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!199 &1519840081
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -89966,6 +90009,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -89997,7 +90041,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1519840082
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -94865,6 +94908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1536071800
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95166,6 +95210,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1547777324
 MeshFilter:
@@ -95415,6 +95460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1598110233
 GameObject:
   m_ObjectHideFlags: 0
@@ -95575,14 +95621,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1604046190}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.1802516, b: 1, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -95765,6 +95811,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -95880,6 +95928,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1606795707
 GameObject:
   m_ObjectHideFlags: 0
@@ -96073,6 +96122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1626505312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -96275,6 +96325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1631468306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 307049994454614267, guid: 712062f2494d12c42ba832c353768dc1, type: 3}
@@ -96292,6 +96343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1633493684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -96559,6 +96611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1655030975
 GameObject:
   m_ObjectHideFlags: 0
@@ -96664,6 +96717,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1655030979
 MeshFilter:
@@ -96830,6 +96884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!4 &1666401776 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5322209160774618863, guid: 5591d212541c216499b885cc0e7aae23, type: 3}
@@ -96867,6 +96922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1667883073
 GameObject:
   m_ObjectHideFlags: 0
@@ -97528,6 +97584,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -97615,6 +97673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1759746596
 GameObject:
   m_ObjectHideFlags: 0
@@ -97969,6 +98028,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1794515765
 GameObject:
   m_ObjectHideFlags: 0
@@ -98039,14 +98099,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1794515765}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -98255,6 +98315,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -98342,6 +98404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1821415842
 GameObject:
   m_ObjectHideFlags: 0
@@ -98596,6 +98659,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1821415849
 MeshFilter:
@@ -98645,7 +98709,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1844978358
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -98691,6 +98755,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -98722,7 +98787,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1844978359
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -103525,6 +103589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!4 &1851747445 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6f7aecd8d8b907f429d68bc9d23f784e, type: 3}
@@ -103818,6 +103883,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -103905,6 +103972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1861042644 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5252389275649414144, guid: c930d3eca64e1c04785ddfe6f0c2376d, type: 3}
@@ -104009,6 +104077,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -104096,6 +104166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1871085876
 GameObject:
   m_ObjectHideFlags: 0
@@ -104166,14 +104237,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1871085876}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 60.504784
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -104293,14 +104364,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873582395}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 162.0994
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -104712,6 +104783,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -104799,6 +104872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1913042470
 GameObject:
   m_ObjectHideFlags: 0
@@ -105011,14 +105085,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1918246754}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 0.04995039, b: 0, a: 1}
   m_Intensity: 114.09
   m_Range: 1272.3
   m_SpotAngle: 165.45947
   m_InnerSpotAngle: 128.23453
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -105611,6 +105685,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1956564385
 MeshFilter:
@@ -105637,6 +105712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &1969945533
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -105834,6 +105910,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -105921,6 +105999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &1974912208
 GameObject:
   m_ObjectHideFlags: 0
@@ -105956,7 +106035,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &1974912210
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -106002,6 +106081,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -106033,7 +106113,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &1974912211
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -111039,7 +111118,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &2041292525
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -111085,6 +111164,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 2
@@ -111116,7 +111196,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!198 &2041292526
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -115861,6 +115940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &2104968142
 GameObject:
   m_ObjectHideFlags: 0
@@ -116027,6 +116107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!4 &2139309054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1790780381175374700, guid: e70f1fa672e55b04589aaab9339bc5e3, type: 3}
@@ -116131,6 +116212,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -116218,6 +116301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1 &2140665639
 GameObject:
   m_ObjectHideFlags: 0
@@ -116406,6 +116490,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6f7aecd8d8b907f429d68bc9d23f784e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2147139106}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6f7aecd8d8b907f429d68bc9d23f784e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2147139107}
   m_SourcePrefab: {fileID: 100100000, guid: 6f7aecd8d8b907f429d68bc9d23f784e, type: 3}
 --- !u!4 &2147139104 stripped
 Transform:
@@ -116431,8 +116518,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.565119, y: 0.90256155, z: 1.9778429}
-  m_Center: {x: 0, y: 0.2912808, z: 0}
+  m_Size: {x: 2.565119, y: 0.88579166, z: 1.2346767}
+  m_Center: {x: 6.009408e-11, y: 0.29966575, z: 0.007872813}
 --- !u!114 &2147139106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116453,6 +116540,27 @@ MonoBehaviour:
   m_IgnoreFromBuild: 0
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!65 &2147139107
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848179473}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.5235307, y: 0.22345853, z: 1.9466189}
+  m_Center: {x: -0.008342115, y: 0.27462524, z: 0.0018625442}
 --- !u!4 &543450653341353834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 780557964568476504, guid: e09a43f4f09499f4f8ec8f9e81a060a0, type: 3}
@@ -116597,6 +116705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 0}
 --- !u!1001 &3887735548658302850
 PrefabInstance:
   m_ObjectHideFlags: 0
