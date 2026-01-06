@@ -35,35 +35,6 @@ public class PlayerFace : MonoBehaviour
         dof.active = false;
     }
 
-    public void BlurVision(float duration = 1f) => BlurVisionAsync(duration).Forget();
-    public async UniTask BlurVisionAsync(float duration = 1f)
-    {
-        dof.focalLength.value = 1;
-        dof.active = true;
-
-        blurTween.Stop();
-        blurTween = Tween.Custom(1f, 30f, duration, (float val) => { dof.focalLength.value = val; }, Ease.InSine);
-        await blurTween;
-    }
-
-    public void ClearBlur(float duration = 1f) => ClearBlurAsync(duration).Forget();
-    public async UniTask ClearBlurAsync(float duration = 1f)
-    {
-        dof.focusDistance.value = 30f;
-
-        blurTween.Stop();
-        blurTween = Tween.Custom(30f, 1f, duration, (float val) => { dof.focalLength.value = val; }, Ease.OutSine);
-        await blurTween;
-
-        dof.active = false;
-    }
-
-    public async void ApplyBlurPulse()
-    {
-        await BlurVisionAsync();
-        await ClearBlurAsync(1.5f);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen && bottle.IsFull)
@@ -75,7 +46,7 @@ public class PlayerFace : MonoBehaviour
 
                 if(bottle.IsAlcoholic)
                 {
-                    ApplyBlurPulse();
+                    BlurVision.BlurPlayerVision();
                     GlobalStats.DrinkCount++;
                 }
             }
