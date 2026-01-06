@@ -27,7 +27,7 @@ public class Phone : MonoBehaviour
     private DateTime _phoneTime = DateTime.Now;
     private float _batteryLevel = 0.73f;
     private RectTransform _notificationPanel;
-    [SerializeField] private AudioClip _clickSound;
+    public AudioClip _clickSound;
     public bool IsActive => _phoneObj.activeSelf;
     public bool CanToggle = true;
     public bool IsHandNearPhone => IsActive && Vector3.Distance(Player.Instance.RightHand.transform.position, transform.position) < 0.3f;
@@ -482,6 +482,14 @@ public class Phone : MonoBehaviour
 
             ObjectiveUI objectiveObject = Instantiate(_objectivePrefab, _objectivesContainer).GetComponent<ObjectiveUI>();
             objectiveObject.Initialize(objective);
+        }
+    }
+
+    public void PlayClickSound()
+    {
+        if (_clickSound != null)
+        {
+            _phoneAudioSource.PlayOneShot(_clickSound, 0.5f);
         }
     }
 
