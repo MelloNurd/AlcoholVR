@@ -46,7 +46,7 @@ public class Phone : MonoBehaviour
 
     [Header("Messages")]
     [SerializeField] private GameObject _messagePrefab;
-    private Transform _messagesContainer;
+    public Transform _messagesContainer;
     private List<PhoneMessage> _messages = new();
     private Queue<PhoneMessage> _messageQueue = new();
 

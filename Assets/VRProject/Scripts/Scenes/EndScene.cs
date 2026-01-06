@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EndScene : MonoBehaviour
 {
@@ -55,6 +56,14 @@ public class EndScene : MonoBehaviour
             Content = "message contains Image.",
         };
         Phone.Instance.QueueNotification(temp2);
+
+        await UniTask.Delay(5000);
+
+        Debug.Log($"Messages in container {Phone.Instance._messagesContainer.transform.childCount}:");
+        foreach (Transform obj in Phone.Instance._messagesContainer.transform)
+        {
+            obj.Find("Text").GetComponent<TMP_Text>().text = temp.Content;
+        }
     }
 
     private void ConfigureResults()
