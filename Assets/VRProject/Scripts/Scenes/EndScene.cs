@@ -32,38 +32,14 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _stoppedFirePicture;
     [SerializeField] private GameObject _fireSpreadPicture;
 
+    [SerializeField] private GameObject _pregnancyTextMsgObj;
+
     public int MadCowMinScore = 10;
     public int TrashketballMinScore = 10;
 
     private async void Start()
     {
         ConfigureResults();
-
-        await UniTask.Delay(2000);
-
-        Debug.Log("Test??");
-
-        var temp = new PhoneMessage()
-        {
-            Sender = "Alice",
-            Content = "Hey, we should talk...",
-        };
-        Phone.Instance.QueueNotification(temp);
-
-        var temp2 = new PhoneMessage()
-        {
-            Sender = "Alice",
-            Content = "message contains Image.",
-        };
-        Phone.Instance.QueueNotification(temp2);
-
-        await UniTask.Delay(5000);
-
-        Debug.Log($"Messages in container {Phone.Instance._messagesContainer.transform.childCount}:");
-        foreach (Transform obj in Phone.Instance._messagesContainer.transform)
-        {
-            obj.Find("Text").GetComponent<TMP_Text>().text = temp.Content;
-        }
     }
 
     private void ConfigureResults()
@@ -108,9 +84,41 @@ public class EndScene : MonoBehaviour
         _drugTest.SetActive(GlobalStats.playerDrankMysteryDrink);
     }
 
-    private void PregnancyTestResults()
+    private async void PregnancyTestResults()
     {
-        _pregnancyTest.SetActive(GlobalStats.playerWentWithFlirt);
+        _pregnancyTest.SetActive(false);
+
+        if (!GlobalStats.playerWentWithFlirt)
+        {
+            return;
+        }
+
+        if (GlobalStats.Instance.IsFemale)
+        {
+            _pregnancyTest.SetActive(true);
+        }
+        else
+        {
+            // Setup phone texts for male
+            await UniTask.Delay(5000); // Wait 5 seconds before sending texts
+
+            Phone.Instance.QueueNotification(new PhoneMessage()
+            {
+                Sender = "Alice",
+                Content = "Hey, we should talk...",
+            });
+
+            Phone.Instance.QueueNotification(new PhoneMessage()
+            {
+                Sender = "Alice",
+                Content = "message contains Image.",
+            });
+
+            // Messages dont currently support images so this is just manually shown, will redo if we need more images later
+            GameObject msg = Instantiate(_pregnancyTextMsgObj, Phone.Instance._messagesContainer.transform.parent);
+            msg.transform.localScale = Vector3.one;
+            Phone.Instance._messagesContainer.GetComponent<CanvasGroup>().alpha = 0f;
+        }
     }
 
     private void BroughtAlcoholResults()

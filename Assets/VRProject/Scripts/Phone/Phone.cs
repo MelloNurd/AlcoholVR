@@ -58,7 +58,7 @@ public class Phone : MonoBehaviour
     private Image _batteryFillImage;
 
     private Transform _handTransform;
-    private GameObject _phoneObj;
+    public GameObject _phoneObj;
     private Camera _phonePhysicalCamera;
     private Camera _phoneUICamera; // The camera that renders the phone's UI
     private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
