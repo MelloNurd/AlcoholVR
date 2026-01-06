@@ -16,6 +16,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using CommonUsages = UnityEngine.XR.CommonUsages;
 using Random = UnityEngine.Random;
 
+[SelectionBase]
 public class Phone : MonoBehaviour
 {
     public static Phone Instance { get; private set; }
@@ -231,6 +232,10 @@ public class Phone : MonoBehaviour
         if(Keyboard.current.cKey.wasPressedThisFrame) // Right click to show home screen
         {
             ShowCameraScreen();
+        }
+        else if (Keyboard.current.pKey.wasPressedThisFrame) // M key to show messages screen
+        {
+            TogglePhone();
         }
 
         UpdateClock();
