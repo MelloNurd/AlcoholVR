@@ -37,7 +37,7 @@ public class PartyScene : MonoBehaviour
     [SerializeField] private Transform _exitSceneTransform;
 
     public bool IsOnSecondFloor => IsInHouse && Player.Instance.CamPosition.y > 3.5f;
-    public bool InViewOfRage => IsInHouse && IsOnSecondFloor && Player.Instance.CamPosition.z > -7f; // On the specific side of the house
+    public bool InViewOfRage => IsOnSecondFloor && Vector3.Distance(Player.Instance.CamPosition, _rageNPC.bodyObj.transform.position) < 6f;
     public bool IsInHouse { get; private set; } = false;
 
     private int _enterCount = 0;
@@ -84,7 +84,7 @@ public class PartyScene : MonoBehaviour
 
     private void Update()
     {
-        if (!_isRageBegun && hasTalkedToDrunkFriend.Value && InViewOfRage)
+        if (!_isRageBegun && hasTalkedToDrunkFriend.Value)
         {
             _isRageBegun = true;
             BeginRageSequence();
@@ -97,6 +97,7 @@ public class PartyScene : MonoBehaviour
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
+            _isRageBegun = true;
             BeginRageSequence();
         }
         else if (Keyboard.current.gKey.wasPressedThisFrame)
@@ -168,6 +169,9 @@ public class PartyScene : MonoBehaviour
 
         _rageNPC.idleAnimation = _rageLoopAnimation;
         _rageNPC.PlayIdleAnimation();
+
+        // Wait until the player is the near the rage NPC
+        await UniTask.WaitUntil(() => InViewOfRage);
 
         _bonfireFriendNPC.StartNextSequence(); // Start the bonfire friend sequence
         foreach(var sequence in _bonfireFriendNPC.sequences)
