@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -33,9 +34,27 @@ public class EndScene : MonoBehaviour
     public int MadCowMinScore = 10;
     public int TrashketballMinScore = 10;
 
-    void Start()
+    private async void Start()
     {
         ConfigureResults();
+
+        await UniTask.Delay(2000);
+
+        Debug.Log("Test??");
+
+        var temp = new PhoneMessage()
+        {
+            Sender = "Alice",
+            Content = "Hey, we should talk...",
+        };
+        Phone.Instance.QueueNotification(temp);
+
+        var temp2 = new PhoneMessage()
+        {
+            Sender = "Alice",
+            Content = "message contains Image.",
+        };
+        Phone.Instance.QueueNotification(temp2);
     }
 
     private void ConfigureResults()
@@ -139,17 +158,20 @@ public class EndScene : MonoBehaviour
 
     private void DrinkCountResults()
     {
+        TMP_Text reportCardText = _reportCard.GetComponentInChildren<TMP_Text>();
         if (GlobalStats.DrinkCount > 0)
         {
             _MiP.SetActive(true);
             _reportCard.material = _badGrades;
-            _reportCard.GetComponentInChildren<TMP_Text>().text = "Should have spent more time studying...";
+            if(reportCardText)
+                reportCardText.text = "Should have spent more time studying...";
         }
         else
         {
             _MiP.SetActive(false);
             _reportCard.material = _goodGrades;
-            _reportCard.GetComponentInChildren<TMP_Text>().text = "All that hard work paid off!";
+            if(reportCardText)
+                reportCardText.text = "All that hard work paid off!";
         }
     }
 
