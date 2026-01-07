@@ -35,4 +35,12 @@ public class ItemSounds : MonoBehaviour
         await UniTask.Delay(CooldownTimeMs);
         _onCooldown = false;
     }
+
+    private void OnValidate()
+    {
+        if (!_impactSound && TryGetComponent<GrabbableAudioPlayer>(out var audioPlayer))
+        {
+            _impactSound = audioPlayer.audioClip;
+        }
+    }
 }
