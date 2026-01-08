@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
 using PrimeTween;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
@@ -34,6 +35,16 @@ public class PlayerFace : MonoBehaviour
 
         dof.active = false;
     }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        if(Keyboard.current.gKey.wasPressedThisFrame)
+        {
+            BlurVision.BlurPlayerVision();
+        }
+    }
+#endif
 
     private void OnTriggerEnter(Collider other)
     {
