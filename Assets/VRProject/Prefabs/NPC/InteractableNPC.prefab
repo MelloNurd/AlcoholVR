@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 2061259066119879156}
   - component: {fileID: 6198475423303735891}
   - component: {fileID: 5757267730882363373}
+  - component: {fileID: 5895348871960852450}
+  - component: {fileID: 709213056982372957}
   m_Layer: 18
   m_Name: InteractableNPC
   m_TagString: Untagged
@@ -334,6 +336,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
 --- !u!82 &6198475423303735891
 AudioSource:
   m_ObjectHideFlags: 0
@@ -451,6 +455,74 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &5895348871960852450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87560e04aa74c7a41acb9c87051c3b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSync
+  profile: {fileID: 11400000, guid: e7bee847b0146493d97aceaf14bb2903, type: 2}
+  onLipSyncUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 709213056982372957}
+        m_TargetAssemblyTypeName: uLipSync.uLipSyncBlendShape, uLipSync.Runtime
+        m_MethodName: OnLipSyncUpdate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  outputSoundGain: 1
+  audioSourceProxy: {fileID: 0}
+--- !u!114 &709213056982372957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2163de355e8fd8e4b83b631e07455323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
+  updateMethod: 0
+  skinnedMeshRenderer: {fileID: 678336919367797360}
+  blendShapes:
+  - phoneme: A
+    index: 48
+    maxWeight: 1
+  - phoneme: E
+    index: 50
+    maxWeight: 1
+  - phoneme: I
+    index: 49
+    maxWeight: 1
+  - phoneme: O
+    index: 47
+    maxWeight: 1
+  - phoneme: U
+    index: 51
+    maxWeight: 1
+  - phoneme: '-'
+    index: -1
+    maxWeight: 1
+  maxBlendShapeValue: 100
+  minVolume: -2.5
+  maxVolume: -1.5
+  smoothness: 0.05
+  usePhonemeBlend: 0
 --- !u!1 &3987021468932513059
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +684,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &2098656369127185327
 MonoBehaviour:
@@ -671,6 +744,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: -5.87
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1565,6 +1639,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: 4237298404661567771, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 52
+      objectReference: {fileID: 0}
     - target: {fileID: 4250372099790915968, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       propertyPath: m_Layer
       value: 18
@@ -2393,6 +2471,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4492103767979460583}
   m_SourcePrefab: {fileID: 100100000, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+--- !u!137 &678336919367797360 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4237298404661567771, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+  m_PrefabInstance: {fileID: 3721107607664847723}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6233206590395461735 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
@@ -2419,6 +2502,8 @@ MonoBehaviour:
   clampWeight: 0.62
   smoothSpeed: 5
   weightSmoothSpeed: 2
+  maxYawDegrees: 90
+  headHeight: 1.5
   isLooking: 0
   lookWithinRange: 0
 --- !u!4 &6758527495308667613 stripped

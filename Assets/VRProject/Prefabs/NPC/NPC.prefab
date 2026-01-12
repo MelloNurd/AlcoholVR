@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7226970822361697599}
   - component: {fileID: 7118078150561642470}
   - component: {fileID: 3712710229368123059}
+  - component: {fileID: 2148716972415870593}
+  - component: {fileID: 4575398197215940617}
   m_Layer: 18
   m_Name: NPC
   m_TagString: Untagged
@@ -54,6 +56,7 @@ MonoBehaviour:
   moveAnimation: {fileID: 7400000, guid: 416c23b8ca959b3439d454553e56cb26, type: 2}
   agent: {fileID: 0}
   animator: {fileID: 0}
+  usesCheckpoints: 1
   _checkpointSortMode: 0
   OnCheckpointLeave:
     m_PersistentCalls:
@@ -184,6 +187,74 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &2148716972415870593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3578078723713112654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87560e04aa74c7a41acb9c87051c3b02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSync
+  profile: {fileID: 11400000, guid: e7bee847b0146493d97aceaf14bb2903, type: 2}
+  onLipSyncUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4575398197215940617}
+        m_TargetAssemblyTypeName: uLipSync.uLipSyncBlendShape, uLipSync.Runtime
+        m_MethodName: OnLipSyncUpdate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  outputSoundGain: 1
+  audioSourceProxy: {fileID: 0}
+--- !u!114 &4575398197215940617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3578078723713112654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2163de355e8fd8e4b83b631e07455323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
+  updateMethod: 0
+  skinnedMeshRenderer: {fileID: 5064097293572431291}
+  blendShapes:
+  - phoneme: A
+    index: 48
+    maxWeight: 1
+  - phoneme: E
+    index: 50
+    maxWeight: 1
+  - phoneme: I
+    index: 49
+    maxWeight: 1
+  - phoneme: O
+    index: 47
+    maxWeight: 1
+  - phoneme: U
+    index: 51
+    maxWeight: 1
+  - phoneme: '-'
+    index: -1
+    maxWeight: 1
+  maxBlendShapeValue: 100
+  minVolume: -2.5
+  maxVolume: -1.5
+  smoothness: 0.05
+  usePhonemeBlend: 0
 --- !u!1 &7393690166258289218
 GameObject:
   m_ObjectHideFlags: 0
@@ -1094,6 +1165,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: 4237298404661567771, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 52
+      objectReference: {fileID: 0}
     - target: {fileID: 4250372099790915968, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       propertyPath: m_Layer
       value: 18
@@ -1957,5 +2032,12 @@ MonoBehaviour:
   clampWeight: 0.62
   smoothSpeed: 5
   weightSmoothSpeed: 2
+  maxYawDegrees: 90
+  headHeight: 1.5
   isLooking: 0
   lookWithinRange: 0
+--- !u!137 &5064097293572431291 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4237298404661567771, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+  m_PrefabInstance: {fileID: 8974163167484083360}
+  m_PrefabAsset: {fileID: 0}
