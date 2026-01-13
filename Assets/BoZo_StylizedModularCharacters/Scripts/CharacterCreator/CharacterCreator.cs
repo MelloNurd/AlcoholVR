@@ -534,5 +534,90 @@ namespace Bozo.ModularCharacters
         {
             return UnityEditor.AssetDatabase.GetAssetPath(obj);
         }
+#if UNITY_EDITOR
+[ContextMenu("Fix Character Object Paths")]
+public void FixCharacterObjectPaths()
+{
+    string path = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Resources";
+    
+    // Load all CharacterObject assets from the Resources folder
+    var characterObjects = Resources.LoadAll<CharacterObject>("");
+    
+    Debug.Log($"Found {characterObjects.Length} CharacterObject assets to process");
+    
+    int fixedCount = 0;
+    
+    foreach (var characterObject in characterObjects)
+    {
+        bool modified = false;
+        
+        // Check if the data exists
+        if (characterObject.data == null || characterObject.data.outfitDatas == null)
+        {
+            Debug.LogWarning($"Skipping {characterObject.name} - no outfit data found");
+            continue;
+        }
+        
+        // Process each outfit data
+        foreach (var outfitData in characterObject.data.outfitDatas)
+        {
+            if (string.IsNullOrEmpty(outfitData.outfit))
+                continue;
+            
+            string oldPath = outfitData.outfit;
+            
+            // Check if this is a Body outfit that needs fixing
+            if (oldPath.Contains("/Body/") || oldPath.StartsWith("Body/"))
+            {
+                // Remove existing prefix if any
+                string cleanPath = oldPath;
+                if (cleanPath.StartsWith("Base/"))
+                    cleanPath = cleanPath.Substring(5); // Remove "Base/"
+                else if (cleanPath.StartsWith("Common/"))
+                    cleanPath = cleanPath.Substring(7); // Remove "Common/"
+                
+                // Add Common prefix
+                string newPath = "Common/" + cleanPath;
+                
+                if (oldPath != newPath)
+                {
+                    outfitData.outfit = newPath;
+                    Debug.Log($"Fixed Body path in {characterObject.name}: {oldPath} -> {newPath}");
+                    modified = true;
+                }
+            }
+            else
+            {
+                // For non-Body outfits, ensure they have Base/ prefix
+                if (!oldPath.StartsWith("Base/") && !oldPath.StartsWith("Common/"))
+                {
+                    outfitData.outfit = "Base/" + oldPath;
+                    Debug.Log($"Fixed path in {characterObject.name}: {oldPath} -> {outfitData.outfit}");
+                    modified = true;
+                }
+            }
+        }
+        
+        if (modified)
+        {
+            // Mark the asset as dirty so Unity saves the changes
+            UnityEditor.EditorUtility.SetDirty(characterObject);
+            fixedCount++;
+        }
+    }
+    
+    // Save all modified assets
+    if (fixedCount > 0)
+    {
+        UnityEditor.AssetDatabase.SaveAssets();
+        UnityEditor.AssetDatabase.Refresh();
+        Debug.Log($"Successfully fixed {fixedCount} CharacterObject assets. Changes saved!");
+    }
+    else
+    {
+        Debug.Log("No paths needed fixing - all assets are already correct!");
+    }
+}
+#endif
     }
 }
