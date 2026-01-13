@@ -12,6 +12,7 @@ namespace Bozo.ModularCharacters
 {
     public class CharacterCreator : MonoBehaviour
     {
+        public bool fullCustomization = false;
         [Header("Creator Dependencies")]
         public OutfitSystem character;
         [SerializeField] ColorPickerControl colorPickerControl;
@@ -31,6 +32,8 @@ namespace Bozo.ModularCharacters
         private List<TextureSelector> textureSelectors = new List<TextureSelector>();
         [SerializeField] Transform decalContainer;
         [SerializeField] Transform patternContainer;
+        [SerializeField] GameObject patternObject;
+        [SerializeField] GameObject editBase;
 
         [Header("BodyShape Dependencies")]
         [SerializeField] BlendSlider blendSliderObject;
@@ -384,6 +387,7 @@ namespace Bozo.ModularCharacters
                 return;
             }
 
+ 
             SwitchTextureCatagory(outfit.TextureCatagory);
             type = outfit.Type;
         }
@@ -398,6 +402,16 @@ namespace Bozo.ModularCharacters
             foreach (var item in textureSelectors)
             {
                 item.SetVisable(catagory);
+                if (catagory != "Eyes" && fullCustomization == false)
+                {
+                    patternObject.SetActive(false);
+                    editBase.SetActive(false);
+                }
+                else
+                {
+                    patternObject.SetActive(true);
+                    editBase.SetActive(true);
+                }
             }
         }
 
