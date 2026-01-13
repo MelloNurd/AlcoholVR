@@ -249,6 +249,7 @@ namespace Bozo.ModularCharacters
                     icon = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 }
 
+                Debug.Log($"json file {i}: {jsonFiles[i]}");
                 var selector = Instantiate(saveSelector, saveContainer);
                 selector.Init(data, icon, this);
                 saveSlots.Add(data.characterName, selector);
