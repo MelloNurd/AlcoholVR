@@ -1,3 +1,4 @@
+using Bozo.ModularCharacters;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
@@ -59,36 +60,61 @@ public class SliderManager : MonoBehaviour
             SetRenderer();
         }
 
-        bodySlider.value = outfitSystem.Gender;
-        GlobalStats.Instance.SetSex(outfitSystem.Gender);
-        chestSlider.value = outfitSystem.ChestSize;
-        heightSlider.value = outfitSystem.height;
-        headSlider.value = outfitSystem.headSize;
-        shoulderSlider.value = outfitSystem.shoulderWidth;
+        // Body shape sliders - using new shape system
+        float genderValue = outfitSystem.GetShapeValue("BodyType");
+        bodySlider.value = genderValue;
+        GlobalStats.Instance.SetSex(genderValue);
+        bodySlider2.value = genderValue; // Second body slider also uses gender
+        
+        chestSlider.value = outfitSystem.GetShapeValue("Chest");
 
-        faceShapeSlider.value = outfitSystem.FaceShape;
-        bodySlider2.value = outfitSystem.Gender;
-        lashSlider.value = outfitSystem.LashLength;
-        browSlider.value = outfitSystem.BrowSize;
-        earSlider.value = outfitSystem.EarTipLength;
-        eyePosXSlider.value = outfitSystem.EyeSocketPosition.x;
-        eyePosYSlider.value = outfitSystem.EyeSocketPosition.y;
-        eyePosZSlider.value = outfitSystem.EyeSocketPosition.z;
-        eyeTiltSlider.value = outfitSystem.EyeSocketRotation;
-        eyeScaleXSlider.value = outfitSystem.EyeSocketScale.x;
-        eyeScaleYSlider.value = outfitSystem.EyeSocketScale.y;
-        eyeScaleZSlider.value = outfitSystem.EyeSocketScale.z;
+        // Body modifiers - using new modifier system
+        if (outfitSystem.bodyModifiers.ContainsKey("root"))
+        {
+            heightSlider.value = outfitSystem.bodyModifiers["root"].scaleValue - 1f;
+        }
+        
+        if (outfitSystem.bodyModifiers.ContainsKey("head"))
+        {
+            headSlider.value = outfitSystem.bodyModifiers["head"].scaleValue - 1f;
+        }
+        
+        if (outfitSystem.bodyModifiers.ContainsKey("clavicle_l"))
+        {
+            shoulderSlider.value = outfitSystem.bodyModifiers["clavicle_l"].scaleValue - 1f;
+        }
 
-        eyeUpSlider.value = outfitSystem.EyeUp;
-        eyeDownSlider.value = outfitSystem.EyeDown;
-        eyeSquareSlider.value = outfitSystem.EyeSquare;
-        noseWidthSlider.value = outfitSystem.NoseWidth;
-        noseUpSlider.value = outfitSystem.NoseUp;
-        noseDownSlider.value = outfitSystem.NoseDown;
-        noseAngleSlider.value = outfitSystem.NoseBridgeAngle;
-        mouthWidthSlider.value = outfitSystem.MouthWide;
-        mouthThinSlider.value = outfitSystem.MouthThin;
+        // Face shape sliders - using new shape system
+        faceShapeSlider.value = outfitSystem.GetShapeValue("Squareness");
+        lashSlider.value = outfitSystem.GetShapeValue("LashLength");
+        browSlider.value = outfitSystem.GetShapeValue("BrowThickness");
+        earSlider.value = outfitSystem.GetShapeValue("EarsElf");
+        
+        // Eye socket modifiers - using new modifier system
+        if (outfitSystem.bodyModifiers.ContainsKey("eyeRoot_l"))
+        {
+            var eyeMod = outfitSystem.bodyModifiers["eyeRoot_l"];
+            eyePosXSlider.value = eyeMod.xPosValue;
+            eyePosYSlider.value = eyeMod.yPosValue;
+            eyePosZSlider.value = eyeMod.zPosValue;
+            eyeTiltSlider.value = eyeMod.rotation;
+            eyeScaleXSlider.value = eyeMod.xScaleValue;
+            eyeScaleYSlider.value = eyeMod.yScaleValue;
+            eyeScaleZSlider.value = eyeMod.zScaleValue;
+        }
 
+        // More face shape sliders - using new shape system
+        eyeUpSlider.value = outfitSystem.GetShapeValue("EyesOuterCornersHigh");
+        eyeDownSlider.value = outfitSystem.GetShapeValue("EyesOuterCornersLow");
+        eyeSquareSlider.value = outfitSystem.GetShapeValue("EyesSquare");
+        noseWidthSlider.value = outfitSystem.GetShapeValue("NoseWidth");
+        noseUpSlider.value = outfitSystem.GetShapeValue("NoseTiltUp");
+        noseDownSlider.value = outfitSystem.GetShapeValue("NoseTiltDown");
+        noseAngleSlider.value = outfitSystem.GetShapeValue("NoseBridgeCurve");
+        mouthWidthSlider.value = outfitSystem.GetShapeValue("MouthWide");
+        mouthThinSlider.value = outfitSystem.GetShapeValue("MouthThin");
+
+        // Eye material properties (unchanged)
         pupilSizeSlider.value = skinnedMeshRenderer.materials[1].GetFloat("_PupilSize");
         irisSizeSlider.value = skinnedMeshRenderer.materials[1].GetFloat("_IrisSize");
         outerSharpnessSlider.value = skinnedMeshRenderer.materials[1].GetFloat("_OuterIrisColorSharpness");

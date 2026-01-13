@@ -24,15 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4171899476676436001}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2150917451495049891}
-  - {fileID: 5984619820229017942}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6583328636422894369
 MonoBehaviour:
@@ -46,19 +45,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56222aeebf4898a41b83761b0e03c752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  removeOutfit: 0
-  <Type>k__BackingField: 3
-  AttachPoint: Head
-  PrimaryVisual: {fileID: 0}
-  AlternateVisual:
-  - type: 8
-    alternateVisual: {fileID: 6360899790191139820}
-  <IncompatibleSets>k__BackingField: []
+  customShader: 0
+  AttachInEditMode: 0
+  OutfitName: 
+  OutfitIcon: {fileID: 21300000, guid: c2f45a15c36879e44b56d40ba803f86e, type: 3}
+  ColorChannels:
+  - Base
+  - Gradient
+  TextureCatagory: 
+  supportDecals: 0
+  supportPatterns: 0
+  showCharacterCreator: 1
+  Type: {fileID: 11400000, guid: 3781f2a69b931724b9a19deab41d2f45, type: 2}
+  AttachPoint: head
+  defaultColors: []
+  tags: []
+  LinkedColorSets: []
+  IncompatibleSets: []
+  currentSwatch: 0
+  outfitSwatches: []
+  originalBones: []
+  originalRootBone: {fileID: 0}
+  editorAttachPoint: {fileID: 0}
 --- !u!1001 &1896896683760971080
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 391624810954719598}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
@@ -109,77 +123,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: BSMC_Outfit_HairBack_Punk
       objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_DirtyAABB
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0.112289846
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: -0.023938965
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.109535195
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.1374694
+      objectReference: {fileID: 0}
+    - target: {fileID: 1371633326977998775, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.12713587
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
 --- !u!4 &2150917451495049891 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5adebe36cbfb94d46981de4991d71b24, type: 3}
   m_PrefabInstance: {fileID: 1896896683760971080}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &6090869429694768829
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 391624810954719598}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-      propertyPath: m_Name
-      value: BSMC_Outfit_HairBack_Punk_Alt01
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
---- !u!4 &5984619820229017942 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-  m_PrefabInstance: {fileID: 6090869429694768829}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &6360899790191139820 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b6f9477735f248d428b90d6b727a9084, type: 3}
-  m_PrefabInstance: {fileID: 6090869429694768829}
   m_PrefabAsset: {fileID: 0}

@@ -37,7 +37,7 @@ public class EndScene : MonoBehaviour
     public int MadCowMinScore = 10;
     public int TrashketballMinScore = 10;
 
-    private async void Start()
+    private void Start()
     {
         ConfigureResults();
     }

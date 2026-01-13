@@ -34,7 +34,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: BSMC_Skin_01_Mat
-  m_Shader: {fileID: -6465566751694194690, guid: 16dab76da6a10f34e86db4a928f0b30d, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: d1a42d531fe5f404a9bffa2dd73da24b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -43,7 +43,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -60,6 +61,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: ebdec23cde7ef0e489580a26d077ee3e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Decal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DecalMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -82,6 +91,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Gloss:
+        m_Texture: {fileID: 2800000, guid: bbb0f0203b0440c4eacd28e81c0f6129, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 192483d163c73fa438f99d077735a369, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -102,8 +115,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Pattern:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PatternMap:
+        m_Texture: {fileID: 2800000, guid: a67768c7e730d3e438bac05aaa71b7c3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 2800000, guid: bbb0f0203b0440c4eacd28e81c0f6129, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -120,10 +145,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
+    - _BUILTIN_AlphaClip: 0
+    - _BUILTIN_Blend: 0
+    - _BUILTIN_CullMode: 2
+    - _BUILTIN_DstBlend: 0
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
+    - _BUILTIN_SrcBlend: 1
+    - _BUILTIN_Surface: 0
+    - _BUILTIN_ZTest: 4
+    - _BUILTIN_ZWrite: 1
+    - _BUILTIN_ZWriteControl: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -131,6 +166,9 @@ Material:
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
+    - _DecalBlend: 0
+    - _DecalScale: 0
+    - _DecalUVSet: 0
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -146,17 +184,22 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PatternBlend: 1
+    - _PatternOffset: 50
+    - _PatternScale: 1
+    - _PatternUVSet: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0
+    - _Smoothness: 0.34
     - _SmoothnessTextureChannel: 0
+    - _Specular: 0.25
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UseCustomTexture: 1
     - _WorkflowMode: 1
-    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
     - _Acc_Color_1: {r: 0, g: 0, b: 0, a: 1}
@@ -165,18 +208,42 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BrowColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 0.26415092, g: 0.15699533, b: 0.15699533, a: 1}
-    - _Color_1: {r: 0.8553459, g: 0.54822826, b: 0.39001614, a: 0}
-    - _Color_2: {r: 0.6037736, g: 0.1158181, b: 0.1158181, a: 0}
+    - _Color_1: {r: 0.6698113, g: 0.43316573, b: 0.33174616, a: 0}
+    - _Color_2: {r: 0.3962264, g: 0, b: 0, a: 0}
+    - _Color_3: {r: 0.4339623, g: 0.05007258, b: 0, a: 0}
+    - _Color_4: {r: 0.10062885, g: 0.10062885, b: 0.10062885, a: 0}
+    - _Color_5: {r: 0.05, g: 0.05, b: 0.05, a: 0}
+    - _Color_6: {r: 1, g: 1, b: 1, a: 0}
+    - _Color_7: {r: 1, g: 1, b: 1, a: 0}
+    - _Color_8: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _Color_9: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalColor1: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalColor2: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalColor3: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalColor_1: {r: 0.17610055, g: 0.17610055, b: 0.17610055, a: 0}
+    - _DecalColor_2: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0}
+    - _DecalColor_3: {r: 0.1764706, g: 0.1764706, b: 0.1764706, a: 0}
+    - _DecalOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalScale: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FuzzColor: {r: 0.32075468, g: 0, b: 0, a: 1}
     - _LashesColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PatternColor1: {r: 1, g: 0, b: 0, a: 0}
+    - _PatternColor2: {r: 0.14243397, g: 1, b: 0, a: 0}
+    - _PatternColor3: {r: 0.009105206, g: 0, b: 1, a: 0}
+    - _PatternColor_1: {r: 0.8742138, g: 0.8742138, b: 0.8742138, a: 0}
+    - _PatternColor_2: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 0}
+    - _PatternColor_3: {r: 0.44968545, g: 0.7604513, b: 1, a: 0}
+    - _PatternOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _PatternPattern: {r: 50, g: 50, b: 0, a: 0}
+    - _PatternScale: {r: 1, g: 1, b: 0, a: 0}
     - _SkinTone: {r: 0.54599994, g: 0.38165396, b: 0.33469793, a: 1}
     - _SkinUnderTone: {r: 0.18238989, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _TeethColor: {r: 0.8235294, g: 0.76467043, b: 0.74509805, a: 0}
     - _UnderwearBottomColor: {r: 0, g: 0, b: 0, a: 0}
-    - _UnderwearBottomColor_Opacity: {r: 0.22641498, g: 0.22641498, b: 0.22641498, a: 1}
+    - _UnderwearBottomColor_Opacity: {r: 0.22641492, g: 0.22641492, b: 0.22641492, a: 1}
     - _UnderwearTopColor: {r: 0, g: 0, b: 0, a: 0}
-    - _UnderwearTopColor_Opacity: {r: 0.21960777, g: 0.21960777, b: 0.21960777, a: 1}
+    - _UnderwearTopColor_Opacity: {r: 0.21960771, g: 0.21960771, b: 0.21960771, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

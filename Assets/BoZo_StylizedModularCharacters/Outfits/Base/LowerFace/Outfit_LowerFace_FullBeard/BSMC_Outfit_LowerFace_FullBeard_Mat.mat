@@ -30,7 +30,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -43,6 +44,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: ff32e00e902b6ba409408b995f589101, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DecalMap:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -65,6 +70,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Gloss:
+        m_Texture: {fileID: 2800000, guid: bbb0f0203b0440c4eacd28e81c0f6129, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 76ace819b113dfb47bde894baef6e129, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -83,6 +92,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PatternMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 2800000, guid: bbb0f0203b0440c4eacd28e81c0f6129, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -113,6 +130,8 @@ Material:
     - _BUILTIN_ZWriteControl: 0
     - _BumpScale: 1
     - _Cutoff: 0.5
+    - _DecalBlend: 0
+    - _DecalUVSet: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _FuzzWidth: 3.51
@@ -123,15 +142,16 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PatternBlend: 0
+    - _PatternUVSet: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
-    - _Specular: 0
+    - _Specular: 0.25
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
     - _Acc_Color_1: {r: 0, g: 0, b: 0, a: 0}
@@ -145,9 +165,22 @@ Material:
     - _Color_4: {r: 0, g: 0, b: 0, a: 0}
     - _Color_5: {r: 0, g: 0, b: 0, a: 0}
     - _Color_6: {r: 0, g: 0, b: 0, a: 0}
+    - _Color_7: {r: 1, g: 1, b: 1, a: 0}
+    - _Color_8: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _Color_9: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalColor_1: {r: 1, g: 0, b: 0, a: 0}
+    - _DecalColor_2: {r: 0.14243397, g: 1, b: 0, a: 0}
+    - _DecalColor_3: {r: 0.009105206, g: 0, b: 1, a: 0}
+    - _DecalOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _DecalScale: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FuzzColor: {r: 0, g: 0, b: 0, a: 0}
     - _LashesColor: {r: 0, g: 0, b: 1, a: 0}
+    - _PatternColor_1: {r: 1, g: 0, b: 0, a: 0}
+    - _PatternColor_2: {r: 0.14243397, g: 1, b: 0, a: 0}
+    - _PatternColor_3: {r: 0.009105206, g: 0, b: 1, a: 0}
+    - _PatternOffset: {r: 50, g: 50, b: 0, a: 0}
+    - _PatternScale: {r: 50, g: 50, b: 0, a: 0}
     - _SkinTone: {r: 1, g: 0, b: 0, a: 0}
     - _SkinUnderTone: {r: 0, g: 0, b: 0, a: 0}
     - _UnderwearBottomColor_Opacity: {r: 0, g: 1, b: 0, a: 1}

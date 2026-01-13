@@ -1,12 +1,18 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 namespace Bozo.ModularCharacters
 {
     public class ColorPickerControl : MonoBehaviour
     {
+        [Header("Picker Dependencies")]
+        public CharacterCreator creator;
+        public SVImageControl svContoller;
+        [Header("Picker")]
         public float currentHue;
         public float currentSat;
         public float currentVal;
@@ -22,35 +28,72 @@ namespace Bozo.ModularCharacters
         private Texture2D svTexture;
         private Texture2D outputTexture;
 
-        public Renderer colorObject;
+        public OutfitBase colorObject;
+        public OutfitType outfitType;
         public Material colorMaterial;
         public int MaterialSlot;
 
-        [SerializeField] Text objectName;
-        [SerializeField] Image[] Swatches;
-        [SerializeField] int currentSwatch;
+        [Header("Editor")]
 
-        private int ActiveReferneceSet;
-        private List<string[]> ReferneceSet = new List<string[]>();
-        [SerializeField] string[] OutfitReferneceIDs;
-        [SerializeField] string[] SkinReferneceIDs;
-        [SerializeField] string[] AccessoryReferneceIDs;
-        [SerializeField] string[] EyesReferneceIDs;
+        [SerializeField] OutfitSystem outfitSystem;
+        [SerializeField] TMP_Text objectName;
+        [SerializeField] TMP_Text channelText;
+        [SerializeField] Image Swatch;
 
-        [SerializeField] HandColorer LeftHand;
-        [SerializeField] HandColorer RightHand;
+        [SerializeField] TMP_Text CopyCatagoryText;
+        public List<string> outfitTypes = new List<string>();
+        private int copyIndex;
 
-        private void Start()
+        [SerializeField] TextureType mode = TextureType.Base;
+        [SerializeField] int currentChannel;
+        [SerializeField] int maxChannel;
+        [SerializeField] string[] channelNames;
+
+        [Header("Decal Editor")]
+        [SerializeField] GameObject decalContainer;
+        [SerializeField] Slider DecalXSlider;
+        [SerializeField] Slider DecalYSlider;
+        private Vector2 outfitDefaultDecalSize;
+
+        [Header("Pattern Editor")]
+        [SerializeField] GameObject patternContainer;
+        [SerializeField] Slider patternXSlider;
+        [SerializeField] Slider patternYSlider;
+        private Vector2 outfitDefaultPatternSize;
+
+        [Header("Swatch Editor")]
+        [SerializeField] GameObject swatchParentContainer;
+        [SerializeField] Transform swatchContainer;
+        [SerializeField] SwatchSelector swatchSelectorObject;
+        private List<SwatchSelector> swatchSelectors = new List<SwatchSelector>();
+
+        [Header("AdvancedEditor")]
+        [SerializeField] TMP_Text hexValueTex;
+        [SerializeField] List<Color> HeldColors = new List<Color>();
+        [SerializeField] bool maintainColors;
+        [SerializeField] Toggle maintainColorsToggle;
+        [SerializeField] TMP_InputField inputR;
+        [SerializeField] TMP_InputField inputG;
+        [SerializeField] TMP_InputField inputB;
+
+        [SerializeField] TMP_InputField inputH;
+        [SerializeField] TMP_InputField inputS;
+        [SerializeField] TMP_InputField inputV;
+        private Dictionary<OutfitType, OutfitPickerSettings> outfitPickerSettings = new Dictionary<OutfitType, OutfitPickerSettings>();
+
+        private void Awake()
         {
             CreateHueImage();
             CreateSVImage();
             CreateOutputImage();
             UpdateOutputImage();
 
-            ReferneceSet.Add(OutfitReferneceIDs);
-            ReferneceSet.Add(SkinReferneceIDs);
-            ReferneceSet.Add(AccessoryReferneceIDs);
-            ReferneceSet.Add(EyesReferneceIDs);
+            foreach (var type in creator.outfitTypes)
+            {
+                outfitTypes.Add(type.name);
+            }
+            CopyCatagoryText.text = outfitTypes[0];
+            if (colorObject == null) gameObject.SetActive(false);
         }
 
         private void CreateHueImage()
@@ -114,28 +157,35 @@ namespace Bozo.ModularCharacters
         {
             Color currentColor = Color.HSVToRGB(currentHue, currentSat, currentVal);
 
-            if (ActiveReferneceSet == 1)
-            {
-                LeftHand.UpdateHandColor(currentColor);
-                RightHand.UpdateHandColor(currentColor);
-            }
-
             for (int i = 0; i < outputTexture.height; i++)
             {
                 outputTexture.SetPixel(0, i, currentColor);
             }
 
+            //Updating RBG Input
+            inputR.text = ((int)(currentColor.r * 255f)).ToString();
+            inputG.text = ((int)(currentColor.g * 255f)).ToString();
+            inputB.text = ((int)(currentColor.b * 255f)).ToString();
+
+            //Updating HSV Input
+            inputH.text = (currentHue.ToString("F2"));
+            inputS.text = (currentSat.ToString("F2"));
+            inputV.text = (currentVal.ToString("F2"));
+
+            //Updating Hex Input
+            string hexRGB = ColorUtility.ToHtmlStringRGB(currentColor);
+            hexValueTex.text = "#" + hexRGB;
+
+
             outputTexture.Apply();
 
             if (!colorObject) return;
 
-            Swatches[currentSwatch].color = currentColor;
+            Swatch.color = currentColor;
+            SetColor(currentColor, currentChannel);
+            channelText.color = new Color( 1 - currentVal, 1 - currentVal, 1 - currentVal, 1);
 
-            var oldColor = colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]);
-            currentColor.a = oldColor.a;
-            colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch], currentColor);
-
-            colorObject.materials[MaterialSlot] = colorMaterial;
+            svContoller.setPickerPosition(currentSat, currentVal);
         }
 
         public void SetSV(float S, float V)
@@ -152,6 +202,29 @@ namespace Bozo.ModularCharacters
             currentVal = V;
             UpdateOutputImage();
         }
+
+        public void SetHSV()
+        {
+            float.TryParse(inputH.text, out currentHue);
+            float.TryParse(inputS.text, out currentSat);
+            float.TryParse(inputV.text, out currentVal);
+            UpdateOutputImage();
+        }
+
+        public void SetRGB()
+        {
+            byte r = 0;
+            byte.TryParse(inputR.text, out r);
+            byte g = 0;
+            byte.TryParse(inputG.text, out g);
+            byte b = 0;
+            byte.TryParse(inputB.text, out b);
+
+            var color = new Color32(r,g,b, 255);
+            Color.RGBToHSV(color, out float h, out float s, out float v);
+            SetHSV(h, s, v);
+        }
+
 
         public void UpdateSVImage()
         {
@@ -170,294 +243,333 @@ namespace Bozo.ModularCharacters
             UpdateOutputImage();
         }
 
+        private void SetColor(Color color, int channel) 
+        {
+            switch (mode)
+            {
+                case TextureType.Base:
+                    colorObject.SetColor(color, channel);
+                    break;
+                case TextureType.Decal:
+                    maxChannel = 3;
+                    colorObject.SetDecalColor(color, channel);
+                    break;
+                case TextureType.Pattern:
+                    maxChannel = 3;
+                    colorObject.SetPatternColor(color, channel);
+                    break;
+
+            }
+        }
+
         public void ChangeSwatch(int value)
         {
-            currentSwatch = value;
-            var swatchColor = Swatches[currentSwatch].color;
+            currentChannel += value;
+
+            if(currentChannel > maxChannel) { currentChannel = 1; }
+            if(currentChannel < 1) { currentChannel = maxChannel; };
+
+            Color swatchColor = Color.black;
+
+            switch (mode)
+            {
+                case TextureType.Base:
+                    swatchColor = colorObject.GetColor(currentChannel);
+                    break;
+                case TextureType.Decal:
+                    swatchColor = colorObject.GetDecalColor(currentChannel);
+                    break;
+                case TextureType.Pattern:
+                    swatchColor = colorObject.GetPatternColor(currentChannel);
+                    break;
+                default:
+                    break;
+            }
+
+            Swatch.color = swatchColor;
+
+            SetChannelName();
+
             Color.RGBToHSV(swatchColor, out float h, out float s, out float v);
             hueSlider.value = h;
             SetHSV(h, s, v);
             UpdateSVImage();
         }
 
-        public void ChangeObject(Transform ob)
+        public void ChangeObject(OutfitBase ob)
         {
-            if (ob == null)
+            if (!ob) {RemoveObject(); return; }
+            var colorOutfit = ob.GetComponent<Outfit>();
+
+            //Keeping color of previous Outfit if turned on and type is the same
+            if (maintainColors && !colorOutfit.customShader && colorObject != null)
             {
-                return;
-            }
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                Swatches[i].gameObject.SetActive(true);
-            }
-
-            var renderers = ob.GetComponentsInChildren<Renderer>(true);
-            if (renderers.Length == 0) return;
-            colorObject = renderers[0];
-            if (colorObject == null) return;
-
-            ActiveReferneceSet = 0;
-
-            for (int i = 0; i < colorObject.materials.Length; i++)
-            {
-                var sort = colorObject.materials[i].name.Split("_");
-
-                if (sort[1] == "Outfit")
+                HeldColors = colorObject.GetColors();
+                if(colorOutfit.Type == outfitType)
                 {
-                    colorMaterial = colorObject.materials[i];
-                    MaterialSlot = i;
-                    for (int u = 1; u < renderers.Length; u++)
+                    for (int i = 0; i < HeldColors.Count; i++)
                     {
-                        renderers[u].materials = colorObject.materials;
+                        colorOutfit.SetColor(HeldColors[i], i + 1);
                     }
-                    break;
+                }
+            }
+
+            //initalizing values
+            channelNames = new string[] { "Base" };
+            outfitType = colorOutfit.Type;
+            mode = TextureType.Base;
+            colorObject = ob;
+
+            //RememberSettings
+            if (!outfitPickerSettings.ContainsKey(colorOutfit.Type))
+            {
+                var newSettings = new OutfitPickerSettings();
+                outfitPickerSettings.Add(colorOutfit.Type, newSettings);
+
+            }
+            var settings = outfitPickerSettings[colorOutfit.Type];
+            SetMaintainColors(settings.maintainColors);
+            SetCopyIndex(settings.copyIndex);
+
+            //Custom Shaders
+            if(colorObject.customShader == true)
+            {
+                decalContainer.SetActive(false);
+                patternContainer.SetActive(false);
+                swatchParentContainer.SetActive(true);
+                maxChannel = 1;
+
+                foreach (var item in swatchSelectors)
+                {
+                    Destroy(item.gameObject);
+                }
+                swatchSelectors.Clear();
+                for (int i = 0; i < colorOutfit.outfitSwatches.Count; i++)
+                {
+                    var swatch = Instantiate(swatchSelectorObject, swatchContainer);
+                    swatch.Init(this, colorOutfit.outfitSwatches[i], i);
+                    swatchSelectors.Add(swatch);
+                }
+
+            }
+            //BoZo_Toon Shader
+            else
+            {
+                var color = colorObject.GetColor(1);
+                color.a = 1;
+                currentChannel = 1;
+                Swatch.color = color;
+                decalContainer.SetActive(true);
+                patternContainer.SetActive(true);
+                channelNames = colorOutfit.ColorChannels;
+
+                if (colorOutfit)
+                {
+                    maxChannel = colorOutfit.ColorChannels.Length;
+                    if (!colorOutfit.supportDecals) decalContainer.SetActive(false);
+                    if (!colorOutfit.supportPatterns) patternContainer.SetActive(false);
+                    swatchParentContainer.SetActive(false);
                 }
                 else
                 {
-                    colorMaterial = null;
+                    maxChannel = 9;
                 }
+
+
+
+                var decalSize = colorObject.GetDecalSize();
+                DecalXSlider.value = decalSize.x;
+                DecalYSlider.value = decalSize.y;
+
+                var patternSize = colorObject.GetPatternSize();
+                patternXSlider.value = patternSize.x;
+                patternYSlider.value = patternSize.y;
             }
 
-            //if (colorMaterial == null)
-            //{
-            //    colorObject = null;
-            //    foreach (var item in Swatches) { item.color = new Color(0, 0, 0, 0); }
-            //    return;
-            //}
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                string colorProperty = "_Color_" + (i + 1);
-                if (colorMaterial.HasProperty(colorProperty))
-                {
-                    Swatches[i].color = colorMaterial.GetColor(colorProperty);
-                }
-                else
-                {
-                    Swatches[i].color = new Color(0, 0, 0, 0);
-                }
-            }
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                if (Swatches[i].color.a == 0)
-                {
-                    Swatches[i].gameObject.SetActive(false);
-                }
-            }
+            SetChannelName();
 
             ChangeSwatch(0);
-
             objectName.text = colorObject.name.Replace("(Clone)", "");
 
+            if (colorObject == null) gameObject.SetActive(false);
+            else gameObject.SetActive(true);
+
         }
 
-        public void SelectSkin(Transform transform)
+        public void SetDecalSize()
         {
-            var system = transform.GetComponent<OutfitSystem>();
+            var scale = new Vector2(DecalXSlider.value, DecalYSlider.value);
+            colorObject.SetDecalSize(scale);
+        }
 
-            colorMaterial = system.CharacterMaterial;
-            colorObject = system.GetCharacterBody();
-            ActiveReferneceSet = 1;
-            MaterialSlot = 0;
+        public void SetPatternSize()
+        {
+            var scale = new Vector2(patternXSlider.value, patternYSlider.value);
+            colorObject.SetPatternSize(scale);
+        }
 
-            // Ensure ReferneceSet is properly initialized
-            if (ReferneceSet == null || ReferneceSet.Count <= ActiveReferneceSet)
+        public void RemoveObject() 
+        {
+            colorObject = null;
+            SetMaintainColors(false);
+            gameObject.SetActive(false);
+        }
+
+        public void SetBaseTexture(int textureIndex)
+        {
+            var outfit = colorObject.GetComponent<Outfit>();
+            outfit.SetSwatch(textureIndex);
+        }
+
+        public void SwitchMode(string mode) 
+        {
+            var type = (TextureType)Enum.Parse(typeof(TextureType), mode);
+            this.mode = type;
+
+            switch (this.mode)
             {
-                Debug.LogError("ReferneceSet is not properly initialized or doesn't contain enough elements.");
-                return;
+                case TextureType.Base:
+                    ChangeObject(colorObject);
+                    break;
+                case TextureType.Decal:
+                    maxChannel = 3;
+                    channelText.text = "1/" + maxChannel;
+
+                    var decal = colorObject.GetDecalColor(1);
+                    decal.a = 1;
+                    currentChannel = 1;
+                    Swatch.color = decal;
+                    break;
+                case TextureType.Pattern:
+                    maxChannel = 3;
+                    channelText.text = "1/" + maxChannel;
+
+                    var pattern = colorObject.GetPatternColor(1);
+                    pattern.a = 1;
+                    currentChannel = 1;
+                    Swatch.color = pattern;
+                    break;
+
+            }
+        }
+
+        public void ChangeCopyIndex(int value)
+        {
+            copyIndex += value;
+            if(copyIndex > outfitTypes.Count - 1)
+            {
+                copyIndex = 0;
+            }
+            else if (copyIndex < 0)
+            {
+                copyIndex = outfitTypes.Count - 1;
+            }
+            CopyCatagoryText.text = outfitTypes[copyIndex];
+            if(outfitType != null)
+            {
+                outfitPickerSettings[outfitType].copyIndex = copyIndex;
+            }
+        }
+
+        public void SetCopyIndex(int value)
+        {
+            copyIndex = value;
+            CopyCatagoryText.text = outfitTypes[copyIndex];
+            outfitPickerSettings[outfitType].copyIndex = copyIndex;
+        }
+
+        public void CopyColor(OutfitBase copyOutfit)
+        {
+            var from = colorObject;
+            var to = copyOutfit;
+
+            for (int i = 1; i < 9; i++)
+            {
+                to.SetColor(from.GetColor(i), i);
+            }
+        }
+
+        public void CopyColor()
+        {
+            var from = colorObject;
+            var to = outfitSystem.GetOutfit(CopyCatagoryText.text);
+
+            if (to == null) return;
+
+            for (int i = 1; i < 9; i++)
+            {
+                to.SetColor(from.GetColor(i), i);
+            }
+        }
+
+        public void SetColorByHex(string hex)
+        {
+            if (hex[0].ToString() != "#") 
+            {
+                hex = "#" + hex;
             }
 
-            // Get the current reference array
-            string[] currentReferenceArray = ReferneceSet[ActiveReferneceSet];
-            if (currentReferenceArray == null)
+            if (ColorUtility.TryParseHtmlString(hex, out Color hexColor))
             {
-                Debug.LogError("SkinReferneceIDs array is null.");
-                return;
-            }
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                Swatches[i].gameObject.SetActive(true);
-            }
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                // Add bounds checking for the reference array
-                if (i < currentReferenceArray.Length && currentReferenceArray[i] != "")
-                {
-                    if (colorMaterial.HasProperty(currentReferenceArray[i]))
-                    {
-                        Swatches[i].color = colorMaterial.GetColor(currentReferenceArray[i]);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Material doesn't have property: {currentReferenceArray[i]}");
-                        Swatches[i].color = new Color(0, 0, 0, 0);
-                        Swatches[i].gameObject.SetActive(false);
-                    }
-                }
-                else
-                {
-                    Swatches[i].color = new Color(0, 0, 0, 0);
-                    Swatches[i].gameObject.SetActive(false);
-                }
-            }
-
-            // Add bounds checking for currentSwatch
-            if (currentSwatch < currentReferenceArray.Length && currentReferenceArray[currentSwatch] != "")
-            {
-                string propertyName = currentReferenceArray[currentSwatch];
-                if (colorMaterial.HasProperty(propertyName))
-                {
-                    colorObject.materials[MaterialSlot].SetColor(propertyName,
-                        colorObject.materials[MaterialSlot].GetColor(propertyName));
-                }
-                else
-                {
-                    Debug.LogWarning($"Material doesn't have property for currentSwatch: {propertyName}");
-                }
+                print(hexColor);
+                Color.RGBToHSV(hexColor, out float h, out float s, out float v);
+                SetHSV(h, s, v);
             }
             else
             {
-                Debug.LogWarning($"currentSwatch ({currentSwatch}) is out of bounds for the reference array or the property is empty.");
-                // Reset currentSwatch to a valid index
-                currentSwatch = 0;
-            }
-
-            UpdateHandSkins();
-            system.SetSkin(colorObject.materials[MaterialSlot]);
-        }
-
-
-        public void UpdateHandSkins()
-        {
-            // Add null check to prevent UnassignedReferenceException
-            if (colorObject == null)
-            {
-                Debug.LogWarning("Cannot update hand skins: colorObject is not assigned yet.");
-                return;
-            }
-
-            // Add bounds checking for ReferneceSet and currentSwatch
-            if (ReferneceSet == null || ReferneceSet.Count <= ActiveReferneceSet)
-            {
-                Debug.LogWarning("Cannot update hand skins: ReferneceSet is not properly initialized.");
-                return;
-            }
-
-            string[] currentReferenceArray = ReferneceSet[ActiveReferneceSet];
-            if (currentReferenceArray == null || currentSwatch >= currentReferenceArray.Length)
-            {
-                Debug.LogWarning("Cannot update hand skins: currentSwatch is out of bounds or reference array is null.");
-                return;
-            }
-
-            string propertyName = currentReferenceArray[currentSwatch];
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                Debug.LogWarning("Cannot update hand skins: property name is empty.");
-                return;
-            }
-
-            if (colorObject.materials[MaterialSlot].HasProperty(propertyName))
-            {
-                Color handColor = colorObject.materials[MaterialSlot].GetColor(propertyName);
-                LeftHand.UpdateHandColor(handColor);
-                RightHand.UpdateHandColor(handColor);
-            }
-            else
-            {
-                Debug.LogWarning($"Cannot update hand skins: Material doesn't have property {propertyName}.");
+                Debug.LogWarning("Invalid hex string!");
             }
         }
 
-
-        public void SelectEyes(Transform transform)
+        public void CopyHex()
         {
-            var system = transform.GetComponent<OutfitSystem>();
-
-            MaterialSlot = 1;
-            colorMaterial = system.GetCharacterBody().materials[1];
-            colorObject = system.GetCharacterBody();
-            ActiveReferneceSet = 3;
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                Swatches[i].gameObject.SetActive(true);
-            }
-
-            colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch],
-            colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
-            system.SetEyes(colorObject.materials[MaterialSlot]);
-
-            for (int i = 0; i < Swatches.Length; i++)
-            {
-                if (ReferneceSet[ActiveReferneceSet][i] != "")
-                {
-                    Swatches[i].color = colorMaterial.GetColor(ReferneceSet[ActiveReferneceSet][i]);
-                }
-                else
-                {
-                    Swatches[i].color = new Color(0, 0, 0, 0);
-                    Swatches[i].gameObject.SetActive(false);
-                }
-            }
-
-
+            GUIUtility.systemCopyBuffer = hexValueTex.text;
+            print("Copied HEX to Clipboard: " + hexValueTex.text);
         }
 
-        public void SelectAcc(Transform transform)
+        public void SetChannelName()
         {
-            var system = transform.GetComponent<OutfitSystem>();
+            var channelName = "";
 
-            colorMaterial = system.CharacterMaterial;
-            colorObject = system.GetCharacterBody();
-            ActiveReferneceSet = 2;
-            MaterialSlot = 0;
-
-            for (int i = 0; i < Swatches.Length; i++)
+            switch (mode)
             {
-                if (ReferneceSet[ActiveReferneceSet][i] != "")
-                {
-                    Swatches[i].color = colorMaterial.GetColor(ReferneceSet[ActiveReferneceSet][i]);
-                }
-                else
-                {
-                    Swatches[i].color = new Color(0, 0, 0, 0);
-                }
+                case TextureType.Base:
+                    if (colorObject.customShader) break;
+                    if (currentChannel - 1 < channelNames.Length)
+                    {
+                        channelName = channelNames[currentChannel - 1];
+                    }
+                    break;
+                case TextureType.Decal:
+                    channelName = "Decal";
+                    break;
+                case TextureType.Pattern:
+                    channelName = "Pattern";
+                    break;
+
             }
 
-            colorObject.materials[MaterialSlot].SetColor(ReferneceSet[ActiveReferneceSet][currentSwatch],
-                colorObject.materials[MaterialSlot].GetColor(ReferneceSet[ActiveReferneceSet][currentSwatch]));
-            system.SetSkin(colorObject.materials[MaterialSlot]);
+             channelText.text = channelName + " " + currentChannel + "/" + maxChannel;
         }
 
-        public void CopyColor(Renderer copyOutfit)
+        public void SetMaintainColors(bool value)
         {
-            Material FromMaterial = colorMaterial;
-            Material ToMaterial = null;
-
-            for (int i = 0; i < copyOutfit.materials.Length; i++)
+            if (value && colorObject != null)
             {
-                var sort = copyOutfit.materials[i].name.Split("_");
-
-                if (sort[1] == "Outfit")
-                {
-                    ToMaterial = copyOutfit.materials[i];
-                    MaterialSlot = i;
-                }
-                else
-                {
-                    return;
-                }
+                HeldColors = colorObject.GetColors();
             }
-
-            for (int i = 0; i < 5; i++)
+            maintainColors = value;
+            maintainColorsToggle.isOn = maintainColors;
+            if(outfitType != null)
             {
-                ToMaterial.SetColor("_Color_" + (i + 1), FromMaterial.GetColor("_Color_" + (i + 1)));
+                outfitPickerSettings[outfitType].maintainColors = maintainColors;
             }
+        }
+
+        private class OutfitPickerSettings
+        {
+            public bool maintainColors = false;
+            public int copyIndex = 0;
         }
     }
 }

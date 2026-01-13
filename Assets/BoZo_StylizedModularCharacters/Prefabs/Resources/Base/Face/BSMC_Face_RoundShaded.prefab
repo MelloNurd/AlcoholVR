@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 8b4eb720d5b02a342b5c6562f72c3d2f, type: 3}
@@ -52,6 +53,12 @@ PrefabInstance:
       value: BSMC_Face_RoundShaded
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8b4eb720d5b02a342b5c6562f72c3d2f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7057584166563055813}
   m_SourcePrefab: {fileID: 100100000, guid: 8b4eb720d5b02a342b5c6562f72c3d2f, type: 3}
 --- !u!1 &3499815578159360153 stripped
 GameObject:
@@ -70,5 +77,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56222aeebf4898a41b83761b0e03c752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Type>k__BackingField: 0
-  AttachPoint: Head
+  customShader: 0
+  AttachInEditMode: 0
+  OutfitName: 
+  OutfitIcon: {fileID: 21300000, guid: af8034005a6173f4abb63ea67f43e3eb, type: 3}
+  ColorChannels:
+  - Base
+  - Temples
+  TextureCatagory: 
+  supportDecals: 0
+  supportPatterns: 0
+  showCharacterCreator: 1
+  Type: {fileID: 11400000, guid: ffad910d2e77d9342b9f96d19728b5a5, type: 2}
+  AttachPoint: head
+  defaultColors: []
+  tags: []
+  LinkedColorSets: []
+  IncompatibleSets: []
+  currentSwatch: 0
+  outfitSwatches: []
+  originalBones: []
+  originalRootBone: {fileID: 0}
+  editorAttachPoint: {fileID: 0}

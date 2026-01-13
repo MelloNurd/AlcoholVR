@@ -1,13 +1,18 @@
 fileFormatVersion: 2
 guid: 1b41c07a775129f49a6b3e31b61364e3
 ModelImporter:
-  serializedVersion: 21300
+  serializedVersion: 22200
   internalIDToNameTable: []
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: BSMC_Outfit_Bottom_Skirt_Mat
+    second: {fileID: 2100000, guid: c0964d2a951594f43b5bc526f48a2da5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BSMC_Outfit_Bottom_Skirt_Mat1
     second: {fileID: 2100000, guid: c0964d2a951594f43b5bc526f48a2da5, type: 2}
   - first:
       type: UnityEngine:Material
@@ -26,7 +31,8 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
+    rigImportErrors: "Copied Avatar Rig Configuration mis-match. Transform hierarchy
+      does not match:\n\tTransform 'Hips' for human bone 'Hips' not found\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -50,6 +56,7 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -87,7 +94,7 @@ ModelImporter:
     blendShapeNormalImportMode: 0
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 1
+  importAnimation: 0
   humanDescription:
     serializedVersion: 3
     human:
@@ -908,6 +915,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 
@@ -916,7 +924,7 @@ ModelImporter:
 AssetOrigin:
   serializedVersion: 1
   productId: 281577
-  packageName: 'BoZo: Stylized Modular Characters Base Pack'
-  packageVersion: 1.4
+  packageName: 'BoZo: Stylized Modular Characters - Base Pack'
+  packageVersion: 2.1.10
   assetPath: Assets/BoZo_StylizedModularCharacters/Outfits/Base/Bottom/Outfit_Bottom_Skirt/BSMC_Outfit_Bottom_Skirt.fbx
-  uploadId: 728640
+  uploadId: 840734

@@ -6,17 +6,18 @@ using UnityEngine.EventSystems;
 
 namespace Bozo.ModularCharacters
 {
-    public class SVImageControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IPointerClickHandler
+
+
+    public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler
     {
-        [SerializeField] private Image PickerImage;
+        [SerializeField] Image PickerImage;
 
         private RawImage SVImage;
+
         private ColorPickerControl CC;
         private RectTransform rect;
         private RectTransform pickerTransform;
 
-        private bool isDragging = false;
-        private PointerEventData currentEventData;
 
         private void Awake()
         {
@@ -25,60 +26,63 @@ namespace Bozo.ModularCharacters
             rect = GetComponent<RectTransform>();
             pickerTransform = PickerImage.GetComponent<RectTransform>();
 
-            pickerTransform.localPosition = new Vector2(-(rect.sizeDelta.x * 0.5f), -(rect.sizeDelta.y * 0.5f));
-        }
-
-        private void Update()
-        {
-            if (isDragging && currentEventData != null)
-            {
-                UpdateColor(currentEventData);
-            }
+            pickerTransform = PickerImage.GetComponent<RectTransform>();
+            pickerTransform.position = new Vector2(-(rect.sizeDelta.x * 0.5f), -(rect.sizeDelta.y * 0.5f));
         }
 
         private void UpdateColor(PointerEventData eventData)
         {
-            if (eventData.pressEventCamera == null)
+            Vector3 pos = rect.InverseTransformPoint(eventData.position);
+
+            float deltaX = rect.sizeDelta.x * 0.5f;
+            float deltaY = rect.sizeDelta.y * 0.5f;
+
+            if (pos.x < -deltaX)
             {
-                Debug.LogWarning("EventData pressEventCamera is null.");
-                return;
+                pos.x = -deltaX;
+            }
+            if (pos.x > deltaX)
+            {
+                pos.x = deltaX;
+            }
+            if (pos.y < -deltaY)
+            {
+                pos.y = -deltaY;
+            }
+            if (pos.y > deltaY)
+            {
+                pos.y = deltaY;
             }
 
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, eventData.position, eventData.pressEventCamera, out Vector2 localPoint))
-            {
-                float halfWidth = rect.sizeDelta.x * 0.5f;
-                float halfHeight = rect.sizeDelta.y * 0.5f;
+            float x = pos.x + deltaX;
+            float y = pos.y + deltaY;
 
-                localPoint.x = Mathf.Clamp(localPoint.x, -halfWidth, halfWidth);
-                localPoint.y = Mathf.Clamp(localPoint.y, -halfHeight, halfHeight);
+            float xNorm = x / rect.sizeDelta.x;
+            float YNorm = y / rect.sizeDelta.y;
 
-                pickerTransform.localPosition = localPoint;
+            //pickerTransform.localPosition = pos;
 
-                float xNorm = (localPoint.x + halfWidth) / rect.sizeDelta.x;
-                float yNorm = (localPoint.y + halfHeight) / rect.sizeDelta.y;
+            PickerImage.color = Color.HSVToRGB(0, 0, 1 - YNorm);
 
-                PickerImage.color = Color.HSVToRGB(0, 0, 1 - yNorm);
+            CC.SetSV(xNorm, YNorm);
 
-                CC.SetSV(xNorm, yNorm);
-            }
         }
 
-        public void OnPointerDown(PointerEventData eventData)
+        public void setPickerPosition(float x, float y)
         {
-            isDragging = true;
-            currentEventData = eventData;
-            UpdateColor(eventData);
-        }
+            if(!rect) rect = GetComponent<RectTransform>();
+            if(!pickerTransform) pickerTransform = PickerImage.GetComponent<RectTransform>();
 
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            isDragging = false;
-            currentEventData = null;
+            var xPos = Mathf.Lerp(-rect.sizeDelta.x / 2, rect.sizeDelta.x/ 2, x);
+            var yPos = Mathf.Lerp(-rect.sizeDelta.y / 2, rect.sizeDelta.y / 2, y);
+
+            var pos = new Vector2(xPos, yPos);
+
+            pickerTransform.localPosition = pos;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            currentEventData = eventData; // Keep updating event data reference
             UpdateColor(eventData);
         }
 

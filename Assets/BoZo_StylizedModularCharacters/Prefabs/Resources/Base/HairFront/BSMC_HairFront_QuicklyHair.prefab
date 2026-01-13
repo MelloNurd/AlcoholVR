@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5211431751158948767}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 5753349546088740614}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5211431751158948765
 MonoBehaviour:
@@ -45,20 +45,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56222aeebf4898a41b83761b0e03c752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Initalized: 0
-  removeOutfit: 0
-  <Type>k__BackingField: 2
-  AttachPoint: Head
-  PrimaryVisual: {fileID: 0}
-  AlternateVisual:
-  - type: 8
-    alternateVisual: {fileID: 0}
-  <IncompatibleSets>k__BackingField: []
+  customShader: 0
+  AttachInEditMode: 0
+  OutfitName: 
+  OutfitIcon: {fileID: 21300000, guid: 573fbc0b447f90f4a9a55c3516f6fbf2, type: 3}
+  ColorChannels:
+  - Base
+  - Gradient
+  TextureCatagory: 
+  supportDecals: 0
+  supportPatterns: 0
+  showCharacterCreator: 1
+  Type: {fileID: 11400000, guid: 025dcbe78cc533044936dbb48c1c30e3, type: 2}
+  AttachPoint: head
+  defaultColors: []
+  tags: []
+  LinkedColorSets: []
+  IncompatibleSets: []
+  currentSwatch: 0
+  outfitSwatches: []
+  originalBones: []
+  originalRootBone: {fileID: 0}
+  editorAttachPoint: {fileID: 0}
 --- !u!1001 &5211431749195354349
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 5211431751158948764}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: f201cecb0a5c93d478dd70e3cdeba500, type: 3}
@@ -110,6 +124,9 @@ PrefabInstance:
       value: BSMC_Outfit_HairFront_QuicklyHair
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f201cecb0a5c93d478dd70e3cdeba500, type: 3}
 --- !u!4 &5753349546088740614 stripped
 Transform:

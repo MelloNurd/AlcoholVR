@@ -10,7 +10,7 @@ public class CharactersFiller : MonoBehaviour
     public GameObject buttonPrefab;
     TextMeshProUGUI buttonText;
     DemoCharacterCreator demoCharacterCreator;
-    TextMeshProUGUI characterNameText; // Changed from Text to TextMeshProUGUI
+    TMP_InputField characterNameText; // Changed from Text to TextMeshProUGUI
     [SerializeField] GameObject loadMenu;
     bool firstTime = true;
     [SerializeField] AudioClip buttonClickSound;

@@ -77,12 +77,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56222aeebf4898a41b83761b0e03c752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  removeOutfit: 0
-  <Type>k__BackingField: 5
+  customShader: 0
+  AttachInEditMode: 0
+  OutfitName: CargoPantsShort
+  OutfitIcon: {fileID: 21300000, guid: d53ca1cb09950094e96dba18c81d8726, type: 3}
+  ColorChannels:
+  - Base
+  - Pockets
+  - Straps
+  TextureCatagory: 
+  supportDecals: 0
+  supportPatterns: 0
+  showCharacterCreator: 1
+  Type: {fileID: 11400000, guid: 8b51e8ff650f1344ba44bbb2b9eb83e6, type: 2}
   AttachPoint: 
-  PrimaryVisual: {fileID: 0}
-  AlternateVisual: []
-  <IncompatibleSets>k__BackingField:
-  - type: 9
-    destroyIncompatible: 1
-    HiddenObjects: []
+  defaultColors: []
+  tags:
+  - CoverHips
+  - CoverUpperLegs
+  - CoverLowerLegs
+  LinkedColorSets: []
+  IncompatibleSets:
+  - {fileID: 11400000, guid: 70da74ce935284d419fd8fcf6f8f3306, type: 2}
+  currentSwatch: 0
+  outfitSwatches: []
+  originalBones: []
+  originalRootBone: {fileID: 0}
+  editorAttachPoint: {fileID: 0}

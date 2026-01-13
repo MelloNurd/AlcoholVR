@@ -1,61 +1,99 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-    public enum OutfitType { Face, Head, HairFront, HairBack, Top, Bottom, Feet, LowerFace, Hat, Overall, Gloves }
+namespace Bozo.ModularCharacters
+{
     public class OutfitSystem : MonoBehaviour
     {
-        public BSMC_CharacterObject characterData;
-        private BSMC_CharacterObject _characterData;
-        public SkinnedMeshRenderer CharacterBody;
-        public Material CharacterMaterial;
+        //[Header("Save Data")]
+
+        public DataObject characterData;
+        private DataObject _characterData;
+        public string SaveID;
+
+
+        //[Header("Dependencies")]
+        [SerializeField] public SkinnedMeshRenderer CharacterBody;
+
+        //Height
+        public bool muteHeightChange { get; private set; }
+        public float height { get; private set; }
+        public float heeledHeight { get; private set; }
+
+        //Animation
+        public Animator animator
+        {
+            get
+            {
+                if (_animator == null)
+                {
+                    _animator = GetComponentInParent<Animator>();
+                    if (_animator == null) { _animator = GetComponentInChildren<Animator>(); }
+                }
+
+                return _animator;
+            }
+            private set
+            { _animator = value; }
+        }
+        private Animator _animator;
+        public float stance { get; private set; }
+
+        //Dimensions
         private Bounds CharacterRenderBounds;
-        public Dictionary<OutfitType, Transform> Outfits = new Dictionary<OutfitType, Transform>();
+        Dictionary<string, Transform> boneMap = new Dictionary<string, Transform>();
 
-        [Header("BodyShapes")]
-        [Range(0, 100)] public float Gender;
+        //Outfits
+        public Dictionary<OutfitType, Outfit> Outfits = new Dictionary<OutfitType, Outfit>();
+        public Dictionary<string, OutfitType> KnownOutfitTypes = new Dictionary<string, OutfitType>();
 
-        [Range(0, 100)] public float ChestSize;
-        [Range(0, 100)] public float FaceShape;
+        //Shapes
+        private Dictionary<string, int> bodyShapes = new Dictionary<string, int>();
+        private Dictionary<string, int> faceShapes = new Dictionary<string, int>();
+        private Dictionary<string, int> tagShapes = new Dictionary<string, int>();
+        public Dictionary<string, BodyShapeModifier> bodyModifiers = new Dictionary<string, BodyShapeModifier>();
+        private List<string> tags = new List<string>();
 
-        [Range(-1, 1)] public float height;
-        [Range(-1, 1)] public float headSize;
-        [Range(-1, 1)] public float shoulderWidth;
 
-        [Header("FaceShapes")]
-        [Range(0, 100)] public float LashLength;
-        [Range(0, 100)] public float BrowSize;
-        [Range(0, 100)] public float EarTipLength;
-        [Space]
-        public Vector3 EyeSocketPosition;
-        public float EyeSocketRotation;
-        public Vector3 EyeSocketScale = Vector3.one;
-        [Range(0, 100)] public float EyeUp;
-        [Range(0, 100)] public float EyeDown;
-        [Range(0, 100)] public float EyeSquare;
-        [Space]
-        [Range(0, 100)] public float NoseWidth;
-        [Range(0, 100)] public float NoseUp;
-        [Range(0, 100)] public float NoseDown;
-        [Range(0, 100)] public float NoseBridgeAngle;
-        [Space]
-        [Range(0, 100)] public float MouthWide;
-        [Range(0, 100)] public float MouthThin;
-
-        private Transform eyeSocket_L;
-        private Transform eyeSocket_R;
-
-        private Transform root;
-        private Transform head;
-        private Transform leftsShoulder;
-        private Transform rightsShoulder;
-
+        //Events
         public UnityAction<Outfit> OnOutfitChanged;
-        bool initalized;
+        public UnityAction<SkinnedMeshRenderer> OnRigChanged;
+        public UnityAction<string, float> OnShapeChanged;
+
+        public bool initalized { get; private set; }
+
+
+        // Merged Properties
+        public string prefabName;
+        public Material mergeMaterial;
+        public bool mergedMode;
+        public bool mergeOnAwake;
+        public bool autoUpdate;
+        public bool mergeBase;
+        public CharacterData data;
+        private Dictionary<string, OutfitData> outfitData = new Dictionary<string, OutfitData>();
+        public Dictionary<string, Texture2D> customMaps = new Dictionary<string, Texture2D>();
+        public bool isDirty { get; private set; }
+        public MergedMaterialData[] materialData;
+
+        public enum LoadMode { OnStartAndOnValidate, OnStart, Manual }
+        public LoadMode loadMode;
+
+        public bool async;
+
+
+#if MAGICACLOTH2
+        //MagicaCloth
+        private MagicaCloth2.ColliderComponent[] ClothColliders;
+#endif
+
 
         private void OnValidate()
         {
-            if (Application.isPlaying)
+            if (Application.isPlaying && gameObject.scene.isLoaded && loadMode == LoadMode.OnStartAndOnValidate)
             {
                 Invoke("LoadFromObject", 0f);
             }
@@ -63,75 +101,237 @@ using UnityEngine.Events;
 
         private void Awake()
         {
-            CharacterBody = GetComponentInChildren<SkinnedMeshRenderer>();
-            CharacterRenderBounds = CharacterBody.localBounds;
-            CharacterMaterial = CharacterBody.sharedMaterials[0];
-            GetBoneTransform();
-            SetBlendShapes();
-            SetEyesTransforms();
-            initalized = true;
+            Init();
+            if (mergeOnAwake) mergedMode = true;
         }
 
         private void Start()
         {
-            LoadFromObject();
-        }
-
-        private void SetBlendShapes()
-        {
-            SetGender(Gender);
-            SetChest(ChestSize);
-            SetFace(FaceShape);
-            SetLashLength(LashLength);
-            SetBrowThickness(BrowSize);
-            SetEarElf(EarTipLength);
-            SetEyeDown(EyeDown);
-            SetEyeUp(EyeUp);
-            SetEyeSquare(EyeSquare);
-            SetNoseWidth(NoseWidth);
-            SetNoseUp(NoseUp);
-            SetNoseDown(NoseDown);
-            SetNoseBridge(NoseBridgeAngle);
-            SetMouthWide(MouthWide);
-            SetMouthThin(MouthThin);
-        }
-
-        private void GetBoneTransform()
-        {
-            foreach (var bone in CharacterBody.bones)
+            if (loadMode == LoadMode.OnStart || loadMode == LoadMode.OnStartAndOnValidate)
             {
-                if (bone.name == "Root") { root = bone; continue; }
-                if (bone.name == "Head") { head = bone; continue; }
-                if (bone.name == "LeftShoulder") { leftsShoulder = bone; continue; }
-                if (bone.name == "RightShoulder") { rightsShoulder = bone; continue; }
-                if (bone.name == "SocketLeft") { eyeSocket_L = bone; continue; }
-                if (bone.name == "SocketRight") { eyeSocket_R = bone; continue; }
-            };
+                LoadFromObject();
+            }
         }
 
-        [ContextMenu("Load")]
-        public void LoadFromObject()
+        #region Initalizers
+
+        public void Init()
         {
-            if (characterData)
+
+            if (initalized) return;
+
+            if (CharacterBody == null)
             {
-                if(_characterData != characterData)
+                Debug.LogWarning("Outfit System does not have a Rig assigned please assign one to prevent this warning", gameObject);
+                Debug.LogWarning("Attempting auto rig assignment...");
+                var skinnedMeshes = GetComponentsInChildren<SkinnedMeshRenderer>(true);
+                foreach (var item in skinnedMeshes)
                 {
-                    characterData.LoadCharacter(transform);
-                    _characterData = characterData;
+                    if (item.name == "BMAC_Body")
+                    {
+                        CharacterBody = item;
+                        Debug.Log("Rig Found Successfully!");
+                        break;
+                    }
+                }
+                Debug.LogError("Search Failed. Please Assign Mannually", gameObject);
+                return;
+            }
+
+            CharacterRenderBounds = CharacterBody.localBounds;
+
+
+            InitBoneMap();
+            InitBodyShapes();
+            InitBodyMods();
+            InitClothColliders();
+
+            initalized = true;
+        }
+
+        private void InitBoneMap()
+        {
+            boneMap.Clear();
+            foreach (Transform bone in CharacterBody.bones)
+            {
+                if (boneMap.ContainsKey(bone.name) == false)
+                {
+                    boneMap.Add(bone.name, bone);
                 }
             }
-            SetBlendShapes();
-            SetEyesTransforms();
-            ApplyBodyTransforms();
         }
 
-        public void LoadFromObject(BSMC_CharacterObject saveData)
+
+
+        private void InitBodyShapes()
+        {
+
+            var body = GetOutfit("Body");
+
+
+            bodyShapes.Clear();
+            tagShapes.Clear();
+
+            Mesh mesh;
+            int blendShapeCount = 0;
+
+            if (body != null)
+            {
+
+                mesh = body.skinnedRenderer.sharedMesh;
+                blendShapeCount = body.skinnedRenderer.sharedMesh.blendShapeCount;
+            }
+            else
+            {
+                mesh = CharacterBody.sharedMesh;
+                blendShapeCount = CharacterBody.sharedMesh.blendShapeCount;
+            }
+
+
+
+            for (int i = 0; i < blendShapeCount; i++)
+            {
+                var blendFullName = mesh.GetBlendShapeName(i);
+                var blendName = mesh.GetBlendShapeName(i);
+
+                //removing nameshape that maya gives
+                var sort = blendName.Split(".");
+                if (sort.Length > 1) { blendName = sort[1]; }
+
+
+                sort = blendName.Split("_");
+                if (sort.Length > 1)
+                {
+                    if (sort[0] == "Shape") { bodyShapes.Add(sort[1], i); }
+                    if (sort[0] == "Tag") { tagShapes.Add(sort[1], i); }
+                }
+            }
+        }
+
+
+
+        private void InitBodyMods()
+        {
+            var bodyMods = new List<BodyShapeModifier>(GetComponentsInChildren<BodyShapeModifier>());
+            bodyModifiers.Clear();
+            for (int i = 0; i < bodyMods.Count; i++)
+            {
+                bodyModifiers.Add(bodyMods[i].name, bodyMods[i]);
+            }
+        }
+
+        private void InitFaceShapes()
+        {
+            var head = GetOutfit("Head");
+
+            faceShapes.Clear();
+
+            Mesh mesh;
+            if (head != null)
+            {
+                mesh = head.skinnedRenderer.sharedMesh;
+            }
+            else
+            {
+                mesh = CharacterBody.sharedMesh;
+            }
+
+            var blendShapeCount = mesh.blendShapeCount;
+
+            for (int i = 0; i < blendShapeCount; i++)
+            {
+                var blendFullName = mesh.GetBlendShapeName(i);
+                var blendName = mesh.GetBlendShapeName(i);
+
+                //removing nameshape that maya gives
+                var sort = blendName.Split(".");
+                if (sort.Length > 1) { blendName = sort[1]; }
+
+                sort = blendName.Split("_");
+                if (sort.Length > 1)
+                {
+                    if (sort[0] == "Shape") { faceShapes.Add(sort[1], i); }
+                }
+            }
+        }
+        #endregion
+
+        private void InitClothColliders()
+        {
+#if MAGICACLOTH2
+            ClothColliders = GetComponentsInChildren<MagicaCloth2.ColliderComponent>();
+#endif      
+        }
+
+        #region Saving and Loading
+
+
+
+        public void LoadFromObject(DataObject saveData)
         {
             characterData = saveData;
             LoadFromObject();
         }
 
-        [ContextMenu("Save")]
+        [ContextMenu("Load")]
+        public void LoadFromObject()
+        {
+
+            if (characterData)
+            {
+                if (_characterData != characterData)
+                {
+                    SaveID = characterData.name;
+
+                    if (mergedMode)
+                    {
+                        data = characterData.GetCharacterData();
+                        isDirty = true;
+                        MergeCharacter();
+                    }
+                    else
+                    {
+                        _characterData = characterData;
+                        LoadCharacter(characterData.GetCharacterData());
+                    }
+                }
+            }
+        }
+
+
+
+        [ContextMenu("LoadByID")]
+        public void LoadFromID()
+        {
+            LoadFromID(SaveID);
+        }
+
+        public void LoadFromID(string saveName)
+        {
+            if (string.IsNullOrEmpty(saveName)) return;
+            SaveID = saveName;
+
+            var data = BMAC_SaveSystem.GetDataFromID(SaveID);
+            if (data == null) return;
+
+            LoadCharacter(data);
+        }
+
+        private async void LoadCharacter(CharacterData data)
+        {
+            if (mergedMode)
+            {
+                this.data = data;
+                isDirty = true;
+                MergeCharacter();
+            }
+            else
+            {
+                await BMAC_SaveSystem.LoadCharacter(this, data, false, async);
+            }
+        }
+
+        [ContextMenu("SaveToObject")]
         public void SaveToObject()
         {
             if (!characterData)
@@ -139,12 +339,42 @@ using UnityEngine.Events;
                 Debug.LogWarning("Character Data Field is empty. Please provide a BSMC_CharacterObject to " + transform.name);
                 return;
             }
-            characterData.SaveCharacter(this);
+            BMAC_SaveSystem.SaveCharacter(this, characterData.GetCharacterData().characterName, characterData.GetCharacterIcon());
         }
 
+        [ContextMenu("SaveByID")]
+
+        public void SaveByID()
+        {
+            SaveByID(SaveID);
+        }
+
+        public void SaveByID(string characterName)
+        {
+            if (string.IsNullOrEmpty(characterName))
+            {
+                Debug.LogWarning("No ID provided saving aborted");
+                return;
+            }
+
+            //Creating EmptyIcon
+            if (!System.IO.File.Exists(BMAC_SaveSystem.iconFilePath + "/" + characterName + ".png"))
+            {
+                Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                byte[] bytes = tex.EncodeToPNG();
+                System.IO.File.WriteAllBytes(BMAC_SaveSystem.iconFilePath + "/" + characterName + ".png", bytes);
+            }
+
+            BMAC_SaveSystem.SaveCharacter(this, characterName);
+        }
+
+        #endregion
+
+
+        #region Outfit Removeal
         public void RemoveOutfit(Outfit outfit, bool destory)
         {
-            if (Outfits.TryGetValue(outfit.Type, out Transform currentOutfitInSlot))
+            if (Outfits.TryGetValue(outfit.Type, out Outfit currentOutfitInSlot))
             {
                 if (destory == true && currentOutfitInSlot != null)
                 {
@@ -153,12 +383,14 @@ using UnityEngine.Events;
                 }
             }
 
+            RemoveTags(outfit);
             OnOutfitChanged?.Invoke(null);
         }
 
+
         public void RemoveOutfit(OutfitType type, bool destory)
         {
-            if (Outfits.TryGetValue(type, out Transform currentOutfitInSlot))
+            if (Outfits.TryGetValue(type, out Outfit currentOutfitInSlot))
             {
                 if (destory == true && currentOutfitInSlot != null)
                 {
@@ -167,28 +399,233 @@ using UnityEngine.Events;
                 }
             }
 
+            RemoveTags(currentOutfitInSlot);
             OnOutfitChanged?.Invoke(null);
+        }
+
+        public void RemoveTags(Outfit removedOutfit)
+        {
+            if (removedOutfit == null) return;
+            foreach (var item in removedOutfit.tags)
+            {
+                tags.Remove(item);
+            }
+            //tags.RemoveAll(item => removedOutfit.tags.Contains(item));
         }
 
         public void RemoveAllOutfits()
         {
-            List<Transform> list = new List<Transform>(Outfits.Values);
-            foreach (var item in list) 
+            List<Outfit> list = new List<Outfit>(Outfits.Values);
+            foreach (var item in list)
             {
                 if (item == null) continue;
-                Destroy(item.gameObject); 
+
+                Destroy(item.gameObject);
             }
             Outfits.Clear();
+            tags.Clear();
             OnOutfitChanged?.Invoke(null);
         }
+        #endregion
 
+        public Outfit InstantiateOutfit(Outfit outfit)
+        {
+            var inst = Instantiate(outfit, transform);
+            inst.name = inst.name.Replace("(Clone)", "");
+            return inst;
+        }
+
+        //Legacy Method
         public void AttachSkinnedOutfit(Outfit outfit)
         {
+            AttachOutfit(outfit);
+        }
 
+        public void ReattachOutfit(Outfit outfit)
+        {
+            OnOutfitChanged?.Invoke(outfit);
+            AddTags(outfit.tags);
+            ApplyTags();
+            OnOutfitChanged?.Invoke(outfit);
+        }
+
+        public void AttachOutfit(Outfit outfit)
+        {
             if (!initalized) return;
 
+            if (mergedMode)
+            {
+                outfitData[outfit.Type.name] = outfit.GetOutfitData();
+                data.outfitDatas = outfitData.Values.ToList();
+                isDirty = true;
+                Destroy(outfit.gameObject);
+                if (autoUpdate) MergeCharacter();
+                return;
+            }
+
+            if (!KnownOutfitTypes.ContainsKey(outfit.Type.name))
+            {
+                KnownOutfitTypes.Add(outfit.Type.name, outfit.Type);
+            }
+
+
             //check if an outfit is already in that slot and replace it
-            if (Outfits.TryGetValue(outfit.Type, out Transform currentOutfitInSlot))
+            ReplaceOutfit(outfit);
+
+
+            //Merging outfit bones or attaching outfit to specified bone
+            MergeBones(outfit);
+
+
+            //Adjusting Mesh bounds so the meshes don't unexpectingly disappear.
+            if (outfit.skinnedRenderer)
+            {
+                UpdateCharacterBounds(outfit);
+            }
+
+
+            //Apply the Current Body Morphs to the Outfit
+            ApplyShapesToOufit(outfit);
+
+            //If Head get its Morphs
+            if (outfit.Type.name == "Head") { InitFaceShapes(); }
+
+            //If Body get its Morphs
+            if (outfit.Type.name == "Body") { InitBodyShapes(); }
+
+            AddTags(outfit.tags);
+            ApplyTags();
+
+            OnOutfitChanged?.Invoke(outfit);
+
+
+        }
+
+        private void ApplyShapesToOufit(Outfit outfit)
+        {
+            var keys = new List<string>(bodyShapes.Keys);
+            for (int i = 0; i < keys.Count; i++)
+            {
+                GetBodyShapeValues();
+                outfit.SetShape(keys[i], GetShape(keys[i]));
+            }
+        }
+
+        public void SetShape(string key, float value)
+        {
+            SkinnedMeshRenderer renderer = null;
+            var index = -1;
+
+            var body = GetOutfit("Body");
+            var head = GetOutfit("Head");
+
+            if (bodyShapes.TryGetValue(key, out int bodyValue) && body)
+            {
+                index = bodyValue;
+                if (body != null) { renderer = body.skinnedRenderer; }
+            }
+            else if (faceShapes.TryGetValue(key, out int faceValue) && head)
+            {
+                index = faceValue;
+                if (head != null) { renderer = head.skinnedRenderer; }
+            }
+            else
+            {
+                if (bodyShapes.TryGetValue(key, out int blendValue))
+                {
+                    index = blendValue;
+                    renderer = CharacterBody;
+                }
+
+            }
+
+            if (renderer != null) renderer.SetBlendShapeWeight(index, value);
+
+            OnShapeChanged?.Invoke(key, value);
+        }
+
+        public void AddTags(string[] tags) 
+        {
+            print("adding tags");
+            this.tags.AddRange(tags);
+        }
+
+        private void ApplyTags()
+        {
+            // This method is intented for when you merged the body but still want to attach outfits dynamically
+            if (GetOutfit("Body") != null) { return; }
+
+            var shapes = new List<string>(tagShapes.Keys);
+            if (!CharacterBody) return;
+            if (CharacterBody.sharedMesh.blendShapeCount == 0) return;
+            for (int i = 0; i < shapes.Count; i++)
+            {
+                var yes = ContainsTag(shapes[i]);
+                if (yes) { CharacterBody.SetBlendShapeWeight(tagShapes[shapes[i]], 100); }
+                else { CharacterBody.SetBlendShapeWeight(tagShapes[shapes[i]], 0); }
+            }
+        }
+
+        public void SetStance(float value)
+        {
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == "Stance") animator.SetFloat("Stance", value);
+            }
+            stance = value;
+        }
+
+        public void SetHeight(float value)
+        {
+            //Check if has heels animaton property
+            bool HasHeeledParamter = false;
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == "HeelHeight") HasHeeledParamter = true;
+            }
+
+            //remove Previous Height
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y - height, transform.localPosition.z);
+            //Apply New Height
+            height = value;
+            if (HasHeeledParamter) heeledHeight = animator.GetFloat("HeelHeight");
+            if (!muteHeightChange)
+            {
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + value, transform.localPosition.z);
+                if (HasHeeledParamter)
+                {
+
+                    animator.SetFloat("HeelHeight", 0);
+                }
+
+            }
+
+
+        }
+
+        public void MuteHeightChange(bool value)
+        {
+            if (value == muteHeightChange) return;
+
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                animator.SetFloat("HeelHeight", heeledHeight);
+            }
+
+            muteHeightChange = value;
+
+            var height = this.height;
+            if (muteHeightChange)
+            {
+                height = -height;
+            }
+
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + height, transform.localPosition.z);
+        }
+
+        private void ReplaceOutfit(Outfit outfit)
+        {
+            if (Outfits.TryGetValue(outfit.Type, out Outfit currentOutfitInSlot))
             {
                 if (Outfits[outfit.Type])
                 {
@@ -199,424 +636,118 @@ using UnityEngine.Events;
                     else
                     {
                         OnOutfitChanged?.Invoke(outfit);
-                        return;
+
                     }
                 }
-                Outfits[outfit.Type] = outfit.transform;
+                Outfits[outfit.Type] = outfit;
             }
             else
             {
-                Outfits.Add(outfit.Type, outfit.transform);
+                Outfits.Add(outfit.Type, outfit);
             }
+        }
 
-            //Assigning the skin material from the base character
-            var renderer = outfit.GetComponentInChildren<SkinnedMeshRenderer>();
-            if (renderer && renderer.sharedMaterial)
+        private void MergeBones(Outfit outfit)
+        {
+            foreach (var smr in outfit.skinnedRenderers)
             {
-                var materialsSort = renderer.sharedMaterial.name.Split("_");
-                if (materialsSort[1] == "Skin")
-                {
-                    renderer.sharedMaterial = CharacterMaterial;
-                }
-            }
+                var renderer = smr;
 
-            //Merging outfit bones or attaching outfit to specified bone
-            if (outfit.AttachPoint == "" && renderer)
-            {
-                if(outfit.Initalized == false)
+                if (outfit.AttachPoint == "" && renderer)
                 {
-                    var bones = renderer.bones;
-                    var oldBones = renderer.bones;
-                    for (int i = 0; i < bones.Length; i++)
+                    if (outfit.Initalized == false)
                     {
-                        for (int u = 0; u < CharacterBody.bones.Length; u++)
+
+                        var oldBones = renderer.bones.ToArray();
+                        var newBones = new Transform[renderer.bones.Length];
+                        for (int i = 0; i < oldBones.Length; i++)
                         {
-                            if(bones[i].name == CharacterBody.bones[u].name)
+                            var bone = oldBones[i];
+                            boneMap.TryGetValue(bone.name, out Transform baseBone);
+                            if (bone == baseBone)
                             {
-                                bones[i] = CharacterBody.bones[u];
+                                newBones[i] = baseBone;
+                                continue;
+                            }
+                            else
+                            {
+                                newBones[i] = baseBone;
+                                //Destroy(bone.gameObject);
                             }
                         }
+                        renderer.bones = newBones;
+                        renderer.rootBone = CharacterBody.rootBone;
+
+
                     }
-                    renderer.bones = bones;
-                    renderer.rootBone = CharacterBody.rootBone;
-                    foreach (var bone in oldBones) { Destroy(bone.gameObject); }
-                    outfit.Initalized = true;
+                }
+                else
+                {
+                    Transform bone = null;
+                    try
+                    {
+                        bone = boneMap[outfit.AttachPoint];
+                    }
+                    catch
+                    {
+                        Debug.LogError(name + " is missing " + outfit.AttachPoint + " that " + outfit.name + " requires");
+                        return;
+                    }
+
+
+                    outfit.transform.parent = bone.transform;
+                    outfit.transform.position = bone.position;
+                    outfit.transform.rotation = bone.rotation;
+                    outfit.transform.localScale = Vector3.one;
                 }
             }
-            else
+
+            outfit.ActivateCloth(boneMap);
+            outfit.Initalized = true;
+
+            if (outfit.outfitRenderer && outfit.AttachPoint != "")
             {
                 Transform bone = null;
-                foreach (var item in CharacterBody.bones)
+                try
                 {
-                    if (item.name == outfit.AttachPoint)
-                    {
-                        bone = item;
-                        break;
-                    }
+                    bone = boneMap[outfit.AttachPoint];
                 }
+                catch
+                {
+                    Debug.LogError(name + " is missing " + outfit.AttachPoint + " that " + outfit.name + " requires");
+                    return;
+                }
+
+
                 outfit.transform.parent = bone.transform;
                 outfit.transform.position = bone.position;
                 outfit.transform.rotation = bone.rotation;
                 outfit.transform.localScale = Vector3.one;
             }
-
-            //Adjusting Mesh bounds so the meshes don't unexpectingly disappear.
-            if (renderer)
-            {
-                Bounds outfitBounds = renderer.localBounds;
-                CharacterRenderBounds.Encapsulate(outfitBounds);
-                UpdateCharacterBounds();
-            }
-
-            SetGender(Gender);
-            SetChest(ChestSize);
-            OnOutfitChanged?.Invoke(outfit);
-
         }
 
-        public void UpdateCharacterBounds()
+        public void UpdateCharacterBounds(Outfit outfit)
         {
-            CharacterBody.localBounds = CharacterRenderBounds;
             foreach (var item in Outfits.Values)
             {
                 if (item == null) continue;
-                var renderer = item.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (renderer != null) renderer.localBounds = CharacterRenderBounds;
-            }
-        }
-
-        public void SetHeight(float value)
-        {
-            height = value;
-            ApplyBodyTransforms();
-        }
-
-        public void SetHeadSize(float value)
-        {
-            headSize = value;
-            ApplyBodyTransforms();
-        }
-
-        public void SetShoulderWidth(float value)
-        {
-            shoulderWidth = value;
-            ApplyBodyTransforms();
-        }
-
-        public void SetGender(float value)
-        {
-            Gender = value;
-            if (!CharacterBody) return;
-
-            CharacterBody.SetBlendShapeWeight(0, Gender);
-            foreach (var item in Outfits.Values)
-            {
-                if (item == null) continue;
-                var outfit = item.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (outfit != null)
+                foreach (var smr in item.skinnedRenderers)
                 {
-                    if (outfit.sharedMesh.blendShapeCount >= 1)
-                    {
-                        outfit.SetBlendShapeWeight(0, Gender);
-                    }
+                    if (smr != null) smr.localBounds = CharacterRenderBounds;
                 }
             }
         }
 
-        public void SetChest(float value)
+        public bool ContainsTag(string tag)
         {
-            ChestSize = value;
-            if (!CharacterBody) return;
-
-            CharacterBody.SetBlendShapeWeight(0, Gender);
-            foreach (var item in Outfits.Values)
-            {
-                if (item == null) continue;
-                var outfit = item.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (outfit != null)
-                {
-                    if (outfit.sharedMesh.blendShapeCount >= 2)
-                    {
-                        outfit.SetBlendShapeWeight(1, ChestSize);
-                    }
-                }
-            }
+            return tags.Contains(tag);
         }
 
-        public void SetSkin(Material value, bool isInstance = false)
+        #region Getters
+
+        public Outfit GetOutfit(OutfitType outfitType)
         {
-            if (!CharacterBody) return;
-
-            CharacterBody.material = value;
-
-            CharacterMaterial = value;
-
-            foreach (var item in Outfits.Values)
-            {
-                if (item == null) continue;
-                var renderer = item.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (renderer)
-                {
-                    var materialsSort = renderer.material.name.Split("_");
-                    if (materialsSort[1] == "Skin")
-                    {
-                        renderer.material = CharacterMaterial;
-                    }
-                }
-            }
-        }
-
-        public void SetEyes(Material value)
-        {
-            if (!CharacterBody) return;
-            var mats = CharacterBody.sharedMaterials;
-            mats[1] = value;
-            CharacterBody.sharedMaterials = mats;
-        }
-
-        public void SetAccessories(Texture2D accessory)
-        {
-            CharacterBody.material.SetTexture("_Accessory", accessory);
-            SetSkin(CharacterBody.material);
-        }
-
-        public void ApplyBodyTransforms()
-        {
-            var heightValue = height + 1;
-            root.localScale = new Vector3(heightValue, heightValue, heightValue);
-            var headSizeValue = 1 + headSize - height;
-            head.localScale = new Vector3(headSizeValue, headSizeValue, headSizeValue);
-
-            var shoulderWidthValue = shoulderWidth + 1;
-            leftsShoulder.localScale = new Vector3(shoulderWidthValue, shoulderWidthValue, 1);
-            rightsShoulder.localScale = new Vector3(shoulderWidthValue, shoulderWidthValue, 1);
-        }
-
-        public bool CheckIfOutfitExists(OutfitType type)
-        {
-            if (Outfits.TryGetValue(type, out Transform currentOutfitInSlot))
-            {
-                if (currentOutfitInSlot == null) { return false; }
-                if (currentOutfitInSlot.gameObject.activeSelf == false) { return false; }
-                else { return true; }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        #region Eye Transforms
-
-        public void SetEyePositionHeight(float value)
-        {
-            EyeSocketPosition = new Vector3(EyeSocketPosition.x, value, EyeSocketPosition.z);
-            SetEyesTransforms();
-        }
-
-        public void SetEyePositionDepth(float value)
-        {
-            EyeSocketPosition = new Vector3(EyeSocketPosition.x, EyeSocketPosition.y, value);
-            SetEyesTransforms();
-        }
-
-        public void SetEyePositionWidth(float value)
-        {
-            EyeSocketPosition = new Vector3(value, EyeSocketPosition.y, EyeSocketPosition.z);
-            SetEyesTransforms();
-        }
-
-        public void SetEyeScaleHeight(float value)
-        {
-            EyeSocketScale = new Vector3(EyeSocketScale.x, value, EyeSocketScale.z);
-            SetEyesTransforms();
-        }
-
-        public void SetEyeScaleDepth(float value)
-        {
-            EyeSocketScale = new Vector3(EyeSocketScale.x, EyeSocketScale.y, value);
-            SetEyesTransforms();
-        }
-
-        public void SetEyeScaleWidth(float value)
-        {
-            EyeSocketScale = new Vector3(value, EyeSocketScale.y, EyeSocketScale.z);
-            SetEyesTransforms();
-        }
-
-        public void SetEyeTilt(float value)
-        {
-            EyeSocketRotation = value;
-            SetEyesTransforms();
-        }
-
-        #endregion
-
-        public void SetEyesTransforms()
-        {
-            if (CharacterBody == null) { return; }
-
-            if (eyeSocket_L == null || eyeSocket_R == null)
-            {
-                foreach (var bone in CharacterBody.bones) { if (bone.name == "SocketLeft") { eyeSocket_L = bone; } };
-                foreach (var bone in CharacterBody.bones) { if (bone.name == "SocketRight") { eyeSocket_R = bone; } };
-            }
-
-            if (eyeSocket_L == null || eyeSocket_R == null)
-            {
-                return;
-            }
-
-            eyeSocket_L.localPosition = new Vector3(EyeSocketPosition.x, EyeSocketPosition.y, EyeSocketPosition.z);
-            eyeSocket_R.localPosition = new Vector3(EyeSocketPosition.x, EyeSocketPosition.y, -EyeSocketPosition.z);
-            eyeSocket_L.localRotation  = Quaternion.Euler(new Vector3(0, 0, EyeSocketRotation));
-            eyeSocket_R.localRotation = Quaternion.Euler(new Vector3(0, 0, EyeSocketRotation));
-            eyeSocket_L.localScale = new Vector3(EyeSocketScale.x, EyeSocketScale.y, EyeSocketScale.z);
-            eyeSocket_R.localScale = new Vector3(EyeSocketScale.x, EyeSocketScale.y, EyeSocketScale.z);
-        }
-
-        #region Eye Values
-        public void SetPupilSize(float value)
-        {
-            CharacterBody.materials[1].SetFloat("_PupilSize", value);
-        }
-
-        public void SetIrisSize(float value)
-        {
-            CharacterBody.materials[1].SetFloat("_IrisSize", value);
-        }
-
-        public void SetIrisOuterSize(float value)
-        {
-            CharacterBody.materials[1].SetFloat("_OuterIrisColorSharpness", value);
-        }
-
-        public void SetIrisInnerSize(float value)
-        {
-            CharacterBody.materials[1].SetFloat("_InnerIrisColorShapness", value);
-        }
-
-        public void SetIrisOffsetWidth(float value)
-        {
-            var offset = CharacterBody.materials[1].GetVector("_InnerIrisColorOffset");
-            offset.x = value;
-            CharacterBody.materials[1].SetVector("_InnerIrisColorOffset", offset);
-        }
-
-        public void SetIrisOffsetHeight(float value)
-        {
-            var offset = CharacterBody.materials[1].GetVector("_InnerIrisColorOffset");
-            offset.y = value;
-            CharacterBody.materials[1].SetVector("_InnerIrisColorOffset", offset);
-        }
-
-        #endregion
-
-
-        #region Blendshapes
-        public void SetFace(float value)
-        {
-            if (!CharacterBody) return;
-            FaceShape = value;
-            CharacterBody.SetBlendShapeWeight(1, value);
-        }
-
-        public void SetLashLength(float value)
-        {
-            if (!CharacterBody) return;
-            LashLength = value;
-            CharacterBody.SetBlendShapeWeight(2, value);
-        }
-
-        public void SetBrowThickness(float value)
-        {
-            if (!CharacterBody) return;
-            BrowSize = value;
-            CharacterBody.SetBlendShapeWeight(36, value);
-        }
-
-        public void SetEarElf(float value)
-        {
-            if (!CharacterBody) return;
-            EarTipLength = value;
-            CharacterBody.SetBlendShapeWeight(46, value);
-        }
-
-        #region Eyes
-        public void SetEyeDown(float value)
-        {
-            if (!CharacterBody) return;
-            EyeDown = value;
-            CharacterBody.SetBlendShapeWeight(43, value);
-        }
-
-        public void SetEyeUp(float value)
-        {
-            if (!CharacterBody) return;
-            EyeUp = value;
-            CharacterBody.SetBlendShapeWeight(44, value);
-        }
-
-        public void SetEyeSquare(float value)
-        {
-            if (!CharacterBody) return;
-            EyeSquare = value;
-            CharacterBody.SetBlendShapeWeight(45, value);
-        }
-
-        #endregion
-
-        #region Nose
-        public void SetNoseWidth(float value)
-        {
-            if (!CharacterBody) return;
-            NoseWidth = value;
-            CharacterBody.SetBlendShapeWeight(38, value);
-        }
-
-        public void SetNoseUp(float value)
-        {
-            if (!CharacterBody) return;
-            NoseUp = value;
-            CharacterBody.SetBlendShapeWeight(40, value);
-        }
-
-        public void SetNoseDown(float value)
-        {
-            if (!CharacterBody) return;
-            NoseDown = value;
-            CharacterBody.SetBlendShapeWeight(39, value);
-        }
-
-        public void SetNoseBridge(float value)
-        {
-            if (!CharacterBody) return;
-            NoseBridgeAngle = value;
-            CharacterBody.SetBlendShapeWeight(37, value);
-        }
-
-        #endregion
-
-        #region Mouth
-        public void SetMouthWide(float value)
-        {
-            if (!CharacterBody) return;
-            MouthWide = value;
-            CharacterBody.SetBlendShapeWeight(41, value);
-        }
-
-        public void SetMouthThin(float value)
-        {
-            if (!CharacterBody) return;
-            MouthThin = value;
-            CharacterBody.SetBlendShapeWeight(42, value);
-        }
-
-        #endregion
-
-        public Transform GetOutfit(OutfitType outfitType)
-        {
-            if (Outfits.TryGetValue(outfitType, out Transform item))
+            if (Outfits.TryGetValue(outfitType, out Outfit item))
             {
                 return item;
             }
@@ -624,14 +755,292 @@ using UnityEngine.Events;
             return null;
         }
 
-        public List<Transform> GetOutfits()
+        public Outfit GetOutfit(string outfitType)
         {
-            return new List<Transform>(Outfits.Values);
+            if (KnownOutfitTypes.TryGetValue(outfitType, out OutfitType type))
+            {
+                if (Outfits.TryGetValue(type, out Outfit item))
+                {
+                    return item;
+                }
+            }
+
+            return null;
         }
 
+        public List<Outfit> GetOutfits()
+        {
+            return new List<Outfit>(Outfits.Values);
+        }
+
+        public List<string> GetShapes()
+        {
+            return bodyShapes.Keys.ToList();
+        }
+
+        public List<string> GetFaceShapes()
+        {
+            return faceShapes.Keys.ToList();
+        }
+
+#if MAGICACLOTH2
+        public MagicaCloth2.ColliderComponent[] GetClothColliders()
+        {
+            return ClothColliders;
+        }
+#endif
+
+        public float GetShape(string key)
+        {
+            if (bodyShapes.TryGetValue(key, out int value))
+            {
+                var body = GetOutfit("Body");
+                if (body != null)
+                {
+                    var weightValue = body.skinnedRenderer.GetBlendShapeWeight(value);
+                    return weightValue;
+                }
+                else return -10000;
+            }
+            else return -10000;
+        }
+
+        public Dictionary<string, BodyShapeModifier> GetMods()
+        {
+            return bodyModifiers;
+        }
+        public Dictionary<string, Transform> GetBones()
+        {
+            return boneMap;
+        }
+
+        public float GetShapeValue(string key)
+        {
+            var weight = -1f;
+
+            var body = GetOutfit("Body");
+
+            if (body == null) return -1;
+            if (bodyShapes.TryGetValue(key, out int bodyValue))
+            {
+                weight = body.skinnedRenderer.GetBlendShapeWeight(bodyValue);
+            }
+            else if (faceShapes.TryGetValue(key, out int faceValue))
+            {
+                var face = GetOutfit("Head");
+                if (face == null) return -1;
+                weight = face.skinnedRenderer.GetBlendShapeWeight(faceValue);
+            }
+
+            return weight;
+        }
+
+        public float GetShapeValue(int key)
+        {
+            SkinnedMeshRenderer renderer;
+            var body = GetOutfit("Body");
+            if (body == null) renderer = CharacterBody;
+            else renderer = body.skinnedRenderer;
+
+            var weightValue = renderer.GetBlendShapeWeight(key);
+            return weightValue;
+        }
+
+        public Dictionary<string, float> GetBodyShapeValues()
+        {
+            var bodyShapeValues = new Dictionary<string, float>();
+            var shapes = bodyShapes.Values.ToArray();
+            var keys = bodyShapes.Keys.ToArray();
+
+            SkinnedMeshRenderer renderer;
+            var body = GetOutfit("Body");
+            if (body == null) renderer = CharacterBody;
+            else renderer = body.skinnedRenderer;
+
+            for (int i = 0; i < shapes.Length; i++)
+            {
+                var weightValue = renderer.GetBlendShapeWeight(shapes[i]);
+                bodyShapeValues.Add(keys[i], weightValue);
+            }
+
+            return bodyShapeValues;
+        }
+
+        public Dictionary<string, float> GetFaceShapeValues()
+        {
+            var faceShapeValues = new Dictionary<string, float>();
+            var shapes = faceShapes.Values.ToArray();
+            var keys = faceShapes.Keys.ToArray();
+
+            SkinnedMeshRenderer renderer;
+            var head = GetOutfit("Head");
+            if (head == null) renderer = CharacterBody;
+            else renderer = head.skinnedRenderer;
+
+
+            for (int i = 0; i < shapes.Length; i++)
+            {
+                var weightValue = renderer.GetBlendShapeWeight(shapes[i]);
+                faceShapeValues.Add(keys[i], weightValue);
+            }
+
+            return faceShapeValues;
+        }
         #endregion
 
+#if UNITY_EDITOR
+
+        public void SoftAttach(Outfit outfit)
+        {
+            //For Attaching outfits during in the Editor 
+            if (CharacterBody == null)
+            {
+                Debug.LogWarning("Soft Attach attempted but OuftitSystem did not have a CharacterBody please assign in the inspector", gameObject);
+                return;
+            }
+
+            Dictionary<string, Transform> boneMap = new Dictionary<string, Transform>();
+            foreach (Transform bone in CharacterBody.bones)
+            {
+                if (boneMap.ContainsKey(bone.name) == false)
+                {
+                    boneMap.Add(bone.name, bone);
+                }
+            }
+
+            var renderer = outfit.GetComponentInChildren<SkinnedMeshRenderer>();
+
+            renderer.localBounds = CharacterBody.localBounds;
+
+            //Already Attached
+            if (outfit.originalBones.Length > 0)
+            {
+                return;
+            }
+
+            if (outfit.AttachPoint == "" && renderer)
+            {
+                if (outfit.Initalized == false)
+                {
+                    outfit.originalBones = renderer.bones;
+                    outfit.originalRootBone = renderer.rootBone;
+
+                    var oldBones = renderer.bones.ToArray();
+                    var newBones = new Transform[renderer.bones.Length];
+                    for (int i = 0; i < oldBones.Length; i++)
+                    {
+                        var bone = oldBones[i];
+                        boneMap.TryGetValue(bone.name, out newBones[i]);
+                    }
+                    renderer.bones = newBones;
+                    renderer.rootBone = CharacterBody.rootBone;
+
+                }
+            }
+        }
+#endif
+
         public SkinnedMeshRenderer GetCharacterBody() { return CharacterBody; }
+        public void SetCharacterBody(GameObject newBody)
+        {
+            var smr = newBody.GetComponentInChildren<SkinnedMeshRenderer>();
+            if (smr == null) return;
+
+            RemoveAllOutfits();
+            DestroyImmediate(CharacterBody.transform.parent.gameObject);
+
+            newBody.transform.parent = transform;
+            newBody.transform.localPosition = Vector3.zero;
+            newBody.transform.localRotation = Quaternion.identity;
+            newBody.transform.localScale = Vector3.one;
+
+            CharacterBody = smr;
+
+            InitBoneMap();
+            InitBodyShapes();
+            InitBodyMods();
+            InitClothColliders();
+
+            OnRigChanged?.Invoke(CharacterBody);
+
+            Invoke("RebindBody", 0);
+        }
+
+        public void RebindBody()
+        {
+            animator.Rebind();
+
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == "HeelHeight") animator.SetFloat("HeelHeight", heeledHeight);
+                if (param.name == "Stance") animator.SetFloat("Stance", stance);
+            }
+        }
+
+        [ContextMenu("Merge")]
+        public void MergeCharacter()
+        {
+            if (Application.isPlaying && gameObject.scene.isLoaded)
+            {
+                var optimizer = new BoZo_CharacterOptimizer();
+
+                if (mergedMode && isDirty)
+                {
+                    optimizer.OptimizeCharacter(this, data);
+                }
+                else
+                {
+                    var preMergedData = BMAC_SaveSystem.GetCharacterData(this);
+                    data = preMergedData;
+
+                    foreach (var item in GetOutfits())
+                    {
+                        if (!item) { continue; }
+                        var outfit = outfitData[item.Type.name] = item.GetOutfitData();
+
+                    }
 
 
+                    optimizer.OptimizeCharacter(this, preMergedData);
+                    mergedMode = true;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("For stability reason Character Merging is only available in Play Mode");
+            }
+
+
+
+        }
+
+        [ContextMenu("SaveToPrefab")]
+        public void SaveCharacterToPrefab()
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying && gameObject.scene.isLoaded)
+            {
+                var optimizer = new BoZo_CharacterOptimizer();
+
+                if (mergedMode && isDirty)
+                {
+                    optimizer.SaveOptimizedCharacter(this, data);
+                }
+                else
+                {
+                    var preMergedData = BMAC_SaveSystem.GetCharacterData(this);
+                    data = preMergedData;
+
+                    foreach (var item in GetOutfits())
+                    {
+                        outfitData[item.Type.name] = item.GetOutfitData();
+                    }
+
+                    optimizer.SaveOptimizedCharacter(this, preMergedData);
+                    mergedMode = true;
+                }
+            }
+#endif
+        }
     }
+}

@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829010035327410109}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 867933868012188250}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &829010035327410110
 MonoBehaviour:
@@ -45,17 +45,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56222aeebf4898a41b83761b0e03c752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  removeOutfit: 0
-  <Type>k__BackingField: 8
-  AttachPoint: Head
-  PrimaryVisual: {fileID: 0}
-  AlternateVisual: []
-  <IncompatibleSets>k__BackingField: []
+  customShader: 0
+  AttachInEditMode: 0
+  OutfitName: 
+  OutfitIcon: {fileID: 21300000, guid: eea96b1921e115f47bd2389740fa70a6, type: 3}
+  ColorChannels:
+  - Base
+  - Strap
+  - Shade
+  TextureCatagory: 
+  supportDecals: 0
+  supportPatterns: 0
+  showCharacterCreator: 1
+  Type: {fileID: 11400000, guid: adf65c8e9cddf6e4eb8117a2d67d37c3, type: 2}
+  AttachPoint: head
+  defaultColors: []
+  tags:
+  - Hat
+  LinkedColorSets: []
+  IncompatibleSets: []
+  currentSwatch: 0
+  outfitSwatches: []
+  originalBones: []
+  originalRootBone: {fileID: 0}
+  editorAttachPoint: {fileID: 0}
 --- !u!1001 &829010036383077809
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 829010035327410111}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4516507fd9bf1f64cb5182f47d1656cf, type: 3}
@@ -107,6 +126,9 @@ PrefabInstance:
       value: BSMC_Outfit_Hat_SunHat
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4516507fd9bf1f64cb5182f47d1656cf, type: 3}
 --- !u!4 &867933868012188250 stripped
 Transform:
