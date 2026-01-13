@@ -62,7 +62,7 @@ namespace Bozo.ModularCharacters
 
         private OutfitType type;
         [SerializeField] Button removeOutfitButton;
-        private List<String> RemovableCategories = new List<string>() { "Hat", "HairFront", "HairBack", "Hands", "Feet", "HeadAcc", "Neck", "UpperFace", "LowerFace" };
+        private List<String> NonRemovableCategories = new List<string>() { "Head", "Body", "Eyes" };
 
         [Header("Save Options")]
         public TMP_InputField CharacterName;
@@ -72,10 +72,11 @@ namespace Bozo.ModularCharacters
             outfits.Clear();
             OutfitDataBase.Clear();
 
-            var ob = Resources.LoadAll<Outfit>("");
+            // Load only from the "Base" folder inside Resources
+            var ob = Resources.LoadAll<Outfit>("Base");
             var textureObjects = Resources.LoadAll<TexturePackage>("");
             
-            Debug.Log($"Total Outfits found in Resources: {ob.Length}");
+            Debug.Log($"Total Outfits found in Resources/Base: {ob.Length}");
             
             foreach (var item in ob)
             {
@@ -137,6 +138,8 @@ namespace Bozo.ModularCharacters
             {
                 var selector = Instantiate(outfitSelectorObject, outfitContainer);
                 selector.Init(item, this);
+                //rename based on outfit name
+                selector.gameObject.name = item.name + "_Outfit_Selector";
                 outfitSelectors.Add(selector);
             }
         }
@@ -349,17 +352,17 @@ namespace Bozo.ModularCharacters
         public void SwitchCatagory(string catagory) 
         {
             bool temp = false;
-            foreach (var item in RemovableCategories)
+            foreach (var item in NonRemovableCategories)
             {
                 if (catagory == item)
                 {
-                    removeOutfitButton.gameObject.SetActive(true);
+                    removeOutfitButton.gameObject.SetActive(false);
                     temp = true;
                 }
             }
             if (!temp)
             {
-                removeOutfitButton.gameObject.SetActive(false);
+                removeOutfitButton.gameObject.SetActive(true);
             }
 
             foreach (var item in outfitSelectors)
@@ -371,7 +374,15 @@ namespace Bozo.ModularCharacters
             
             SetColorPickerObject(outfit);
 
-            if (outfit == null) return;
+            if (outfit == null)
+            {
+                // If no outfit exists in this category, try to find the OutfitType
+                // from the outfitTypes array to properly track the current category
+                var outfitType = System.Array.Find(outfitTypes, t => t != null && t.name == catagory);
+                type = outfitType;
+
+                return;
+            }
 
             SwitchTextureCatagory(outfit.TextureCatagory);
             type = outfit.Type;

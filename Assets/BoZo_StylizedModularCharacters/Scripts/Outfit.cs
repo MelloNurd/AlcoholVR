@@ -342,7 +342,8 @@ namespace Bozo.ModularCharacters
             var path = Type.name + "/" + name;
             path = path.Replace("(Clone)", "");
 
-            outfitData.outfit = path;
+            // Add "Base/" prefix if your prefabs are in Resources/Base folder
+            outfitData.outfit = "Base/" + path;  // CHANGE THIS LINE
 
             if (customShader)
             {
@@ -471,6 +472,12 @@ cloth.enabled = true;
     }
 
 }
+
+
+
+
+
+
 
 
 
