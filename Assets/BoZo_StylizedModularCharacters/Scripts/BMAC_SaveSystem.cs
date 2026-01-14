@@ -16,26 +16,72 @@ namespace Bozo.ModularCharacters
         public static string assetPath = "/BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
         public static string iconAssetPath = "/BoZo_StylizedModularCharacters/CustomCharacters/Icons/";
 
-        public static void SaveCharacter(OutfitSystem outfitSystem, string saveName, Texture2D icon = null) 
+        /// <summary>
+        /// Saves a character to the persistent data path
+        /// Prevents saving if a character with the same name already exists (either player-created or premade)
+        /// </summary>
+        public static bool SaveCharacter(OutfitSystem outfitSystem, string saveName, Texture2D icon = null) 
         {
+            // Check if a character with this name already exists
+            if (CharacterExists(saveName))
+            {
+                Debug.LogWarning($"Cannot save as '{saveName}' - A character with this name already exists. Please choose a different name.");
+                return false;
+            }
+
             var data = GetCharacterData(outfitSystem);
 
             data.characterName = saveName;
 
 
-    #if UNITY_EDITOR
+
 
             var CharacterSave = ScriptableObject.CreateInstance<CharacterObject>();
             CharacterSave.data = data;
             Debug.Log(icon);
             CharacterSave.icon = icon;
-            AssetDatabase.CreateAsset(CharacterSave, "Assets/" + assetPath + "/" + saveName + ".asset");
-            AssetDatabase.Refresh();
-    #endif
+//#if UNITY_EDITOR
+//            AssetDatabase.CreateAsset(CharacterSave, "Assets/" + assetPath + "/" + saveName + ".asset");
+//            AssetDatabase.Refresh();
+//    #endif
 
             string saveData = JsonUtility.ToJson(data);
             System.IO.File.WriteAllText(filePath + "/" + saveName + ".json", saveData);
             Debug.Log("Character Saved:" + filePath + "/" + saveName + ".json");
+            return true;
+        }
+
+        /// <summary>
+        /// Saves a character without checking for duplicates (used for confirmed overwrites)
+        /// </summary>
+        public static void SaveCharacterForced(OutfitSystem outfitSystem, string saveName, Texture2D icon = null) 
+        {
+            var data = GetCharacterData(outfitSystem);
+
+            data.characterName = saveName;
+
+            var CharacterSave = ScriptableObject.CreateInstance<CharacterObject>();
+            CharacterSave.data = data;
+            CharacterSave.icon = icon;
+
+            // Save icon file if provided
+            if (icon != null)
+            {
+                byte[] iconBytes = icon.EncodeToPNG();
+                
+                if (!System.IO.Directory.Exists(iconFilePath))
+                {
+                    System.IO.Directory.CreateDirectory(iconFilePath);
+                }
+                
+                string iconPath = System.IO.Path.Combine(iconFilePath, saveName + ".png");
+                System.IO.File.WriteAllBytes(iconPath, iconBytes);
+                Debug.Log("Character Icon Saved: " + iconPath);
+            }
+
+            string saveData = JsonUtility.ToJson(data);
+            System.IO.File.WriteAllText(filePath + "/" + saveName + ".json", saveData);
+            Debug.Log("Character Saved: " + filePath + "/" + saveName + ".json");
         }
 
         public static CharacterData GetCharacterData(OutfitSystem outfitSystem)
@@ -98,7 +144,30 @@ namespace Bozo.ModularCharacters
             {
                 foreach (var item in loadData.outfitDatas)
                 {
-                    outfits.Add(Resources.Load<Outfit>(item.outfit));
+                    // Try loading from Resources first (for premade characters)
+                    var outfit = Resources.Load<Outfit>(item.outfit);
+                    
+                    // If not found in Resources, try alternative paths
+                    if (outfit == null)
+                    {
+                        // Try with "Base/" prefix
+                        outfit = Resources.Load<Outfit>("Base/" + item.outfit);
+                    }
+                    
+                    if (outfit == null)
+                    {
+                        // Try with "Common/" prefix
+                        outfit = Resources.Load<Outfit>("Common/" + item.outfit);
+                    }
+                    
+                    if (outfit == null)
+                    {
+                        // Try removing any existing prefix and loading directly
+                        string cleanPath = item.outfit.Replace("Base/", "").Replace("Common/", "");
+                        outfit = Resources.Load<Outfit>(cleanPath);
+                    }
+                    
+                    outfits.Add(outfit);
                 }
 
             }
@@ -209,8 +278,35 @@ namespace Bozo.ModularCharacters
 
         public static async Task<List<Outfit>> LoadOutfits(List<OutfitData> outfitDatas)
         {
-            var loadTasks = outfitDatas.Select(data => LoadResourceAsync<Outfit>(data.outfit));
+            List<Task<Outfit>> loadTasks = new List<Task<Outfit>>();
+            
+            foreach (var data in outfitDatas)
+            {
+                loadTasks.Add(LoadOutfitWithFallback(data.outfit));
+            }
+            
             return (await Task.WhenAll(loadTasks)).ToList();
+        }
+
+        private static async Task<Outfit> LoadOutfitWithFallback(string path)
+        {
+            // Try original path
+            var outfit = await LoadResourceAsync<Outfit>(path);
+            if (outfit != null) return outfit;
+            
+            // Try with "Base/" prefix
+            outfit = await LoadResourceAsync<Outfit>("Base/" + path);
+            if (outfit != null) return outfit;
+            
+            // Try with "Common/" prefix
+            outfit = await LoadResourceAsync<Outfit>("Common/" + path);
+            if (outfit != null) return outfit;
+            
+            // Try removing any existing prefix
+            string cleanPath = path.Replace("Base/", "").Replace("Common/", "");
+            outfit = await LoadResourceAsync<Outfit>(cleanPath);
+            
+            return outfit;
         }
 
         public static async Task<T> LoadResourceAsync<T>(string path) where T : UnityEngine.Object
@@ -237,17 +333,76 @@ namespace Bozo.ModularCharacters
             return await tcs.Task;
         }
 
+        /// <summary>
+        /// Checks if a character with the given name exists (either player-created or premade)
+        /// </summary>
+        public static bool CharacterExists(string characterName)
+        {
+            // Check if it exists as a player-created character
+            if (IsPlayerCreatedCharacter(characterName))
+                return true;
+            
+            // Check if it exists as a premade CharacterObject in Resources
+            // Need to check all possible paths where CharacterObjects might be stored
+            var saveObjects = Resources.LoadAll<CharacterObject>("");
+            foreach (var saveObject in saveObjects)
+            {
+                if (saveObject.data != null && saveObject.data.characterName == characterName)
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if a character is a player-created character (can be deleted)
+        /// Returns true if the character has a JSON save file in the persistent data path
+        /// </summary>
+        public static bool IsPlayerCreatedCharacter(string characterName)
+        {
+            string jsonPath = filePath + "/" + characterName + ".json";
+            return System.IO.File.Exists(jsonPath);
+        }
+
+        /// <summary>
+        /// Deletes a player-created character
+        /// Only deletes characters that exist in the persistent data path (not premade Base folder characters)
+        /// </summary>
         public static void DeleteCharacter(string characterName)
         {
+            // Check if this is a player-created character
+            if (!IsPlayerCreatedCharacter(characterName))
+            {
+                Debug.LogWarning($"Cannot delete '{characterName}' - This is a premade character and cannot be deleted. Only player-created characters can be deleted.");
+                return;
+            }
+
+            // Delete player-created character files
             System.IO.File.Delete(filePath + "/" + characterName + ".json");
             System.IO.File.Delete(iconFilePath + "/" + characterName + ".png");
-            System.IO.File.Delete("Assets/" + assetPath + "/" + characterName + ".asset");
-            System.IO.File.Delete("Assets/" + assetPath + "/" + characterName + ".meta");
-            System.IO.File.Delete("Assets/" + iconAssetPath + characterName + ".png");
-            System.IO.File.Delete("Assets/" + iconAssetPath + characterName + ".meta");
-    #if UNITY_EDITOR
+            
+            // Note: Asset files are only created in editor mode, so we only attempt to delete them if they exist
+            string assetFilePath = "Assets/" + assetPath + "/" + characterName + ".asset";
+            string assetMetaPath = "Assets/" + assetPath + "/" + characterName + ".meta";
+            string iconAssetFilePath = "Assets/" + iconAssetPath + characterName + ".png";
+            string iconAssetMetaPath = "Assets/" + iconAssetPath + characterName + ".meta";
+            
+            if (System.IO.File.Exists(assetFilePath))
+                System.IO.File.Delete(assetFilePath);
+            if (System.IO.File.Exists(assetMetaPath))
+                System.IO.File.Delete(assetMetaPath);
+            if (System.IO.File.Exists(iconAssetFilePath))
+                System.IO.File.Delete(iconAssetFilePath);
+            if (System.IO.File.Exists(iconAssetMetaPath))
+                System.IO.File.Delete(iconAssetMetaPath);
+                
+#if UNITY_EDITOR
             AssetDatabase.Refresh();
-    #endif
+#endif
+            
+            Debug.Log($"Deleted player-created character: {characterName}");
         }
     }
 

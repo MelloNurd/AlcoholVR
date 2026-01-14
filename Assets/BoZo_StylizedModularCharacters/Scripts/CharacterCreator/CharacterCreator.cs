@@ -60,8 +60,10 @@ namespace Bozo.ModularCharacters
         [SerializeField] Dictionary<string, SaveSelector> saveSlots = new Dictionary<string, SaveSelector>();
         [SerializeField] Transform saveContainer;
         [SerializeField] GameObject DeleteConfirmWindow;
+        [SerializeField] GameObject SaveConfirmWindow;
         [SerializeField] TMP_Text loadedCharacterNameText;
         [SerializeField] TMP_Text DeleteCharacterNameText;
+        [SerializeField] TMP_Text SaveCharacterNameText;
 
 
         private OutfitType type;
@@ -137,7 +139,8 @@ namespace Bozo.ModularCharacters
         public void GenerateOutfitSelection() 
         {
             var outfits = OutfitDataBase.Values.ToArray();
-            foreach (var item in outfits)
+            foreach (var item in outfits
+)
             {
                 var selector = Instantiate(outfitSelectorObject, outfitContainer);
                 selector.Init(item, this);
@@ -466,12 +469,54 @@ namespace Bozo.ModularCharacters
         {
             yield return new WaitForEndOfFrame();
 
+            // Validate character name
             if(CharacterName.text.Length == 0)
             {
                 Debug.LogWarning("Please enter in a name with at least one letter");
                 yield break;
             }
 
+            // Check if a character with this name already exists
+            if (BMAC_SaveSystem.CharacterExists(CharacterName.text))
+            {
+                // Check if it's a player-created character (can be overwritten)
+                if (BMAC_SaveSystem.IsPlayerCreatedCharacter(CharacterName.text))
+                {
+                    // Show confirmation window for overwriting player-created character
+                    SaveCharacterNameText.text = "Overwrite: " + CharacterName.text + "?";
+                    SaveConfirmWindow.SetActive(true);
+                    yield break;
+                }
+                else
+                {
+                    // Cannot overwrite premade characters
+                    Debug.LogWarning($"Cannot save as '{CharacterName.text}' - A premade character with this name already exists. Please choose a different name.");
+                    yield break;
+                }
+            }
+
+            // If we get here, the name is unique - proceed with save
+            yield return StartCoroutine(PerformSave());
+        }
+
+        /// <summary>
+        /// Confirms overwriting an existing player-created character
+        /// Called by the confirm button in SaveConfirmWindow
+        /// </summary>
+        public void ConfirmSave()
+        {
+            StartCoroutine(PerformSave());
+            SaveConfirmWindow.SetActive(false);
+        }
+
+        /// <summary>
+        /// Performs the actual save operation
+        /// </summary>
+        private IEnumerator PerformSave()
+        {
+            yield return new WaitForEndOfFrame();
+
+            // Capture character icon
             RenderTexture.active = iconTexture;
             Texture2D icon = new Texture2D(iconTexture.width, iconTexture.height, TextureFormat.RGBA32, false);
             Rect rect = new Rect(new Rect(0, 0, iconTexture.width, iconTexture.height));
@@ -494,7 +539,8 @@ namespace Bozo.ModularCharacters
             characterIcon = new Texture2D(2, 2, TextureFormat.RGBA32, false);
             characterIcon.LoadImage(bytes);
 
-            BMAC_SaveSystem.SaveCharacter(character, CharacterName.text, characterIcon);
+            // Force save (bypassing the duplicate check since we've already confirmed)
+            BMAC_SaveSystem.SaveCharacterForced(character, CharacterName.text, characterIcon);
             UpdateCharacterSaves();
         }
 
