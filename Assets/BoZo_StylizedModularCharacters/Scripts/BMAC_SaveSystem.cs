@@ -43,7 +43,7 @@ namespace Bozo.ModularCharacters
 //#if UNITY_EDITOR
 //            AssetDatabase.CreateAsset(CharacterSave, "Assets/" + assetPath + "/" + saveName + ".asset");
 //            AssetDatabase.Refresh();
-//    #endif
+//#endif
 
             string saveData = JsonUtility.ToJson(data);
             System.IO.File.WriteAllText(filePath + "/" + saveName + ".json", saveData);
@@ -398,9 +398,9 @@ namespace Bozo.ModularCharacters
             if (System.IO.File.Exists(iconAssetMetaPath))
                 System.IO.File.Delete(iconAssetMetaPath);
                 
-#if UNITY_EDITOR
-            AssetDatabase.Refresh();
-#endif
+//#if UNITY_EDITOR
+//            AssetDatabase.Refresh();
+//#endif
             
             Debug.Log($"Deleted player-created character: {characterName}");
         }
