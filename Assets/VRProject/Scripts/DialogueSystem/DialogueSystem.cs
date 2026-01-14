@@ -28,7 +28,7 @@ public class DialogueSystem : MonoBehaviour
 
     private void Awake()
     {
-        _headObj = transform.Find("Body/BSMC_CharacterBase/Root/Hips/Spine/Spine1/Spine2/Neck/Head").gameObject;
+        _headObj = transform.Find("Body/BSMC_CharacterBase/BodyRig/armature/root/pelvis/spine_01/spine_02/spine_03/spine_04/spine_05/neck_01/neck_02/head").gameObject;
         _dialogueText = transform.Find("Body").GetComponentInChildren<TMP_Text>();
         _textBubble = _dialogueText.transform.parent.gameObject;
         _typewriter = GetComponentInChildren<Typewriter>();
