@@ -6,6 +6,7 @@ using System.Collections;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
+using System.IO;
 
 
 namespace Bozo.ModularCharacters
@@ -131,7 +132,6 @@ namespace Bozo.ModularCharacters
             SwitchCatagory("Top");
 
             UpdateCharacterSaves();
-
         }
 
         public void GenerateOutfitSelection() 
@@ -226,22 +226,22 @@ namespace Bozo.ModularCharacters
             }
             saveSlots.Clear();
 
-            if (!System.IO.Directory.Exists(BMAC_SaveSystem.filePath))
+            if (!Directory.Exists(BMAC_SaveSystem.filePath))
             {
-                System.IO.Directory.CreateDirectory(BMAC_SaveSystem.filePath);
-                System.IO.Directory.CreateDirectory(BMAC_SaveSystem.iconFilePath);
+                Directory.CreateDirectory(BMAC_SaveSystem.filePath);
+                Directory.CreateDirectory(BMAC_SaveSystem.iconFilePath);
                 print("Created Save JSON save Location At: " + BMAC_SaveSystem.filePath);
             }
 
             string path = BMAC_SaveSystem.filePath;
-            string[] jsonFiles = System.IO.Directory.GetFiles(path, "*.json");
-            string[] icons = System.IO.Directory.GetFiles(BMAC_SaveSystem.iconFilePath, "*.png");
+            string[] jsonFiles = Directory.GetFiles(path, "*.json");
+            string[] icons = Directory.GetFiles(BMAC_SaveSystem.iconFilePath, "*.png");
 
             for (int i = 0; i < jsonFiles.Length; i++)
             {
-                var json = System.IO.File.ReadAllText(jsonFiles[i]);
+                var json = File.ReadAllText(jsonFiles[i]);
                 var data = JsonUtility.FromJson<CharacterData>(json);
-                var image = System.IO.File.ReadAllBytes(icons[i]);
+                var image = File.ReadAllBytes(icons[i]);
                 var texture = new Texture2D(2, 2);
                 Sprite icon = null;
                 if (texture.LoadImage(image))
@@ -465,6 +465,7 @@ namespace Bozo.ModularCharacters
         private IEnumerator Save()
         {
             yield return new WaitForEndOfFrame();
+
             if(CharacterName.text.Length == 0)
             {
                 Debug.LogWarning("Please enter in a name with at least one letter");
@@ -479,36 +480,22 @@ namespace Bozo.ModularCharacters
 
             byte[] bytes = icon.EncodeToPNG();
 
+            if(!Directory.Exists(BMAC_SaveSystem.iconFilePath))
+            {
+                Directory.CreateDirectory(BMAC_SaveSystem.iconFilePath);
+            }
+
+            string filePath = Path.Combine(BMAC_SaveSystem.iconFilePath, CharacterName.text + ".png");
+
+            File.WriteAllBytes(filePath, bytes);
+
             Texture2D characterIcon = null;
 
-#if UNITY_EDITOR
+            characterIcon = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            characterIcon.LoadImage(bytes);
 
-            System.IO.File.WriteAllBytes(Application.dataPath + BMAC_SaveSystem.iconAssetPath + CharacterName.text + ".png", bytes);
-            AssetDatabase.Refresh();
-
-            characterIcon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/" + BMAC_SaveSystem.iconAssetPath + CharacterName.text + ".png");
-            print(BMAC_SaveSystem.iconAssetPath + CharacterName.text + ".png");
-            TextureImporter importer = AssetImporter.GetAtPath("Assets/" + BMAC_SaveSystem.iconAssetPath + CharacterName.text + ".png") as TextureImporter;
-
-            if (importer != null)
-            {
-                importer.textureType = TextureImporterType.Sprite;
-                importer.spriteImportMode = SpriteImportMode.Single;
-                importer.SaveAndReimport();
-            }
-#endif
-
-            if(!System.IO.Directory.Exists(BMAC_SaveSystem.iconFilePath))
-            {
-                System.IO.Directory.CreateDirectory(BMAC_SaveSystem.iconFilePath);
-            }
-
-            System.IO.File.WriteAllBytes(BMAC_SaveSystem.iconFilePath + "/" + CharacterName.text + ".png", bytes);
             BMAC_SaveSystem.SaveCharacter(character, CharacterName.text, characterIcon);
-
             UpdateCharacterSaves();
-
-
         }
 
         public async void LoadCharacter(CharacterData data)
