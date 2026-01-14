@@ -72,6 +72,13 @@ namespace Bozo.ModularCharacters
 
         [Header("Save Options")]
         public TMP_InputField CharacterName;
+        
+        // Toggle this to control ScriptableObject creation during save
+        [Header("Editor Save Options")]
+        [Tooltip("When enabled, creates a ScriptableObject asset in the project during save (Editor only)")]
+        public bool createScriptableObjectOnSave = false;
+        [Tooltip("Path where ScriptableObject will be saved (relative to Assets folder)")]
+        public string scriptableObjectSavePath = "BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
 
         private void Awake()
         {
@@ -139,8 +146,7 @@ namespace Bozo.ModularCharacters
         public void GenerateOutfitSelection() 
         {
             var outfits = OutfitDataBase.Values.ToArray();
-            foreach (var item in outfits
-)
+            foreach (var item in outfits)
             {
                 var selector = Instantiate(outfitSelectorObject, outfitContainer);
                 selector.Init(item, this);
@@ -541,8 +547,57 @@ namespace Bozo.ModularCharacters
 
             // Force save (bypassing the duplicate check since we've already confirmed)
             BMAC_SaveSystem.SaveCharacterForced(character, CharacterName.text, characterIcon);
+            
+#if UNITY_EDITOR
+            // Optional: Create ScriptableObject asset in the project (Editor only)
+            if (createScriptableObjectOnSave)
+            {
+                CreateCharacterScriptableObject(characterIcon);
+            }
+#endif
+            
             UpdateCharacterSaves();
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Creates a ScriptableObject asset for the character in the project
+        /// Only works in Unity Editor
+        /// </summary>
+        private void CreateCharacterScriptableObject(Texture2D characterIcon)
+        {
+            try
+            {
+                // Get character data from the save system
+                var characterData = BMAC_SaveSystem.GetCharacterData(character);
+                characterData.characterName = CharacterName.text;
+                
+                // Create new CharacterObject ScriptableObject
+                var characterObject = ScriptableObject.CreateInstance<CharacterObject>();
+                characterObject.data = characterData;
+                characterObject.icon = characterIcon;
+                
+                // Ensure the directory exists
+                string fullPath = Path.Combine("Assets", scriptableObjectSavePath);
+                if (!Directory.Exists(fullPath))
+                {
+                    Directory.CreateDirectory(fullPath);
+                }
+                
+                // Create the asset
+                string assetPath = Path.Combine(fullPath, CharacterName.text + ".asset");
+                AssetDatabase.CreateAsset(characterObject, assetPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                
+                Debug.Log($"Created CharacterObject ScriptableObject at: {assetPath}");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Failed to create CharacterObject ScriptableObject: {ex.Message}");
+            }
+        }
+#endif
 
         public async void LoadCharacter(CharacterData data)
         {
@@ -566,13 +621,16 @@ namespace Bozo.ModularCharacters
 
         private string GetAssetPath(UnityEngine.Object obj)
         {
+#if UNITY_EDITOR
             return UnityEditor.AssetDatabase.GetAssetPath(obj);
+#else
+            return "Editor Only";
+#endif
         }
 #if UNITY_EDITOR
 [ContextMenu("Fix Character Object Paths")]
 public void FixCharacterObjectPaths()
 {
-    string path = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Resources";
     
     // Load all CharacterObject assets from the Resources folder
     var characterObjects = Resources.LoadAll<CharacterObject>("");
@@ -650,6 +708,179 @@ public void FixCharacterObjectPaths()
     else
     {
         Debug.Log("No paths needed fixing - all assets are already correct!");
+    }
+}
+
+[ContextMenu("Migrate Old Characters")]
+public void MigrateOldCharacters()
+{
+    // Define paths
+    string oldPath1 = "Characters";
+    string oldPath2 = "X_Characters";
+    string newBasePath = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
+    
+    int migratedCount = 0;
+    int errorCount = 0;
+    
+    // Create target directories if they don't exist
+    string newPath1 = newBasePath + "Characters";
+    string newPath2 = newBasePath + "X_Characters";
+    
+    if (!System.IO.Directory.Exists(newPath1))
+    {
+        System.IO.Directory.CreateDirectory(newPath1);
+        Debug.Log($"Created directory: {newPath1}");
+    }
+    
+    if (!System.IO.Directory.Exists(newPath2))
+    {
+        System.IO.Directory.CreateDirectory(newPath2);
+        Debug.Log($"Created directory: {newPath2}");
+    }
+    
+    // Load old character objects
+    var oldCharacters1 = Resources.LoadAll<BSMC_CharacterObject>(oldPath1);
+    var oldCharacters2 = Resources.LoadAll<BSMC_CharacterObject>(oldPath2);
+    
+    Debug.Log($"Found {oldCharacters1.Length} characters in Resources/{oldPath1}");
+    Debug.Log($"Found {oldCharacters2.Length} characters in Resources/{oldPath2}");
+    
+    // Migrate Characters folder
+    foreach (var oldChar in oldCharacters1)
+    {
+        if (MigrateCharacter(oldChar, newPath1))
+            migratedCount++;
+        else
+            errorCount++;
+    }
+    
+    // Migrate X_Characters folder
+    foreach (var oldChar in oldCharacters2)
+    {
+        if (MigrateCharacter(oldChar, newPath2))
+            migratedCount++;
+        else
+            errorCount++;
+    }
+    
+    // Refresh the asset database
+    AssetDatabase.SaveAssets();
+    AssetDatabase.Refresh();
+    
+    Debug.Log($"Migration complete! Successfully migrated {migratedCount} characters. Errors: {errorCount}");
+}
+
+private bool MigrateCharacter(BSMC_CharacterObject oldChar, string targetPath)
+{
+    try
+    {
+        // Create new CharacterObject
+        var newChar = ScriptableObject.CreateInstance<CharacterObject>();
+        
+        // Use the UpdateVersion method from the old character object to get converted data
+        CharacterData convertedData = oldChar.UpdateVersion();
+        
+        if (convertedData == null)
+        {
+            Debug.LogError($"Failed to convert data for {oldChar.name}");
+            return false;
+        }
+        
+        // Assign converted data
+        newChar.data = convertedData;
+        
+        // Try to copy icon if it exists
+        if (oldChar != null)
+        {
+            // Try to get the icon through reflection or serialization
+            var iconField = typeof(BSMC_CharacterObject).GetField("icon", 
+                System.Reflection.BindingFlags.Public | 
+                System.Reflection.BindingFlags.NonPublic | 
+                System.Reflection.BindingFlags.Instance);
+            
+            if (iconField != null)
+            {
+                var iconValue = iconField.GetValue(oldChar) as Texture2D;
+                if (iconValue != null)
+                {
+                    newChar.icon = iconValue;
+                }
+            }
+        }
+        
+        // Create asset at new location
+        string assetPath = $"{targetPath}/{oldChar.name}.asset";
+        AssetDatabase.CreateAsset(newChar, assetPath);
+        
+        Debug.Log($"Migrated: {oldChar.name} -> {assetPath}");
+        
+        // Try to export icon as PNG if it exists
+        if (newChar.icon != null)
+        {
+            ExportIconAsPNG(newChar.icon, targetPath, oldChar.name);
+        }
+        
+        return true;
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogError($"Failed to migrate {oldChar.name}: {ex.Message}\n{ex.StackTrace}");
+        return false;
+    }
+}
+
+private void ExportIconAsPNG(Texture2D icon, string targetPath, string characterName)
+{
+    try
+    {
+        // Make texture readable if it isn't
+        Texture2D readableTexture = icon;
+        
+        if (!icon.isReadable)
+        {
+            // Create a temporary RenderTexture
+            RenderTexture tmp = RenderTexture.GetTemporary(
+                icon.width,
+                icon.height,
+                0,
+                RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
+
+            // Blit the texture to the RenderTexture
+            Graphics.Blit(icon, tmp);
+            
+            // Backup the currently set RenderTexture
+            RenderTexture previous = RenderTexture.active;
+            
+            // Set the current RenderTexture to the temporary one
+            RenderTexture.active = tmp;
+            
+            // Create a new readable Texture2D
+            readableTexture = new Texture2D(icon.width, icon.height);
+            readableTexture.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
+            readableTexture.Apply();
+            
+            // Reset the active RenderTexture
+            RenderTexture.active = previous;
+            
+            // Release the temporary RenderTexture
+            RenderTexture.ReleaseTemporary(tmp);
+        }
+        
+        // Encode to PNG
+        byte[] bytes = readableTexture.EncodeToPNG();
+        
+        // Save to file
+        string iconPath = $"{targetPath}/{characterName}_Icon.png";
+        System.IO.File.WriteAllBytes(iconPath, bytes);
+        
+        AssetDatabase.ImportAsset(iconPath);
+        
+        Debug.Log($"Exported icon: {iconPath}");
+    }
+    catch (System.Exception ex)
+    {
+        Debug.LogWarning($"Failed to export icon for {characterName}: {ex.Message}");
     }
 }
 #endif

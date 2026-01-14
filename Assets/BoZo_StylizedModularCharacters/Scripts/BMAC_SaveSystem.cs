@@ -40,10 +40,10 @@ namespace Bozo.ModularCharacters
             CharacterSave.data = data;
             Debug.Log(icon);
             CharacterSave.icon = icon;
-//#if UNITY_EDITOR
-//            AssetDatabase.CreateAsset(CharacterSave, "Assets/" + assetPath + "/" + saveName + ".asset");
-//            AssetDatabase.Refresh();
-//#endif
+#if UNITY_EDITOR
+            AssetDatabase.CreateAsset(CharacterSave, "Assets/" + assetPath + "/" + saveName + ".asset");
+            AssetDatabase.Refresh();
+#endif
 
             string saveData = JsonUtility.ToJson(data);
             System.IO.File.WriteAllText(filePath + "/" + saveName + ".json", saveData);
@@ -397,11 +397,11 @@ namespace Bozo.ModularCharacters
                 System.IO.File.Delete(iconAssetFilePath);
             if (System.IO.File.Exists(iconAssetMetaPath))
                 System.IO.File.Delete(iconAssetMetaPath);
-                
-//#if UNITY_EDITOR
-//            AssetDatabase.Refresh();
-//#endif
-            
+
+#if UNITY_EDITOR
+            AssetDatabase.Refresh();
+#endif
+
             Debug.Log($"Deleted player-created character: {characterName}");
         }
     }
