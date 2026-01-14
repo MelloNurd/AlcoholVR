@@ -41,11 +41,14 @@ public class TutorialText : MonoBehaviour
             initialDir = Player.Instance.Forward.WithY(0).normalized;
         }
         _smoothedDirection = initialDir;
+
+        HideText();
     }
 
     private void Update()
     {
         if (!followPlayer || Player.Instance == null || Player.Instance.Camera == null) return;
+        if (text.text == string.Empty) return;
 
         // Target forward from player on XZ
         Vector3 targetForward = Player.Instance.Forward.WithY(0).normalized;
