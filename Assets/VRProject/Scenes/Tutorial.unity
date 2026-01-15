@@ -720,7 +720,7 @@ GameObject:
   - component: {fileID: 493986368}
   - component: {fileID: 493986367}
   - component: {fileID: 493986366}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -779,7 +779,7 @@ Terrain:
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
   m_ReceiveGI: 1
-  m_ScaleInLightmap: 0.0064
+  m_ScaleInLightmap: 0.005
   m_LightmapParameters: {fileID: 15201, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
   m_RenderingLayerMask: 1
@@ -1953,7 +1953,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].type
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[1].type
@@ -1975,6 +1975,10 @@ PrefabInstance:
       propertyPath: sequences.Array.data[2].dialogue
       value: 
       objectReference: {fileID: 11400000, guid: 20e194a40a5cff84d87e8a4915d4ae85, type: 2}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: sequences.Array.data[0].destination
+      value: 
+      objectReference: {fileID: 1436845766}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].nextSequenceOnEnd
       value: 0
@@ -1998,6 +2002,10 @@ PrefabInstance:
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[2].useDefaultWalkAnimation
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5427290415816182686, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: m_Speed
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 6921886255339276554, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2038,6 +2046,14 @@ PrefabInstance:
     - target: {fileID: 6921886255339276554, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8927043326335417432, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.219
+      objectReference: {fileID: 0}
+    - target: {fileID: 8927043326335417432, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.824
       objectReference: {fileID: 0}
     - target: {fileID: 8964841559953825178, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: characterData
@@ -6529,6 +6545,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1591069689141410750, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -1591069689141410750, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -6545,12 +6565,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: deb1685c1c6753346831ed93d7dccd59, type: 2}
     - target: {fileID: 806827749952246048, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 806827749952246048, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_Name
       value: Skatepark
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1200176132943854754, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticShadowCaster
@@ -6561,8 +6589,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: deb1685c1c6753346831ed93d7dccd59, type: 2}
     - target: {fileID: 2550463727306718371, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550463727306718371, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 3653281640877650463, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3653281640877650463, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6576,6 +6612,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: deb1685c1c6753346831ed93d7dccd59, type: 2}
+    - target: {fileID: 8247994413960396516, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8247994413960396516, guid: a1f377bfe5c466249872de8e6271c7fc, type: 3}
       propertyPath: m_StaticShadowCaster
       value: 1

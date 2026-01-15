@@ -162,13 +162,11 @@ public class PartyScene : MonoBehaviour
     {
         _rageBottle.SetActive(false);
 
-        _rageNPC.idleAnimation = _rageStartAnimation;
-        _rageNPC.PlayIdleAnimation();
+        _rageNPC.PlayAnimation(_rageStartAnimation.name);
 
         await UniTask.Delay(Mathf.RoundToInt(_rageStartAnimation.length * 1000));
 
-        _rageNPC.idleAnimation = _rageLoopAnimation;
-        _rageNPC.PlayIdleAnimation();
+        _rageNPC.PlayAnimation(_rageLoopAnimation.name);
 
         // Wait until the player is the near the rage NPC
         await UniTask.WaitUntil(() => InViewOfRage);
@@ -193,15 +191,12 @@ public class PartyScene : MonoBehaviour
 
                     _rageNPC.onIncompleteInteraction.AddListener(() =>
                     {
-                        _rageNPC.idleAnimation = _rageIdleAnimation;
-                        Debug.Log("Rage NPC idle animation set to idle.");
-                        _rageNPC.PlayIdleAnimation();
+                        _rageNPC.PlayAnimation(_rageIdleAnimation.name);
                     });
 
                     _rageNPC.dialogueSystem.onEnd.AddListener(() =>
                     {
-                        _rageNPC.idleAnimation = _rageFinishAnimation;
-                        _rageNPC.PlayIdleAnimation();
+                        _rageNPC.PlayAnimation(_rageFinishAnimation.name);
 
                         _rageNPC.IsInteractable = false;
                         _rageNPC._exclamationObj.SetActive(false);

@@ -44,7 +44,7 @@ public class OpenableBottle : MonoBehaviour
     {
         if (_cap.interactable == null)
         {
-            Debug.LogError("BottleCap does not have a XRGrabInteractable component attached.", this);
+            Debug.LogError("BottleCap does not have a XRGrabInteractable component attached.", gameObject);
             return;
         }
 

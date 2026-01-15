@@ -17,8 +17,10 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     }
 
     [HideInInspector] public GameObject bodyObj;
-    [SerializeField] public AnimationClip idleAnimation;
-    [SerializeField] public AnimationClip moveAnimation;
+
+    public bool isDrunk = false;
+    [HelpBox("If this is assigned, this animation will play on start instead of the default idle animation.")]
+    [SerializeField] public AnimationClip startAnim;
 
     [HideInInspector] public NavMeshAgent agent;
     [HideInInspector] public Animator animator;
@@ -47,7 +49,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     protected void Awake()
     {
-        headObj = transform.Find("Body/BSMC_CharacterBase/Root/Hips/Spine/Spine1/Spine2/Neck/Head").gameObject;
+        headObj = transform.Find("Body/BSMC_CharacterBase/Head_BasicHead").gameObject;
         bodyObj = transform.Find("Body").gameObject;
         animator = GetComponentInChildren<Animator>();
         agent = GetComponentInChildren<NavMeshAgent>();
@@ -83,8 +85,15 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
         if (agent == null || agent.enabled == false)
         {
-            PlayAnimation(idleAnimation.name);
             SwitchState(States.Idle);
+            if (startAnim != null)
+            {
+                PlayAnimation(startAnim.name);
+            }
+            else
+            {
+                PlayIdleAnimation();
+            }
             return;
         }
         else
@@ -123,11 +132,27 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     public void PlayAnimation(string animationName)
     {
+        animator.SetBool("isDrunk", isDrunk);
+
         animator.CrossFade(animationName, 0.1f);
     }
 
-    public void PlayIdleAnimation() => PlayAnimation(idleAnimation.name);
-    public void PlayWalkAnimation() => PlayAnimation(moveAnimation.name);
+    public void PlayIdleAnimation()
+    {
+        animator.SetBool("isDrunk", isDrunk);
+
+        animator.SetTrigger("Start Idle");
+        animator.SetBool("isWalk", false);
+    }
+
+    public void PlayWalkAnimation()
+    {
+        animator.SetBool("isDrunk", isDrunk);
+
+        animator.SetTrigger("Start Idle");
+        animator.SetBool("isWalk", true);
+    }
+
     public int PlayNextAction()
     {
         Action temp = currentCheckpoint.container.GetNextAction(out int lengthMS);

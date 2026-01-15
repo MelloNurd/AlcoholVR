@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
   updateMethod: 0
-  skinnedMeshRenderer: {fileID: 5064097293572431291}
+  skinnedMeshRenderer: {fileID: 0}
   blendShapes:
   - phoneme: A
     index: 48
@@ -2000,6 +2000,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6468568422028442491}
+    - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6624116453379148484}
   m_SourcePrefab: {fileID: 100100000, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
 --- !u!4 &1361699585910701334 stripped
 Transform:
@@ -2036,8 +2039,39 @@ MonoBehaviour:
   headHeight: 1.5
   isLooking: 0
   lookWithinRange: 0
---- !u!137 &5064097293572431291 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 4237298404661567771, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
-  m_PrefabInstance: {fileID: 8974163167484083360}
+--- !u!114 &6624116453379148484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850533197997189036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 726325959c0cb064597e2f1bd5eb6b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FischlWorks.csHomebrewIK
+  lengthFromHeelToToes: 0.123
+  maxRotationAngle: 4.4
+  ankleHeightOffset: 0
+  enableIKPositioning: 1
+  enableIKRotating: 1
+  globalWeight: 1
+  leftFootWeight: 1
+  rightFootWeight: 1
+  smoothTime: 0.0066
+  raySphereRadius: 0.05
+  rayCastRange: 0.92
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  ignoreTriggers: 1
+  leftFootRayStartHeight: 0.1
+  rightFootRayStartHeight: 0.1
+  enableFootLifting: 1
+  floorRange: 0
+  enableBodyPositioning: 1
+  crouchRange: 0.25
+  stretchRange: 0.5
+  giveWorldHeightOffset: 1
+  worldHeightOffset: -0.5

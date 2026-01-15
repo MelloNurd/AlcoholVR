@@ -34,10 +34,6 @@ public class Sequence
     [ShowField(nameof(type), Type.Dialogue)] public Dialogue dialogue;
 
     [ShowField(nameof(type), Type.Walk)] public Transform destination;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), Type.Walk, nameof(type), Type.WalkToPlayer)]
-    public bool useDefaultWalkAnimation = true;
-    [ConditionalEnumField(ConditionType.OR, nameof(type), Type.Walk, nameof(type), Type.WalkToPlayer), HideField(nameof(useDefaultWalkAnimation))]
-    public AnimationClip walkAnimation;
 
     [ShowField(nameof(type), Type.Wait)] public float secondsToWait;
 
@@ -98,9 +94,6 @@ public class SequencedNPC : MonoBehaviour
     public List<Sequence> sequences = new List<Sequence>();
     public Sequence currentSequence;
     public int currentSequenceIndex => sequences.IndexOf(currentSequence);
-
-    [SerializeField, Required] private AnimationClip defaultAnimation;
-    [SerializeField, Required] private AnimationClip walkAnimation;
 
     public bool wrapAroundSequences = false; // If it should loop through the sequences or stop at the end
 
@@ -244,7 +237,7 @@ public class SequencedNPC : MonoBehaviour
     }
     private async UniTask ExecuteWaitSequence(Sequence sequence)
     {
-        PlayAnimation(defaultAnimation);
+        PlayIdleAnimation();
 
         await UniTask.Delay(Mathf.RoundToInt(sequence.secondsToWait * 1000), cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
@@ -263,18 +256,14 @@ public class SequencedNPC : MonoBehaviour
         agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized, 1f);
         agent.isStopped = false;
 
-        AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
-            ? sequence.walkAnimation
-            : walkAnimation;
-
-        PlayAnimation(walkAnim);
+        PlayWalkAnimation();
 
         await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
         if (currentSequence == sequence)
         {
-            PlayAnimation(defaultAnimation);
+            PlayIdleAnimation();
             if (sequence.nextSequenceOnEnd)
             {
                 StartNextSequence();
@@ -287,18 +276,14 @@ public class SequencedNPC : MonoBehaviour
         agent.SetDestinationToClosestPoint(sequence.destination.position, 1.5f);
         agent.isStopped = false;
 
-        AnimationClip walkAnim = (sequence.useDefaultWalkAnimation && sequence.walkAnimation != null)
-            ? sequence.walkAnimation
-            : walkAnimation;
-
-        PlayAnimation(walkAnim);
+        PlayWalkAnimation();
 
         await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
         if(currentSequence == sequence)
         {
-            PlayAnimation(defaultAnimation);
+            PlayIdleAnimation();
             if (sequence.nextSequenceOnEnd)
             {
                 StartNextSequence();
@@ -451,6 +436,18 @@ public class SequencedNPC : MonoBehaviour
         }
 
         animator.CrossFade(clip.name, 0.2f);
+    }
+
+    public void PlayIdleAnimation()
+    {
+        animator.SetTrigger("Start Idle");
+        animator.SetBool("isWalk", false);
+    }
+
+    public void PlayWalkAnimation()
+    {
+        animator.SetTrigger("Start Idle");
+        animator.SetBool("isWalk", true);
     }
 
     private void ApplyWalkRotations()
