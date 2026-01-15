@@ -8,63 +8,93 @@ using UnityEngine.TextCore.Text;
 public class HandColorer : MonoBehaviour
 {
     Material skin;
-    BSMC_CharacterObject characterObject;
     public List<Color> SkinColor = new List<Color>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        string path = Path.Combine(CharacterFileConverting.JsonOutputRoot, CharacterFileConverting.UnaccessibleCharactersFolder, "PlayerCharacter.json");
-
-        // Read JSON data
-        string jsonData = File.ReadAllText(path);
-
-        // Create temporary ScriptableObject and populate from JSON
-        characterObject = ScriptableObject.CreateInstance<BSMC_CharacterObject>();
-        JsonUtility.FromJsonOverwrite(jsonData, characterObject);
-
-        // Load colors from the ScriptableObject if it's assigned
-        if (characterObject != null && characterObject.SkinColor.Count > 0)
-        {
-            SkinColor = new List<Color>(characterObject.SkinColor);
-        }
- 
         skin = GetComponent<Renderer>().material;
-
-        // Ensure we have enough colors before applying them
-        if (SkinColor.Count >= 10)
-        {
-            skin.SetColor("_SkinTone", SkinColor[0]);
-            skin.SetColor("_SkinUnderTone", SkinColor[1]);
-            skin.SetColor("_BrowColor", SkinColor[2]);
-            skin.SetColor("_LashesColor", SkinColor[3]);
-            skin.SetColor("_FuzzColor", SkinColor[4]);
-            skin.SetColor("_UnderwearBottomColor_Opacity", SkinColor[5]);
-            skin.SetColor("_UnderwearTopColor_Opacity", SkinColor[6]);
-            skin.SetColor("_Acc_Color_1", SkinColor[7]);
-            skin.SetColor("_Acc_Color_2", SkinColor[8]);
-            skin.SetColor("_Acc_Color_3", SkinColor[9]);
-
-            // Also set the accessory texture if available
-            if (characterObject.skinAccessory != null)
-            {
-                skin.SetTexture("_Accessory", characterObject.skinAccessory);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Not enough skin colors available in the character object or SkinColor list.");
-        }
+        SkinColor = GetColors();
+        Debug.Log("Skincolor count: " + SkinColor.Count);
+        SetColors(SkinColor);
     }
 
     public void UpdateHandColor(Color newColor)
     {
-        if (skin == null)
+        skin.SetColor("_Color_7", newColor);
+    }
+    
+    public void SetRandomHandColor()
+    {
+        Color randomColor = new Color(Random.value, Random.value, Random.value);
+        skin.SetColor("_Color_7", randomColor);
+    }
+
+    public List<Color> GetColors()
+    {
+        if (!skin) { skin = GetComponent<Renderer>().material; }
+        
+        var colors = new List<Color>();
+
+        // Get main colors (Color_1 to Color_9)
+        for (int i = 1; i <= 9; i++)
         {
-            Debug.Log("HandColorer: skin material not initialized yet. Skipping color update.");
-            return;
+            if (skin.HasProperty("_Color_" + i))
+            {
+                colors.Add(skin.GetColor("_Color_" + i));
+            }
         }
 
-        skin.SetColor("_SkinTone", newColor);
+        // Get decal colors (DecalColor_1 to DecalColor_3)
+        for (int i = 1; i <= 3; i++)
+        {
+            if (skin.HasProperty("_DecalColor_" + i))
+            {
+                colors.Add(skin.GetColor("_DecalColor_" + i));
+            }
+        }
+
+        // Get pattern colors (PatternColor_1 to PatternColor_3)
+        for (int i = 1; i <= 3; i++)
+        {
+            if (skin.HasProperty("_PatternColor_" + i))
+            {
+                colors.Add(skin.GetColor("_PatternColor_" + i));
+            }
+        }
+
+        return colors;
+    }
+
+    public void SetColors(List<Color> colors)
+    {
+        int index = 0;
+        // Set main colors (Color_1 to Color_9)
+        for (int i = 1; i <= 9; i++)
+        {
+            if (skin.HasProperty("_Color_" + i) && index < colors.Count)
+            {
+                skin.SetColor("_Color_" + i, colors[index]);
+                index++;
+            }
+        }
+        // Set decal colors (DecalColor_1 to DecalColor_3)
+        for (int i = 1; i <= 3; i++)
+        {
+            if (skin.HasProperty("_DecalColor_" + i) && index < colors.Count)
+            {
+                skin.SetColor("_DecalColor_" + i, colors[index]);
+                index++;
+            }
+        }
+        // Set pattern colors (PatternColor_1 to PatternColor_3)
+        for (int i = 1; i <= 3; i++)
+        {
+            if (skin.HasProperty("_PatternColor_" + i) && index < colors.Count)
+            {
+                skin.SetColor("_PatternColor_" + i, colors[index]);
+                index++;
+            }
+        }
     }
 }
