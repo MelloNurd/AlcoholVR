@@ -79,6 +79,10 @@ namespace Bozo.ModularCharacters
         public bool createScriptableObjectOnSave = false;
         [Tooltip("Path where ScriptableObject will be saved (relative to Assets folder)")]
         public string scriptableObjectSavePath = "BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
+        
+        [Header("Load Menu Options")]
+        [Tooltip("When disabled, only loads characters from the 'Characters' subfolder. When enabled, loads from all Resources subfolders.")]
+        public bool loadFromAllSubfolders = false;
 
         private void Awake()
         {
@@ -146,7 +150,8 @@ namespace Bozo.ModularCharacters
         public void GenerateOutfitSelection() 
         {
             var outfits = OutfitDataBase.Values.ToArray();
-            foreach (var item in outfits)
+            foreach (var item in outfits
+            )
             {
                 var selector = Instantiate(outfitSelectorObject, outfitContainer);
                 selector.Init(item, this);
@@ -264,7 +269,20 @@ namespace Bozo.ModularCharacters
                 saveSlots.Add(data.characterName, selector);
             }
 
-            var saveObjects = Resources.LoadAll<CharacterObject>("");
+            // Load CharacterObject assets based on loadFromAllSubfolders setting
+            CharacterObject[] saveObjects;
+            if (loadFromAllSubfolders)
+            {
+                // Load from all Resources subfolders
+                saveObjects = Resources.LoadAll<CharacterObject>("");
+                Debug.Log($"Loading characters from all Resources subfolders: {saveObjects.Length} found");
+            }
+            else
+            {
+                // Load only from the "Characters" subfolder
+                saveObjects = Resources.LoadAll<CharacterObject>("Characters");
+                Debug.Log($"Loading characters from Resources/Characters only: {saveObjects.Length} found");
+            }
 
             for (int i = 0; i < saveObjects.Length; i++)
             {
