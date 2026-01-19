@@ -81,6 +81,10 @@ namespace Bozo.ModularCharacters
         [SerializeField] TMP_InputField inputV;
         private Dictionary<OutfitType, OutfitPickerSettings> outfitPickerSettings = new Dictionary<OutfitType, OutfitPickerSettings>();
 
+        [Header("Hand Coloring")]
+        [SerializeField] HandColorer leftHand;
+        [SerializeField] HandColorer rightHand;
+
         private void Awake()
         {
             CreateHueImage();
@@ -249,6 +253,12 @@ namespace Bozo.ModularCharacters
             {
                 case TextureType.Base:
                     colorObject.SetColor(color, channel);
+                    
+                    // Update hand colors when changing Body outfit's Color_1 (channel 1)
+                    if (IsBodyOutfit() && channel == 1)
+                    {
+                        UpdateHandColors(color);
+                    }
                     break;
                 case TextureType.Decal:
                     maxChannel = 3;
@@ -259,6 +269,35 @@ namespace Bozo.ModularCharacters
                     colorObject.SetPatternColor(color, channel);
                     break;
 
+            }
+        }
+
+        /// <summary>
+        /// Checks if the current outfit being edited is a Body outfit
+        /// </summary>
+        private bool IsBodyOutfit()
+        {
+            if (colorObject == null) return false;
+            
+            var outfit = colorObject.GetComponent<Outfit>();
+            if (outfit == null) return false;
+            
+            return outfit.Type != null && outfit.Type.name == "Body";
+        }
+
+        /// <summary>
+        /// Updates both hand colorers with the specified color
+        /// </summary>
+        private void UpdateHandColors(Color color)
+        {
+            if (leftHand != null)
+            {
+                leftHand.UpdateHandColor(color);
+            }
+
+            if (rightHand != null)
+            {
+                rightHand.UpdateHandColor(color);
             }
         }
 
