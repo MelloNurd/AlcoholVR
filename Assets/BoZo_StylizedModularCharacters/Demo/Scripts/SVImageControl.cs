@@ -8,7 +8,7 @@ namespace Bozo.ModularCharacters
 {
 
 
-    public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler
+    public class SVImageControl : MonoBehaviour, IDragHandler, IPointerClickHandler, IPointerDownHandler
     {
         [SerializeField] Image PickerImage;
 
@@ -17,7 +17,7 @@ namespace Bozo.ModularCharacters
         private ColorPickerControl CC;
         private RectTransform rect;
         private RectTransform pickerTransform;
-
+        private Canvas canvas;
 
         private void Awake()
         {
@@ -25,47 +25,53 @@ namespace Bozo.ModularCharacters
             CC = FindFirstObjectByType<ColorPickerControl>();
             rect = GetComponent<RectTransform>();
             pickerTransform = PickerImage.GetComponent<RectTransform>();
+            canvas = GetComponentInParent<Canvas>();
 
             pickerTransform = PickerImage.GetComponent<RectTransform>();
             pickerTransform.position = new Vector2(-(rect.sizeDelta.x * 0.5f), -(rect.sizeDelta.y * 0.5f));
         }
 
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            UpdateColor(eventData);
+        }
+
         private void UpdateColor(PointerEventData eventData)
         {
-            Vector3 pos = rect.InverseTransformPoint(eventData.position);
+            Vector3 localPoint;
+            
+            // Convert the pointer position to local coordinates
+            // This works for both mouse and VR raycast hits
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                rect, 
+                eventData.position, 
+                eventData.pressEventCamera ?? eventData.enterEventCamera, 
+                out Vector2 localPos))
+            {
+                localPoint = localPos;
+            }
+            else
+            {
+                // Fallback to old method if screen point conversion fails
+                localPoint = rect.InverseTransformPoint(eventData.position);
+            }
 
             float deltaX = rect.sizeDelta.x * 0.5f;
             float deltaY = rect.sizeDelta.y * 0.5f;
 
-            if (pos.x < -deltaX)
-            {
-                pos.x = -deltaX;
-            }
-            if (pos.x > deltaX)
-            {
-                pos.x = deltaX;
-            }
-            if (pos.y < -deltaY)
-            {
-                pos.y = -deltaY;
-            }
-            if (pos.y > deltaY)
-            {
-                pos.y = deltaY;
-            }
+            // Clamp to bounds
+            localPoint.x = Mathf.Clamp(localPoint.x, -deltaX, deltaX);
+            localPoint.y = Mathf.Clamp(localPoint.y, -deltaY, deltaY);
 
-            float x = pos.x + deltaX;
-            float y = pos.y + deltaY;
+            float x = localPoint.x + deltaX;
+            float y = localPoint.y + deltaY;
 
             float xNorm = x / rect.sizeDelta.x;
-            float YNorm = y / rect.sizeDelta.y;
+            float yNorm = y / rect.sizeDelta.y;
 
-            //pickerTransform.localPosition = pos;
+            PickerImage.color = Color.HSVToRGB(0, 0, 1 - yNorm);
 
-            PickerImage.color = Color.HSVToRGB(0, 0, 1 - YNorm);
-
-            CC.SetSV(xNorm, YNorm);
-
+            CC.SetSV(xNorm, yNorm);
         }
 
         public void setPickerPosition(float x, float y)
