@@ -1,12 +1,13 @@
+using PrimeTween;
 using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using System.Collections;
-using TMPro;
-using System.Linq;
-using UnityEngine.UI;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Bozo.ModularCharacters
@@ -88,6 +89,15 @@ namespace Bozo.ModularCharacters
         [SerializeField] HandColorer leftHand;
         [SerializeField] HandColorer rightHand;
 
+        [Header("Prompts")]
+        [SerializeField] GameObject popupPrompts;
+        TextMeshProUGUI savedPrompt;
+        TextMeshProUGUI noSavePrompt;
+        TextMeshProUGUI noDeletePrompt;
+        TextMeshProUGUI addCharacterPrompt;
+        public float fadeInTime = 2f;
+        public float holdTime = 2f;
+
         private void Awake()
         {
             outfits.Clear();
@@ -127,6 +137,15 @@ namespace Bozo.ModularCharacters
 
             GenerateOutfitSelection();
             GenerateTextureSelection();
+
+            savedPrompt = popupPrompts.transform.Find("SavedPrompt").GetComponent<TextMeshProUGUI>();
+            noSavePrompt = popupPrompts.transform.Find("NoSavePrompt").GetComponent<TextMeshProUGUI>();
+            noDeletePrompt = popupPrompts.transform.Find("NoDeletePrompt").GetComponent<TextMeshProUGUI>();
+            addCharacterPrompt = popupPrompts.transform.Find("AddCharacterPrompt").GetComponent<TextMeshProUGUI>();
+            FadeTextInAndOut(savedPrompt, 0f, 0f);
+            FadeTextInAndOut(noSavePrompt, 0f, 0f);
+            FadeTextInAndOut(noDeletePrompt, 0f, 0f);
+            FadeTextInAndOut(addCharacterPrompt, 0f, 0f);
         }
 
         private void OnEnable()
@@ -323,6 +342,7 @@ namespace Bozo.ModularCharacters
                 }
             }
         }
+        
         public void OpenPage(GameObject page) 
         {
             currentPage.SetActive(false);
@@ -413,6 +433,7 @@ namespace Bozo.ModularCharacters
             if (!colorPickerControl.colorObject) return;
             colorPickerControl.colorObject.SetDecal(texture);
         }
+        
         public void SetOutfitPattern(Texture texture)
         {
             if (!colorPickerControl.colorObject) return;
@@ -547,6 +568,25 @@ namespace Bozo.ModularCharacters
             return OutfitDataBase[outfitName];
         }
 
+        public void FadeTextInAndOut(TextMeshProUGUI tmpText, float holdTime, float fadeDuration)
+        {
+            Color startColor = tmpText.color;
+            startColor.a = 0f;
+            tmpText.color = startColor;
+
+            Color visibleColor = tmpText.color;
+            visibleColor.a = 1f;
+
+            Tween.Color(tmpText, startColor, visibleColor, fadeDuration)
+                .OnComplete(() =>
+                {
+                    Tween.Delay(holdTime).OnComplete(() =>
+                    {
+                        Tween.Color(tmpText, visibleColor, startColor, fadeDuration);
+                    });
+                });
+        }
+
         [ContextMenu("Save")]
         private IEnumerator Save()
         {
@@ -556,6 +596,8 @@ namespace Bozo.ModularCharacters
             if(CharacterName.text.Length == 0)
             {
                 Debug.LogWarning("Please enter in a name with at least one letter");
+                // Show "add character" prompt when no name is entered
+                FadeTextInAndOut(addCharacterPrompt, holdTime, fadeInTime);
                 yield break;
             }
 
@@ -572,8 +614,9 @@ namespace Bozo.ModularCharacters
                 }
                 else
                 {
-                    // Cannot overwrite premade characters
+                    // Cannot overwrite premade characters - show "no save" prompt
                     Debug.LogWarning($"Cannot save as '{CharacterName.text}' - A premade character with this name already exists. Please choose a different name.");
+                    FadeTextInAndOut(noSavePrompt, holdTime, fadeInTime);
                     yield break;
                 }
             }
@@ -634,6 +677,12 @@ namespace Bozo.ModularCharacters
 #endif
             
             UpdateCharacterSaves();
+            
+            // Set the newly saved character as the currently loaded character
+            loadedCharacterNameText.text = CharacterName.text;
+            
+            // Show "saved" prompt on successful save
+            FadeTextInAndOut(savedPrompt, holdTime, fadeInTime);
         }
 
 #if UNITY_EDITOR
@@ -687,7 +736,22 @@ namespace Bozo.ModularCharacters
 
         public void DeleteCharacter()
         {
-            if (loadedCharacterNameText.text == "") return;
+            if (loadedCharacterNameText.text == "")
+            {
+                // Show "no delete" prompt when no character is loaded
+                FadeTextInAndOut(noDeletePrompt, holdTime, fadeInTime);
+                return;
+            }
+            
+            // Check if this is a premade character (can't be deleted)
+            if (!BMAC_SaveSystem.IsPlayerCreatedCharacter(loadedCharacterNameText.text))
+            {
+                // Show "no delete" prompt when trying to delete a premade character
+                Debug.LogWarning($"Cannot delete '{loadedCharacterNameText.text}' - This is a premade character and cannot be deleted.");
+                FadeTextInAndOut(noDeletePrompt, holdTime, fadeInTime);
+                return;
+            }
+            
             DeleteCharacterNameText.text = "Delete: " + loadedCharacterNameText.text;
             DeleteConfirmWindow.SetActive(true);
         }
@@ -698,7 +762,7 @@ namespace Bozo.ModularCharacters
             loadedCharacterNameText.text = "";
             UpdateCharacterSaves();
         }
-
+        
         private string GetAssetPath(UnityEngine.Object obj)
         {
 #if UNITY_EDITOR
@@ -707,262 +771,262 @@ namespace Bozo.ModularCharacters
             return "Editor Only";
 #endif
         }
+
 #if UNITY_EDITOR
-[ContextMenu("Fix Character Object Paths")]
-public void FixCharacterObjectPaths()
-{
-    
-    // Load all CharacterObject assets from the Resources folder
-    var characterObjects = Resources.LoadAll<CharacterObject>("");
-    
-    Debug.Log($"Found {characterObjects.Length} CharacterObject assets to process");
-    
-    int fixedCount = 0;
-    
-    foreach (var characterObject in characterObjects)
-    {
-        bool modified = false;
-        
-        // Check if the data exists
-        if (characterObject.data == null || characterObject.data.outfitDatas == null)
+        [ContextMenu("Fix Character Object Paths")]
+        public void FixCharacterObjectPaths()
         {
-            Debug.LogWarning($"Skipping {characterObject.name} - no outfit data found");
-            continue;
-        }
-        
-        // Process each outfit data
-        foreach (var outfitData in characterObject.data.outfitDatas)
-        {
-            if (string.IsNullOrEmpty(outfitData.outfit))
-                continue;
+            // Load all CharacterObject assets from the Resources folder
+            var characterObjects = Resources.LoadAll<CharacterObject>("");
             
-            string oldPath = outfitData.outfit;
+            Debug.Log($"Found {characterObjects.Length} CharacterObject assets to process");
             
-            // Check if this is a Body outfit that needs fixing
-            if (oldPath.Contains("/Body/") || oldPath.StartsWith("Body/"))
+            int fixedCount = 0;
+            
+            foreach (var characterObject in characterObjects)
             {
-                // Remove existing prefix if any
-                string cleanPath = oldPath;
-                if (cleanPath.StartsWith("Base/"))
-                    cleanPath = cleanPath.Substring(5); // Remove "Base/"
-                else if (cleanPath.StartsWith("Common/"))
-                    cleanPath = cleanPath.Substring(7); // Remove "Common/"
+                bool modified = false;
                 
-                // Add Common prefix
-                string newPath = "Common/" + cleanPath;
-                
-                if (oldPath != newPath)
+                // Check if the data exists
+                if (characterObject.data == null || characterObject.data.outfitDatas == null)
                 {
-                    outfitData.outfit = newPath;
-                    Debug.Log($"Fixed Body path in {characterObject.name}: {oldPath} -> {newPath}");
-                    modified = true;
+                    Debug.LogWarning($"Skipping {characterObject.name} - no outfit data found");
+                    continue;
                 }
+                
+                // Process each outfit data
+                foreach (var outfitData in characterObject.data.outfitDatas)
+                {
+                    if (string.IsNullOrEmpty(outfitData.outfit))
+                        continue;
+                    
+                    string oldPath = outfitData.outfit;
+                    
+                    // Check if this is a Body outfit that needs fixing
+                    if (oldPath.Contains("/Body/") || oldPath.StartsWith("Body/"))
+                    {
+                        // Remove existing prefix if any
+                        string cleanPath = oldPath;
+                        if (cleanPath.StartsWith("Base/"))
+                            cleanPath = cleanPath.Substring(5); // Remove "Base/"
+                        else if (cleanPath.StartsWith("Common/"))
+                            cleanPath = cleanPath.Substring(7); // Remove "Common/"
+                        
+                        // Add Common prefix
+                        string newPath = "Common/" + cleanPath;
+                        
+                        if (oldPath != newPath)
+                        {
+                            outfitData.outfit = newPath;
+                            Debug.Log($"Fixed Body path in {characterObject.name}: {oldPath} -> {newPath}");
+                            modified = true;
+                        }
+                    }
+                    else
+                    {
+                        // For non-Body outfits, ensure they have Base/ prefix
+                        if (!oldPath.StartsWith("Base/") && !oldPath.StartsWith("Common/"))
+                        {
+                            outfitData.outfit = "Base/" + oldPath;
+                            Debug.Log($"Fixed path in {characterObject.name}: {oldPath} -> {outfitData.outfit}");
+                            modified = true;
+                        }
+                    }
+                }
+                
+                if (modified)
+                {
+                    // Mark the asset as dirty so Unity saves the changes
+                    UnityEditor.EditorUtility.SetDirty(characterObject);
+                    fixedCount++;
+                }
+            }
+            
+            // Save all modified assets
+            if (fixedCount > 0)
+            {
+                UnityEditor.AssetDatabase.SaveAssets();
+                UnityEditor.AssetDatabase.Refresh();
+                Debug.Log($"Successfully fixed {fixedCount} CharacterObject assets. Changes saved!");
             }
             else
             {
-                // For non-Body outfits, ensure they have Base/ prefix
-                if (!oldPath.StartsWith("Base/") && !oldPath.StartsWith("Common/"))
-                {
-                    outfitData.outfit = "Base/" + oldPath;
-                    Debug.Log($"Fixed path in {characterObject.name}: {oldPath} -> {outfitData.outfit}");
-                    modified = true;
-                }
+                Debug.Log("No paths needed fixing - all assets are already correct!");
             }
         }
-        
-        if (modified)
-        {
-            // Mark the asset as dirty so Unity saves the changes
-            UnityEditor.EditorUtility.SetDirty(characterObject);
-            fixedCount++;
-        }
-    }
-    
-    // Save all modified assets
-    if (fixedCount > 0)
-    {
-        UnityEditor.AssetDatabase.SaveAssets();
-        UnityEditor.AssetDatabase.Refresh();
-        Debug.Log($"Successfully fixed {fixedCount} CharacterObject assets. Changes saved!");
-    }
-    else
-    {
-        Debug.Log("No paths needed fixing - all assets are already correct!");
-    }
-}
 
-[ContextMenu("Migrate Old Characters")]
-public void MigrateOldCharacters()
-{
-    // Define paths
-    string oldPath1 = "Characters";
-    string oldPath2 = "X_Characters";
-    string newBasePath = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
-    
-    int migratedCount = 0;
-    int errorCount = 0;
-    
-    // Create target directories if they don't exist
-    string newPath1 = newBasePath + "Characters";
-    string newPath2 = newBasePath + "X_Characters";
-    
-    if (!System.IO.Directory.Exists(newPath1))
-    {
-        System.IO.Directory.CreateDirectory(newPath1);
-        Debug.Log($"Created directory: {newPath1}");
-    }
-    
-    if (!System.IO.Directory.Exists(newPath2))
-    {
-        System.IO.Directory.CreateDirectory(newPath2);
-        Debug.Log($"Created directory: {newPath2}");
-    }
-    
-    // Load old character objects
-    var oldCharacters1 = Resources.LoadAll<BSMC_CharacterObject>(oldPath1);
-    var oldCharacters2 = Resources.LoadAll<BSMC_CharacterObject>(oldPath2);
-    
-    Debug.Log($"Found {oldCharacters1.Length} characters in Resources/{oldPath1}");
-    Debug.Log($"Found {oldCharacters2.Length} characters in Resources/{oldPath2}");
-    
-    // Migrate Characters folder
-    foreach (var oldChar in oldCharacters1)
-    {
-        if (MigrateCharacter(oldChar, newPath1))
-            migratedCount++;
-        else
-            errorCount++;
-    }
-    
-    // Migrate X_Characters folder
-    foreach (var oldChar in oldCharacters2)
-    {
-        if (MigrateCharacter(oldChar, newPath2))
-            migratedCount++;
-        else
-            errorCount++;
-    }
-    
-    // Refresh the asset database
-    AssetDatabase.SaveAssets();
-    AssetDatabase.Refresh();
-    
-    Debug.Log($"Migration complete! Successfully migrated {migratedCount} characters. Errors: {errorCount}");
-}
-
-private bool MigrateCharacter(BSMC_CharacterObject oldChar, string targetPath)
-{
-    try
-    {
-        // Create new CharacterObject
-        var newChar = ScriptableObject.CreateInstance<CharacterObject>();
-        
-        // Use the UpdateVersion method from the old character object to get converted data
-        CharacterData convertedData = oldChar.UpdateVersion();
-        
-        if (convertedData == null)
+        [ContextMenu("Migrate Old Characters")]
+        public void MigrateOldCharacters()
         {
-            Debug.LogError($"Failed to convert data for {oldChar.name}");
-            return false;
-        }
-        
-        // Assign converted data
-        newChar.data = convertedData;
-        
-        // Try to copy icon if it exists
-        if (oldChar != null)
-        {
-            // Try to get the icon through reflection or serialization
-            var iconField = typeof(BSMC_CharacterObject).GetField("icon", 
-                System.Reflection.BindingFlags.Public | 
-                System.Reflection.BindingFlags.NonPublic | 
-                System.Reflection.BindingFlags.Instance);
+            // Define paths
+            string oldPath1 = "Characters";
+            string oldPath2 = "X_Characters";
+            string newBasePath = "Assets/BoZo_StylizedModularCharacters/CustomCharacters/Resources/";
             
-            if (iconField != null)
+            int migratedCount = 0;
+            int errorCount = 0;
+            
+            // Create target directories if they don't exist
+            string newPath1 = newBasePath + "Characters";
+            string newPath2 = newBasePath + "X_Characters";
+            
+            if (!System.IO.Directory.Exists(newPath1))
             {
-                var iconValue = iconField.GetValue(oldChar) as Texture2D;
-                if (iconValue != null)
+                System.IO.Directory.CreateDirectory(newPath1);
+                Debug.Log($"Created directory: {newPath1}");
+            }
+            
+            if (!System.IO.Directory.Exists(newPath2))
+            {
+                System.IO.Directory.CreateDirectory(newPath2);
+                Debug.Log($"Created directory: {newPath2}");
+            }
+            
+            // Load old character objects
+            var oldCharacters1 = Resources.LoadAll<BSMC_CharacterObject>(oldPath1);
+            var oldCharacters2 = Resources.LoadAll<BSMC_CharacterObject>(oldPath2);
+            
+            Debug.Log($"Found {oldCharacters1.Length} characters in Resources/{oldPath1}");
+            Debug.Log($"Found {oldCharacters2.Length} characters in Resources/{oldPath2}");
+            
+            // Migrate Characters folder
+            foreach (var oldChar in oldCharacters1)
+            {
+                if (MigrateCharacter(oldChar, newPath1))
+                    migratedCount++;
+                else
+                    errorCount++;
+            }
+            
+            // Migrate X_Characters folder
+            foreach (var oldChar in oldCharacters2)
+            {
+                if (MigrateCharacter(oldChar, newPath2))
+                    migratedCount++;
+                else
+                    errorCount++;
+            }
+            
+            // Refresh the asset database
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            
+            Debug.Log($"Migration complete! Successfully migrated {migratedCount} characters. Errors: {errorCount}");
+        }
+
+        private bool MigrateCharacter(BSMC_CharacterObject oldChar, string targetPath)
+        {
+            try
+            {
+                // Create new CharacterObject
+                var newChar = ScriptableObject.CreateInstance<CharacterObject>();
+                
+                // Use the UpdateVersion method from the old character object to get converted data
+                CharacterData convertedData = oldChar.UpdateVersion();
+                
+                if (convertedData == null)
                 {
-                    newChar.icon = iconValue;
+                    Debug.LogError($"Failed to convert data for {oldChar.name}");
+                    return false;
                 }
+                
+                // Assign converted data
+                newChar.data = convertedData;
+                
+                // Try to copy icon if it exists
+                if (oldChar != null)
+                {
+                    // Try to get the icon through reflection or serialization
+                    var iconField = typeof(BSMC_CharacterObject).GetField("icon", 
+                        System.Reflection.BindingFlags.Public | 
+                        System.Reflection.BindingFlags.NonPublic | 
+                        System.Reflection.BindingFlags.Instance);
+                    
+                    if (iconField != null)
+                    {
+                        var iconValue = iconField.GetValue(oldChar) as Texture2D;
+                        if (iconValue != null)
+                        {
+                            newChar.icon = iconValue;
+                        }
+                    }
+                }
+                
+                // Create asset at new location
+                string assetPath = $"{targetPath}/{oldChar.name}.asset";
+                AssetDatabase.CreateAsset(newChar, assetPath);
+                
+                Debug.Log($"Migrated: {oldChar.name} -> {assetPath}");
+                
+                // Try to export icon as PNG if it exists
+                if (newChar.icon != null)
+                {
+                    ExportIconAsPNG(newChar.icon, targetPath, oldChar.name);
+                }
+                
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Failed to migrate {oldChar.name}: {ex.Message}\n{ex.StackTrace}");
+                return false;
             }
         }
-        
-        // Create asset at new location
-        string assetPath = $"{targetPath}/{oldChar.name}.asset";
-        AssetDatabase.CreateAsset(newChar, assetPath);
-        
-        Debug.Log($"Migrated: {oldChar.name} -> {assetPath}");
-        
-        // Try to export icon as PNG if it exists
-        if (newChar.icon != null)
-        {
-            ExportIconAsPNG(newChar.icon, targetPath, oldChar.name);
-        }
-        
-        return true;
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogError($"Failed to migrate {oldChar.name}: {ex.Message}\n{ex.StackTrace}");
-        return false;
-    }
-}
 
-private void ExportIconAsPNG(Texture2D icon, string targetPath, string characterName)
-{
-    try
-    {
-        // Make texture readable if it isn't
-        Texture2D readableTexture = icon;
-        
-        if (!icon.isReadable)
+        private void ExportIconAsPNG(Texture2D icon, string targetPath, string characterName)
         {
-            // Create a temporary RenderTexture
-            RenderTexture tmp = RenderTexture.GetTemporary(
-                icon.width,
-                icon.height,
-                0,
-                RenderTextureFormat.Default,
-                RenderTextureReadWrite.Linear);
+            try
+            {
+                // Make texture readable if it isn't
+                Texture2D readableTexture = icon;
+                
+                if (!icon.isReadable)
+                {
+                    // Create a temporary RenderTexture
+                    RenderTexture tmp = RenderTexture.GetTemporary(
+                        icon.width,
+                        icon.height,
+                        0,
+                        RenderTextureFormat.Default,
+                        RenderTextureReadWrite.Linear);
 
-            // Blit the texture to the RenderTexture
-            Graphics.Blit(icon, tmp);
-            
-            // Backup the currently set RenderTexture
-            RenderTexture previous = RenderTexture.active;
-            
-            // Set the current RenderTexture to the temporary one
-            RenderTexture.active = tmp;
-            
-            // Create a new readable Texture2D
-            readableTexture = new Texture2D(icon.width, icon.height);
-            readableTexture.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
-            readableTexture.Apply();
-            
-            // Reset the active RenderTexture
-            RenderTexture.active = previous;
-            
-            // Release the temporary RenderTexture
-            RenderTexture.ReleaseTemporary(tmp);
+                    // Blit the texture to the RenderTexture
+                    Graphics.Blit(icon, tmp);
+                    
+                    // Backup the currently set RenderTexture
+                    RenderTexture previous = RenderTexture.active;
+                    
+                    // Set the current RenderTexture to the temporary one
+                    RenderTexture.active = tmp;
+                    
+                    // Create a new readable Texture2D
+                    readableTexture = new Texture2D(icon.width, icon.height);
+                    readableTexture.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
+                    readableTexture.Apply();
+                    
+                    // Reset the active RenderTexture
+                    RenderTexture.active = previous;
+                    
+                    // Release the temporary RenderTexture
+                    RenderTexture.ReleaseTemporary(tmp);
+                }
+                
+                // Encode to PNG
+                byte[] bytes = readableTexture.EncodeToPNG();
+                
+                // Save to file
+                string iconPath = $"{targetPath}/{characterName}_Icon.png";
+                System.IO.File.WriteAllBytes(iconPath, bytes);
+                
+                AssetDatabase.ImportAsset(iconPath);
+                
+                Debug.Log($"Exported icon: {iconPath}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"Failed to export icon for {characterName}: {ex.Message}");
+            }
         }
-        
-        // Encode to PNG
-        byte[] bytes = readableTexture.EncodeToPNG();
-        
-        // Save to file
-        string iconPath = $"{targetPath}/{characterName}_Icon.png";
-        System.IO.File.WriteAllBytes(iconPath, bytes);
-        
-        AssetDatabase.ImportAsset(iconPath);
-        
-        Debug.Log($"Exported icon: {iconPath}");
-    }
-    catch (System.Exception ex)
-    {
-        Debug.LogWarning($"Failed to export icon for {characterName}: {ex.Message}");
-    }
-}
 #endif
     }
 }
