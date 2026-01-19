@@ -150,7 +150,19 @@ namespace Bozo.ModularCharacters
 
             UpdateCharacterSaves();
             
-            // Initialize hand colors from current body outfit if available
+            // Delay hand color update to ensure body outfit is fully loaded
+            StartCoroutine(DelayedHandColorUpdate());
+        }
+
+        /// <summary>
+        /// Delays hand color update to ensure the body outfit is fully initialized
+        /// </summary>
+        private IEnumerator DelayedHandColorUpdate()
+        {
+            // Wait a frame to ensure all initialization is complete
+            yield return null;
+            
+            // Now update hand colors from the body
             UpdateHandColorsFromBody();
         }
 
@@ -363,10 +375,11 @@ namespace Bozo.ModularCharacters
         /// Updates both hand colorers to match the current body outfit's Color_1
         /// Called when body outfit changes or is updated
         /// </summary>
-        private void UpdateHandColorsFromBody()
+        public void UpdateHandColorsFromBody()
         {
             if (leftHand == null && rightHand == null)
             {
+                Debug.LogWarning("No hand colorers assigned to CharacterCreator");
                 return;
             }
 
@@ -385,14 +398,14 @@ namespace Bozo.ModularCharacters
             if (leftHand != null)
             {
                 leftHand.UpdateHandColor(bodyColor);
+                Debug.Log($"Updated left hand color to: {bodyColor}");
             }
 
             if (rightHand != null)
             {
                 rightHand.UpdateHandColor(bodyColor);
+                Debug.Log($"Updated right hand color to: {bodyColor}");
             }
-
-            Debug.Log($"Updated hand colors to match body Color_1: {bodyColor}");
         }
 
         public void SetOutfitDecal(Texture texture)
