@@ -163,6 +163,8 @@ namespace Bozo.ModularCharacters
 
 
 
+
+
             foreach (var item in extensions) { item.Execute(system, this); }
         }
 
@@ -314,8 +316,8 @@ namespace Bozo.ModularCharacters
                 }
             }
 
-            // Notify listeners if this is a Body outfit and Color_1 changed
-            if (Type != null && Type.name == "Body" && index == 1)
+            // Notify listeners if this is a Body outfit and Color_1 or Color_7 changed
+            if (Type != null && Type.name == "Body" && (index == 1 || index == 7))
             {
                 OnBodyColor1Changed?.Invoke(color);
             }

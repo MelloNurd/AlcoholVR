@@ -31,11 +31,6 @@ public class CharacterFileConverting : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        ConvertAllCharacters();
-    }
-
     [Button("Convert All Characters")]
     public void ConvertAllCharacters()
     {

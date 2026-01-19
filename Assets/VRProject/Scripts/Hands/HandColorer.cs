@@ -13,7 +13,11 @@ public class HandColorer : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        skin = GetComponent<Renderer>().material;
+        // Initialize the material, but don't rely on this for external calls
+        if (skin == null)
+        {
+            skin = GetComponent<Renderer>().material;
+        }
         
         // Try to load PlayerCharacter colors from JSON
         if (!LoadPlayerCharacterColors())
@@ -213,11 +217,21 @@ public class HandColorer : MonoBehaviour
 
     public void UpdateHandColor(Color newColor)
     {
+        // Ensure the material is initialized before use
+        if (skin == null)
+        {
+            skin = GetComponent<Renderer>().material;
+        }
         skin.SetColor("_Color_7", newColor);
     }
     
     public void SetRandomHandColor()
     {
+        // Ensure the material is initialized before use
+        if (skin == null)
+        {
+            skin = GetComponent<Renderer>().material;
+        }
         Color randomColor = new Color(Random.value, Random.value, Random.value);
         skin.SetColor("_Color_7", randomColor);
     }
@@ -260,6 +274,11 @@ public class HandColorer : MonoBehaviour
 
     public void SetColors(List<Color> colors)
     {
+        // Ensure the material is initialized before use
+        if (skin == null)
+        {
+            skin = GetComponent<Renderer>().material;
+        }
         int index = 0;
         // Set main colors (Color_1 to Color_9)
         for (int i = 1; i <= 9; i++)
