@@ -84,6 +84,10 @@ namespace Bozo.ModularCharacters
         [Tooltip("When disabled, only loads characters from the 'Characters' subfolder. When enabled, loads from all Resources subfolders.")]
         public bool loadFromAllSubfolders = false;
 
+        [Header("Hands")]
+        [SerializeField] HandColorer leftHand;
+        [SerializeField] HandColorer rightHand;
+
         private void Awake()
         {
             outfits.Clear();
@@ -145,6 +149,9 @@ namespace Bozo.ModularCharacters
             SwitchCatagory("Top");
 
             UpdateCharacterSaves();
+            
+            // Initialize hand colors from current body outfit if available
+            UpdateHandColorsFromBody();
         }
 
         public void GenerateOutfitSelection() 
@@ -340,6 +347,9 @@ namespace Bozo.ModularCharacters
             if (outfit.Type.name == "Body")
             {
                 GetBodyBlends();
+                
+                // Update hand colors when body outfit changes
+                UpdateHandColorsFromBody();
             }
         }
 
@@ -347,6 +357,42 @@ namespace Bozo.ModularCharacters
         {
             //GetBodyBlends();
             GetBodyMods();
+        }
+
+        /// <summary>
+        /// Updates both hand colorers to match the current body outfit's Color_1
+        /// Called when body outfit changes or is updated
+        /// </summary>
+        private void UpdateHandColorsFromBody()
+        {
+            if (leftHand == null && rightHand == null)
+            {
+                return;
+            }
+
+            // Get the current body outfit
+            var bodyOutfit = character.GetOutfit("Body");
+            if (bodyOutfit == null)
+            {
+                Debug.LogWarning("No body outfit found to sync hand colors");
+                return;
+            }
+
+            // Get Color_1 (index 1) from the body outfit
+            Color bodyColor = bodyOutfit.GetColor(1);
+
+            // Update both hands
+            if (leftHand != null)
+            {
+                leftHand.UpdateHandColor(bodyColor);
+            }
+
+            if (rightHand != null)
+            {
+                rightHand.UpdateHandColor(bodyColor);
+            }
+
+            Debug.Log($"Updated hand colors to match body Color_1: {bodyColor}");
         }
 
         public void SetOutfitDecal(Texture texture)
@@ -621,6 +667,9 @@ namespace Bozo.ModularCharacters
         {
             loadedCharacterNameText.text = data.characterName;
             await BMAC_SaveSystem.LoadCharacter(character, data);
+            
+            // Update hand colors after loading a character
+            UpdateHandColorsFromBody();
         }
 
         public void DeleteCharacter()

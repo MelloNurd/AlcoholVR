@@ -49,6 +49,9 @@ namespace Bozo.ModularCharacters
         public Transform originalRootBone;
         public Transform editorAttachPoint;
 
+        // Event fired when Color_1 changes on Body outfit
+        public event Action<Color> OnBodyColor1Changed;
+
 
         private void OnValidate()
         {
@@ -309,6 +312,12 @@ namespace Bozo.ModularCharacters
                     if (index > item.linkedChannelRange) continue;
                     linkedOutfit.SetColor(color, index, true);
                 }
+            }
+
+            // Notify listeners if this is a Body outfit and Color_1 changed
+            if (Type != null && Type.name == "Body" && index == 1)
+            {
+                OnBodyColor1Changed?.Invoke(color);
             }
         }
 
