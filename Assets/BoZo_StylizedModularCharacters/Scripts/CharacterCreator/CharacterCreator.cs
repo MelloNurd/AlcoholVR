@@ -361,12 +361,86 @@ namespace Bozo.ModularCharacters
 
         public void SetOutfit(Outfit outfit) 
         {
+            // Check if user is switching from overall to top/bottom
+            CheckAndHandleOverallReplacement(outfit);
+            
             var inst = Instantiate(outfit, character.transform);
             SetColorPickerObject(inst);
             SwitchTextureCatagory(outfit.TextureCatagory);
             type = outfit.Type;
 
            // var type = (OutfitType)Enum.Parse(typeof(OutfitType), catagory);
+        }
+
+        /// <summary>
+        /// Handles the case where user selects a top or bottom after wearing an overall outfit.
+        /// Automatically equips a matching piece for the other slot to prevent nakedness.
+        /// </summary>
+        private void CheckAndHandleOverallReplacement(Outfit newOutfit)
+        {
+            if (newOutfit == null || newOutfit.Type == null) return;
+            
+            string newOutfitTypeName = newOutfit.Type.name;
+            
+            // Only handle if new outfit is Top or Bottom
+            if (newOutfitTypeName != "Top" && newOutfitTypeName != "Bottom") return;
+            
+            // Check if user currently has an Overall equipped
+            var currentOverall = character.GetOutfit("Overall");
+            if (currentOverall == null) return;
+            
+            // User is switching from overall to top/bottom
+            // Determine which slot needs to be filled
+            string slotToFill = (newOutfitTypeName == "Top") ? "Bottom" : "Top";
+            
+            // Find a default outfit for the other slot
+            Outfit defaultOutfit = FindDefaultOutfitForSlot(slotToFill);
+            
+            if (defaultOutfit != null)
+            {
+                // Get the Overall OutfitType
+                var overallType = System.Array.Find(outfitTypes, t => t != null && t.name == "Overall");
+                
+                if (overallType != null)
+                {
+                    // Remove the overall first
+                    character.RemoveOutfit(overallType, true);
+                }
+                
+                // Instantiate and attach the default outfit for the other slot
+                var defaultInst = Instantiate(defaultOutfit, character.transform);
+                
+                Debug.Log($"Auto-equipped {slotToFill}: {defaultOutfit.name} to complement {newOutfitTypeName}");
+            }
+            else
+            {
+                Debug.LogWarning($"Could not find a default {slotToFill} outfit to auto-equip");
+            }
+        }
+
+        /// <summary>
+        /// Finds a suitable default outfit for the specified slot (Top or Bottom)
+        /// Prioritizes simple/basic outfits
+        /// </summary>
+        private Outfit FindDefaultOutfitForSlot(string slotName)
+        {
+            if (OutfitDataBase == null || OutfitDataBase.Count == 0) return null;
+            
+            // Get all outfits matching the slot type
+            var matchingOutfits = OutfitDataBase.Values
+                .Where(o => o.Type != null && o.Type.name == slotName && o.showCharacterCreator)
+                .ToList();
+            
+            if (matchingOutfits.Count == 0) return null;
+            
+            // Try to find a "basic" or "default" outfit (case insensitive search)
+            var basicOutfit = matchingOutfits.FirstOrDefault(o => 
+                o.name.ToLower().Contains("basic") || 
+                o.name.ToLower().Contains("default") ||
+                o.name.ToLower().Contains("simple"));
+            
+            // If no basic outfit found, return the first available one
+            return basicOutfit ?? matchingOutfits[0];
         }
 
         public void OnOutfitUpdate(Outfit outfit)
