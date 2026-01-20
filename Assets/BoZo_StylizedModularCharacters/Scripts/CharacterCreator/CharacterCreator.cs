@@ -1102,5 +1102,71 @@ namespace Bozo.ModularCharacters
             }
         }
 #endif
+
+/// <summary>
+/// Saves the current creator character as PlayerCharacter.json in the X_Characters folder
+/// This character will auto-load in the next scene
+/// </summary>
+public void SaveAsPlayerCharacter()
+{
+    StartCoroutine(SavePlayerCharacterCoroutine());
+}
+
+/// <summary>
+/// Coroutine to save the current character as the player character
+/// </summary>
+private IEnumerator SavePlayerCharacterCoroutine()
+{
+    yield return new WaitForEndOfFrame();
+    
+    string playerCharacterName = "PlayerCharacter";
+    
+    // Create X_Characters subfolder if it doesn't exist
+    string xCharactersPath = Path.Combine(BMAC_SaveSystem.filePath, "X_Characters");
+    if (!Directory.Exists(xCharactersPath))
+    {
+        Directory.CreateDirectory(xCharactersPath);
+        Debug.Log($"Created X_Characters folder at: {xCharactersPath}");
+    }
+    
+    // Create icons subfolder for X_Characters if it doesn't exist
+    string xCharactersIconPath = Path.Combine(BMAC_SaveSystem.iconFilePath, "X_Characters");
+    if (!Directory.Exists(xCharactersIconPath))
+    {
+        Directory.CreateDirectory(xCharactersIconPath);
+        Debug.Log($"Created X_Characters icons folder at: {xCharactersIconPath}");
+    }
+    
+    // Capture character icon
+    RenderTexture.active = iconTexture;
+    Texture2D icon = new Texture2D(iconTexture.width, iconTexture.height, TextureFormat.RGBA32, false);
+    Rect rect = new Rect(0, 0, iconTexture.width, iconTexture.height);
+    icon.ReadPixels(rect, 0, 0);
+    icon.Apply();
+    
+    byte[] iconBytes = icon.EncodeToPNG();
+    
+    // Save icon to X_Characters subfolder
+    string iconFilePath = Path.Combine(xCharactersIconPath, playerCharacterName + ".png");
+    File.WriteAllBytes(iconFilePath, iconBytes);
+    Debug.Log($"Player character icon saved to: {iconFilePath}");
+    
+    // Get character data
+    var characterData = BMAC_SaveSystem.GetCharacterData(character);
+    characterData.characterName = playerCharacterName;
+    
+    // Save JSON to X_Characters subfolder
+    string jsonData = JsonUtility.ToJson(characterData, true);
+    string jsonFilePath = Path.Combine(xCharactersPath, playerCharacterName + ".json");
+    File.WriteAllText(jsonFilePath, jsonData);
+    
+    Debug.Log($"Player character saved to: {jsonFilePath}");
+    
+    // Show success feedback
+    if (savedPrompt != null)
+    {
+        FadeTextInAndOut(savedPrompt, holdTime, fadeInTime);
+    }
+}
     }
 }
