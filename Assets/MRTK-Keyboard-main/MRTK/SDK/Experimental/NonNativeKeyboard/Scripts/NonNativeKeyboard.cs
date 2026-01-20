@@ -291,6 +291,7 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
 
             // Delegate Subscription
             InputField.onValueChanged.AddListener(DoTextUpdated);
+            InputField.onSelect.AddListener(OnInputFieldSelected);
         }
 
         //protected override void RegisterHandlers()
@@ -315,6 +316,25 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         private void LateUpdate()
         {
+            // Sync m_CaretPosition with actual InputField position
+            if (gameObject.activeInHierarchy)
+            {
+                // Keep positions in sync
+                if (InputField.isFocused)
+                {
+                    m_CaretPosition = InputField.caretPosition;
+                }
+                else
+                {
+                    // Re-activate and restore position
+                    int savedCaretPos = Mathf.Clamp(m_CaretPosition, 0, InputField.text.Length);
+                    InputField.ActivateInputField();
+                    InputField.caretPosition = savedCaretPos;
+                    InputField.selectionAnchorPosition = savedCaretPos;
+                    InputField.selectionFocusPosition = savedCaretPos;
+                }
+            }
+
             // Axis Slider
             if (SliderEnabled)
             {
@@ -326,7 +346,13 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             CheckForCloseOnInactivityTimeExpired();
         }
 
-        private void UpdateCaretPosition(int newPos) => InputField.caretPosition = newPos;
+        private void UpdateCaretPosition(int newPos)
+        {
+            InputField.caretPosition = newPos;
+            InputField.selectionAnchorPosition = newPos;
+            InputField.selectionFocusPosition = newPos;
+            InputField.ForceLabelUpdate();
+        }
 
         /// <summary>
         /// Called whenever the keyboard is disabled or deactivated.
@@ -334,6 +360,12 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         protected void OnDisable()
         {            
             m_LastKeyboardLayout = LayoutType.Alpha;
+            
+            // Unsubscribe from events
+            if (InputField != null)
+            {
+                InputField.onSelect.RemoveListener(OnInputFieldSelected);
+            }
             //Clear();
         }
 
@@ -625,7 +657,9 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
                 Shift(false);
             }
 
+            // Get current caret position and ensure it's within valid range
             m_CaretPosition = InputField.caretPosition;
+            m_CaretPosition = Mathf.Clamp(m_CaretPosition, 0, InputField.text.Length);
 
             InputField.text = InputField.text.Insert(m_CaretPosition, value);
             m_CaretPosition += value.Length;
@@ -1072,6 +1106,35 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             {
                 Close();
             }
+        }
+
+        /// <summary>
+        /// Called when the input field is selected. Moves caret to end of text.
+        /// </summary>
+        /// <param name="text">Current text in the input field.</param>
+        private void OnInputFieldSelected(string text)
+        {
+            m_CaretPosition = InputField.text.Length;
+            InputField.caretPosition = m_CaretPosition;
+            InputField.selectionAnchorPosition = m_CaretPosition;
+            InputField.selectionFocusPosition = m_CaretPosition;
+            // Use a coroutine to defer caret positioning until after InputField's default selection
+            // StartCoroutine(MoveCaretToEndNextFrame());
+        }
+
+        /// <summary>
+        /// Coroutine to move caret to end after InputField completes its default selection behavior.
+        /// </summary>
+        private System.Collections.IEnumerator MoveCaretToEndNextFrame()
+        {
+            // Wait one frame for InputField's selection to complete
+            yield return null;
+            
+            // Move caret to end of text
+            m_CaretPosition = InputField.text.Length;
+            InputField.caretPosition = m_CaretPosition;
+            InputField.selectionAnchorPosition = m_CaretPosition;
+            InputField.selectionFocusPosition = m_CaretPosition;
         }
     }
 }

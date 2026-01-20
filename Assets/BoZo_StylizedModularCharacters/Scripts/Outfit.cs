@@ -59,7 +59,12 @@ namespace Bozo.ModularCharacters
             {
 
                 if (system == null) system = GetComponentInParent<OutfitSystem>();
-                SetColorInital();
+                
+                // Skip SetColorInital for Head outfits in OnValidate to prevent unwanted color changes
+                if (Type == null || Type.name != "Head")
+                {
+                    SetColorInital();
+                }
             }
 #if UNITY_EDITOR
             if (AttachInEditMode && !Application.isPlaying) SoftAttach();
@@ -112,7 +117,13 @@ namespace Bozo.ModularCharacters
             {
                 if (!Initalized) Attach();
             }
-            SetColorInital();
+            
+            // Only call SetColorInital for non-Head outfits
+            // Head outfits will get their colors set in Attach()
+            if (Type == null || Type.name != "Head")
+            {
+                SetColorInital();
+            }
         }
 
         public void Attach(Transform parent)
@@ -136,7 +147,6 @@ namespace Bozo.ModularCharacters
             if (system == null) return;
             if (!system.initalized) return;
 
-           
             RemoveIncompatible();
             CheckTags();
             CopySystemShapes();
@@ -160,10 +170,11 @@ namespace Bozo.ModularCharacters
 
             system.AttachOutfit(this);
 
-
-
-
-
+            // Now that we're fully attached, set colors for Head outfits
+            if (Type != null && Type.name == "Head")
+            {
+                SetColorInital();
+            }
 
             foreach (var item in extensions) { item.Execute(system, this); }
         }
@@ -285,9 +296,29 @@ namespace Bozo.ModularCharacters
             if (!outfitRenderer) return;
             var mat = outfitRenderer.material;
 
+            // For Head outfits, inherit skin color from Body if available
+            if (Type != null && Type.name == "Head" && system != null)
+            {
+                var bodyOutfit = system.GetOutfit("Body");
+                if (bodyOutfit != null)
+                {
+                    // Use the body's skin color (Color_1)
+                    Color bodySkinColor = bodyOutfit.GetColor(1);
+                    mat.SetColor("_Color_1", bodySkinColor);
+                }
+                
+                // Apply remaining default colors for hair, etc.
+                for (int i = 1; i < defaultColors.Length; i++)
+                {
+                    mat.SetColor("_Color_" + (i + 2), defaultColors[i]);
+                }
+                return;
+            }
+
+            // For all other outfits, apply default colors normally
             for (int i = 0; i < defaultColors.Length; i++)
             {
-                mat.SetColor("_Color_" + (1 + i), defaultColors[i]);
+                mat.SetColor("_Color_" + (i + 1), defaultColors[i]);
             }
         }
 

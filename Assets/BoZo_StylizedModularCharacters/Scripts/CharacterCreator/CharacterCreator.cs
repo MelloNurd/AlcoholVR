@@ -69,7 +69,7 @@ namespace Bozo.ModularCharacters
 
         private OutfitType type;
         [SerializeField] Button removeOutfitButton;
-        private List<String> NonRemovableCategories = new List<string>() { "Head", "Body", "Eyes" };
+        private List<String> NonRemovableCategories = new List<string>() { "Head", "Body", "Eyes", "Top", "Bottom", "Overall" };
 
         [Header("Save Options")]
         public TMP_InputField CharacterName;
