@@ -296,21 +296,42 @@ namespace Bozo.ModularCharacters
             if (!outfitRenderer) return;
             var mat = outfitRenderer.material;
 
-            // For Head outfits, inherit skin color from Body if available
+            // For Head outfits, inherit ALL skin colors from Body if available
             if (Type != null && Type.name == "Head" && system != null)
             {
                 var bodyOutfit = system.GetOutfit("Body");
                 if (bodyOutfit != null)
                 {
-                    // Use the body's skin color (Color_1)
-                    Color bodySkinColor = bodyOutfit.GetColor(1);
-                    mat.SetColor("_Color_1", bodySkinColor);
+                    // Get ALL colors from the body outfit (typically 9 colors)
+                    var bodyColors = bodyOutfit.GetColors();
+                    
+                    // Apply all body colors to the head
+                    // This ensures skin tone, undertone, and other body colors are inherited
+                    for (int i = 0; i < bodyColors.Count && i < 9; i++)
+                    {
+                        mat.SetColor("_Color_" + (i + 1), bodyColors[i]);
+                    }
+                    
+                    // Now apply head-specific default colors (like hair) starting from where body colors end
+                    // This allows heads to have custom hair colors while keeping skin colors
+                    // Typically, defaultColors[0] would be used for hair (Color_3 if body uses Color_1 and Color_2)
+                    if (defaultColors != null && defaultColors.Length > 0)
+                    {
+                        // Apply hair color (or other head-specific colors) to Color_3 and beyond
+                        int startIndex = Mathf.Min(bodyColors.Count, 2); // Start after skin tone and undertone
+                        for (int i = 0; i < defaultColors.Length && (startIndex + i) < 9; i++)
+                        {
+                            mat.SetColor("_Color_" + (startIndex + i + 1), defaultColors[i]);
+                        }
+                    }
                 }
-                
-                // Apply remaining default colors for hair, etc.
-                for (int i = 1; i < defaultColors.Length; i++)
+                else
                 {
-                    mat.SetColor("_Color_" + (i + 2), defaultColors[i]);
+                    // No body outfit found - apply default colors normally
+                    for (int i = 0; i < defaultColors.Length; i++)
+                    {
+                        mat.SetColor("_Color_" + (i + 1), defaultColors[i]);
+                    }
                 }
                 return;
             }
