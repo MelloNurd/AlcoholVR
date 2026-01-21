@@ -98,6 +98,9 @@ namespace Bozo.ModularCharacters
         public float fadeInTime = 2f;
         public float holdTime = 2f;
 
+        [Header("Stance")]
+        [SerializeField] Slider stanceSlider;
+
         private void Awake()
         {
             outfits.Clear();
@@ -169,8 +172,23 @@ namespace Bozo.ModularCharacters
 
             UpdateCharacterSaves();
             
+            // Initialize stance slider
+            if (stanceSlider != null)
+            {
+                stanceSlider.onValueChanged.AddListener(OnStanceChanged);
+                stanceSlider.value = character.stance; // Set initial value
+            }
+            
             // Delay hand color update to ensure body outfit is fully loaded
             StartCoroutine(DelayedHandColorUpdate());
+        }
+
+        /// <summary>
+        /// Called when the stance slider value changes
+        /// </summary>
+        private void OnStanceChanged(float value)
+        {
+            character.SetStance(value);
         }
 
         /// <summary>
@@ -866,6 +884,12 @@ namespace Bozo.ModularCharacters
             
             // Update hand colors after loading a character
             UpdateHandColorsFromBody();
+            
+            // Update stance slider to reflect loaded value
+            if (stanceSlider != null)
+            {
+                stanceSlider.value = character.stance;
+            }
         }
 
         public void DeleteCharacter()
