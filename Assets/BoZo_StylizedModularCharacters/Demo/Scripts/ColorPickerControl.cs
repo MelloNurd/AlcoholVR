@@ -85,6 +85,8 @@ namespace Bozo.ModularCharacters
         [SerializeField] HandColorer leftHand;
         [SerializeField] HandColorer rightHand;
 
+        [SerializeField] GameObject bodyPage;
+
         private void Awake()
         {
             CreateHueImage();
@@ -609,6 +611,15 @@ namespace Bozo.ModularCharacters
         {
             public bool maintainColors = false;
             public int copyIndex = 0;
+        }
+
+        public void CheckIfBodyPage(Slider callingSlider)
+        {
+            if(bodyPage.gameObject.activeSelf)
+            {
+                DecalXSlider.value = callingSlider.value;
+                DecalYSlider.value = callingSlider.value;
+            }
         }
     }
 }
