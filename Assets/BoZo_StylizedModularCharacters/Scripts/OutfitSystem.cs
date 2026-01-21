@@ -468,7 +468,6 @@ namespace Bozo.ModularCharacters
                 KnownOutfitTypes.Add(outfit.Type.name, outfit.Type);
             }
 
-
             //check if an outfit is already in that slot and replace it
             ReplaceOutfit(outfit);
 
@@ -483,15 +482,48 @@ namespace Bozo.ModularCharacters
                 UpdateCharacterBounds(outfit);
             }
 
-
-            //Apply the Current Body Morphs to the Outfit
-            ApplyShapesToOufit(outfit);
+            // For Body outfits, read and apply the blend shapes from the prefab FIRST
+            // Then update the system to match the new body
+            if (outfit.Type.name == "Body")
+            {
+                // Store the blend shape values from this body prefab
+                var bodyShapeValues = new Dictionary<string, float>();
+                var mesh = outfit.skinnedRenderer.sharedMesh;
+                
+                for (int i = 0; i < mesh.blendShapeCount; i++)
+                {
+                    var blendName = mesh.GetBlendShapeName(i);
+                    
+                    // Remove Maya namespace if present
+                    var sort = blendName.Split(".");
+                    if (sort.Length > 1) { blendName = sort[1]; }
+                    
+                    // Check if it's a Shape_ blend shape
+                    sort = blendName.Split("_");
+                    if (sort.Length > 1 && sort[0] == "Shape")
+                    {
+                        string shapeName = sort[1];
+                        float weight = outfit.skinnedRenderer.GetBlendShapeWeight(i);
+                        bodyShapeValues[shapeName] = weight;
+                    }
+                }
+                
+                // Apply the stored blend shape values to ALL outfits
+                foreach (var shapePair in bodyShapeValues)
+                {
+                    SetShape(shapePair.Key, shapePair.Value);
+                }
+                
+                InitBodyShapes();
+            }
+            else
+            {
+                // For non-Body outfits, apply the Current Body Morphs to the Outfit
+                ApplyShapesToOufit(outfit);
+            }
 
             //If Head get its Morphs
             if (outfit.Type.name == "Head") { InitFaceShapes(); }
-
-            //If Body get its Morphs
-            if (outfit.Type.name == "Body") { InitBodyShapes(); }
 
             AddTags(outfit.tags);
             ApplyTags();

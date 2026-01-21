@@ -142,10 +142,10 @@ namespace Bozo.ModularCharacters
             noSavePrompt = popupPrompts.transform.Find("NoSavePrompt").GetComponent<TextMeshProUGUI>();
             noDeletePrompt = popupPrompts.transform.Find("NoDeletePrompt").GetComponent<TextMeshProUGUI>();
             addCharacterPrompt = popupPrompts.transform.Find("AddCharacterPrompt").GetComponent<TextMeshProUGUI>();
-            FadeTextInAndOut(savedPrompt, 0f, 0f);
-            FadeTextInAndOut(noSavePrompt, 0f, 0f);
-            FadeTextInAndOut(noDeletePrompt, 0f, 0f);
-            FadeTextInAndOut(addCharacterPrompt, 0f, 0f);
+            FadeTextInAndOut(savedPrompt, 0.01f, 0.01f);
+            FadeTextInAndOut(noSavePrompt, 0.01f, 0.01f);
+            FadeTextInAndOut(noDeletePrompt, 0.01f, 0.01f);
+            FadeTextInAndOut(addCharacterPrompt, 0.01f, 0.01f);
         }
 
         private void OnEnable()
@@ -364,18 +364,78 @@ namespace Bozo.ModularCharacters
             // Check if user is switching from overall to top/bottom
             CheckAndHandleOverallReplacement(outfit);
             
+            // SPECIAL CASE: For Body outfits, just update blend shapes instead of replacing
+            if (outfit.Type != null && outfit.Type.name == "Body")
+            {
+                var currentBody = character.GetOutfit("Body");
+                if (currentBody != null)
+                {
+                    // Get the blend shape values from the selected body prefab
+                    var prefabBodyShapes = CaptureBodyShapeValues(outfit);
+                    
+                    // Apply those blend shapes to the current body
+                    foreach (var shapePair in prefabBodyShapes)
+                    {
+                        character.SetShape(shapePair.Key, shapePair.Value);
+                        Debug.Log($"Updated body shape: {shapePair.Key} = {shapePair.Value}");
+                    }
+                    
+                    // Update the UI sliders to reflect the new shape
+                    GetBodyBlends();
+                    
+                    // Don't instantiate a new body - we're done!
+                    return;
+                }
+            }
+            
+            // For all other outfits (or if no body exists), instantiate normally
             var inst = Instantiate(outfit, character.transform);
+            
             SetColorPickerObject(inst);
             SwitchTextureCatagory(outfit.TextureCatagory);
             type = outfit.Type;
-
-           // var type = (OutfitType)Enum.Parse(typeof(OutfitType), catagory);
         }
 
         /// <summary>
-        /// Handles the case where user selects a top or bottom after wearing an overall outfit.
-        /// Automatically equips a matching piece for the other slot to prevent nakedness.
+        /// Captures blend shape values from a body outfit PREFAB (before instantiation)
         /// </summary>
+        private Dictionary<string, float> CaptureBodyShapeValues(Outfit outfitPrefab)
+        {
+            var bodyShapeValues = new Dictionary<string, float>();
+            
+            // Get the SkinnedMeshRenderer from the prefab
+            var prefabRenderer = outfitPrefab.GetComponentInChildren<SkinnedMeshRenderer>();
+            if (prefabRenderer == null || prefabRenderer.sharedMesh == null)
+            {
+                Debug.LogWarning($"Could not find SkinnedMeshRenderer on body prefab: {outfitPrefab.name}");
+                return bodyShapeValues;
+            }
+            
+            var mesh = prefabRenderer.sharedMesh;
+            
+            for (int i = 0; i < mesh.blendShapeCount; i++)
+            {
+                var blendName = mesh.GetBlendShapeName(i);
+                
+                // Remove Maya namespace if present
+                var sort = blendName.Split(".");
+                if (sort.Length > 1) { blendName = sort[1]; }
+                
+                // Check if it's a Shape_ blend shape
+                sort = blendName.Split("_");
+                if (sort.Length > 1 && sort[0] == "Shape")
+                {
+                    string shapeName = sort[1];
+                    float weight = prefabRenderer.GetBlendShapeWeight(i);
+                    
+                    // Store ALL blend shape values, including zeros
+                    bodyShapeValues[shapeName] = weight;
+                }
+            }
+            
+            return bodyShapeValues;
+        }
+
         private void CheckAndHandleOverallReplacement(Outfit newOutfit)
         {
             if (newOutfit == null || newOutfit.Type == null) return;
