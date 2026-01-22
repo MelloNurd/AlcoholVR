@@ -291,7 +291,6 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
 
             // Delegate Subscription
             InputField.onValueChanged.AddListener(DoTextUpdated);
-            InputField.onSelect.AddListener(OnInputFieldSelected);
         }
 
         //protected override void RegisterHandlers()
@@ -316,25 +315,6 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         private void LateUpdate()
         {
-            // Sync m_CaretPosition with actual InputField position
-            if (gameObject.activeInHierarchy)
-            {
-                // Keep positions in sync
-                if (InputField.isFocused)
-                {
-                    m_CaretPosition = InputField.caretPosition;
-                }
-                else
-                {
-                    // Re-activate and restore position
-                    int savedCaretPos = Mathf.Clamp(m_CaretPosition, 0, InputField.text.Length);
-                    InputField.ActivateInputField();
-                    InputField.caretPosition = savedCaretPos;
-                    InputField.selectionAnchorPosition = savedCaretPos;
-                    InputField.selectionFocusPosition = savedCaretPos;
-                }
-            }
-
             // Axis Slider
             if (SliderEnabled)
             {
@@ -349,8 +329,7 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         private void UpdateCaretPosition(int newPos)
         {
             InputField.caretPosition = newPos;
-            InputField.selectionAnchorPosition = newPos;
-            InputField.selectionFocusPosition = newPos;
+            // Force the input field to update its visual display, including the caret
             InputField.ForceLabelUpdate();
         }
 
@@ -358,14 +337,8 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// Called whenever the keyboard is disabled or deactivated.
         /// </summary>
         protected void OnDisable()
-        {            
+        {
             m_LastKeyboardLayout = LayoutType.Alpha;
-            
-            // Unsubscribe from events
-            if (InputField != null)
-            {
-                InputField.onSelect.RemoveListener(OnInputFieldSelected);
-            }
             //Clear();
         }
 
@@ -442,8 +415,13 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
 
             OnPlacement(this, EventArgs.Empty);
 
-            // todo: if the app is built for xaml, our prefab and the system keyboard may be displayed.
+            // Force the InputField to refresh and display current text
+            InputField.ForceLabelUpdate();
             InputField.ActivateInputField();
+            
+            // Move caret to the end of existing text
+            InputField.MoveTextEnd(false);
+            m_CaretPosition = InputField.text.Length;
 
             //SetMicrophoneDefault();
         }
@@ -555,32 +533,32 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             switch (keyboardType)
             {
                 case LayoutType.URL:
-                {
-                    ShowAlphaKeyboard();
-                    TryToShowURLSubkeys();
-                    break;
-                }
+                    {
+                        ShowAlphaKeyboard();
+                        TryToShowURLSubkeys();
+                        break;
+                    }
 
                 case LayoutType.Email:
-                {
-                    ShowAlphaKeyboard();
-                    TryToShowEmailSubkeys();
-                    break;
-                }
+                    {
+                        ShowAlphaKeyboard();
+                        TryToShowEmailSubkeys();
+                        break;
+                    }
 
                 case LayoutType.Symbol:
-                {
-                    ShowSymbolKeyboard();
-                    break;
-                }
+                    {
+                        ShowSymbolKeyboard();
+                        break;
+                    }
 
                 case LayoutType.Alpha:
                 default:
-                {
-                    ShowAlphaKeyboard();
-                    TryToShowAlphaSubkeys();
-                    break;
-                }
+                    {
+                        ShowAlphaKeyboard();
+                        TryToShowAlphaSubkeys();
+                        break;
+                    }
             }
         }
 
@@ -657,9 +635,7 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
                 Shift(false);
             }
 
-            // Get current caret position and ensure it's within valid range
             m_CaretPosition = InputField.caretPosition;
-            m_CaretPosition = Mathf.Clamp(m_CaretPosition, 0, InputField.text.Length);
 
             InputField.text = InputField.text.Insert(m_CaretPosition, value);
             m_CaretPosition += value.Length;
@@ -678,46 +654,46 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             switch (functionKey.ButtonFunction)
             {
                 case KeyboardKeyFunc.Function.Enter:
-                {
-                    Enter();
-                    break;
-                }
+                    {
+                        Enter();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Tab:
-                {
-                    Tab();
-                    break;
-                }
+                    {
+                        Tab();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.ABC:
-                {
-                    ActivateSpecificKeyboard(m_LastKeyboardLayout);
-                    break;
-                }
+                    {
+                        ActivateSpecificKeyboard(m_LastKeyboardLayout);
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Symbol:
-                {
-                    ActivateSpecificKeyboard(LayoutType.Symbol);
-                    break;
-                }
+                    {
+                        ActivateSpecificKeyboard(LayoutType.Symbol);
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Previous:
-                {
-                    MoveCaretLeft();
-                    break;
-                }
+                    {
+                        MoveCaretLeft();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Next:
-                {
-                    MoveCaretRight();
-                    break;
-                }
+                    {
+                        MoveCaretRight();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Close:
-                {
-                    Close();
-                    break;
-                }
+                    {
+                        Close();
+                        break;
+                    }
 
                 //case KeyboardKeyFunc.Function.Dictate:
                 //{
@@ -735,34 +711,34 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
                 //}
 
                 case KeyboardKeyFunc.Function.Shift:
-                {
-                    Shift(!m_IsShifted);
-                    break;
-                }
+                    {
+                        Shift(!m_IsShifted);
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.CapsLock:
-                {
-                    CapsLock(!m_IsCapslocked);
-                    break;
-                }
+                    {
+                        CapsLock(!m_IsCapslocked);
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Space:
-                {
-                    Space();
-                    break;
-                }
+                    {
+                        Space();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.Backspace:
-                {
-                    Backspace();
-                    break;
-                }
+                    {
+                        Backspace();
+                        break;
+                    }
 
                 case KeyboardKeyFunc.Function.UNDEFINED:
-                {
-                    Debug.LogErrorFormat("The {0} key on this keyboard hasn't been assigned a function.", functionKey.name);
-                    break;
-                }
+                    {
+                        Debug.LogErrorFormat("The {0} key on this keyboard hasn't been assigned a function.", functionKey.name);
+                        break;
+                    }
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -938,7 +914,7 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             //    dictationSystem.StopRecording();
             //}
             //SetMicrophoneDefault();
-            OnClosed(this, EventArgs.Empty);            
+            OnClosed(this, EventArgs.Empty);
             gameObject.SetActive(false);
         }
 
@@ -1106,35 +1082,6 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
             {
                 Close();
             }
-        }
-
-        /// <summary>
-        /// Called when the input field is selected. Moves caret to end of text.
-        /// </summary>
-        /// <param name="text">Current text in the input field.</param>
-        private void OnInputFieldSelected(string text)
-        {
-            m_CaretPosition = InputField.text.Length;
-            InputField.caretPosition = m_CaretPosition;
-            InputField.selectionAnchorPosition = m_CaretPosition;
-            InputField.selectionFocusPosition = m_CaretPosition;
-            // Use a coroutine to defer caret positioning until after InputField's default selection
-            // StartCoroutine(MoveCaretToEndNextFrame());
-        }
-
-        /// <summary>
-        /// Coroutine to move caret to end after InputField completes its default selection behavior.
-        /// </summary>
-        private System.Collections.IEnumerator MoveCaretToEndNextFrame()
-        {
-            // Wait one frame for InputField's selection to complete
-            yield return null;
-            
-            // Move caret to end of text
-            m_CaretPosition = InputField.text.Length;
-            InputField.caretPosition = m_CaretPosition;
-            InputField.selectionAnchorPosition = m_CaretPosition;
-            InputField.selectionFocusPosition = m_CaretPosition;
         }
     }
 }
