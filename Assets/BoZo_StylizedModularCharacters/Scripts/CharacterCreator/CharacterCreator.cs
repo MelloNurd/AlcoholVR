@@ -690,7 +690,6 @@ namespace Bozo.ModularCharacters
         {
             Destroy(this.character.gameObject);
             this.character = character;
-            Spinner.SetCharacter(character.transform);
         }
 
         public void GetCurrentCatagory()
