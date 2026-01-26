@@ -34,7 +34,8 @@ namespace Bozo.ModularCharacters
                return;
             }
 
-            if(outfit.Type.name == type) 
+            // Check both the outfit type AND the showCharacterCreator flag
+            if(outfit.Type.name == type && outfit.showCharacterCreator) 
             {
                 gameObject.SetActive(true);
             }
