@@ -10,7 +10,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class House : MonoBehaviour
 {
-    [SerializeField] private SequencedNPC _dadNPC;
+    //[SerializeField] private SequencedNPC _dadNPC;
     private bool hasDadStarted = false;
 
     [SerializeField] private Transform _fridgeTransform;
@@ -43,7 +43,7 @@ public class House : MonoBehaviour
         obj1 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab snacks from the fridge.", 1, _fridgeTransform));
         obj2 = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Grab beer from the fridge.", 1, _fridgeTransform));
 
-        _dadNPC.dialogueSystem.onStart.AddListener(OnDadTalkedTo);
+        //_dadNPC.dialogueSystem.onStart.AddListener(OnDadTalkedTo);
     }
 
     private void Update()
@@ -72,7 +72,7 @@ public class House : MonoBehaviour
         door.transform.localPosition = new Vector3(-.459f, .1377f, -.489f);
         door.transform.localRotation = Quaternion.Euler(0, 90, 0);
 
-        _dadNPC.StartNextSequence();
+        //_dadNPC.StartNextSequence();
 
         await UniTask.Delay(1000);
         door.transform.position = originalDoorPosition;
