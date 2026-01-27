@@ -24,10 +24,7 @@ public class AnimeationEvents : MonoBehaviour
         slamIndex = GetRageSlamSounds();
         if (slamIndex == -1) return;
 
-        if (SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position) == null)
-        {
-            Debug.Log("null clip on this", gameObject);
-        }
+        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
     }
 
     public void PlaySecondSlam()
@@ -39,17 +36,17 @@ public class AnimeationEvents : MonoBehaviour
             return;
         }
 
-        if (SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex + 1], transform.position) == null)
-        {
-            Debug.Log("null clip on this", gameObject);
-        }
+        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex + 1], transform.position);
     }
 
     public void PlayFootstepSound()
     {
-        if (SoundManager.PlaySoundAtPoint(_footstepSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f)) == null)
+        if (_footstepSound == null)
         {
-            Debug.Log("null clip on this", gameObject);
+            Debug.LogError("[AnimeationEvents] Footstep sound is not assigned.", gameObject);
+            return;
         }
+
+        SoundManager.PlaySoundAtPoint(_footstepSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
     }
 }

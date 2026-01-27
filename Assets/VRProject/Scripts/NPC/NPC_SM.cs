@@ -45,11 +45,9 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
 
     [HideInInspector] public LookAt lookAt;
     [HideInInspector] public GameObject lookAtPoint;
-    [HideInInspector] public GameObject headObj;
 
     protected void Awake()
     {
-        headObj = transform.Find("Body/BSMC_CharacterBase/Head_BasicHead").gameObject;
         bodyObj = transform.Find("Body").gameObject;
         animator = GetComponentInChildren<Animator>();
         agent = GetComponentInChildren<NavMeshAgent>();
