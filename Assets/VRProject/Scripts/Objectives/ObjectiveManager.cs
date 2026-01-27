@@ -36,7 +36,7 @@ public class ObjectiveManager : MonoBehaviour
         SceneManager.sceneLoaded += (scene, mode) =>
         {
             // Clear all objectives when a new scene is loaded
-            //Debug.Log($"Scene loaded from ObjectiveManager script");
+            Debug.Log($"Scene loaded from ObjectiveManager script");
             RemoveAllObjectives();
         };
     }
@@ -121,16 +121,16 @@ public class ObjectiveManager : MonoBehaviour
         objectives.Add((objective, lineRenderer));
         if (Phone.Instance != null)
         {
-            //Debug.Log("Loading from objective addition");
+            Debug.Log("Loading from objective addition");
             Phone.Instance.LoadObjectives();
         }
 
-        //Debug.Log("Added new objective: " + objective.text);
+        Debug.Log("Added new objective: " + objective.text);
     }
 
     public void RemoveAllObjectives()
     {
-        //Debug.Log("Removing all objectives");
+        Debug.Log("Removing all objectives");
         for (int i = objectives.Count - 1; i >= 0; i--)
         {
             // Destroy the LineRenderer GameObject
@@ -177,7 +177,7 @@ public class ObjectiveManager : MonoBehaviour
 
         if (Phone.Instance != null)
         {
-            //Debug.Log("Loading from objective addition");
+            Debug.Log("Loading from objective addition");
             Phone.Instance.LoadObjectives();
         }
     }

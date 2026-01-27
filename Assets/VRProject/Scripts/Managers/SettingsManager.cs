@@ -48,20 +48,31 @@ public class SettingsManager : MonoBehaviour
         SetSFXVolume(SFXVolume);
         SetMasterVolume(MasterVolume);
     }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 
     public void SetMasterVolume(float volume)
     {
         MasterVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MasterVolume);
         MasterAudioMixerGroup.audioMixer.SetFloat("MasterVolume", decibelVolume);
-        //Debug.Log($"Master Volume set to {decibelVolume} dB ({MasterVolume}%)");
+        Debug.Log($"Master Volume set to {decibelVolume} dB ({MasterVolume}%)");
     }
     public void SetMusicVolume(float volume)
     {
         MusicVolume = volume;
         float decibelVolume = VolumePercentToDecibel(MusicVolume);
         MusicMixerGroup.audioMixer.SetFloat("MusicVolume", decibelVolume);
-        //Debug.Log($"Music Volume set to {decibelVolume} dB ({MusicVolume}%)");
+        Debug.Log($"Music Volume set to {decibelVolume} dB ({MusicVolume}%)");
     }
 
     public void SetSFXVolume(float volume)
@@ -69,14 +80,14 @@ public class SettingsManager : MonoBehaviour
         SFXVolume = volume;
         float decibelVolume = VolumePercentToDecibel(SFXVolume);
         SFXMixerGroup.audioMixer.SetFloat("SFXVolume", decibelVolume);
-        //Debug.Log($"SFX Volume set to {decibelVolume} dB ({SFXVolume}%)");
+        Debug.Log($"SFX Volume set to {decibelVolume} dB ({SFXVolume}%)");
     }
 
     float VolumePercentToDecibel(float volumePercent)
     {
         if (volumePercent <= 0f)
             return -80f;
-        //Debug.Log($"Converting volume percent {volumePercent} to decibel.");
+        Debug.Log($"Converting volume percent {volumePercent} to decibel.");
         return Mathf.Log10(volumePercent/100) * 20f;
     }
 
