@@ -50,6 +50,7 @@ GameObject:
   - component: {fileID: 5757267730882363373}
   - component: {fileID: 5895348871960852450}
   - component: {fileID: 709213056982372957}
+  - component: {fileID: 5770100087747515646}
   m_Layer: 18
   m_Name: InteractableNPC
   m_TagString: Untagged
@@ -498,30 +499,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
   updateMethod: 0
   skinnedMeshRenderer: {fileID: 0}
-  blendShapes:
-  - phoneme: A
-    index: 48
-    maxWeight: 1
-  - phoneme: E
-    index: 50
-    maxWeight: 1
-  - phoneme: I
-    index: 49
-    maxWeight: 1
-  - phoneme: O
-    index: 47
-    maxWeight: 1
-  - phoneme: U
-    index: 51
-    maxWeight: 1
-  - phoneme: '-'
-    index: -1
-    maxWeight: 1
+  blendShapes: []
   maxBlendShapeValue: 100
   minVolume: -2.5
   maxVolume: -1.5
   smoothness: 0.05
   usePhonemeBlend: 0
+--- !u!114 &5770100087747515646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688126841686072987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d879bfb90438a7a41be0dd3a41567675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LipSyncAutoset
 --- !u!1 &3987021468932513059
 GameObject:
   m_ObjectHideFlags: 0

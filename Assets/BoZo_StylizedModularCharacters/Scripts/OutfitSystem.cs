@@ -578,7 +578,7 @@ namespace Bozo.ModularCharacters
 
         public void AddTags(string[] tags) 
         {
-            print("adding tags");
+            //print("adding tags");
             this.tags.AddRange(tags);
         }
 
