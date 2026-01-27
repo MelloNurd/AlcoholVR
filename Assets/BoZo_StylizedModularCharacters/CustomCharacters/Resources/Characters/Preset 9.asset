@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3877dcf418d2a54fbcdcc9f282d8496, type: 3}
   m_Name: Preset 9
   m_EditorClassIdentifier: Assembly-CSharp::Bozo.ModularCharacters.CharacterObject
-  icon: {fileID: 2800000, guid: 412e2ad431854bd4e9dfc6a0fd7978f9, type: 3}
+  icon: {fileID: 2800000, guid: 833c93bcfb6382944baf4ec0eb5e9f94, type: 3}
   data:
     characterName: Preset 9
     bodyIDs:
@@ -25,9 +25,10 @@ MonoBehaviour:
     - 0
     faceIDs:
     - BodyType
+    - Weight
     - Squareness
     - LashLength
-    - BrowThickness
+    - BrowsThickness
     - NoseBridgeCurve
     - NoseWidth
     - NoseTiltDown
@@ -38,39 +39,68 @@ MonoBehaviour:
     - EyesOuterCornersHigh
     - EyesSquare
     - EarsElf
+    - EarAngle
     faceShapes:
     - 100
-    - 100
-    - 100
     - 0
     - 0
     - 0
     - 0
     - 0
-    - 44.83919
     - 0
     - 0
     - 0
     - 0
-    - 83.32697
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
+    - 0
     bodyModsKeys:
     - root
-    - head
+    - spine_04
     - clavicle_l
+    - lowerarm_twist_02_l
+    - shoulder_twist_l
+    - upperarm_twist_02_l
+    - head
     - eyeRoot_l
+    - calf_twist_01_l
+    - thigh_twist_01_l
     bodyMods:
     - scaleValue: 1.0686086
-      scale: {x: 0, y: 0, z: 0}
+      scale: {x: 0.85, y: 0.85, z: 0.85}
       posValue: 1
       position: {x: 0, y: 0, z: 0}
       rotation: 0
-    - scaleValue: 1
-      scale: {x: 0, y: 0, z: 0}
-      posValue: 1
+    - scaleValue: 1.0020489
+      scale: {x: 1, y: 1, z: 1}
+      posValue: 0
       position: {x: 0, y: 0, z: 0}
       rotation: 0
     - scaleValue: 1
-      scale: {x: 0, y: 0, z: 0}
+      scale: {x: 0.9, y: 0.9, z: 0.9}
+      posValue: 1
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
+    - scaleValue: 0.69464225
+      scale: {x: 1, y: 1, z: 1}
+      posValue: 0
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
+    - scaleValue: 0.5
+      scale: {x: 1, y: 1, z: 1}
+      posValue: 0
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
+    - scaleValue: 1
+      scale: {x: 1, y: 0.5, z: 0.8660912}
+      posValue: 0
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
+    - scaleValue: 1
+      scale: {x: 0.5, y: 0.5, z: 0.5}
       posValue: 1
       position: {x: 0, y: 0, z: 0}
       rotation: 0
@@ -79,13 +109,27 @@ MonoBehaviour:
       posValue: 1
       position: {x: 0, y: 0, z: 0}
       rotation: 0
+    - scaleValue: 0.5
+      scale: {x: 1, y: 1, z: 1}
+      posValue: 0
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
+    - scaleValue: 0.68754846
+      scale: {x: 1, y: 1, z: 1}
+      posValue: 0
+      position: {x: 0, y: 0, z: 0}
+      rotation: 0
     outfitDatas:
     - outfit: HeadAcc/BSMC_Head_Horns
       colors:
-      - {r: 0.7610062, g: 0.1890547, b: 0.1890547, a: 1}
-      - {r: 1, g: 0.35686263, b: 0.35686263, a: 1}
+      - {r: 0.7610062, g: 0.18905467, b: 0.18905467, a: 1}
+      - {r: 1, g: 0.3568626, b: 0.3568626, a: 1}
       - {r: 0, g: 0, b: 0, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
@@ -99,8 +143,12 @@ MonoBehaviour:
       colors:
       - {r: 0.7602825, g: 0.7602825, b: 0.7602825, a: 0}
       - {r: 0.5237488, g: 0, b: 0, a: 1}
-      - {r: 0.14509788, g: 0.14509788, b: 0.14509788, a: 0}
+      - {r: 0.14509785, g: 0.14509785, b: 0.14509785, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
@@ -114,8 +162,12 @@ MonoBehaviour:
       colors:
       - {r: 0.91525275, g: 0.91525275, b: 0.91525275, a: 0}
       - {r: 0.5237488, g: 0, b: 0, a: 1}
-      - {r: 0.14509785, g: 0.14509785, b: 0.14509785, a: 0}
+      - {r: 0.14509782, g: 0.14509782, b: 0.14509782, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
@@ -132,6 +184,10 @@ MonoBehaviour:
       - {r: 0, g: 0, b: 0, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
       - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
       decalScale: {x: 0, y: 0, z: 0, w: 0}
@@ -147,6 +203,10 @@ MonoBehaviour:
       - {r: 0.72955966, g: 0.72955966, b: 0.72955966, a: 0}
       - {r: 1, g: 0, b: 0.9240179, a: 0}
       - {r: 0.9695323, g: 1, b: 0, a: 0}
+      - {r: 0, g: 0.8895352, b: 1, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
       decalScale: {x: 0, y: 0, z: 0, w: 0}
@@ -157,11 +217,15 @@ MonoBehaviour:
       swatch: 0
     - outfit: Feet/BSMC_Feet_ShowerSandal
       colors:
-      - {r: 0.20125774, g: 0.20125774, b: 0.20125774, a: 1}
+      - {r: 0.2012577, g: 0.2012577, b: 0.2012577, a: 1}
       - {r: 0.44679826, g: 0.02455796, b: 0.02455796, a: 1}
-      - {r: 0.22077832, g: 0.24848583, b: 0.38364765, a: 0}
+      - {r: 0.22077829, g: 0.2484858, b: 0.38364762, a: 0}
       - {r: 1, g: 0, b: 0.9240179, a: 0}
       - {r: 0.9695323, g: 1, b: 0, a: 0}
+      - {r: 0, g: 0.8895352, b: 1, a: 0}
+      - {r: 1, g: 1, b: 1, a: 0}
+      - {r: 0.5, g: 0.5, b: 0.5, a: 0}
+      - {r: 0, g: 0, b: 0, a: 0}
       decal: 
       decalColors: []
       decalScale: {x: 0, y: 0, z: 0, w: 0}
@@ -170,36 +234,37 @@ MonoBehaviour:
       patternScale: {x: 0, y: 0, z: 0, w: 0}
       color: {r: 1, g: 1, b: 1, a: 1}
       swatch: 0
-    - outfit: Head/Head_BasicHead
+    - outfit: Head/MalePhoeneticHead
       colors:
-      - {r: 0.71134454, g: 0.30504608, b: 0.29847655, a: 1}
-      - {r: 0.1882351, g: 0.027450977, b: 0.037780296, a: 1}
+      - {r: 0.71134454, g: 0.30504566, b: 0.29847613, a: 1}
+      - {r: 0.18823504, g: 0.027450977, b: 0.037780296, a: 1}
       - {r: 0.6787193, g: 0.6787193, b: 0.6787193, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
-      - {r: 0.2790589, g: 0.2790589, b: 0.2790589, a: 1}
-      - {r: 0.25459006, g: 0.25459006, b: 0.25459006, a: 1}
-      - {r: 0, g: 0, b: 0, a: 1}
+      - {r: 0.27905884, g: 0.27905884, b: 0.27905884, a: 1}
+      - {r: 0.25459, g: 0.25459, b: 0.25459, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       decal: 
       decalColors: []
       decalScale: {x: 0, y: 0, z: 0, w: 0}
-      pattern: 
-      patternColors: []
-      patternScale: {x: 0, y: 0, z: 0, w: 0}
+      pattern: Pattern/Underwear_Neutral_D
+      patternColors:
+      - {r: 0.8742138, g: 0.8742138, b: 0.8742138, a: 0}
+      - {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 0}
+      - {r: 0.4496854, g: 0.7604513, b: 1, a: 0}
+      patternScale: {x: 1, y: 1, z: 0, w: 0}
       color: {r: 1, g: 1, b: 1, a: 1}
       swatch: 0
     - outfit: Body/Body_BasicBody
       colors:
-      - {r: 0.71134454, g: 0.30504608, b: 0.29847655, a: 1}
-      - {r: 0.1882351, g: 0.027450977, b: 0.037780296, a: 1}
+      - {r: 0.71134454, g: 0.30504566, b: 0.29847613, a: 1}
+      - {r: 0.18823507, g: 0.027450977, b: 0.037780296, a: 1}
       - {r: 0.6787193, g: 0.6787193, b: 0.6787193, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
-      - {r: 0.2790589, g: 0.2790589, b: 0.2790589, a: 1}
-      - {r: 0.25459006, g: 0.25459006, b: 0.25459006, a: 1}
-      - {r: 0, g: 0, b: 0, a: 1}
+      - {r: 0.27905887, g: 0.27905887, b: 0.27905887, a: 1}
+      - {r: 0.25459003, g: 0.25459003, b: 0.25459003, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       - {r: 0, g: 0, b: 0, a: 1}
       decal: 
@@ -212,26 +277,26 @@ MonoBehaviour:
       swatch: 0
     - outfit: Eyes/Eyes_BasicEyes
       colors:
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
-      - {r: 0.14465386, g: 0.14465386, b: 0.14465386, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
+      - {r: 0.14465383, g: 0.14465383, b: 0.14465383, a: 1}
       decal: Decal/Decal_BasicPupil
       decalColors:
       - {r: 0, g: 0, b: 0, a: 1}
-      - {r: 0.2578616, g: 0, b: 0.0153699955, a: 1}
-      - {r: 8, g: 0.025978088, b: 0, a: 1}
+      - {r: 0.25786158, g: 0, b: 0.0153699955, a: 1}
+      - {r: 8.000001, g: 0.025978088, b: 0, a: 1}
       decalScale: {x: 1, y: 1, z: 0, w: 0}
       pattern: Pattern/Pattern_BasicIris
       patternColors:
       - {r: 0, g: 0, b: 0, a: 1}
-      - {r: 0.2578616, g: 0, b: 0.0153699955, a: 1}
-      - {r: 8, g: 0.025978088, b: 0, a: 1}
+      - {r: 0.25786158, g: 0, b: 0.0153699955, a: 1}
+      - {r: 8.000001, g: 0.025978088, b: 0, a: 1}
       patternScale: {x: 1, y: 1, z: 0, w: 0}
       color: {r: 1, g: 1, b: 1, a: 1}
       swatch: 0
