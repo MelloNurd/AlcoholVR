@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 5026701075398645485}
   - component: {fileID: 2182468915373110978}
   - component: {fileID: 314773574649208893}
+  - component: {fileID: 6957704900012122598}
   m_Layer: 18
   m_Name: NPC
   m_TagString: Untagged
@@ -52,8 +53,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64f0e2182cc8c043b9557f0be49b116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
+  isDrunk: 0
+  canInteract: 1
+  startSequencesOnAwake: 1
   loopSequences: 0
   sequences: []
+  _currentSequenceIndex: 0
+  _currentState: 0
   references:
     version: 2
     RefIds: []
@@ -346,31 +352,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: uLipSync.Runtime::uLipSync.uLipSyncBlendShape
   updateMethod: 0
-  skinnedMeshRenderer: {fileID: 0}
-  blendShapes:
-  - phoneme: A
-    index: 48
-    maxWeight: 1
-  - phoneme: E
-    index: 50
-    maxWeight: 1
-  - phoneme: I
-    index: 49
-    maxWeight: 1
-  - phoneme: O
-    index: 47
-    maxWeight: 1
-  - phoneme: U
-    index: 51
-    maxWeight: 1
-  - phoneme: '-'
-    index: -1
-    maxWeight: 1
+  skinnedMeshRenderer: {fileID: 1418848947826893045}
+  blendShapes: []
   maxBlendShapeValue: 100
   minVolume: -2.5
   maxVolume: -1.5
   smoothness: 0.05
   usePhonemeBlend: 0
+--- !u!114 &6957704900012122598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135296393931578030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d879bfb90438a7a41be0dd3a41567675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &457341326212179031
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +848,77 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &3233969482232821780
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6575709115957746894}
+    m_Modifications:
+    - target: {fileID: 4562601095814732001, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420848818186547540, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+      propertyPath: m_Name
+      value: FemalePhoeneticHead
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+--- !u!137 &1418848947826893045 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4562601095814732001, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+  m_PrefabInstance: {fileID: 3233969482232821780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8940803740316041866 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5833643374559984286, guid: 06321837ed320ff46be5c7804e30714c, type: 3}
+  m_PrefabInstance: {fileID: 3233969482232821780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3832149645157277048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -925,8 +996,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2588826468282260400, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7957609120742801846, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 8940803740316041866}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       insertIndex: -1
