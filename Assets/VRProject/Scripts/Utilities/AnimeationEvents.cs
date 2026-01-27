@@ -3,10 +3,9 @@ using UnityEngine;
 public class AnimeationEvents : MonoBehaviour
 {
     [SerializeField] private AudioClip[] rageSlamSounds;
+    [SerializeField] private AudioClip _footstepSound;
 
-    [SerializeField] private AudioSource audioSource;
-
-    int audioIndex = -1;
+    int slamIndex = -1;
 
     private int GetRageSlamSounds()
     {
@@ -22,21 +21,35 @@ public class AnimeationEvents : MonoBehaviour
 
     public void PlayFirstSlam()
     {
-        audioIndex = GetRageSlamSounds();
-        if (audioIndex == -1) return;
+        slamIndex = GetRageSlamSounds();
+        if (slamIndex == -1) return;
 
-        audioSource.PlayOneShot(rageSlamSounds[audioIndex]);
+        if (SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position) == null)
+        {
+            Debug.Log("null clip on this", gameObject);
+        }
     }
 
     public void PlaySecondSlam()
     {
-        if (audioIndex == -1) return;
-        if (audioIndex + 1 >= rageSlamSounds.Length)
+        if (slamIndex == -1) return;
+        if (slamIndex + 1 >= rageSlamSounds.Length)
         {
-            audioSource.PlayOneShot(rageSlamSounds[audioIndex]);
+            SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
             return;
         }
 
-        audioSource.PlayOneShot(rageSlamSounds[audioIndex + 1]);
+        if (SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex + 1], transform.position) == null)
+        {
+            Debug.Log("null clip on this", gameObject);
+        }
+    }
+
+    public void PlayFootstepSound()
+    {
+        if (SoundManager.PlaySoundAtPoint(_footstepSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f)) == null)
+        {
+            Debug.Log("null clip on this", gameObject);
+        }
     }
 }

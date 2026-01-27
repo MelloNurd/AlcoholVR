@@ -91,6 +91,8 @@ public class Sequence
 [SelectionBase]
 public class SequencedNPC : MonoBehaviour
 {
+    public bool isDrunk = false;
+
     public List<Sequence> sequences = new List<Sequence>();
     public Sequence currentSequence;
     public int currentSequenceIndex => sequences.IndexOf(currentSequence);
@@ -435,17 +437,23 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
+        animator.SetBool("isDrunk", isDrunk);
+
         animator.CrossFade(clip.name, 0.2f);
     }
 
     public void PlayIdleAnimation()
     {
+        animator.SetBool("isDrunk", isDrunk);
+
         animator.SetTrigger("Start Idle");
         animator.SetBool("isWalk", false);
     }
 
     public void PlayWalkAnimation()
     {
+        animator.SetBool("isDrunk", isDrunk);
+
         animator.SetTrigger("Start Idle");
         animator.SetBool("isWalk", true);
     }

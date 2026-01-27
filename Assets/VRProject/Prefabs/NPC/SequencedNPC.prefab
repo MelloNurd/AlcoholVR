@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde8525bf698cfc4484f27b27e5a5d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDrunk: 0
   sequences:
   - type: 0
     animation: {fileID: 7400000, guid: 4a64170d537186c4487d4f127380542c, type: 2}
@@ -2471,6 +2472,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 5642483647202122846}
+    - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7478757533738493735}
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
@@ -2482,6 +2486,21 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
   m_PrefabInstance: {fileID: 1552653140719238638}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5642483647202122846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8117995850313901794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d5cf4a3fb9cbe479831fa677bcd96f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimeationEvents
+  rageSlamSounds: []
+  _footstepSound: {fileID: 8300000, guid: 91f3d7b3a511c6947920f8c2264144b9, type: 3}
+  _audioSource: {fileID: 0}
 --- !u!114 &7478757533738493735
 MonoBehaviour:
   m_ObjectHideFlags: 0

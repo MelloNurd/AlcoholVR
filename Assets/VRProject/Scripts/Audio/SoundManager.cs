@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    private static SoundManager Instance { get; set; }
+
     public static int audioSourceCount = 5;
 
     private static List<AudioSource> audioSources = new List<AudioSource>();
@@ -10,6 +13,13 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        Instance = this;
+
         for (int i = 0; i < audioSourceCount; i++)
         {
             GameObject audioSourceObject = new GameObject($"ItemSoundAudioSource_{i}");
@@ -34,9 +44,14 @@ public class SoundManager : MonoBehaviour
 
     public static AudioSource PlaySoundAtPoint(AudioClip audioClip, Vector3 position, float volume = 1f, float pitch = 1f)
     {
-        if (audioSources.Count == 0 || audioClip == null)
+        if (audioSources.Count == 0)
         {
-            Debug.LogError("Unable to play sound: No audio sources available or audio clip is null.");
+            Debug.LogError("Unable to play sound: No audio sources available");
+            return null;
+        }
+        if (audioClip == null)
+        {
+            Debug.LogError("Unable to play sound: Audio clip is null.");
             return null;
         }
 
@@ -48,6 +63,30 @@ public class SoundManager : MonoBehaviour
         audioSource.volume = volume;
 
         audioSource.PlayOneShot(audioClip);
+
+        return audioSource;
+    }
+
+    public static async UniTask<AudioSource> PlaySoundAttached(AudioClip audioClip, Transform parentTransform, float volume = 1f, float pitch = 1f)
+    {
+        if (audioSources.Count == 0 || audioClip == null)
+        {
+            Debug.LogError("Unable to play sound: No audio sources available or audio clip is null.");
+            return null;
+        }
+
+        AudioSource audioSource = GetNextSource();
+
+        audioSource.transform.SetParent(parentTransform);
+        audioSource.transform.localPosition = Vector3.zero;
+
+        audioSource.pitch = pitch;
+        audioSource.volume = volume;
+        audioSource.PlayOneShot(audioClip);
+
+        await UniTask.Delay(audioClip.length.ToMS());
+
+        audioSource.transform.SetParent(Instance.transform);
 
         return audioSource;
     }

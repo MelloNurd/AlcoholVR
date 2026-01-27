@@ -11,9 +11,5 @@ public class Footsteps : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
     }
 
-    public void PlayFootstepSound()
-    {
-        _audioSource.pitch = Random.Range(0.85f, 1.15f);
-        _audioSource.PlayOneShot(_footstepSound);
-    }
+    
 }

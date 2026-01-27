@@ -88,8 +88,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyObj: {fileID: 0}
-  idleAnimation: {fileID: 7400000, guid: 0b74e246e93d26546b6f7218046bdd5e, type: 2}
-  moveAnimation: {fileID: 7400000, guid: 416c23b8ca959b3439d454553e56cb26, type: 2}
+  isDrunk: 0
+  startAnim: {fileID: 0}
   agent: {fileID: 0}
   animator: {fileID: 0}
   usesCheckpoints: 1
@@ -2468,6 +2468,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 2590772145582563718}
+    - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 2780780789636462361}
+    - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4492103767979460583}
     - targetCorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
@@ -2479,6 +2485,40 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7288174367802448652, guid: 828d2ce3c8fb74f498e8bb757fa113a6, type: 3}
   m_PrefabInstance: {fileID: 3721107607664847723}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2590772145582563718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233206590395461735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d5cf4a3fb9cbe479831fa677bcd96f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rageSlamSounds:
+  - {fileID: 8300000, guid: 75a951d10ec89b84ab3c8b137d43cd7f, type: 3}
+  - {fileID: 8300000, guid: d5363f23d3e163842b091f54c3724dbe, type: 3}
+  - {fileID: 8300000, guid: bf8cda5aa36cedc45b23a3f343cab490, type: 3}
+  - {fileID: 8300000, guid: 89b302593c41a1440855812a18b1a811, type: 3}
+  _footstepSound: {fileID: 8300000, guid: 91f3d7b3a511c6947920f8c2264144b9, type: 3}
+  _audioSource: {fileID: 0}
+--- !u!114 &2780780789636462361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233206590395461735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d5cf4a3fb9cbe479831fa677bcd96f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimeationEvents
+  rageSlamSounds: []
+  _footstepSound: {fileID: 0}
+  _audioSource: {fileID: 0}
 --- !u!114 &4492103767979460583
 MonoBehaviour:
   m_ObjectHideFlags: 0
