@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7146001825406240775}
-  - component: {fileID: 801386551172520117}
+  - component: {fileID: 7642824524219776330}
   - component: {fileID: 4065245673288282524}
   - component: {fileID: 5377570526636290678}
   - component: {fileID: 8068467973256523501}
@@ -41,7 +41,7 @@ Transform:
   - {fileID: 2442377635705600269}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &801386551172520117
+--- !u!114 &7642824524219776330
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,19 +50,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 135296393931578030}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e64f0e2182cc8c043b9557f0be49b116, type: 3}
+  m_Script: {fileID: 11500000, guid: c8b43899b27be474fbbf0fef242379c8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPC
+  m_EditorClassIdentifier: Assembly-CSharp::NPC_SM
+  bodyObj: {fileID: 0}
   isDrunk: 0
-  canInteract: 1
-  startSequencesOnAwake: 1
-  loopSequences: 0
-  sequences: []
-  _currentSequenceIndex: 0
-  _currentState: 0
-  references:
-    version: 2
-    RefIds: []
+  startAnim: {fileID: 0}
+  agent: {fileID: 0}
+  animator: {fileID: 0}
+  usesCheckpoints: 1
+  _checkpointSortMode: 0
+  OnCheckpointLeave:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCheckpointArrive:
+    m_PersistentCalls:
+      m_Calls: []
+  actionsLeft: 0
+  _alwaysUnique: 1
+  _currentStateName: 
+  lookAt: {fileID: 0}
+  lookAtPoint: {fileID: 0}
 --- !u!114 &4065245673288282524
 MonoBehaviour:
   m_ObjectHideFlags: 0

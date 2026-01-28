@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using UnityEngine;
 using UnityEngine.AI;
@@ -46,7 +47,7 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     [HideInInspector] public LookAt lookAt;
     [HideInInspector] public GameObject lookAtPoint;
 
-    protected void Awake()
+    protected async void Awake()
     {
         bodyObj = transform.Find("Body").gameObject;
         animator = GetComponentInChildren<Animator>();
@@ -86,7 +87,9 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
             SwitchState(States.Idle);
             if (startAnim != null)
             {
+                await UniTask.Delay(200);
                 PlayAnimation(startAnim.name);
+                Debug.Log("playing start anim");
             }
             else
             {
