@@ -36,6 +36,22 @@ namespace Bozo.ModularCharacters
             this.system = system;
             bodyShape = mod;
             title.text = mod.shapeName;
+            
+            // Configure auto-sizing for the title text
+            if (title is TextMeshProUGUI tmpUGUI)
+            {
+                tmpUGUI.enableAutoSizing = true;
+                tmpUGUI.fontSizeMin = 12;  // Minimum readable size
+                tmpUGUI.fontSizeMax = 30;  // Maximum size before shrinking
+            }
+            
+            // Ensure proper layout by constraining the title width
+            LayoutElement titleLayout = title.GetComponent<LayoutElement>();
+            if (titleLayout == null)
+            {
+                titleLayout = title.gameObject.AddComponent<LayoutElement>();
+            }
+            titleLayout.preferredWidth = 150;  // Constrain title to reasonable width
 
             if (bodyShape.useScale)
             {
