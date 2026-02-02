@@ -1,40 +1,64 @@
+using System.Collections;
 using uLipSync;
 using UnityEngine;
 
 public class LipSyncAutoset : MonoBehaviour
 {
-    uLipSyncBlendShape uLipSyncBlendShape;
+    private uLipSyncBlendShape uLipSyncBlendShape;
+    private bool isInitialized = false;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Start a coroutine to handle initialization with retries
+        StartCoroutine(InitializeLipSync());
+    }
+    
+    private IEnumerator InitializeLipSync()
+    {
+        // Wait a frame to ensure hierarchy is set up
+        yield return null;
+        
         uLipSyncBlendShape = GetComponent<uLipSyncBlendShape>();
         
-        //Get skinned mesh renderer from this/Body/BSMC_CharacterBase/MalePhoeneticHead/CombinedSkinnedMesh or FemalePhoeneticHead/CombinedSkinnedMesh
-        SkinnedMeshRenderer skinnedMeshRenderer = transform.Find("Body/BSMC_CharacterBase/MalePhoeneticHead/CombinedSkinnedMesh")?.GetComponent<SkinnedMeshRenderer>();
-        if (skinnedMeshRenderer == null)
+        // Retry up to 10 times with a delay, in case the head hasn't loaded yet
+        int retryCount = 0;
+        const int maxRetries = 10;
+        const float retryDelay = 0.5f;
+        
+        while (retryCount < maxRetries && !isInitialized)
         {
-            skinnedMeshRenderer = transform.Find("Body/BSMC_CharacterBase/FemalePhoeneticHead/CombinedSkinnedMesh")?.GetComponent<SkinnedMeshRenderer>();
-        }
+            SkinnedMeshRenderer skinnedMeshRenderer = transform.Find("Body/BSMC_CharacterBase/MalePhoeneticHead/CombinedSkinnedMesh")?.GetComponent<SkinnedMeshRenderer>();
+            if (skinnedMeshRenderer == null)
+            {
+                skinnedMeshRenderer = transform.Find("Body/BSMC_CharacterBase/FemalePhoeneticHead/CombinedSkinnedMesh")?.GetComponent<SkinnedMeshRenderer>();
+            }
 
-        // Assign the found SkinnedMeshRenderer to the uLipSyncBlendShape component
-        if (skinnedMeshRenderer != null)
-        {
-            uLipSyncBlendShape.skinnedMeshRenderer = skinnedMeshRenderer;
+            if (skinnedMeshRenderer != null)
+            {
+                uLipSyncBlendShape.skinnedMeshRenderer = skinnedMeshRenderer;
+                
+                // Clear any existing blend shapes and set up the phoneme blend shape table
+                uLipSyncBlendShape.blendShapes.Clear();
+                
+                uLipSyncBlendShape.AddBlendShape("A", "A");
+                uLipSyncBlendShape.AddBlendShape("E", "E");
+                uLipSyncBlendShape.AddBlendShape("I", "I");
+                uLipSyncBlendShape.AddBlendShape("O", "O");
+                uLipSyncBlendShape.AddBlendShape("U", "U");
+                uLipSyncBlendShape.AddBlendShape("-", "-");
+                
+                isInitialized = true;
+                Debug.Log("LipSyncAutoset: Successfully initialized lip sync.");
+                yield break;
+            }
             
-            // Clear any existing blend shapes and set up the phoneme blend shape table
-            uLipSyncBlendShape.blendShapes.Clear();
-            
-            uLipSyncBlendShape.AddBlendShape("A", "A");
-            uLipSyncBlendShape.AddBlendShape("E", "E");
-            uLipSyncBlendShape.AddBlendShape("I", "I");
-            uLipSyncBlendShape.AddBlendShape("O", "O");
-            uLipSyncBlendShape.AddBlendShape("U", "U");
-            uLipSyncBlendShape.AddBlendShape("-", "-");
+            retryCount++;
+            yield return new WaitForSeconds(retryDelay);
         }
-        else
+        
+        if (!isInitialized)
         {
-            Debug.LogError("LipSyncAutoset: Could not find SkinnedMeshRenderer for phonetic head.");
+            Debug.LogError("LipSyncAutoset: Could not find SkinnedMeshRenderer for phonetic head after " + maxRetries + " retries.");
         }
     }
 }
