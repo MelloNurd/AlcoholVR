@@ -74,6 +74,8 @@ public class TutorialText : MonoBehaviour
         }
     }
 
+    public string CurrentText => text != null ? text.text : string.Empty;
+
     public void ShowText(string message)
     {
         if (text == null) return;

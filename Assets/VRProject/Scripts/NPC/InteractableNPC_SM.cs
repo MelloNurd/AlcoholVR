@@ -88,11 +88,14 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
             return;
         }
 
+        Debug.Log("Starting dialogue with " + gameObject.name + " (Objective Status: " + objective.currentStatus + ")");
+
         // First, we run events
         // By doing these first, we can have dialogue/objective changes that affect the next dialogue shown
         switch (objective.currentStatus)
         {
             case ObjectiveSystem.Statuses.ToDo:
+                Debug.Log("Invoking first interaction event for " + gameObject.name);
                 onFirstInteraction?.Invoke();
                 break;
             case ObjectiveSystem.Statuses.InProgress:

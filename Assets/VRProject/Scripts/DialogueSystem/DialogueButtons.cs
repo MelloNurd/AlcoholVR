@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class DialogueButtons : MonoBehaviour
@@ -18,6 +19,9 @@ public class DialogueButtons : MonoBehaviour
     private GameObject _buttonParentObj;
 
     private int currentButtonCount = 0;
+
+    public static UnityEvent OnButtonsSpawn = new();
+    public static UnityEvent<PhysicalButton> OnButtonPressed = new();
 
     private void Awake()
     {
@@ -165,6 +169,7 @@ public class DialogueButtons : MonoBehaviour
                 await UniTask.Delay(100); // small delay to allow button press sound to play
                 dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
                 system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);
+                OnButtonPressed?.Invoke(optionButton);
             });
 
             optionButton.SetButtonText(dialogue.options[index].optionText);
@@ -175,6 +180,7 @@ public class DialogueButtons : MonoBehaviour
             }
         }
 
+        OnButtonsSpawn?.Invoke();
         return true;
     }
 

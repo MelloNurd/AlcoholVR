@@ -35,7 +35,7 @@ public class House : MonoBehaviour
         var temp = new PhoneMessage
         {
             Sender = "Markus",
-            Content = "Hey! I'm throwing a party. Bring snacks. And do you think you can sneak some beer from your parents?",
+            Content = "Hey! Can you bring some snacks to the party tonight? And do you think you can sneak some beer from your parents?",
         };
 
         Phone.Instance.QueueNotification(temp);
