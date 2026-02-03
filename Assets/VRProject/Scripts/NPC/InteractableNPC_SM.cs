@@ -6,7 +6,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(DialogueSystem), typeof(ObjectiveSystem))]
 public class InteractableNPC_SM : NPC_SM // SM = State Machine
 {
-    public GameObject _exclamationObj;
+    public GameObject exclamationObj;
 
     [Header("Interaction Settings")]
     [field: SerializeField] public bool IsInteractable { get; set; } = true;
@@ -53,7 +53,7 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
             Debug.LogError("First dialogue is not set for " + gameObject.name + ". Please assign a dialogue.");
         }
 
-        _exclamationObj.SetActive(IsInteractable);
+        exclamationObj.SetActive(IsInteractable);
     }
 
     [Button]
@@ -61,9 +61,9 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     {
         if(!IsInteractable || Player.Instance.IsInteractingWithNPC) return;
 
-        if (_exclamationObj.activeSelf)
+        if (exclamationObj.activeSelf)
         {
-            _exclamationObj.SetActive(false);
+            exclamationObj.SetActive(false);
         }
 
         interactionCount++;
@@ -128,9 +128,9 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
 
     private void OnValidate()
     {
-        if(_exclamationObj == null)
+        if(exclamationObj == null)
         {
-            _exclamationObj = GetComponentInChildren<ExclamationPoint>(true)?.gameObject;
+            exclamationObj = GetComponentInChildren<ExclamationPoint>(true)?.gameObject;
         }
     }
 }

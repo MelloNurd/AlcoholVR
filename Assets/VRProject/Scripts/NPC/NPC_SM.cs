@@ -20,6 +20,8 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
     [HideInInspector] public GameObject bodyObj;
 
     public bool isDrunk = false;
+    public bool alwaysUseStartAnim = false;
+
     [HelpBox("If this is assigned, this animation will play on start instead of the default idle animation.")]
     [SerializeField] public AnimationClip startAnim;
 

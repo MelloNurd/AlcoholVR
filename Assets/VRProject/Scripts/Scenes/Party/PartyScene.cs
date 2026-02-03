@@ -130,7 +130,7 @@ public class PartyScene : MonoBehaviour
         _couchFriend.dialogueSystem.onEnd.AddListener(() =>
         {
             _couchFriend.IsInteractable = false;
-            _couchFriend._exclamationObj.SetActive(false);
+            _couchFriend.exclamationObj.SetActive(false);
             hasTalkedToCouchFriend.Value = true;
             Debug.Log("Couch friend dialogue ended. Has talked: " + hasTalkedToCouchFriend.Value);
         });
@@ -176,21 +176,23 @@ public class PartyScene : MonoBehaviour
         {
             if(sequence.dialogue != null)
             {
-                for(int i = 0; i < sequence.dialogue.options.Count; i++)
-                {
-                    Debug.Log($"Option {i}: {sequence.dialogue.options[i].optionText}");
-                }
+                //for(int i = 0; i < sequence.dialogue.options.Count; i++)
+                //{
+                //    Debug.Log($"Option {i}: {sequence.dialogue.options[i].optionText}");
+                //}
 
                 // This system is bad, but I don't have time to improve. Magic numbers for now.
                 sequence.dialogue.options[0].onOptionSelected.AddListener(() => // GOOD DECISION (try to calm down the rage)
                 {
                     GlobalStats.helpedRagingDrunk = true;
                     _rageNPC.IsInteractable = true;
-                    _rageNPC._exclamationObj.SetActive(true);
+                    _rageNPC.exclamationObj.SetActive(true);
                     _rageNPC.objective.Begin();
+                    _rageNPC.exclamationObj.SetActive(true);
 
                     _rageNPC.onIncompleteInteraction.AddListener(() =>
                     {
+                        _rageNPC.exclamationObj.SetActive(false);
                         _rageNPC.PlayAnimation(_rageIdleAnimation.name);
                     });
 
@@ -199,7 +201,7 @@ public class PartyScene : MonoBehaviour
                         _rageNPC.PlayAnimation(_rageFinishAnimation.name);
 
                         _rageNPC.IsInteractable = false;
-                        _rageNPC._exclamationObj.SetActive(false);
+                        _rageNPC.exclamationObj.SetActive(false);
                         _rageNPC.objective.Complete();
                         _bonfireFriendNPC.StartNextSequence();
 
