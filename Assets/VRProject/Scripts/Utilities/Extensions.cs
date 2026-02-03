@@ -804,7 +804,7 @@ public static class Extensions
             {
                 DrawSphere(randomPoint, 0.25f, Color.green, duration: 15f);
                 result = hit.position;
-                Debug.Log($"Found position ({result}) in {i + 1} attempts.");
+                //Debug.Log($"Found position ({result}) in {i + 1} attempts.");
                 return result;
             }
             else

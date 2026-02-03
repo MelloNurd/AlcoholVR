@@ -156,7 +156,15 @@ public class NPC_InteractState : NPC_BaseState
             return;
         }
 
-        _interactableNPC.PlayIdleAnimation();
+        if(_interactableNPC.alwaysUseStartAnim)
+        {
+            _interactableNPC.PlayAnimation(_interactableNPC.startAnim.name);
+        }
+        else
+        {
+            _interactableNPC.PlayIdleAnimation();
+        }
+
         storedDestination = _interactableNPC.agent.destination;
         if(_interactableNPC.agent != null && _interactableNPC.agent.enabled)
         {
