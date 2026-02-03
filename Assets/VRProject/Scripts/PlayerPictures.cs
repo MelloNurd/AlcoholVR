@@ -57,17 +57,37 @@ public class PlayerPictures : MonoBehaviour
 
         Debug.Log($"Loaded {loadedImages.Count} images from CurrentPhotos folder.");
 
+        // Get or create the SimpleLit shader
+        Shader simpleLitShader = Shader.Find("Universal Render Pipeline/Simple Lit");
+        if (simpleLitShader == null)
+        {
+            Debug.LogError("SimpleLit shader not found! Trying 'Simple Lit' fallback.");
+            simpleLitShader = Shader.Find("Simple Lit");
+        }
+        
+        if (simpleLitShader == null)
+        {
+            Debug.LogError("Could not find SimpleLit shader. Using default shader instead.");
+            simpleLitShader = Shader.Find("Standard");
+        }
+
         // Apply images to polaroids
         int appliedCount = 0;
 
         for (int imageIndex = 0; imageIndex < loadedImages.Count && usedObjects.Count < meshRenderers.Count; imageIndex++)
         {
             int randomPolaroidIndex = PickRandomPolaroid();
-            Material materialInstance = new Material(meshRenderers[randomPolaroidIndex].material);
-            materialInstance.color = Color.white; // Ensure the material color is white to display the texture correctly
+            
+            // Create a new material with SimpleLit shader
+            Material materialInstance = new Material(simpleLitShader);
+            materialInstance.name = "PolaroidMaterial_" + randomPolaroidIndex;
+            materialInstance.color = Color.white;
             materialInstance.mainTexture = loadedImages[imageIndex];
+            
+            // Set the material on the mesh renderer
             meshRenderers[randomPolaroidIndex].material = materialInstance;
 
+            Debug.Log($"Applied image {imageIndex} to polaroid {randomPolaroidIndex} with shader: {simpleLitShader.name}");
             appliedCount++;
         }
 
