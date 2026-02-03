@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 using EditorAttributes;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -21,6 +22,19 @@ public class PhoneCamera : MonoBehaviour
         {
             Directory.CreateDirectory(_photosFolderPath);
             Debug.Log($"Created photos folder at: {_photosFolderPath}");
+        }
+    }
+
+    public void ClearPictures()
+    {
+        if (Directory.Exists(_photosFolderPath))
+        {
+            var files = Directory.GetFiles(_photosFolderPath);
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
+            Debug.Log("Cleared all pictures from CurrentPhotos folder.");
         }
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
@@ -10,6 +11,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -60,8 +62,8 @@ public class Phone : MonoBehaviour
     private Transform _handTransform;
     public GameObject _phoneObj;
     private Camera _phonePhysicalCamera;
-    private Camera _phoneUICamera; // The camera that renders the phone's UI
-    private Canvas _phoneUICanvas; // The canvas that contains the phone's UI elements
+    private Camera _phoneUICamera;
+    private Canvas _phoneUICanvas;
     private TMP_Text _phoneClockTime;
     private TMP_Text _smallClockTime;
     private TMP_Text _phoneClockDate;
@@ -95,7 +97,6 @@ public class Phone : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton implementation
         if (Instance == null)
         {
             Instance = this;
@@ -108,7 +109,6 @@ public class Phone : MonoBehaviour
 
         _phoneObj = transform.Find("Phone Parent").gameObject;
 
-        // Assign component variables
         _appearParticles = _phoneObj.transform.Find("AppearParticles").GetComponent<ParticleSystem>();
 
         _phoneUICamera = _phoneObj.transform.Find("Camera Screen").GetComponent<Camera>();
@@ -149,7 +149,6 @@ public class Phone : MonoBehaviour
         _settingsButton = temp.Find("Settings").GetComponent<AppButton>();
         _settingsButton.OnClick.AddListener(ShowSettingsScreen);
 
-        // We leave it on its own gameobject so we can disable/enable the phone without interrupting the audio source
         var tempAudioSourceObj = new GameObject("Phone Audio Source");
         tempAudioSourceObj.transform.parent = transform.parent;
         _phoneAudioSource = tempAudioSourceObj.AddComponent<AudioSource>();
@@ -160,7 +159,6 @@ public class Phone : MonoBehaviour
         {
             int index = PlayerPrefs.GetInt("Phone_ThemeIndex", -1);
             _currentTheme = _availableThemes[index < 0 ? Random.Range(0, _availableThemes.Count) : index];
-
         }
         ApplyTheme(_currentTheme);
     }
@@ -171,11 +169,9 @@ public class Phone : MonoBehaviour
         _screenObject = _phoneObj.transform.Find("Screen (Canvas)").gameObject;
         _phonePhysicalCamera = GetComponentInChildren<Camera>();
 
-        // Initialize screens (start at home)
         HideAllScreens();
         ShowHomeScreen();
 
-        // Set phone to follow hand position (set parent to hand)
         if (_handTransform != null)
         {
             _phoneObj.transform.parent = _handTransform;
@@ -200,6 +196,32 @@ public class Phone : MonoBehaviour
                 {
                     Physics.IgnoreCollision(phoneCol, handCol, true);
                 }
+            }
+        }
+
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            ClearCameraPhotos();
+        }
+    }
+
+    private void ClearCameraPhotos()
+    {
+        string photosFolderPath = Path.Combine(Application.persistentDataPath, "CurrentPhotos");
+        if (Directory.Exists(photosFolderPath))
+        {
+            try
+            {
+                var files = Directory.GetFiles(photosFolderPath);
+                foreach (var file in files)
+                {
+                    File.Delete(file);
+                }
+                Debug.Log("Cleared all pictures from CurrentPhotos folder.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error clearing photos: {ex.Message}");
             }
         }
     }
@@ -229,11 +251,11 @@ public class Phone : MonoBehaviour
             }
         }
 
-        if(Keyboard.current.cKey.wasPressedThisFrame) // Right click to show home screen
+        if(Keyboard.current.cKey.wasPressedThisFrame)
         {
             ShowCameraScreen();
         }
-        else if (Keyboard.current.pKey.wasPressedThisFrame) // M key to show messages screen
+        else if (Keyboard.current.pKey.wasPressedThisFrame)
         {
             TogglePhone();
         }
@@ -261,7 +283,7 @@ public class Phone : MonoBehaviour
         if (_phoneAppearSound != null && effects)
         {
             _phoneAudioSource.transform.position = transform.position;
-            _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f); // Play phone appear sound
+            _phoneAudioSource.PlayOneShot(_phoneAppearSound, 0.5f);
         }
         IsInteractable = false;
         _phoneObj.SetActive(true);
@@ -279,7 +301,7 @@ public class Phone : MonoBehaviour
         if (_phoneDisappearSound != null && effects)
         {
             _phoneAudioSource.transform.position = transform.position;
-            _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f); // Play phone appear sound
+            _phoneAudioSource.PlayOneShot(_phoneDisappearSound, 0.5f);
         }
         IsInteractable = false;
         await Tween.Scale(_phoneObj.transform, Vector3.zero, time, ease: Ease.InBack);
@@ -288,8 +310,6 @@ public class Phone : MonoBehaviour
         {
             _appearParticles.Play();
         }
-
-        //ObjectiveManager.Instance.HideAllPaths();
     }
 
     [Button]
@@ -299,12 +319,12 @@ public class Phone : MonoBehaviour
 
         if (IsActive)
         {
-            Player.Instance.DisableUIInteractor(); // Disable the UI interactor to prevent interaction with the phone
+            Player.Instance.DisableUIInteractor();
             DisablePhone();
         }
         else
         {
-            Player.Instance.EnableUIInteractor(); // Enable the UI interactor to allow interaction with the phone
+            Player.Instance.EnableUIInteractor();
             EnablePhone();
         }
     }
@@ -315,9 +335,9 @@ public class Phone : MonoBehaviour
         {
             _phoneTime = DateTime.Now;
         }
-        _phoneClockTime.text = _phoneTime.ToString("h:mm tt"); // Format: 1:02 PM
-        _smallClockTime.text = _phoneTime.ToString("h:mm tt"); // Format: 1:02
-        _phoneClockDate.text = _phoneTime.ToString("MMM d, yyyy"); // Format: Jan 1, 2023
+        _phoneClockTime.text = _phoneTime.ToString("h:mm tt");
+        _smallClockTime.text = _phoneTime.ToString("h:mm tt");
+        _phoneClockDate.text = _phoneTime.ToString("MMM d, yyyy");
     }
 
     private void UpdateBattery()
@@ -342,7 +362,6 @@ public class Phone : MonoBehaviour
             _availableThemes.Add(theme);
         }
 
-
         if(theme == null)
         {
             Debug.LogWarning("No theme provided. Using default theme.");
@@ -357,7 +376,6 @@ public class Phone : MonoBehaviour
         _phoneClockTime.color = theme.PrimaryColor;
         _phoneClockDate.color = theme.PrimaryColor;
 
-        // This is ugly but not called often... if ever expanded upon, implement this via an interface
         foreach(Image image in _phoneUICanvas.GetComponentsInChildren<Image>())
         {
             if(!image.CompareTag("ColoredUI")) continue;
@@ -386,15 +404,14 @@ public class Phone : MonoBehaviour
     public void QueueNotification(string sender, string content) => QueueNotification(new PhoneMessage { Sender = sender, Content = content, Timestamp = DateTime.Now });
     public async void QueueNotification(PhoneMessage msg, bool showTutorial = false)
     {
-        // if showTutorial is true, show player how to open phone
         _messageQueue.Enqueue(msg);
 
         if(!IsActive)
         {
             _phoneAudioSource.PlayOneShot(_notificationSound);
-            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f);
             await UniTask.Delay(600);
-            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+            InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f);
         }
         else
         {
@@ -424,16 +441,15 @@ public class Phone : MonoBehaviour
             ObjectiveManager.Instance.CreateObjectiveObject(msg.Objective);
         }
 
-        // notification sound + vibration
         _phoneAudioSource.transform.position = transform.position;
         _phoneAudioSource.PlayOneShot(_notificationSound, 0.5f);
-        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.2f); // Vibrate left controller
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.2f);
 
-        await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f); // move down
+        await Tween.UIAnchoredPositionY(_notificationPanel, -85, 0.4f);
 
-        await UniTask.Delay(3_000); // wait
+        await UniTask.Delay(3_000);
 
-        await Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f); // move up
+        await Tween.UIAnchoredPositionY(_notificationPanel, 475, 0.4f);
     }
 
     public void AddMessage(PhoneMessage message)
@@ -444,7 +460,7 @@ public class Phone : MonoBehaviour
             return;
         }
 
-        _messages.RemoveAll(x => x.Sender == message.Sender); // We only keep the latest message from each sender
+        _messages.RemoveAll(x => x.Sender == message.Sender);
         _messages.Add(message);
 
         LoadMessages();
@@ -462,7 +478,7 @@ public class Phone : MonoBehaviour
             GameObject messageObject = Instantiate(_messagePrefab, _messagesContainer);
             messageObject.transform.Find("Name").GetComponent<TMP_Text>().text = msg.Sender;
             messageObject.transform.Find("Text").GetComponent<TMP_Text>().text = msg.Content;
-            messageObject.transform.Find("Time").GetComponent<TMP_Text>().text = msg.Timestamp.ToString("h:mm tt"); // Format: 1:02 PM
+            messageObject.transform.Find("Time").GetComponent<TMP_Text>().text = msg.Timestamp.ToString("h:mm tt");
         }
     }
 
@@ -478,8 +494,6 @@ public class Phone : MonoBehaviour
         var objectives = ObjectiveManager.Instance.GetSortedList();
         foreach (var objective in objectives)
         {
-            // if point is null, we don't ahve the button to guide me
-
             ObjectiveUI objectiveObject = Instantiate(_objectivePrefab, _objectivesContainer).GetComponent<ObjectiveUI>();
             objectiveObject.Initialize(objective);
         }
@@ -503,7 +517,7 @@ public class Phone : MonoBehaviour
         _emergencyScreenGroup.Hide();
         _phonePhysicalCamera.enabled = false;
         _phoneBG.enabled = true;
-        _smallClockTime.enabled = true; // This should show on all screens, EXCEPT home
+        _smallClockTime.enabled = true;
     }
 
     [Button]
@@ -558,7 +572,6 @@ public class Phone : MonoBehaviour
 
         _emergencyScreenGroup.Show();
 
-
         Image callButton = _emergencyScreenGroup.transform.Find("Call 911").GetComponent<Image>();
         Image phoneImage = callButton.transform.Find("PhoneImg").GetComponent<Image>();
 
@@ -569,9 +582,9 @@ public class Phone : MonoBehaviour
             .Chain(Tween.LocalRotation(phoneImage.transform, new Vector3(0f, 0f, 181f), Vector3.zero, 0.5f, Ease.OutBack))
             .ChainDelay(1.5f);
 
-        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f);
         await UniTask.Delay(600);
-        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f); // Vibrate left controller
+        InputManager.Instance.leftController.SendHapticImpulse(0, 0.5f, 0.3f);
     }
 
     public void ToggleEnlarge(RectTransform rect)
@@ -579,7 +592,7 @@ public class Phone : MonoBehaviour
         if (enlarged)
         {
             rect.localPosition = new Vector3(0, 0.00024f, -0.00125f);
-            rect.localRotation = Quaternion.Euler(0f,0f,0f);
+            rect.localRotation = Quaternion.Euler(0f, 0f, 0f);
             rect.localScale = new Vector3(3.62377796e-05f, 3.76863463e-05f, 3.76863427e-05f);
             enlarged = false;
             fullscreenToggleImage.sprite = fullscreenSprite;
