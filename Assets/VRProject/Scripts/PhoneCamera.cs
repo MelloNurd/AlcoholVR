@@ -13,6 +13,7 @@ public class PhoneCamera : MonoBehaviour
     [SerializeField] private Material _cameraScreenMaterial;
     [SerializeField] AudioClip _shutterSound;
     [SerializeField] GameObject _screenFlash;
+    public float flashDuration = 0.2f;
     private int _pictureCount = 0;
     private string _photosFolderPath;
 
@@ -77,7 +78,7 @@ public class PhoneCamera : MonoBehaviour
         screenshot.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
         PlayerAudio.PlaySound(_shutterSound, 1f, out _);
         // screen flash for short time
-        ScreenFlash(0.2f);
+        ScreenFlash(flashDuration);
         screenshot.Apply();
         RenderTexture.active = null;
 
