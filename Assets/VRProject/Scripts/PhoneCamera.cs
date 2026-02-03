@@ -11,6 +11,8 @@ public class PhoneCamera : MonoBehaviour
 {
     [SerializeField] private Camera _phoneCamera;
     [SerializeField] private Material _cameraScreenMaterial;
+    [SerializeField] AudioClip _shutterSound;
+    [SerializeField] GameObject _screenFlash;
     private int _pictureCount = 0;
     private string _photosFolderPath;
 
@@ -73,6 +75,9 @@ public class PhoneCamera : MonoBehaviour
         Texture2D screenshot = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
         RenderTexture.active = renderTexture;
         screenshot.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        PlayerAudio.PlaySound(_shutterSound, 1f, out _);
+        // screen flash for short time
+        ScreenFlash(0.2f);
         screenshot.Apply();
         RenderTexture.active = null;
 
@@ -96,6 +101,18 @@ public class PhoneCamera : MonoBehaviour
             _phoneCamera.targetTexture = null;
             Destroy(renderTexture);
         }
+    }
+
+    //async function to disable screen flash after delay
+    void ScreenFlash(float delay)
+    {
+        _screenFlash.SetActive(true);
+        StartCoroutine(DisableScreenFlashCoroutine(delay));
+    }
+    private IEnumerator DisableScreenFlashCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _screenFlash.SetActive(false);
     }
 
     [Button]

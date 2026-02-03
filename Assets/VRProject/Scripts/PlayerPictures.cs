@@ -9,6 +9,7 @@ public class PlayerPictures : MonoBehaviour
     List<MeshRenderer> meshRenderers = new List<MeshRenderer>();
     List<int> usedObjects = new List<int>();
     List<Texture2D> loadedImages = new List<Texture2D>();
+    [SerializeField] float imageBrightness = 1.5f; // Adjustable brightness multiplier for the image
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -57,18 +58,18 @@ public class PlayerPictures : MonoBehaviour
 
         Debug.Log($"Loaded {loadedImages.Count} images from CurrentPhotos folder.");
 
-        // Get or create the SimpleLit shader
-        Shader simpleLitShader = Shader.Find("Universal Render Pipeline/Simple Lit");
-        if (simpleLitShader == null)
+        // Get the Unlit/Texture shader
+        Shader unlitShader = Shader.Find("Unlit/Texture");
+        if (unlitShader == null)
         {
-            Debug.LogError("SimpleLit shader not found! Trying 'Simple Lit' fallback.");
-            simpleLitShader = Shader.Find("Simple Lit");
+            Debug.LogError("Unlit/Texture shader not found! Trying URP fallback.");
+            unlitShader = Shader.Find("Universal Render Pipeline/Unlit");
         }
         
-        if (simpleLitShader == null)
+        if (unlitShader == null)
         {
-            Debug.LogError("Could not find SimpleLit shader. Using default shader instead.");
-            simpleLitShader = Shader.Find("Standard");
+            Debug.LogError("Could not find Unlit shader. Using Standard shader instead.");
+            unlitShader = Shader.Find("Standard");
         }
 
         // Apply images to polaroids
@@ -78,16 +79,18 @@ public class PlayerPictures : MonoBehaviour
         {
             int randomPolaroidIndex = PickRandomPolaroid();
             
-            // Create a new material with SimpleLit shader
-            Material materialInstance = new Material(simpleLitShader);
+            // Create a new material with Unlit/Texture shader
+            Material materialInstance = new Material(unlitShader);
             materialInstance.name = "PolaroidMaterial_" + randomPolaroidIndex;
-            materialInstance.color = Color.white;
-            materialInstance.mainTexture = loadedImages[imageIndex];
+            
+            // Brighten the loaded image texture
+            Texture2D brightenedTexture = BrightenTexture(loadedImages[imageIndex], imageBrightness);
+            materialInstance.mainTexture = brightenedTexture;
             
             // Set the material on the mesh renderer
             meshRenderers[randomPolaroidIndex].material = materialInstance;
 
-            Debug.Log($"Applied image {imageIndex} to polaroid {randomPolaroidIndex} with shader: {simpleLitShader.name}");
+            Debug.Log($"Applied image {imageIndex} to polaroid {randomPolaroidIndex} with shader: {unlitShader.name}");
             appliedCount++;
         }
 
@@ -116,6 +119,24 @@ public class PlayerPictures : MonoBehaviour
             Debug.LogError($"Error loading texture from {filePath}: {ex.Message}");
             return null;
         }
+    }
+
+    Texture2D BrightenTexture(Texture2D original, float brightness)
+    {
+        Texture2D brightened = new Texture2D(original.width, original.height, TextureFormat.RGBA32, false);
+        Color[] pixels = original.GetPixels();
+        
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            pixels[i].r = Mathf.Clamp01(pixels[i].r * brightness);
+            pixels[i].g = Mathf.Clamp01(pixels[i].g * brightness);
+            pixels[i].b = Mathf.Clamp01(pixels[i].b * brightness);
+        }
+        
+        brightened.SetPixels(pixels);
+        brightened.Apply();
+        
+        return brightened;
     }
 
     int PickRandomPolaroid()
