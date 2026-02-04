@@ -25,11 +25,8 @@ public class TutorialScene : MonoBehaviour
     private float buttonTimer = 0f;
     private bool hasPressedButton = false;
 
-    private async void Start()
+    private void Awake()
     {
-        await InitializeMovementTutorial();
-        await CheckIfPlayerTalkedToFriend();
-
         DialogueButtons.OnButtonsSpawn.AddListener(() =>
         {
             buttonsSpawned = true;
@@ -38,11 +35,17 @@ public class TutorialScene : MonoBehaviour
         DialogueButtons.OnButtonPressed.AddListener((_) =>
         {
             hasPressedButton = true;
-            if(TutorialText.Instance.CurrentText == DIALOGUE_TUTORIAL_TEXT) // Safeguard to only hide if it's showing the dialogue buttons tutorial text
+            if (TutorialText.Instance.CurrentText == DIALOGUE_TUTORIAL_TEXT) // Safeguard to only hide if it's showing the dialogue buttons tutorial text
             {
                 TutorialText.Instance.HideText();
             }
         });
+    }
+
+    private async void Start()
+    {
+        await InitializeMovementTutorial();
+        await CheckIfPlayerTalkedToFriend();
     }
 
     private async UniTask InitializeMovementTutorial()
@@ -67,6 +70,7 @@ public class TutorialScene : MonoBehaviour
     private async UniTask CheckIfPlayerTalkedToFriend()
     {
         await UniTask.Delay(30_000);
+
         if (!hasTalkedToFriend)
         {
             TutorialText.Instance.ShowText(TALK_TUTORIAL_TEXT);

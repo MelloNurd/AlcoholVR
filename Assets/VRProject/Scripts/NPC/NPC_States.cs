@@ -24,7 +24,10 @@ public class NPC_IdleState : NPC_BaseState
     public override void EnterState()
     {
         base.EnterState();
-        npc.PlayIdleAnimation();
+        if (npc.alwaysUseStartAnim)
+            npc.PlayAnimation(npc.startAnim.name);
+        else
+            npc.PlayIdleAnimation();
     }
 }
 
@@ -90,7 +93,12 @@ public class NPC_CheckpointState : NPC_BaseState
     {
         _cancelToken = new CancellationTokenSource();
         base.EnterState();
-        npc.PlayIdleAnimation();
+
+        if (npc.alwaysUseStartAnim)
+            npc.PlayAnimation(npc.startAnim.name);
+        else
+            npc.PlayIdleAnimation();
+
         ProcessActions();
     }
 
@@ -126,7 +134,10 @@ public class NPC_CheckpointState : NPC_BaseState
         await UniTask.Delay(halfDuration, cancellationToken: _cancelToken.Token).SuppressCancellationThrow(); // Where we play the new action
         if (_cancelToken.IsCancellationRequested) return;
 
-        npc.PlayIdleAnimation(); // Once it's done, go back to idle animation
+        if (npc.alwaysUseStartAnim)
+            npc.PlayAnimation(npc.startAnim.name);
+        else
+            npc.PlayIdleAnimation();
     }
 
     public override void ExitState()
@@ -157,13 +168,9 @@ public class NPC_InteractState : NPC_BaseState
         }
 
         if(_interactableNPC.alwaysUseStartAnim)
-        {
             _interactableNPC.PlayAnimation(_interactableNPC.startAnim.name);
-        }
         else
-        {
             _interactableNPC.PlayIdleAnimation();
-        }
 
         storedDestination = _interactableNPC.agent.destination;
         if(_interactableNPC.agent != null && _interactableNPC.agent.enabled)
