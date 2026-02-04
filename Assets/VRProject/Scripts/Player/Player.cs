@@ -55,6 +55,8 @@ public class Player : MonoBehaviour
     ContinuousTurnProvider continuousTurnProvider;
 
     bool queue = false;
+    
+    private bool _isInitialized = false;
 
     private void Awake()
     {
@@ -77,8 +79,8 @@ public class Player : MonoBehaviour
 
         _tunnelingVignetteController = GetComponentInChildren<TunnelingVignetteController>();
         _xrRig = transform.Find("XR Origin (XR Rig)");
-        RightController = _xrRig.Find("Camera Offset/Right Controller").gameObject;
-        LeftController = _xrRig.Find("Camera Offset/Left Controller").gameObject;
+        RightController = _xrRig.Find("Crouch Offset/Camera Offset/Right Controller").gameObject;
+        LeftController = _xrRig.Find("Crouch Offset/Camera Offset/Left Controller").gameObject;
         _rightNearFarInteractor = RightController.GetComponentInChildren<NearFarInteractor>();
         _leftNearFarInteractor = LeftController.GetComponentInChildren<NearFarInteractor>();
 
@@ -126,6 +128,8 @@ public class Player : MonoBehaviour
         }
 
         continuousTurnProvider.turnSpeed = SettingsManager.Instance.SmoothTurningSpeed;
+        
+        _isInitialized = true;
     }
 
     public void Update()
@@ -213,6 +217,12 @@ public class Player : MonoBehaviour
 
     public void ToggleRangedInteractors(bool value)
     {
+        if (!_isInitialized)
+        {
+            Debug.LogWarning("Player not yet initialized. Deferring ToggleRangedInteractors until after Start().");
+            return;
+        }
+
         SettingsManager.Instance.RangedInteractors = value;
         if (value)
         {
@@ -225,6 +235,7 @@ public class Player : MonoBehaviour
         {
             _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
             _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
+            _rightNearFarInteractor.enableFarCasting = false;
             _leftNearFarInteractor.enableFarCasting = false;
         }
     }

@@ -14,7 +14,6 @@ public class PhoneSettings : MonoBehaviour
     [SerializeField] Toggle ToggleGrabToggle;
     [SerializeField] Toggle RangedInteractorsToggle;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         MasterVolumeSlider.value = SettingsManager.Instance.MasterVolume;
