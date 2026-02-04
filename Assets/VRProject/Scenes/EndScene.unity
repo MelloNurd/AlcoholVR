@@ -1597,6 +1597,10 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9157215209975000527, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_Name
       value: StickyNote (1)
@@ -3742,7 +3746,8 @@ Transform:
   m_LocalPosition: {x: -1.833, y: -0.862, z: 3.165}
   m_LocalScale: {x: 0.39, y: 0.39, z: 0.0014444444}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 1238057107281244009}
   m_Father: {fileID: 1483118054}
   m_LocalEulerAnglesHint: {x: -90.527, y: 90.001, z: 4.302002}
 --- !u!65 &618712430
@@ -8096,8 +8101,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_text
-      value: Best concert ever! If I took my parents' alcohol to that party I probably
-        would've missed it!
+      value: Best concert ever! Good thing I didn't get into any trouble or I would've
+        missed it!
       objectReference: {fileID: 0}
     - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_fontSize
@@ -8110,6 +8115,14 @@ PrefabInstance:
     - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_margin.y
       value: -0.0003754068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8760276479358960488, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.1176
+      objectReference: {fileID: 0}
+    - target: {fileID: 8760276479358960488, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0581
       objectReference: {fileID: 0}
     - target: {fileID: 9157215209975000527, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_Name
@@ -9502,7 +9515,6 @@ Transform:
   - {fileID: 626521625}
   - {fileID: 956891952}
   - {fileID: 1397463201}
-  - {fileID: 1238057107281244009}
   - {fileID: 618712429}
   - {fileID: 2110664171}
   - {fileID: 242646383}
@@ -10118,11 +10130,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_text
-      value: I really should've called 911...
+      value: I can't believe no one called 911 sooner...
       objectReference: {fileID: 0}
     - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_fontSize
-      value: 0.25
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811415956255795386, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9157215209975000527, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_Name
@@ -14919,8 +14935,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: I'm glad I convinced them to stop messing with that flaming stick... who
-    knows what would've happened
+  m_text: I'm glad I convinced them to stop messing around with the fire... who knows
+    what would've happened!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a793748b2772b70468734ace1cc80165, type: 2}
   m_sharedMaterial: {fileID: -3175256202096156246, guid: a793748b2772b70468734ace1cc80165, type: 2}
@@ -15782,47 +15798,47 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1483118054}
+    m_TransformParent: {fileID: 618712429}
     m_Modifications:
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 2.5641024
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 692.3079
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
+      value: 2.5641031
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.713
+      value: -0.6520779
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.86097634
+      value: -0.25950825
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.411
+      value: -0.056243863
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.0033198912
+      value: 0.70699865
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.69277
+      value: -0.7069987
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.003189385
+      value: 0.012363538
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.72114396
+      value: -0.012363582
       objectReference: {fileID: 0}
     - target: {fileID: 3636430935184075738, guid: b929256e700864541a8e9dba0c5e3409, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

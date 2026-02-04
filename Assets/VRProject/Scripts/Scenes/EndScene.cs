@@ -181,7 +181,7 @@ public class EndScene : MonoBehaviour
             _MiP.SetActive(true);
             _reportCard.material = _badGrades;
             if(reportCardText)
-                reportCardText.text = "Should have spent more time studying...";
+                reportCardText.text = "Ugh! I can't believe I slept through that test after the party! I must've drank more than I thought...";
         }
         else
         {
