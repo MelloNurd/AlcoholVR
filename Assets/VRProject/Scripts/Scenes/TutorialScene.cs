@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TutorialScene : MonoBehaviour
 {
@@ -9,11 +10,7 @@ public class TutorialScene : MonoBehaviour
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in to make a dialogue selection!";
 
     [Header("NPCs")]
-    [SerializeField] private GameObject friendNPC;
-
-    [Header("Animations")]
-    [SerializeField] private AnimationClip wavingAnimation;
-    [SerializeField] private AnimationClip idleAnimation;
+    [SerializeField] private InteractableNPC_SM friendNPC;
 
     [field: SerializeField]
     public bool hasTalkedToFriend { get; set; }
@@ -25,8 +22,12 @@ public class TutorialScene : MonoBehaviour
     private float buttonTimer = 0f;
     private bool hasPressedButton = false;
 
+    private bool isPhoneEnabled = false;
+
     private void Awake()
     {
+        Phone.OnPhoneToggled.AddListener((isEnabled) => isPhoneEnabled = isEnabled); 
+
         DialogueButtons.OnButtonsSpawn.AddListener(() =>
         {
             buttonsSpawned = true;
@@ -39,6 +40,22 @@ public class TutorialScene : MonoBehaviour
             {
                 TutorialText.Instance.HideText();
             }
+        });
+
+        friendNPC.dialogueSystem.onEnd.AddListener(async () =>
+        {
+            await UniTask.Delay(5_000);
+
+            TutorialText.Instance.ShowText("Presss the menu button on your left controller to pull out your phone.");
+            TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.MENU_BUTTON);
+
+            await UniTask.WaitUntil(() => isPhoneEnabled || Keyboard.current.nKey.wasPressedThisFrame);
+
+            TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.MENU_BUTTON);
+
+            TutorialText.Instance.ShowText("Using your phone, you can access guide markers for your current objectives.\n\nUsing the buttons in the bottom row, navigate to the objectives and activate the guide.");
+
+            // Wait until the guide is activated, then hide text
         });
     }
 

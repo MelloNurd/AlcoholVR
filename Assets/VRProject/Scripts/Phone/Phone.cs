@@ -8,6 +8,7 @@ using PrimeTween;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
@@ -94,6 +95,8 @@ public class Phone : MonoBehaviour
     [SerializeField] Sprite fullscreenSprite;
     [SerializeField] Sprite minimizeSprite;
     [SerializeField] Image fullscreenToggleImage;
+
+    public static UnityEvent<bool> OnPhoneToggled = new();
 
     private void Awake()
     {
@@ -269,6 +272,7 @@ public class Phone : MonoBehaviour
     public async void EnablePhone(float time = 0.25f, bool effects = true)
     {
         if (IsActive) return;
+        OnPhoneToggled?.Invoke(true);
 
         if (_messagesScreenGroup.IsVisible())
         {
@@ -296,7 +300,8 @@ public class Phone : MonoBehaviour
 
     public async void DisablePhone(float time = 0.25f, bool effects = true)
     {
-        if(!IsActive) return;   
+        if(!IsActive) return;
+        OnPhoneToggled?.Invoke(false);
 
         if (_phoneDisappearSound != null && effects)
         {

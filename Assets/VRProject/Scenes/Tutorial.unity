@@ -1922,11 +1922,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2807453213566417838, guid: eb53ce8c8d2c44bb9b09ea4c58395c34, type: 3}
   m_PrefabInstance: {fileID: 736522126}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &779306692 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1688126841686072987, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+--- !u!114 &779306702 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
   m_PrefabInstance: {fileID: 1151950645}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26f0697cb2f79854cbef40fefcd4c7a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &815326561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2280,8 +2286,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.1949615, y: 1.2618294}
-  m_SizeDelta: {x: 1.5887, y: 1.5832}
+  m_AnchoredPosition: {x: 7.1949615, y: 1.788}
+  m_SizeDelta: {x: 2.4482, y: 1.5832}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &874717840
 MonoBehaviour:
@@ -2330,8 +2336,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.5
-  m_fontSizeBase: 1.5
+  m_fontSize: 1.25
+  m_fontSizeBase: 1.25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2441,7 +2447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialText
   followPlayer: 1
   distanceFromPlayer: 2
-  verticalOffset: 0
+  verticalOffset: 0.25
   panSpeed: 2
   onlyYaw: 1
 --- !u!1 &880461228
@@ -3071,9 +3077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c40591814e1e344284f0af4b56a8f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  friendNPC: {fileID: 779306692}
-  wavingAnimation: {fileID: 0}
-  idleAnimation: {fileID: 0}
+  friendNPC: {fileID: 779306702}
   <hasTalkedToFriend>k__BackingField: 0
 --- !u!137 &1142212780 stripped
 SkinnedMeshRenderer:
@@ -4282,7 +4286,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 417092211455106224, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.9999969
+      value: 0.9999959
       objectReference: {fileID: 0}
     - target: {fileID: 417092211455106224, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchorMax.y
@@ -4674,11 +4678,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5454816868552488110, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0.99999917
       objectReference: {fileID: 0}
     - target: {fileID: 5454816868552488110, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.31559056
+      value: 0.3155903
       objectReference: {fileID: 0}
     - target: {fileID: 5486180798011746618, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_SizeDelta.y
@@ -4690,7 +4694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5487850771116011162, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0021861654
+      value: 0.00252144
       objectReference: {fileID: 0}
     - target: {fileID: 5496104911284076218, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
       propertyPath: m_AnchorMax.y
