@@ -56,6 +56,15 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         exclamationObj.SetActive(IsInteractable);
     }
 
+    public void ChangeStartAnimation(AnimationClip newAnim)
+    {
+        startAnim = newAnim;
+        if (currentState == states[States.Idle])
+        {
+            PlayAnimation(startAnim.name);
+        }
+    }
+
     [Button]
     public void Interact()
     {
