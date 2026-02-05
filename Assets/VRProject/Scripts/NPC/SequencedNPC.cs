@@ -136,10 +136,12 @@ public class SequencedNPC : MonoBehaviour
         if (Player.Instance == null)
         {
             Debug.Log("Player camera object is is null");
-            return;
+            //return;
         }
-            
-        _playerObj = Player.Instance.Camera.gameObject;
+        else
+        {
+            _playerObj = Player.Instance.Camera.gameObject;
+        }
 
         if (sequences.Count == 0)
         {
@@ -437,6 +439,8 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
+        Debug.Log("Playing animation: " + clip.name, gameObject);
+
         animator.SetBool("isDrunk", isDrunk);
 
         animator.CrossFade(clip.name, 0.2f);
@@ -445,6 +449,8 @@ public class SequencedNPC : MonoBehaviour
     public void PlayIdleAnimation()
     {
         animator.SetBool("isDrunk", isDrunk);
+
+        Debug.Log("Playing idle animation on sequenceNPC", gameObject);
 
         animator.SetTrigger("Start Idle");
         animator.SetBool("isWalk", false);
