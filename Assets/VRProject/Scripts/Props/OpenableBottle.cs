@@ -1,9 +1,6 @@
 using EditorAttributes;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class OpenableBottle : MonoBehaviour
@@ -21,6 +18,8 @@ public class OpenableBottle : MonoBehaviour
 
     public UnityEvent onLidGrab = new();
     public UnityEvent onLidOpen = new();
+
+    public static UnityEvent<OpenableBottle> OnBottleGrabbed = new();
 
     private void Awake()
     {
@@ -94,6 +93,7 @@ public class OpenableBottle : MonoBehaviour
     private void GrabBottle()
     {
         _cap.interactable.enabled = true;
+        OnBottleGrabbed?.Invoke(this);
     }
 
     private void ReleaseBottle()

@@ -191,7 +191,6 @@ public class NPC_InteractState : NPC_BaseState
 
         if (_interactableNPC.currentState != _interactableNPC.states[NPC_SM.States.Interact]) return; // If state changed during the wait, don't start dialogue
 
-        Debug.Log("STARTING DIALOGUE WITH " + _interactableNPC.gameObject.name);
         _interactableNPC.StartDialogue();
     }
 
