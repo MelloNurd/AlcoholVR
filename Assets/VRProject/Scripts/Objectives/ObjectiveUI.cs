@@ -16,7 +16,7 @@ public class ObjectiveUI : MonoBehaviour
 
     private Objective _objectiveData;
 
-    public static UnityEvent OnGuideToggle = new();
+    public static UnityEvent<bool> OnGuideToggle = new();
 
     public void Initialize(Objective objective)
     {
@@ -65,6 +65,7 @@ public class ObjectiveUI : MonoBehaviour
         {
             DisableButton();
         }
+        OnGuideToggle?.Invoke(newState);
     }
 
     public void EnableButton()
