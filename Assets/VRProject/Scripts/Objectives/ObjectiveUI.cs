@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ObjectiveUI : MonoBehaviour
@@ -14,6 +15,8 @@ public class ObjectiveUI : MonoBehaviour
     private TMP_Text _buttonText;
 
     private Objective _objectiveData;
+
+    public static UnityEvent OnGuideToggle = new();
 
     public void Initialize(Objective objective)
     {

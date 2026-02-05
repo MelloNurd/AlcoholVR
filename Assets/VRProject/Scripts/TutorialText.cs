@@ -1,3 +1,4 @@
+using PrimeTween;
 using TMPro;
 using UnityEngine;
 
@@ -5,10 +6,11 @@ public class TutorialText : MonoBehaviour
 {
     public static TutorialText Instance { get; private set; }
 
-    private TMP_Text text;
+    private TMP_Text _text;
+    private Vector3 _textScale;
 
     [Header("Follow Settings")]
-    [SerializeField] private bool followPlayer = true;
+    [SerializeField] private bool _followPlayer = true;
     [SerializeField, Tooltip("Distance in front of the camera to place the text")] private float distanceFromPlayer = 0.6f;
     [SerializeField, Tooltip("Vertical offset relative to the camera position")] private float verticalOffset = -0.2f;
     [SerializeField, Tooltip("How fast the in-front direction pans/smooths")] private float panSpeed = 2f;
@@ -28,10 +30,14 @@ public class TutorialText : MonoBehaviour
             Instance = this;
         }
 
-        text = GetComponent<TMP_Text>();
-        if (text == null)
+        _text = GetComponent<TMP_Text>();
+        if (_text == null)
         {
-            text = GetComponentInChildren<TMP_Text>();
+            _text = GetComponentInChildren<TMP_Text>();
+        }
+        if (_text != null)
+        {
+            _textScale = _text.transform.localScale;
         }
 
         // Initialize smoothed direction
@@ -47,8 +53,7 @@ public class TutorialText : MonoBehaviour
 
     private void Update()
     {
-        if (!followPlayer || Player.Instance == null || Player.Instance.Camera == null) return;
-        if (text.text == string.Empty) return;
+        if (!_followPlayer || Player.Instance == null || Player.Instance.Camera == null) return;
 
         // Target forward from player on XZ
         Vector3 targetForward = Player.Instance.Forward.WithY(0).normalized;
@@ -74,17 +79,29 @@ public class TutorialText : MonoBehaviour
         }
     }
 
-    public string CurrentText => text != null ? text.text : string.Empty;
+    public string CurrentText => _text != null ? _text.text : string.Empty;
 
     public void ShowText(string message)
     {
-        if (text == null) return;
-        text.text = message;
+        if (_text == null) return;
+        _text.text = message;
+
+        Debug.Log($"Displaying tutorial text: {message}");
+
+        Tween.StopAll(_text.transform);
+
+        _text.transform.localScale = Vector3.zero;
+        Tween.Scale(_text.transform, _textScale, 0.3f, ease: Ease.OutBack);
     }
 
     public void HideText()
     {
-        if (text == null) return;
-        text.text = string.Empty;
+        if (_text == null) return;
+
+        Tween.StopAll(_text.transform);
+
+        _text.transform.localScale = _textScale;
+        Tween.Scale(_text.transform, Vector3.zero, 0.3f, ease: Ease.InBack)
+            .OnComplete(() => _text.text = string.Empty);
     }
 }
