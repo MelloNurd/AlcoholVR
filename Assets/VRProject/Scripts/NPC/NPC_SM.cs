@@ -101,6 +101,16 @@ public class NPC_SM : MonoBehaviour // SM = State Machine
         }
         else
         {
+            // Check if we should play a start animation before walking
+            if (alwaysUseStartAnim && startAnim != null)
+            {
+                SwitchState(States.Idle);
+                await UniTask.Delay(200);
+                PlayAnimation(startAnim.name);
+                Debug.Log("playing start anim");
+                return;
+            }
+
             StartAtFirstCheckpoint();
             SwitchState(States.Walk);
         }
