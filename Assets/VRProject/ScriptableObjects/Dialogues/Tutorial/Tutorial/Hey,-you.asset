@@ -10,11 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
-  m_Name: Thanks-d
+  m_Name: Hey,-you
   m_EditorClassIdentifier: Assembly-CSharp::Dialogue
-  dialogueText: Thanks dude
+  dialogueText: Hey, you finally made it! I was wondering when you were going to
+    show...
   playedAudio: {fileID: 0}
-  options: []
+  options:
+  - optionText: What's up
+    nextDialogue: {fileID: 11400000, guid: 96f9a374847cf4e46a0e122a4a5ad813, type: 2}
+    DisableButton: 0
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: Sorry, I was running late...
+    nextDialogue: {fileID: 11400000, guid: a5aa2a9b298522a47b660eb81aac4dcb, type: 2}
+    DisableButton: 0
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []

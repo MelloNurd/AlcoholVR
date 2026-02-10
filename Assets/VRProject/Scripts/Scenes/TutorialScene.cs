@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 public class TutorialScene : MonoBehaviour
 {
     private const string MOVEMENT_TUTORIAL_TEXT = "Use the left joystick to move around.";
-    private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry using your trigger on your controller on them.";
+    private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry clicking on them using the trigger on one of your controllers.";
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in with your hands to make a dialogue selection!";
     private const string PHONE_TUTORIAL_TEXT = "Press the menu button on your left controller to pull out your phone.";
     private const string GUIDE_TUTORIAL_TEXT = "Using your phone, you can access guide markers for your current objectives.\n\nUsing the buttons in the bottom row, navigate to the objectives and activate the guide.";
@@ -56,6 +56,20 @@ public class TutorialScene : MonoBehaviour
 
     private void SetupEvents()
     {
+        foreach(var drinks in FindObjectsByType<OpenableBottle>(FindObjectsSortMode.None))
+        {
+            var rb = drinks.GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+            var grabInteractable = drinks.GetComponent<XRGrabInteractable>();
+            grabInteractable.enabled = false;
+
+            _friendNPC.dialogueSystem.onEnd.AddListener(() =>
+            {
+                grabInteractable.enabled = true;
+                rb.isKinematic = false;
+            });
+        };
+
         Phone.OnPhoneToggled.AddListener((isEnabled) => isPhoneEnabled = isEnabled);
         ObjectiveUI.OnGuideToggle.AddListener((_) => hasActivatedGuide = true);
         OpenableBottle.OnBottleGrabbed.AddListener((OpenableBottle drink) =>
@@ -96,6 +110,12 @@ public class TutorialScene : MonoBehaviour
             }
             else
             {
+                if (!_heldDrink.isSelected)
+                {
+                    _friendNPC.firstDialogue = _waitingForDrink;
+                    return; // Player is not holding drink
+                }
+
                 if (grabbedAlcohol)
                 {
                     _friendNPC.firstDialogue = _foundAlcohol;
@@ -103,14 +123,14 @@ public class TutorialScene : MonoBehaviour
                 else
                 {
                     _friendNPC.firstDialogue = _foundSoda;
+
+                    await UniTask.Delay(30_000);
+
+                    Phone.Instance.QueueNotification("Mom", "Hey, it's time to go home. I'll be waiting in the car.");
+
+                    ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _carPos));
+                    _getDrinkObjective.Begin();
                 }
-
-                await UniTask.Delay(30_000);
-
-                Phone.Instance.QueueNotification("Mom", "Hey, it's time to go home. I'll be waiting in the car.");
-
-                ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _carPos));
-                _getDrinkObjective.Begin();
             }
         });
     }
