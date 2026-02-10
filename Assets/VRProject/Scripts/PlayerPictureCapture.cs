@@ -18,7 +18,11 @@ public class PlayerPictureCapture : MonoBehaviour
     [Tooltip("Maximum time in seconds to wait for character to initialize")]
     [SerializeField] float initializationTimeout = 10f;
 
-    void Start()
+    [SerializeField] GameObject CharacterBody;
+    [SerializeField] GameObject Head;
+    SkinnedMeshRenderer headRenderer;
+
+    void Awake()
     {
         if (characterSystem == null)
         {
@@ -45,7 +49,7 @@ public class PlayerPictureCapture : MonoBehaviour
             yield break;
         }
 
-        // Wait for the OutfitSystem to initialize
+        // Wait for the OutfitSystem to initialize FIRST
         float timeWaited = 0f;
         while (!characterSystem.initalized)
         {
@@ -59,10 +63,36 @@ public class PlayerPictureCapture : MonoBehaviour
             }
         }
 
-        Debug.Log("PlayerPictureCapture: OutfitSystem initialized. Waiting for character to sit down...");
+        Debug.Log("PlayerPictureCapture: OutfitSystem initialized. Loading player character...");
+
+        // NOW load the player character after OutfitSystem is ready
+        yield return StartCoroutine(LoadPlayerCharacter());
 
         // Wait for the additional delay to allow animations to play and character to sit
         yield return new WaitForSeconds(delayAfterInit);
+
+        // Find MalePhoeneticHead or FemalePhoeneticHead in the character body
+        headRenderer = CharacterBody.transform.Find("MalePhoeneticHead")?.Find("CombinedSkinnedMesh").GetComponent<SkinnedMeshRenderer>();
+        if (headRenderer == null)
+        {
+            headRenderer = CharacterBody.transform.Find("FemalePhoeneticHead")?.Find("CombinedSkinnedMesh").GetComponent<SkinnedMeshRenderer>();
+        }
+
+        // Set blend shapes for the screenshot pose
+
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_R"), 1);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_L"), 10);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Wide_R"), 30);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Wide_L"), 30);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_R"), 50);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_L"), 50);
+        headRenderer.SetBlendShapeWeight(headRenderer.sharedMesh.GetBlendShapeIndex("Expression_Jaw_Open"), 20);
+
+        Animator animator = CharacterBody.GetComponent<Animator>();
+        animator.enabled = false;
+        Head.transform.localRotation = Quaternion.Euler(0, 0, -20);
+
+        yield return new WaitForSeconds(2);
 
         Debug.Log("PlayerPictureCapture: Taking transparent screenshot...");
 
@@ -78,6 +108,77 @@ public class PlayerPictureCapture : MonoBehaviour
         else
         {
             Debug.LogWarning("PlayerPictureCapture: ScreenshotParent is not assigned.");
+        }
+    }
+
+    /// <summary>
+    /// Loads the player character from the X_Characters folder
+    /// </summary>
+    private IEnumerator LoadPlayerCharacter()
+    {
+        string playerCharacterName = "PlayerCharacter";
+        string savesFolderPath = Path.Combine(Application.persistentDataPath, "BoZo_StylizedModularCharacters/CustomCharacters/X_Characters/PlayerCharacter.json");
+
+        // Check if the player character JSON exists
+        if (!File.Exists(savesFolderPath))
+        {
+            Debug.LogWarning($"PlayerPictureCapture: PlayerCharacter.json not found at {savesFolderPath}. Using default character.");
+            yield break;
+        }
+
+        CharacterData characterData = null;
+        bool loadFailed = false;
+
+        try
+        {
+            // Read the JSON file
+            string json = File.ReadAllText(savesFolderPath);
+            characterData = JsonUtility.FromJson<CharacterData>(json);
+
+            if (characterData == null)
+            {
+                Debug.LogWarning("PlayerPictureCapture: Failed to deserialize PlayerCharacter.json");
+                loadFailed = true;
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"PlayerPictureCapture: Error loading player character: {ex.Message}");
+            loadFailed = true;
+        }
+
+        if (loadFailed || characterData == null)
+        {
+            yield break;
+        }
+
+        Debug.Log($"PlayerPictureCapture: Loading player character '{characterData.characterName}'");
+
+        // Load the character asynchronously using BMAC_SaveSystem
+        yield return StartCoroutine(LoadCharacterAsync(characterData));
+    }
+
+    /// <summary>
+    /// Loads character data asynchronously into the OutfitSystem
+    /// </summary>
+    private IEnumerator LoadCharacterAsync(CharacterData characterData)
+    {
+        // Load the character with manualShapeApply=false to apply shapes properly
+        var task = BMAC_SaveSystem.LoadCharacter(characterSystem, characterData, manualShapeApply: false, async: true);
+        
+        // Wait for the async operation to complete
+        while (!task.IsCompleted)
+        {
+            yield return null;
+        }
+
+        if (task.IsFaulted)
+        {
+            Debug.LogError($"PlayerPictureCapture: Error during character load: {task.Exception}");
+        }
+        else
+        {
+            Debug.Log("PlayerPictureCapture: Player character loaded successfully");
         }
     }
 
