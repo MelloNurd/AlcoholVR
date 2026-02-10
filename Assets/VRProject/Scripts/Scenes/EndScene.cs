@@ -33,9 +33,15 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _fireSpreadPicture;
 
     [SerializeField] private GameObject _pregnancyTextMsgObj;
+    [SerializeField] private GroupPhoto _groupPhoto;
 
     public int MadCowMinScore = 10;
     public int TrashketballMinScore = 10;
+
+    bool FemaleFlirt = false;
+    bool NPCDied = false;
+    bool DroveDrunk = false;
+    bool NPCRaged = false;
 
     private void Start()
     {
@@ -54,6 +60,7 @@ public class EndScene : MonoBehaviour
         MysteryDrinkResults();
         FireResults();
         Called911Results();
+        _groupPhoto.SetPhoto(FemaleFlirt, NPCDied, DroveDrunk, NPCRaged);
     }
 
     private void Called911Results()
@@ -64,6 +71,7 @@ public class EndScene : MonoBehaviour
             return;
         }
         _obituary.SetActive(!GlobalStats.called911);
+        NPCDied = !GlobalStats.called911;
     }
     private void DrunkDriverResults()
     {
@@ -71,11 +79,13 @@ public class EndScene : MonoBehaviour
         {
             _drunkDriverCrashedPolaroid.SetActive(true);
             _drunkDriverStayedPolaroid.SetActive(false);
+            DroveDrunk = true;
         }
         else
         {
             _drunkDriverCrashedPolaroid.SetActive(false);
             _drunkDriverStayedPolaroid.SetActive(true);
+            DroveDrunk = false;
         }
     }
 
@@ -86,6 +96,15 @@ public class EndScene : MonoBehaviour
 
     private async void PregnancyTestResults()
     {
+        if (GlobalStats.Instance.IsFemale)
+        {
+            FemaleFlirt = false;
+        }
+        else
+        {
+            FemaleFlirt = true;
+        }
+
         _pregnancyTest.SetActive(false);
 
         if (!GlobalStats.playerWentWithFlirt)
