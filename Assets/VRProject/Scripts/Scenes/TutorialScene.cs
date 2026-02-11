@@ -9,9 +9,11 @@ public class TutorialScene : MonoBehaviour
     private const string MOVEMENT_TUTORIAL_TEXT = "Use the left joystick to move around.";
     private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry clicking on them using the trigger on one of your controllers.";
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in with your hands to make a dialogue selection!";
-    private const string PHONE_TUTORIAL_TEXT = "Press the menu button on your left controller to pull out your phone.";
-    private const string GUIDE_TUTORIAL_TEXT = "Using your phone, you can access guide markers for your current objectives.\n\nUsing the buttons in the bottom row, navigate to the objectives and activate the guide.";
+    private const string PHONE_TUTORIAL_TEXT1 = "Press the menu button on your left controller to pull out and put away your phone.";
+    private const string PHONE_TUTORIAL_TEXT2 = "You can use your phone with your other hand. There are buttons on the bottom row of the home screen that you can click in to see different menus.";
+    private const string GUIDE_TUTORIAL_TEXT = "Try opening the objectives menu by pressing on the button with the flag. There, you can enable guidelines to assist in progression of the game.";
     private const string GRAB_TUTORIAL_TEXT = "Using the trigger on either controller, you can grab objects. Try grabbing one of the drinks.";
+    private const string INTERACT_HELP_TEXT = "Try holding a drink when you talk to them.";
 
     [Header("Controllers")]
     [SerializeField] private GameObject leftController;
@@ -29,7 +31,7 @@ public class TutorialScene : MonoBehaviour
     [SerializeField] private Dialogue _foundSoda;
     [SerializeField] private Dialogue _foundAlcohol;
 
-    public bool hasTalkedToFriend { get; set; }
+    private int friendInteractCount = 0;
 
     // Misc
     private Vector3 playerStartPos;
@@ -45,6 +47,7 @@ public class TutorialScene : MonoBehaviour
     private bool hasGrabbedDrink = false;
     private bool grabbedAlcohol = false;
     private XRGrabInteractable _heldDrink;
+
 
     private async void Start()
     {
@@ -70,7 +73,11 @@ public class TutorialScene : MonoBehaviour
             });
         };
 
-        Phone.OnPhoneToggled.AddListener((isEnabled) => isPhoneEnabled = isEnabled);
+        Phone.OnPhoneToggled.AddListener((isEnabled) =>
+        {
+            leftController.SetActive(!isEnabled);
+            isPhoneEnabled = isEnabled;
+        });
         ObjectiveUI.OnGuideToggle.AddListener((_) => hasActivatedGuide = true);
         OpenableBottle.OnBottleGrabbed.AddListener((OpenableBottle drink) =>
         {
@@ -97,25 +104,29 @@ public class TutorialScene : MonoBehaviour
 
         _friendNPC.onFirstInteraction.AddListener(async () =>
         {
-            if (!hasTalkedToFriend)
+            friendInteractCount++;
+            if(friendInteractCount == 1)
             {
-                hasTalkedToFriend = true;
-                return;
+                return; // First interaction, just start dialogue, no tutorial progression
             }
 
-            if (!hasGrabbedDrink)
+            if (!_heldDrink || !_heldDrink.isSelected)
             {
                 _friendNPC.firstDialogue = _waitingForDrink;
+                if (friendInteractCount > 3)
+                {
+                    // After multiple interactions of trying to talk without a drink, show tutorial text to hint at the solution
+                    TutorialText.Instance.ShowText(INTERACT_HELP_TEXT);
+
+                    await UniTask.Delay(8_000);
+
+                    if (TutorialText.Instance.CurrentText == INTERACT_HELP_TEXT) // Safeguard to only hide if it's still showing the interact help text
+                        TutorialText.Instance.HideText();
+                }
                 return;
             }
             else
             {
-                if (!_heldDrink.isSelected)
-                {
-                    _friendNPC.firstDialogue = _waitingForDrink;
-                    return; // Player is not holding drink
-                }
-
                 if (grabbedAlcohol)
                 {
                     _friendNPC.firstDialogue = _foundAlcohol;
@@ -124,9 +135,16 @@ public class TutorialScene : MonoBehaviour
                 {
                     _friendNPC.firstDialogue = _foundSoda;
 
-                    await UniTask.Delay(30_000);
+                    await UniTask.WaitUntil(() => _friendNPC.dialogueSystem.IsDialogueActive == false);
+
+                    await UniTask.Delay(Random.Range(5f, 10f).ToMS());
 
                     Phone.Instance.QueueNotification("Mom", "Hey, it's time to go home. I'll be waiting in the car.");
+
+                    TutorialText.Instance.ShowText("You got a text message. You can view them on your phone.");
+                    TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.MENU_BUTTON);
+
+                    await UniTask.WaitUntil(() => isPhoneEnabled || Keyboard.current.nKey.wasPressedThisFrame);
 
                     ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _carPos));
                     _getDrinkObjective.Begin();
@@ -139,10 +157,10 @@ public class TutorialScene : MonoBehaviour
     {
         playerStartPos = Player.Instance.Position;
 
-        await UniTask.Delay(8_000); // Time to check for player movement
+        await UniTask.Delay(12_500); // Time to check for player movement
 
         // If player has not moved after some seconds, show tutorial text
-        if (Vector3.Distance(Player.Instance.Position, playerStartPos) < 5)
+        if (Vector3.Distance(Player.Instance.Position, playerStartPos) < 10) // This does not work well in VR, need another way. Would be nice to look for input.
         {
             TutorialText.Instance.ShowText(MOVEMENT_TUTORIAL_TEXT);
             TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
@@ -158,13 +176,13 @@ public class TutorialScene : MonoBehaviour
     {
         await UniTask.Delay(30_000);
 
-        if (!hasTalkedToFriend)
+        if (friendInteractCount == 0)
         {
             TutorialText.Instance.ShowText(TALK_TUTORIAL_TEXT);
             TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
             TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
 
-            await UniTask.WaitUntil(() => hasTalkedToFriend);
+            await UniTask.WaitUntil(() => friendInteractCount > 0);
 
             TutorialText.Instance.HideText();
             TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
@@ -174,17 +192,24 @@ public class TutorialScene : MonoBehaviour
 
     private async void GrabDrinkTutorialSequence()
     {
+        Debug.Log("GRAB YOUR FRIEND A DRINK TUTORIAL START");
+        _friendNPC.dialogueSystem.onEnd.RemoveListener(GrabDrinkTutorialSequence);
+
         ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Find your friend a drink.", 0, _tablesPos));
         _getDrinkObjective.Begin();
 
-        await UniTask.Delay(5_000);
+        await UniTask.Delay(2_000);
 
-        TutorialText.Instance.ShowText(PHONE_TUTORIAL_TEXT);
+        TutorialText.Instance.ShowText(PHONE_TUTORIAL_TEXT1);
         TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.MENU_BUTTON);
 
         await UniTask.WaitUntil(() => isPhoneEnabled || Keyboard.current.nKey.wasPressedThisFrame);
 
         TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.MENU_BUTTON);
+
+        TutorialText.Instance.ShowText(PHONE_TUTORIAL_TEXT2);
+
+        await UniTask.Delay(12_000);
 
         TutorialText.Instance.ShowText(GUIDE_TUTORIAL_TEXT);
 
@@ -210,7 +235,6 @@ public class TutorialScene : MonoBehaviour
         ObjectiveSystem _bringDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Bring the drink to your friend.", 0, _friendNPC.transform));
         _bringDrinkObjective.Begin();
 
-        _friendNPC.dialogueSystem.onEnd.RemoveListener(GrabDrinkTutorialSequence);
     }
 
     private void Update()
