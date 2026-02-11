@@ -185,7 +185,6 @@ public class PlayerPictureCapture : MonoBehaviour
     void TakeTransparentScreenshot()
     {
         RenderTexture rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
-        rt.antiAliasing = 8;
         
         targetCamera.targetTexture = rt;
 
