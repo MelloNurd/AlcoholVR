@@ -194,7 +194,7 @@ public class TutorialScene : MonoBehaviour
     {
         Debug.Log("GRAB YOUR FRIEND A DRINK TUTORIAL START");
         _friendNPC.dialogueSystem.onEnd.RemoveListener(GrabDrinkTutorialSequence);
-
+        
         ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Find your friend a drink.", 0, _tablesPos));
         _getDrinkObjective.Begin();
 
