@@ -116,7 +116,6 @@ public class PlayerPictureCapture : MonoBehaviour
     /// </summary>
     private IEnumerator LoadPlayerCharacter()
     {
-        string playerCharacterName = "PlayerCharacter";
         string savesFolderPath = Path.Combine(Application.persistentDataPath, "BoZo_StylizedModularCharacters/CustomCharacters/X_Characters/PlayerCharacter.json");
 
         // Check if the player character JSON exists
