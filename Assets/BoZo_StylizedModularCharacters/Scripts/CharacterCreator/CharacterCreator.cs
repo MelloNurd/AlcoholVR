@@ -712,6 +712,11 @@ namespace Bozo.ModularCharacters
             SwitchCatagory(type.name);
         }
 
+        public string GetCurrentCategoryName()
+        {
+            return type != null ? type.name : "";
+        }
+
         public void CopyColor(string copyTo)
         {
             var copyOutfit = character.GetOutfit((OutfitType)Enum.Parse(typeof(OutfitType), copyTo));

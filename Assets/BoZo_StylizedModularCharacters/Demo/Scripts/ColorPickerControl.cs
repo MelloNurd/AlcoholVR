@@ -86,6 +86,7 @@ namespace Bozo.ModularCharacters
         [SerializeField] HandColorer rightHand;
 
         [SerializeField] GameObject bodyPage;
+        [SerializeField] CharacterCreator characterCreator;
 
         private void Awake()
         {
@@ -615,7 +616,7 @@ namespace Bozo.ModularCharacters
 
         public void CheckIfBodyPage(Slider callingSlider)
         {
-            if(bodyPage.gameObject.activeSelf)
+            if(bodyPage.gameObject.activeSelf || characterCreator.GetCurrentCategoryName() == "Body")
             {
                 DecalXSlider.value = callingSlider.value;
                 DecalYSlider.value = callingSlider.value;
