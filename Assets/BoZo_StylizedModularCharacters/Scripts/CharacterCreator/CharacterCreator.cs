@@ -419,8 +419,38 @@ namespace Bozo.ModularCharacters
                     return;
                 }
             }
+
+            // SPECIAL CASE: For Head outfits, preserve existing head colors 1-6
+            if (outfit.Type != null && outfit.Type.name == "Head")
+            {
+                var currentHead = character.GetOutfit("Head");
+                if (currentHead != null)
+                {
+                    // Capture colors 1-6 from the current head
+                    var headColors = new List<Color>();
+                    for (int i = 1; i <= 6; i++)
+                    {
+                        headColors.Add(currentHead.GetColor(i));
+                    }
+                    
+                    // Instantiate the new head
+                    var newHead = Instantiate(outfit, character.transform);
+                    
+                    // Apply the saved colors to the new head
+                    for (int i = 0; i < headColors.Count; i++)
+                    {
+                        newHead.SetColor(headColors[i], i + 1);
+                        Debug.Log($"Preserved head color {i + 1}: {headColors[i]}");
+                    }
+                    
+                    SetColorPickerObject(newHead);
+                    SwitchTextureCatagory(outfit.TextureCatagory);
+                    type = outfit.Type;
+                    return;
+                }
+            }
             
-            // For all other outfits (or if no body exists), instantiate normally
+            // For all other outfits (or if no body/head exists), instantiate normally
             var inst = Instantiate(outfit, character.transform);
             
             SetColorPickerObject(inst);
