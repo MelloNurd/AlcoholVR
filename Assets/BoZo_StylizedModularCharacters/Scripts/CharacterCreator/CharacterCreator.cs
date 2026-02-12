@@ -172,11 +172,11 @@ namespace Bozo.ModularCharacters
 
             UpdateCharacterSaves();
             
-            // Initialize stance slider
+            // Initialize stance slider with a slight delay to ensure OutfitSystem is ready
             if (stanceSlider != null)
             {
                 stanceSlider.onValueChanged.AddListener(OnStanceChanged);
-                stanceSlider.value = character.stance; // Set initial value
+                StartCoroutine(InitializeStanceSlider());
             }
             
             // Delay hand color update to ensure body outfit is fully loaded
@@ -192,7 +192,21 @@ namespace Bozo.ModularCharacters
         }
 
         /// <summary>
-        /// Delays hand color update to ensure the body outfit is fully initialized
+        /// Delays stance slider initialization to ensure OutfitSystem is fully initialized
+        /// </summary>
+        private IEnumerator InitializeStanceSlider()
+        {
+            // Wait a frame to ensure OutfitSystem has initialized stance
+            yield return null;
+            
+            if (stanceSlider != null && character != null)
+            {
+                stanceSlider.value = character.stance;
+            }
+        }
+
+        /// <summary>
+        /// Delays hand color update to ensure the body outfit is fully loaded
         /// </summary>
         private IEnumerator DelayedHandColorUpdate()
         {
