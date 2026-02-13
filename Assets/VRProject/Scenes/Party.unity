@@ -1493,6 +1493,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &93890398
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2221,6 +2223,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &106631920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3160,6 +3164,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!20 &113527837 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 1344356157249294060, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
+  m_PrefabInstance: {fileID: 454000631}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &126807278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4622,6 +4631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &215695143
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4978,6 +4989,108 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1141622953849035413, guid: 51c776ded3adb804f9e8fc7f0727bcc3, type: 3}
   m_PrefabInstance: {fileID: 1728179127}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &224481198
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224481199}
+  - component: {fileID: 224481202}
+  - component: {fileID: 224481201}
+  - component: {fileID: 224481200}
+  m_Layer: 0
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &224481199
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224481198}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.07}
+  m_LocalScale: {x: 0.0008, y: 0.0008, z: 0.0008}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 1130774674}
+  m_Father: {fileID: 78892805999670315}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0, y: 0.586}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &224481200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224481198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &224481201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224481198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!223 &224481202
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224481198}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 113527837}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1001 &228186191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5297,6 +5410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &237625238
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5387,6 +5502,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &240322853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5477,6 +5594,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &243667568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7583,6 +7702,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &403333995 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7204161691910585818, guid: b557e48356610d9448e4bd1dbca5f4da, type: 3}
@@ -8650,6 +8771,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &433824655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8663,6 +8786,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &450948858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16233,6 +16358,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &484432339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16246,6 +16373,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &492970586
 GameObject:
   m_ObjectHideFlags: 0
@@ -16738,6 +16867,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &523471548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16945,6 +17076,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &523471554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16958,6 +17091,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &523471555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16971,6 +17106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!43 &528662233
 Mesh:
   m_ObjectHideFlags: 32
@@ -17964,6 +18101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &575956144
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18070,6 +18209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &575956148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18083,6 +18224,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &578274113 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: dd28c4bad3d803446aa52f113eaff6b9, type: 3}
@@ -18335,6 +18478,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &583323685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18348,6 +18493,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &588780990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18485,6 +18632,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &588780994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18498,6 +18647,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &590278378
 GameObject:
   m_ObjectHideFlags: 0
@@ -19173,6 +19324,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &633789012
 GameObject:
   m_ObjectHideFlags: 0
@@ -19324,6 +19477,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &637488646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19337,6 +19492,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &637780938 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e15a10bfbf548834c8dc0ecdf2aa1ad2, type: 3}
@@ -19970,7 +20127,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9078546457032375716, guid: 36ea8c045cb9210419e942ab894e8c22, type: 3}
       propertyPath: RangedInteractors
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9078546457032375716, guid: 36ea8c045cb9210419e942ab894e8c22, type: 3}
       propertyPath: SmoothTurningSpeed
@@ -20166,6 +20323,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &681521689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20483,6 +20642,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &705278992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20496,6 +20657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &705727511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8806353641441298670, guid: 96bbb56a8e9acbe4d81ecfd40cd8945d, type: 3}
@@ -21258,6 +21421,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &739199998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21271,6 +21436,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &739199999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21284,6 +21451,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &740763021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22261,6 +22430,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &791961800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22274,6 +22445,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &791961801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22287,6 +22460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &791961802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22300,6 +22475,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &793691649
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23189,6 +23366,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &818761215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23202,6 +23381,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &825243416
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23291,6 +23472,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &832452205
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23935,6 +24118,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &847809199
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24311,6 +24496,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &858482980
 GameObject:
   m_ObjectHideFlags: 0
@@ -24982,6 +25169,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: cfd7dccebc721624480123d1b29bb39f, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &893990170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25389,6 +25578,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &908064899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25402,6 +25593,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &920087501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25492,6 +25685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &924445998
 GameObject:
   m_ObjectHideFlags: 0
@@ -26668,6 +26863,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &978572441
 GameObject:
   m_ObjectHideFlags: 0
@@ -26732,6 +26929,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &987742189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26826,6 +27025,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &987742193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26839,6 +27040,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &988141378
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27070,6 +27273,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1003972841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28376,6 +28581,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1093392954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28619,6 +28826,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1106938668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28992,6 +29201,78 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5525449905927152896, guid: d9cac79e541b09c4c996ff419a009ea9, type: 3}
   m_PrefabInstance: {fileID: 1129836345}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1130774673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1130774674}
+  - component: {fileID: 1130774676}
+  - component: {fileID: 1130774675}
+  m_Layer: 0
+  m_Name: RawImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1130774674
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130774673}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 224481199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -7.3, y: -8.8}
+  m_SizeDelta: {x: 2018.1, y: 1197.4}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1130774675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130774673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 102d4f324f1f0444c9b00cc7d68e1ae7, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1130774676
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130774673}
+  m_CullTransparentMesh: 1
 --- !u!1001 &1135902751
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29665,6 +29946,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1163131268
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29927,6 +30210,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1176712624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30400,6 +30685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1190366979
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30538,6 +30825,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1190366983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30551,6 +30840,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1192907230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30801,6 +31092,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1206652909
 GameObject:
   m_ObjectHideFlags: 0
@@ -31083,6 +31376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1207726473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31096,6 +31391,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1208247303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31360,6 +31657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1210971934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31373,6 +31672,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1212196915
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31796,6 +32097,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1215607785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32000,6 +32303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1219296880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32013,6 +32318,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1219970010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32217,6 +32524,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1232798624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32307,6 +32616,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1241190668
 GameObject:
   m_ObjectHideFlags: 0
@@ -32504,6 +32815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1246628694
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32712,6 +33025,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1263128306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32824,6 +33139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1271283415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32946,6 +33263,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1271283421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32959,6 +33278,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1271283422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32972,6 +33293,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1271283423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32985,6 +33308,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1273398418
 GameObject:
   m_ObjectHideFlags: 0
@@ -33215,6 +33540,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1280015538 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6838323299736510844, guid: 200e1613efdd6564d8686290868ec3cd, type: 3}
@@ -33642,6 +33969,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1308776303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33655,6 +33984,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1308776304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33668,6 +33999,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1308776305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33681,6 +34014,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1309140713
 GameObject:
   m_ObjectHideFlags: 0
@@ -34222,6 +34557,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1324570767
 GameObject:
   m_ObjectHideFlags: 0
@@ -34932,6 +35269,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1382415091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35426,6 +35765,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1409522017 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8913837435673768605, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
@@ -35551,6 +35892,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1419754773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35564,6 +35907,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1426656019 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9021649402344875932, guid: 277919112710dc04f85f4e59d908c83b, type: 3}
@@ -52544,6 +52889,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8415821801240724506, guid: 687e61e6b2d01024188f63a36d3584fc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -52578,6 +52927,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1457996400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52591,6 +52942,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1460043740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53046,6 +53399,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1482496459
 GameObject:
   m_ObjectHideFlags: 0
@@ -53624,6 +53979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1505514857
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53705,6 +54062,78 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2875658320704509396, guid: 5591d212541c216499b885cc0e7aae23, type: 3}
   m_PrefabInstance: {fileID: 1505514857}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1510980721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1510980722}
+  - component: {fileID: 1510980724}
+  - component: {fileID: 1510980723}
+  m_Layer: 0
+  m_Name: RawImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1510980722
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510980721}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1811791190}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -7.3, y: -8.8}
+  m_SizeDelta: {x: 2018.1, y: 1197.4}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1510980723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510980721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 483a6d61f20625b4baae300f477716e2, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1510980724
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510980721}
+  m_CullTransparentMesh: 1
 --- !u!4 &1515570087 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7896078451320730912, guid: 2cd0a8ac8408f3e44802f2c6fab4233a, type: 3}
@@ -53723,6 +54152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1516909638
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53878,6 +54309,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1525525787
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54923,6 +55356,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1579945149 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7896078451320730912, guid: 2cd0a8ac8408f3e44802f2c6fab4233a, type: 3}
@@ -54941,6 +55376,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1584436032
 GameObject:
   m_ObjectHideFlags: 0
@@ -55270,6 +55707,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1603711594 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2621798438712406157, guid: 740e169318a72cf4da4b92a8e7714bce, type: 3}
@@ -55299,6 +55738,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1611160868
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55389,6 +55830,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1611508834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1366951087463842849, guid: ff3da655113958e4882ec979127a93ce, type: 3}
@@ -55407,6 +55850,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1611544637
 GameObject:
   m_ObjectHideFlags: 0
@@ -55661,6 +56106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1617946654 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7204161691910585818, guid: b557e48356610d9448e4bd1dbca5f4da, type: 3}
@@ -55679,6 +56126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1638558648
 GameObject:
   m_ObjectHideFlags: 0
@@ -56253,6 +56702,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: a8a07d2f0b9cec64982fb844e97118a3, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1664778346
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56331,6 +56782,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1666217427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 39056289375804152, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
@@ -57070,6 +57523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1743872235
 GameObject:
   m_ObjectHideFlags: 0
@@ -57470,6 +57925,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1765154847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57660,6 +58117,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1780334861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57814,6 +58273,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1780334865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57827,6 +58288,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1787088980
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58222,6 +58685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1809263935
 GameObject:
   m_ObjectHideFlags: 0
@@ -58375,6 +58840,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1810713546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58502,6 +58969,108 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b814ce93134135440b63532252cfad0b, type: 3}
+--- !u!1 &1811791189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1811791190}
+  - component: {fileID: 1811791193}
+  - component: {fileID: 1811791192}
+  - component: {fileID: 1811791191}
+  m_Layer: 0
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1811791190
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811791189}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.07}
+  m_LocalScale: {x: 0.0008, y: 0.0008, z: 0.0008}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 1510980722}
+  m_Father: {fileID: 9102408975121865706}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0, y: 0.586}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1811791191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811791189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1811791192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811791189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!223 &1811791193
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811791189}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 113527837}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1824170618
 GameObject:
   m_ObjectHideFlags: 0
@@ -58699,6 +59268,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1825497644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58712,6 +59283,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1840429657
 GameObject:
   m_ObjectHideFlags: 0
@@ -66622,6 +67195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1855136692
 GameObject:
   m_ObjectHideFlags: 0
@@ -67098,6 +67673,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1883339231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -68039,6 +68616,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1915975163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68052,6 +68631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1915975164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68065,6 +68646,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1919538186
 GameObject:
   m_ObjectHideFlags: 0
@@ -68409,6 +68992,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1953763954 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 69890993087294767, guid: c0a1cfa3becd84643be4644d9d81a7ab, type: 3}
@@ -68427,6 +69012,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1954045975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -68592,6 +69179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1965307004
 GameObject:
   m_ObjectHideFlags: 0
@@ -69292,6 +69881,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1998543461 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3105336533488979678, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
@@ -69407,6 +69998,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &2000376477 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4265032712748209325, guid: b814ce93134135440b63532252cfad0b, type: 3}
@@ -69538,6 +70131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2014792153
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -69793,6 +70388,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &2028481898
 GameObject:
   m_ObjectHideFlags: 0
@@ -69923,6 +70520,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2037987103
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70185,6 +70784,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2055723115
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70919,6 +71520,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2099001026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71033,6 +71636,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2102342756
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71137,6 +71742,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &2102342762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71150,6 +71757,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &2107319554 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 43148052855830621, guid: cabe43f3432c82b42babb20de5f5e3a8, type: 3}
@@ -71168,6 +71777,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 8a5100a4139a4c24f8d3c4c3b362e0da, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &2109289749 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7240998767492049112, guid: 5ef7055b6a7c6294e9cdedf9889fddb4, type: 3}
@@ -71186,6 +71797,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2109830955
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71983,6 +72596,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2136123861
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72433,7 +73048,8 @@ Transform:
   m_LocalPosition: {x: -5.8939967, y: 4.4799986, z: 0.88300043}
   m_LocalScale: {x: 0.5268815, y: 0.5268816, z: 0.52688164}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 224481199}
   m_Father: {fileID: 1637598470033520513}
   m_LocalEulerAnglesHint: {x: 0, y: 74.223, z: 0}
 --- !u!33 &90301146137556232
@@ -73329,6 +73945,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &543450652422162108 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3150267656213348558, guid: 024cea7eb17c66648a19c6e6f72e0738, type: 3}
@@ -73347,6 +73965,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &543450652459384926
 Transform:
   m_ObjectHideFlags: 0
@@ -73402,6 +74022,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &543450653629566782 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6879909554540508245, guid: 57806b9e79c7ce5439868de6749fa258, type: 3}
@@ -80494,6 +81116,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &1478601846257066395 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8328072391586664984, guid: e5d9fa49ef9bd0840b3182229234a694, type: 3}
@@ -81670,6 +82294,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &2092017357565883679
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81857,6 +82483,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!65 &2131067159759484666
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83674,6 +84302,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &3069164817586551091
 Transform:
   m_ObjectHideFlags: 0
@@ -83828,6 +84458,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &3098505770411273448
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84653,6 +85285,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &3552867461092507886
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -85322,6 +85956,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &4051727817193197180
 GameObject:
   m_ObjectHideFlags: 0
@@ -85367,6 +86003,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &4089766589091815614
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -85571,6 +86209,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &4152962474039704057 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5201499055645429561, guid: 4c1e63d60cb4ae142a05a75cb9592d5c, type: 3}
@@ -85650,6 +86290,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &4192967270675585113
 Transform:
   m_ObjectHideFlags: 0
@@ -85768,6 +86410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &4250266453731547650
 Transform:
   m_ObjectHideFlags: 0
@@ -85967,6 +86611,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &4277770450203886930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85980,6 +86626,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &4284368953238545444
 GameObject:
   m_ObjectHideFlags: 0
@@ -86910,6 +87558,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &4635553863533703139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86923,6 +87573,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &4642004228946581177
 GameObject:
   m_ObjectHideFlags: 0
@@ -87426,6 +88078,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &4795101301098007857
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -87782,6 +88436,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &4896451664146108265
 GameObject:
   m_ObjectHideFlags: 0
@@ -88183,6 +88839,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &5067611814646339401
 Transform:
   m_ObjectHideFlags: 0
@@ -88493,6 +89151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &5223680470125215014
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -89464,6 +90124,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &5769175787063194395
 Transform:
   m_ObjectHideFlags: 0
@@ -90626,6 +91288,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &6181220250377552839
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -91119,6 +91783,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &6277441861549729928 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5201499055645429561, guid: 4c1e63d60cb4ae142a05a75cb9592d5c, type: 3}
@@ -91268,6 +91934,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &6312727635689488986
 GameObject:
   m_ObjectHideFlags: 0
@@ -91700,6 +92368,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &6535048700336490063
 Transform:
   m_ObjectHideFlags: 0
@@ -92456,6 +93126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &6737724511506140412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92469,6 +93141,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &6739832199065266521
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -92720,6 +93394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &6826242714467463036
 Transform:
   m_ObjectHideFlags: 0
@@ -92866,6 +93542,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &6898959025200105226
 GameObject:
   m_ObjectHideFlags: 0
@@ -93315,6 +93993,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &7103772571462736637
 Transform:
   m_ObjectHideFlags: 0
@@ -93733,6 +94413,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &7204161692416291322 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7204161691910585818, guid: b557e48356610d9448e4bd1dbca5f4da, type: 3}
@@ -93751,6 +94433,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &7211542365352949149
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -93830,6 +94514,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &7289729277451102676
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -93982,6 +94668,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &7325960883376555639 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5525217084155388490, guid: 57806b9e79c7ce5439868de6749fa258, type: 3}
@@ -94000,6 +94688,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &7328401887798733484
 Transform:
   m_ObjectHideFlags: 0
@@ -94306,6 +94996,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &7405889014024587295
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -94623,6 +95315,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &7663593017957201675
 Transform:
   m_ObjectHideFlags: 0
@@ -94807,6 +95501,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &7695853801199933239 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4265032712748209325, guid: b814ce93134135440b63532252cfad0b, type: 3}
@@ -95000,6 +95696,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &7819052797466554801
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -95104,6 +95802,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 3a1fc7c73317da14db807374fa6fe5af, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &7862989998740490730
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -95609,6 +96309,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &8127590287158062856 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4783826763423090374, guid: df1bf36cef3dbeb458e4cf08e2339ebe, type: 3}
@@ -95627,6 +96329,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &8127593258618159294
 GameObject:
   m_ObjectHideFlags: 0
@@ -95701,6 +96405,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &8142881199151582973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4265032712748209325, guid: b814ce93134135440b63532252cfad0b, type: 3}
@@ -96059,6 +96765,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &8285590546072797988
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -96256,6 +96964,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &8303646934299786163
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -96616,6 +97326,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!4 &8449144530555816029
 Transform:
   m_ObjectHideFlags: 0
@@ -96781,6 +97493,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &8516365425509323297
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -97054,6 +97768,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &8574126905573364895
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -97217,6 +97933,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &8684208469639648118
 GameObject:
   m_ObjectHideFlags: 0
@@ -97616,6 +98334,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!33 &8851533597378440524
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -97784,6 +98504,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!23 &8892281553090421209
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -98132,7 +98854,8 @@ Transform:
   m_LocalPosition: {x: -6.0283966, y: 3.6249275, z: 0.875747}
   m_LocalScale: {x: 0.52688175, y: 0.5268816, z: 0.5268817}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 1811791190}
   m_Father: {fileID: 1637598470033520513}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &9115425223290633846
@@ -98171,6 +98894,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!65 &9184960856518255895
 BoxCollider:
   m_ObjectHideFlags: 0
