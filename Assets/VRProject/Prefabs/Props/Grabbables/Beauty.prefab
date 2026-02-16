@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1697768718334861227}
   - component: {fileID: 7609713321149028776}
   - component: {fileID: 9168535184996111783}
+  - component: {fileID: 289649297009237228}
   - component: {fileID: 5546534166137292609}
   - component: {fileID: 7310568453231909474}
   m_Layer: 0
@@ -32,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.640151, y: 0.76299995, z: 3.4939725}
-  m_LocalScale: {x: 0.53990203, y: 0.53990203, z: 0.53990203}
+  m_LocalScale: {x: 0.62057704, y: 0.62057686, z: 0.62057686}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -92,6 +93,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &7609713321149028776
 MeshCollider:
@@ -142,6 +144,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &289649297009237228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4522460493783395865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
+  _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &5546534166137292609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +243,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
