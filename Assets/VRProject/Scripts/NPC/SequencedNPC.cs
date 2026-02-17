@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -149,12 +150,19 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
-        StartSequence(0);
+        StartCoroutine(DelayedStartSequence());
     }
 
     private void Update()
     {
         ProcessWalking();
+    }
+
+    // Coroutine DelayedStartSequence to wait until end of frame to ensure all Start() methods have run, allowing outfit system to initialize characters before sequences start (in case sequences rely on that)
+    private IEnumerator DelayedStartSequence()
+    {
+        yield return new WaitForEndOfFrame();
+        StartSequence(0);
     }
 
     private void ProcessWalking()
