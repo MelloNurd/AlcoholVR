@@ -1,8 +1,11 @@
 using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using CommonUsages = UnityEngine.XR.CommonUsages;
 
 public class TutorialScene : MonoBehaviour
 {
@@ -10,10 +13,13 @@ public class TutorialScene : MonoBehaviour
     private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry clicking on them using the trigger on one of your controllers.";
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in with your hands to make a dialogue selection!";
     private const string PHONE_TUTORIAL_TEXT1 = "Press the menu button on your left controller to pull out and put away your phone.";
-    private const string PHONE_TUTORIAL_TEXT2 = "You can use your phone with your other hand. There are buttons on the bottom row of the home screen that you can click in to see different menus.";
+    private const string PHONE_TUTORIAL_TEXT2 = "You can use your phone by clicking the trigger on your right hand. There are buttons on the bottom row of the home screen that you can click in to see different menus.";
     private const string GUIDE_TUTORIAL_TEXT = "Try opening the objectives menu by pressing on the button with the flag. There, you can enable guidelines to assist in progression of the game.";
     private const string GRAB_TUTORIAL_TEXT = "Using the trigger on either controller, you can grab objects. Try grabbing one of the drinks.";
     private const string INTERACT_HELP_TEXT = "Try holding a drink when you talk to them.";
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip _bgAudio;
 
     [Header("Controllers")]
     [SerializeField] private GameObject leftController;
@@ -24,7 +30,7 @@ public class TutorialScene : MonoBehaviour
 
     [Header("Objects")]
     [SerializeField] private Transform _tablesPos;
-    [SerializeField] private Transform _carPos;
+    [SerializeField] private XRSimpleInteractable _car;
 
     [Header("Dialogue")]
     [SerializeField] private Dialogue _waitingForDrink;
@@ -48,9 +54,15 @@ public class TutorialScene : MonoBehaviour
     private bool grabbedAlcohol = false;
     private XRGrabInteractable _heldDrink;
 
+    private bool playerHasMoved = false;
+
+    private ObjectiveSystem bringDrinkToFriend;
 
     private async void Start()
     {
+        AudioSource bgAudioSource = PlayerAudio.PlayLoopingSound(_bgAudio);
+        _ = Tween.AudioVolume(bgAudioSource, 0f, 1f, 1f);
+
         SetupEvents();
 
         await InitializeMovementTutorial();
@@ -62,6 +74,8 @@ public class TutorialScene : MonoBehaviour
         foreach(var drinks in FindObjectsByType<OpenableBottle>(FindObjectsSortMode.None))
         {
             var rb = drinks.GetComponent<Rigidbody>();
+            if (!rb) continue;
+
             rb.isKinematic = true;
             var grabInteractable = drinks.GetComponent<XRGrabInteractable>();
             grabInteractable.enabled = false;
@@ -134,6 +148,8 @@ public class TutorialScene : MonoBehaviour
                 else
                 {
                     _friendNPC.firstDialogue = _foundSoda;
+                    bringDrinkToFriend.Complete();
+                    Destroy(_heldDrink.gameObject);
 
                     await UniTask.WaitUntil(() => _friendNPC.dialogueSystem.IsDialogueActive == false);
 
@@ -144,10 +160,14 @@ public class TutorialScene : MonoBehaviour
                     TutorialText.Instance.ShowText("You got a text message. You can view them on your phone.");
                     TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.MENU_BUTTON);
 
-                    await UniTask.WaitUntil(() => isPhoneEnabled || Keyboard.current.nKey.wasPressedThisFrame);
-
-                    ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _carPos));
+                    ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _car.transform));
                     _getDrinkObjective.Begin();
+
+                    _car.activated.AddListener((ActivateEventArgs test) =>
+                    {
+                        _getDrinkObjective.Complete();
+                        Player.Instance.loading.TransitionSceneById(SceneManager.GetActiveScene().buildIndex + 1);
+                    });
                 }
             }
         });
@@ -155,21 +175,15 @@ public class TutorialScene : MonoBehaviour
 
     private async UniTask InitializeMovementTutorial()
     {
-        playerStartPos = Player.Instance.Position;
+        await UniTask.Delay(5_000);
 
-        await UniTask.Delay(12_500); // Time to check for player movement
+        TutorialText.Instance.ShowText(MOVEMENT_TUTORIAL_TEXT);
+        TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
 
-        // If player has not moved after some seconds, show tutorial text
-        if (Vector3.Distance(Player.Instance.Position, playerStartPos) < 10) // This does not work well in VR, need another way. Would be nice to look for input.
-        {
-            TutorialText.Instance.ShowText(MOVEMENT_TUTORIAL_TEXT);
-            TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
+        await UniTask.WaitUntil(() => playerHasMoved);
 
-            await UniTask.WaitUntil(() => Player.Instance.Position != playerStartPos);
-
-            TutorialText.Instance.HideText();
-            TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
-        }
+        TutorialText.Instance.HideText();
+        TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
     }
 
     private async UniTask CheckIfPlayerTalkedToFriend()
@@ -209,6 +223,8 @@ public class TutorialScene : MonoBehaviour
 
         TutorialText.Instance.ShowText(PHONE_TUTORIAL_TEXT2);
 
+        TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
+
         await UniTask.Delay(12_000);
 
         TutorialText.Instance.ShowText(GUIDE_TUTORIAL_TEXT);
@@ -216,6 +232,7 @@ public class TutorialScene : MonoBehaviour
         await UniTask.WaitUntil(() => hasActivatedGuide || Keyboard.current.bKey.wasPressedThisFrame);
 
         TutorialText.Instance.HideText();
+        TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
 
         await UniTask.WaitUntil(() => Vector3.Distance(Player.Instance.Position, _tablesPos.position) < 5f);
 
@@ -232,13 +249,27 @@ public class TutorialScene : MonoBehaviour
         TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
 
         // objective to bring drink to friend
-        ObjectiveSystem _bringDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Bring the drink to your friend.", 0, _friendNPC.transform));
-        _bringDrinkObjective.Begin();
+        bringDrinkToFriend = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Bring the drink to your friend.", 0, _friendNPC.transform));
+        bringDrinkToFriend.Begin();
 
+        await UniTask.Delay(1_000);
+        TutorialText.Instance.ShowText("Try looking at your objectives to see what to do next.");
+        await UniTask.Delay(6_000);
+        TutorialText.Instance.HideText();
     }
 
     private void Update()
     {
+        if (!playerHasMoved)
+        {
+            InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 input);
+            if (input != Vector2.zero)
+            {
+                Debug.Log("Triggering player has moved reading value: " + input);
+                playerHasMoved = true;
+            }
+        }
+
         if (buttonsSpawned && !hasPressedButton && buttonTimer < 8f)
         {
             buttonTimer += Time.deltaTime;
