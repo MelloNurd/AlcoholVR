@@ -628,6 +628,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &64086962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,6 +1208,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &118309129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1219,6 +1223,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &138079031
 GameObject:
   m_ObjectHideFlags: 0
@@ -2517,67 +2523,6 @@ Transform:
   - {fileID: 955268344}
   m_Father: {fileID: 1424587475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &406916752
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -9.4405
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2.171
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.1875075
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.5000007
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.5000008
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.49999925
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.49999928
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 254444cb6c7535f41b7f7095ff803c4e, type: 2}
-    - target: {fileID: 919132149155446097, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
-      propertyPath: m_Name
-      value: Chrome Metal Hanger
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3c5fd9afef637a14abc8dd3e79a5c59d, type: 3}
 --- !u!1001 &422472755
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3715,6 +3660,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5108345293018584614, guid: a6e87a5d4530a364892df2dd6503aac5, type: 3}
   m_PrefabInstance: {fileID: 375988137}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &576627994
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.4435
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.1708
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.1876
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.50008726
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.49991274
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.50008726
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.49991274
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -89.98
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 254444cb6c7535f41b7f7095ff803c4e, type: 2}
+    - target: {fileID: 919132149155446097, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
+      propertyPath: m_Name
+      value: Chrome Metal Hanger (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e8c47c2a9ff373c4480dc6f29d9a567d, type: 3}
 --- !u!1 &618712428
 GameObject:
   m_ObjectHideFlags: 0
@@ -6634,6 +6640,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1124609168
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7122,6 +7130,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1164901792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7135,6 +7145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1178688699
 GameObject:
   m_ObjectHideFlags: 0
@@ -8391,6 +8403,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!114 &1373627955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8404,6 +8418,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1397463200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8898,6 +8914,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1445526285
 GameObject:
   m_ObjectHideFlags: 0
@@ -9561,6 +9579,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1483118053
 GameObject:
   m_ObjectHideFlags: 0
@@ -10957,6 +10977,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &1689827570
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13412,6 +13434,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &1901213943
 GameObject:
   m_ObjectHideFlags: 0
@@ -14330,6 +14354,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &2104634176
 GameObject:
   m_ObjectHideFlags: 0
@@ -14581,6 +14607,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &2110664170
 GameObject:
   m_ObjectHideFlags: 0
@@ -15564,6 +15592,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 0}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1 &2142824944
 GameObject:
   m_ObjectHideFlags: 0
@@ -15824,6 +15854,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &5521695559301781202
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15911,6 +15943,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1001 &8265382719538672105
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16145,6 +16179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
   _impactSound: {fileID: 8300000, guid: cfd7dccebc721624480123d1b29bb39f, type: 3}
+  _pitchVariation: 0.1
+  _basePitch: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -16157,7 +16193,6 @@ SceneRoots:
   - {fileID: 1083013225}
   - {fileID: 1158843218}
   - {fileID: 699838834}
-  - {fileID: 406916752}
   - {fileID: 767620446}
   - {fileID: 1886917587}
   - {fileID: 1819654996}
@@ -16165,3 +16200,4 @@ SceneRoots:
   - {fileID: 1872327886}
   - {fileID: 1874304569}
   - {fileID: 1053626278678300164}
+  - {fileID: 576627994}
