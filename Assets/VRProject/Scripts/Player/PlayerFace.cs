@@ -63,4 +63,9 @@ public class PlayerFace : MonoBehaviour
             }
         }
     }
+
+    public void PlayDrinkSound()
+    {
+        if(_drinkSound != null) _audioSource.PlayOneShot(_drinkSound);
+    }
 }

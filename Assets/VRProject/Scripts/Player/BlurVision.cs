@@ -14,7 +14,7 @@ public class BlurVision : MonoBehaviour
 
     public void BlurPlayerVision() // non-static, non-async wrapper method for UnityEvents
     {
-        BlurPlayerVision(0.25f, 1.5f, 0.25f);
+        BlurPlayerVision(0.25f, 1f, 0.25f);
     }
 
     public async static void BlurPlayerVision(float fadeInTime = 0.25f, float duration = 1.5f, float fadeOutTime = 0.25f)
