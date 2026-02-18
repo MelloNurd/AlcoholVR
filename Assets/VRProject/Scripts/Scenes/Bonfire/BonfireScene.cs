@@ -487,7 +487,7 @@ public class BonfireScene : MonoBehaviour
             _drankMysteryDrink.Value = true;
 
             PlayerFace.Instance.PlayDrinkSound();
-            BlurVision.BlurPlayerVision(0.15f, 1f, 0.15f);
+            BlurVision.BlurPlayerVision(0.15f, .25f, 0.15f);
 
             await Player.Instance.loading.CloseEyesAsync(0.15f);
 
