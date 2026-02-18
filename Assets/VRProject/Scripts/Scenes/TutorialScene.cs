@@ -263,7 +263,11 @@ public class TutorialScene : MonoBehaviour
         if (!playerHasMoved)
         {
             InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 input);
-            if (input != Vector2.zero)
+            if (input != Vector2.zero
+#if UNITY_EDITOR
+                || Keyboard.current.wKey.wasPressedThisFrame
+#endif
+                )
             {
                 Debug.Log("Triggering player has moved reading value: " + input);
                 playerHasMoved = true;

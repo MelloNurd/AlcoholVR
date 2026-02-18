@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     private static SoundManager Instance { get; set; }
 
-    public static int audioSourceCount = 5;
+    public static int audioSourceCount = 10;
 
     private static List<AudioSource> audioSources = new List<AudioSource>();
     private static int currentAudioSourceIndex = 0;
@@ -56,6 +56,7 @@ public class SoundManager : MonoBehaviour
         }
 
         AudioSource audioSource = GetNextSource();
+        audioSource.name = $"Sound_{audioClip.name}";
 
         audioSource.transform.position = position;
 
