@@ -3,7 +3,10 @@ using UnityEngine;
 public class AnimeationEvents : MonoBehaviour
 {
     [SerializeField] private AudioClip[] rageSlamSounds;
-    [SerializeField] private AudioClip _footstepSound;
+
+    [Header("Footstep Sounds")]
+    [SerializeField] private AudioClip _footstepHardSound;
+    [SerializeField] private AudioClip _footstepDirtSound;
 
     int slamIndex = -1;
 
@@ -41,12 +44,23 @@ public class AnimeationEvents : MonoBehaviour
 
     public void PlayFootstepSound()
     {
-        if (_footstepSound == null)
+        if (_footstepDirtSound == null || _footstepHardSound == null)
         {
             Debug.LogError("[AnimeationEvents] Footstep sound is not assigned.", gameObject);
             return;
         }
 
-        SoundManager.PlaySoundAtPoint(_footstepSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+        // Raycast downwards, if it hits a terrain play the dirt sound, otherwise play the hard sound
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f))
+        {
+            if (hit.collider.gameObject.CompareTag("Terrain"))
+            {
+                SoundManager.PlaySoundAtPoint(_footstepDirtSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+            }
+        }
+        else
+        {
+            SoundManager.PlaySoundAtPoint(_footstepHardSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+        }
     }
 }

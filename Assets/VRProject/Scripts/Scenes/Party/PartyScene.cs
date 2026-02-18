@@ -102,7 +102,7 @@ public class PartyScene : MonoBehaviour
         }
         else if (Keyboard.current.gKey.wasPressedThisFrame)
         {
-            InitiateDrunkFriend();
+            _drunkDrivingFriendNPC.StartNextSequence(); // Start drunk friend manually
         }
     }
 
