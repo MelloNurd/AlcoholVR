@@ -33,6 +33,10 @@ public class LookAt : MonoBehaviour
         animator = GetComponent<Animator>();
         if (objectToLookAt != null)
             lookPosition = objectToLookAt.position;
+
+        //Pick a random time 1-6 seconds to trigger animator.SetTrigger("StartBlink")
+        float randomTime = Random.Range(1f, 10f);
+        StartCoroutine(StartBlink(randomTime));
     }
 
     void Update()
@@ -111,5 +115,11 @@ public class LookAt : MonoBehaviour
         // Convert back to world space and return a world position
         Vector3 limitedWorldDir = transform.rotation * limitedLocalDir;
         return origin + limitedWorldDir;
+    }
+
+    private System.Collections.IEnumerator StartBlink(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        animator.SetTrigger("StartBlink");
     }
 }
