@@ -90,6 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyObj: {fileID: 0}
   isDrunk: 0
+  alwaysUseStartAnim: 0
   startAnim: {fileID: 0}
   agent: {fileID: 0}
   animator: {fileID: 0}
@@ -106,7 +107,7 @@ MonoBehaviour:
   _currentStateName: 
   lookAt: {fileID: 0}
   lookAtPoint: {fileID: 0}
-  _exclamationObj: {fileID: 5664316471347369143}
+  exclamationObj: {fileID: 5664316471347369143}
   <IsInteractable>k__BackingField: 1
   firstDialogue: {fileID: 11400000, guid: 10061aed67d77d44aa95cc2d1b8af237, type: 2}
   incompleteDialogue: {fileID: 11400000, guid: a02ca104442acb6479b06ba9a469b5a3, type: 2}
@@ -2493,7 +2494,16 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d5363f23d3e163842b091f54c3724dbe, type: 3}
   - {fileID: 8300000, guid: bf8cda5aa36cedc45b23a3f343cab490, type: 3}
   - {fileID: 8300000, guid: 89b302593c41a1440855812a18b1a811, type: 3}
-  _footstepSound: {fileID: 8300000, guid: 91f3d7b3a511c6947920f8c2264144b9, type: 3}
+  _footstepIndoorSounds:
+  - {fileID: 8300000, guid: 3816b16da69102643a004e2c19dd9512, type: 3}
+  - {fileID: 8300000, guid: a15375d5e29c45c4a99287bece227f6d, type: 3}
+  - {fileID: 8300000, guid: 8855edd5d8036384483a975cb36ad6d9, type: 3}
+  - {fileID: 8300000, guid: aeca3b68bad5fc747bbaf72ad9b13a68, type: 3}
+  _footstepOutdoorSounds:
+  - {fileID: 8300000, guid: f8f2c434b9a7f35418d617d46f7eb2ee, type: 3}
+  - {fileID: 8300000, guid: 4563e63f45af18e4db874fcee0add5a3, type: 3}
+  - {fileID: 8300000, guid: 45f18e5bbfffc4240a7a8ffd98bec3b9, type: 3}
+  - {fileID: 8300000, guid: 21e87999326f4a749bf9918687430339, type: 3}
 --- !u!114 &4492103767979460583
 MonoBehaviour:
   m_ObjectHideFlags: 0

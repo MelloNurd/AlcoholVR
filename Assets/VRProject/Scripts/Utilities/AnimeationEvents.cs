@@ -5,10 +5,16 @@ public class AnimeationEvents : MonoBehaviour
     [SerializeField] private AudioClip[] rageSlamSounds;
 
     [Header("Footstep Sounds")]
-    [SerializeField] private AudioClip _footstepHardSound;
-    [SerializeField] private AudioClip _footstepDirtSound;
+    [SerializeField] private AudioClip[] _footstepIndoorSounds;
+    [SerializeField] private AudioClip[] _footstepOutdoorSounds;
 
     int slamIndex = -1;
+    int _groundLayerMask;
+
+    private void Start()
+    {
+        _groundLayerMask = LayerMask.GetMask("Ground");
+    }
 
     private int GetRageSlamSounds()
     {
@@ -44,23 +50,26 @@ public class AnimeationEvents : MonoBehaviour
 
     public void PlayFootstepSound()
     {
-        if (_footstepDirtSound == null || _footstepHardSound == null)
+        if (_footstepOutdoorSounds.Length == 0 || _footstepIndoorSounds.Length == 0)
         {
-            Debug.LogError("[AnimeationEvents] Footstep sound is not assigned.", gameObject);
+            Debug.LogError("[AnimeationEvents] Footstep sounds are not assigned.", gameObject);
             return;
         }
 
         // Raycast downwards, if it hits a terrain play the dirt sound, otherwise play the hard sound
-        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 1f, _groundLayerMask) && hit.collider.gameObject.CompareTag("Terrain"))
         {
-            if (hit.collider.gameObject.CompareTag("Terrain"))
-            {
-                SoundManager.PlaySoundAtPoint(_footstepDirtSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
-            }
+            SoundManager.PlaySoundAtPoint(_footstepOutdoorSounds.GetRandom(), transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+
+            if(transform.parent.parent.name == "Drunk Driving NPC")
+                Debug.Log("Playing outdoor footstep sound.", gameObject);
         }
         else
         {
-            SoundManager.PlaySoundAtPoint(_footstepHardSound, transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+            SoundManager.PlaySoundAtPoint(_footstepIndoorSounds.GetRandom(), transform.position, volume: 0.5f, pitch: Random.Range(0.85f, 1.15f));
+
+            if(transform.parent.parent.name == "Drunk Driving NPC")
+                Debug.Log("Playing indoor footstep sound.", gameObject);
         }
     }
 }

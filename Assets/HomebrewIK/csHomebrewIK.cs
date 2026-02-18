@@ -733,6 +733,12 @@ namespace FischlWorks
                 Handles.color = Color.red;
             }
 
+            // null checks
+            if (leftFootTransform == null || leftFootOrientationReference == null)
+            {
+                return;
+            }
+
             // Foot height correction related debug draws
             Handles.DrawWireDisc(
                 leftFootTransform.position,
@@ -801,6 +807,12 @@ namespace FischlWorks
             else
             {
                 Handles.color = Color.red;
+            }
+
+            // null checks
+            if (rightFootTransform == null || rightFootOrientationReference == null)
+            {
+                return;
             }
 
             // Foot height correction related debug draws
