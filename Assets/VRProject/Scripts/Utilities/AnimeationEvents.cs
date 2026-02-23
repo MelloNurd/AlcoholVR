@@ -80,6 +80,59 @@ public class AnimeationEvents : MonoBehaviour
         _animator.SetTrigger("StartBlink");
     }
 
+    private int GetRageSlamSounds()
+    {
+        // Rage sounds are ordered in order of intensity, so we always want to play two in a row
+        if (rageSlamSounds.Length == 0)
+        {
+            Debug.LogError("[PartyScene] Rage sounds have zero clips assigned.");
+            return -1;
+        }
+
+        return Random.Range(0, rageSlamSounds.Length - 1);
+    }
+
+    public void PlayFirstSlam()
+    {
+        slamIndex = GetRageSlamSounds();
+        if (slamIndex == -1) return;
+
+        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
+    }
+
+    public void PlaySecondSlam()
+    {
+        if (slamIndex == -1) return;
+        if (slamIndex + 1 >= rageSlamSounds.Length)
+        {
+            SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
+            return;
+        }
+
+        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex + 1], transform.position);
+    }
+
+    public void PlayFootstepSound(Foot foot)
+    {
+        if (_footstepOutdoorSounds.Length == 0 || _footstepIndoorSounds.Length == 0)
+        {
+            Debug.LogError("[AnimeationEvents] Footstep sounds are not assigned.", gameObject);
+            return;
+        }
+
+        Transform footTransform = (foot == Foot.Left) ? _leftFoot : _rightFoot;
+
+        // Raycast downwards, if it hits a terrain play the dirt sound, otherwise play the hard sound
+        if (Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 1f, _groundLayerMask) && hit.collider.gameObject.CompareTag("Terrain"))
+        {
+            SoundManager.PlaySoundAtPoint(_footstepOutdoorSounds.GetRandom(), footTransform.position, volume: 0.5f);
+        }
+        else
+        {
+            SoundManager.PlaySoundAtPoint(_footstepIndoorSounds.GetRandom(), footTransform.position, volume: 0.4f);
+        }
+    }
+
     private void CloseEyes(float targetWeight = 100f)
     {
         // Smoothly close the eyes over smoothDuration seconds
@@ -153,57 +206,41 @@ public class AnimeationEvents : MonoBehaviour
         QueueAnimation(AnimateLoweredEyebrows(targetWeight));
     }
 
-    private int GetRageSlamSounds()
+    private void ResetMouth()
     {
-        // Rage sounds are ordered in order of intensity, so we always want to play two in a row
-        if (rageSlamSounds.Length == 0)
+        _animator.ResetTrigger("StartResetMouth");
+        if (_skinnedMeshRenderer == null)
         {
-            Debug.LogError("[PartyScene] Rage sounds have zero clips assigned.");
-            return -1;
-        }
-
-        return Random.Range(0, rageSlamSounds.Length - 1);
-    }
-
-    public void PlayFirstSlam()
-    {
-        slamIndex = GetRageSlamSounds();
-        if (slamIndex == -1) return;
-
-        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
-    }
-
-    public void PlaySecondSlam()
-    {
-        if (slamIndex == -1) return;
-        if (slamIndex + 1 >= rageSlamSounds.Length)
-        {
-            SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex], transform.position);
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for resetting mouth.", gameObject);
             return;
         }
-
-        SoundManager.PlaySoundAtPoint(rageSlamSounds[slamIndex + 1], transform.position);
+        // Reset both smile and frown mouths to 0
+        QueueAnimation(AnimateResetMouth());
     }
 
-    public void PlayFootstepSound(Foot foot)
+    private void SmileMouth(float targetWeight = 100f)
     {
-        if (_footstepOutdoorSounds.Length == 0 || _footstepIndoorSounds.Length == 0)
+        _animator.ResetTrigger("StartSmileMouth");
+
+        if (_skinnedMeshRenderer == null)
         {
-            Debug.LogError("[AnimeationEvents] Footstep sounds are not assigned.", gameObject);
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for smiling mouth.", gameObject);
             return;
         }
+        // Smile mouth is a single blend shape, so we can directly set it without queuing an animation
+        QueueAnimation(AnimateSmileMouth(targetWeight));
+    }
 
-        Transform footTransform = (foot == Foot.Left) ? _leftFoot : _rightFoot;
-
-        // Raycast downwards, if it hits a terrain play the dirt sound, otherwise play the hard sound
-        if (Physics.Raycast(footTransform.position, Vector3.down, out RaycastHit hit, 1f, _groundLayerMask) && hit.collider.gameObject.CompareTag("Terrain"))
+    private void FrownMouth(float targetWeight = 100f)
+    {
+        _animator.ResetTrigger("StartFrownMouth");
+        if (_skinnedMeshRenderer == null)
         {
-            SoundManager.PlaySoundAtPoint(_footstepOutdoorSounds.GetRandom(), footTransform.position, volume: 0.5f);
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for frowning mouth.", gameObject);
+            return;
         }
-        else
-        {
-            SoundManager.PlaySoundAtPoint(_footstepIndoorSounds.GetRandom(), footTransform.position, volume: 0.4f);
-        }
+        // Frown mouth is a single blend shape, so we can directly set it without queuing an animation
+        QueueAnimation(AnimateFrownMouth(targetWeight));
     }
 
     private IEnumerator AnimateEyesClosed(float targetWeight)
@@ -355,4 +392,76 @@ public class AnimeationEvents : MonoBehaviour
         _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, targetWeight);
         _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, targetWeight);
     }
+
+    private IEnumerator AnimateResetMouth()
+    {
+        int smileMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_R");
+        int smileMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_L");
+        int frownMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_R");
+        int frownMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_L");
+        float startSmileWeightR = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthRIndex);
+        float startSmileWeightL = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthLIndex);
+        float startFrownWeightR = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex);
+        float startFrownWeightL = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthLIndex);
+        float elapsed = 0f;
+        while (elapsed < smoothDuration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / smoothDuration);
+            float currentSmileWeightR = Mathf.Lerp(startSmileWeightR, 0f, progress);
+            float currentSmileWeightL = Mathf.Lerp(startSmileWeightL, 0f, progress);
+            float currentFrownWeightR = Mathf.Lerp(startFrownWeightR, 0f, progress);
+            float currentFrownWeightL = Mathf.Lerp(startFrownWeightL, 0f, progress);
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, currentSmileWeightR);
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, currentSmileWeightL);
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, currentFrownWeightR);
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, currentFrownWeightL);
+            yield return null;
+        }
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, 0f);
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, 0f);
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, 0f);
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, 0f);
+    }
+
+    private IEnumerator AnimateSmileMouth(float targetWeight)
+    {
+        int smileMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_R");
+        int smileMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_L");
+        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthRIndex);
+        float elapsed = 0f;
+        while (elapsed < smoothDuration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / smoothDuration);
+            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, currentWeight);
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, currentWeight);
+            yield return null;
+        }
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, targetWeight);
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, targetWeight);
+    }
+
+    private IEnumerator AnimateFrownMouth(float targetWeight)
+    {
+        int frownMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_R");
+        int frownMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_L");
+        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex);
+        float elapsed = 0f;
+        while (elapsed < smoothDuration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / smoothDuration);
+            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, currentWeight);
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, currentWeight);
+            yield return null;
+        }
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, targetWeight);
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, targetWeight);
+    }
+
 }
+
+
