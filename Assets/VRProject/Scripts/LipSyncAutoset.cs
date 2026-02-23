@@ -21,16 +21,8 @@ public class LipSyncAutoset : MonoBehaviour
 
     private void Update()
     {
-        if(audioSource == null)
-        {
-            Debug.LogError("LipSyncAutoset: No AudioSource found on the GameObject.");
-        }
-        if(currentLipSync == null) {
-            Debug.LogError("LipSyncAutoset: No uLipSync component found on the GameObject.");
-        }
         if (isInitialized)
         {
-            Debug.Log("LipSyncAutoset to " + audioSource.isPlaying);
             currentLipSync.enabled = audioSource.isPlaying;
         }
     }
