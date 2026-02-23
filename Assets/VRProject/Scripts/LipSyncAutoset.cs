@@ -5,14 +5,36 @@ using UnityEngine;
 public class LipSyncAutoset : MonoBehaviour
 {
     private uLipSyncBlendShape uLipSyncBlendShape;
+    private uLipSync.uLipSync currentLipSync;
     private bool isInitialized = false;
+    private AudioSource audioSource;
     
     void Start()
     {
+        //Disables to lower performance cost
+        currentLipSync = GetComponent<uLipSync.uLipSync>();
+        currentLipSync.enabled = false;
+        audioSource = GetComponent<AudioSource>();
         // Start a coroutine to handle initialization with retries
         StartCoroutine(InitializeLipSync());
     }
-    
+
+    private void Update()
+    {
+        if(audioSource == null)
+        {
+            Debug.LogError("LipSyncAutoset: No AudioSource found on the GameObject.");
+        }
+        if(currentLipSync == null) {
+            Debug.LogError("LipSyncAutoset: No uLipSync component found on the GameObject.");
+        }
+        if (isInitialized)
+        {
+            Debug.Log("LipSyncAutoset to " + audioSource.isPlaying);
+            currentLipSync.enabled = audioSource.isPlaying;
+        }
+    }
+
     private IEnumerator InitializeLipSync()
     {
         // Wait a frame to ensure hierarchy is set up
