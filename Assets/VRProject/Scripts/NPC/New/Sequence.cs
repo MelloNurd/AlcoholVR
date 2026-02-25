@@ -6,64 +6,84 @@ using UnityEngine.Events;
 [Serializable]
 public abstract class Sequence
 {
-    public UnityEvent OnSequenceBegan = new();
-    public UnityEvent OnSequenceComplete = new();
+    public UnityEvent OnSequenceStart = new();
+    public UnityEvent OnSequenceEnd = new();
 
-    public bool NextSequenceOnEnd = false;
+    public void StartSequence(NPC npc) 
+    {
+        OnSequenceStart.Invoke();
+        OnStart(npc);
+    }
+    protected virtual void OnStart(NPC npc) { }
 
-    public abstract UniTask Execute(NPC npc);
+    public void UpdateSequence(NPC npc) 
+    {
+        OnUpdate(npc);
+    }
+    protected virtual void OnUpdate(NPC npc) { }
+
+    public void EndSequence(NPC npc)
+    {
+        OnSequenceEnd.Invoke();
+        OnEnd(npc);
+    }
+    protected virtual void OnEnd(NPC npc) { }
 }
 
 public class WaitSequence : Sequence
 {
     public float Time = 0f;
 
-    public override async UniTask Execute(NPC npc)
+    protected override async void OnStart(NPC npc)
     {
-        OnSequenceBegan.Invoke();
-
         await UniTask.Delay(Time.ToMS());
 
-        OnSequenceComplete.Invoke();
+        npc.StartNextSequence();
     }
 }
 
 public class AnimateSequence : Sequence
 {
     public AnimationClip Animation;
+    public bool Loop = false;
 
-    public override async UniTask Execute(NPC npc)
+    protected override async void OnStart(NPC npc)
     {
-        OnSequenceBegan.Invoke();
-
         await npc.PlayAnimationAsync(Animation);
-
-        OnSequenceComplete.Invoke();
+        if (!Loop)
+        {
+            npc.StartNextSequence();
+        }
     }
 }
 
 public class DialogueSequence : Sequence
 {
-    public string DialogueText;
-
-    public override async UniTask Execute(NPC npc)
-    {
-        OnSequenceBegan.Invoke();
-        // Placeholder for dialogue system integration
-        Debug.Log($"NPC says: {DialogueText}");
-        await UniTask.Delay(2000); // Simulate time taken for dialogue
-        OnSequenceComplete.Invoke();
-    }
+    
 }
 
 public class WaitForItemSequence : Sequence
 {
-    public override async UniTask Execute(NPC npc)
-    {
-        OnSequenceBegan.Invoke();
-        
-        
+    public GameObject Item;
 
-        OnSequenceComplete.Invoke();
+    private UnityAction<NPC> _checkForCorrectItemAction;
+
+    protected override void OnStart(NPC npc)
+    {
+        _checkForCorrectItemAction = CheckForCorrectItem;
+        npc.OnNPCInteract.AddListener(() => _checkForCorrectItemAction(npc));
+    }
+
+    protected override void OnEnd(NPC npc)
+    {
+        npc.OnNPCInteract.RemoveListener(() => _checkForCorrectItemAction(npc));
+    }
+
+    private void CheckForCorrectItem(NPC npc)
+    {
+        if (HeldItems.IsHoldingItem(Item))
+        {
+            npc.StartNextSequence();
+        }
     }
 }

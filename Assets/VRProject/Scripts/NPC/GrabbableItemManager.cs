@@ -59,9 +59,6 @@ public class GrabbableItemManager : MonoBehaviour
 
         return Hand.Left;
     }
-
-    public bool CompareRightHandItem(GameObject item) => HeldItems.RightHandItem != null && item == HeldItems.RightHandItem;
-    public bool CompareLeftHandItem(GameObject item) => HeldItems.LeftHandItem != null && item == HeldItems.LeftHandItem;
 }
 
 public enum Hand
@@ -75,5 +72,8 @@ public static class HeldItems
     public static GameObject LeftHandItem { get; set; }
     public static GameObject RightHandItem { get; set; }
 
-    public static bool IsHoldingItem => LeftHandItem != null || RightHandItem != null;
+    public static bool IsInRightHand(GameObject item) => RightHandItem != null && item == RightHandItem;
+    public static bool IsInLeftHand(GameObject item) => LeftHandItem != null && item == LeftHandItem;
+
+    public static bool IsHoldingItem(GameObject item) => IsInRightHand(item) || IsInLeftHand(item);
 }

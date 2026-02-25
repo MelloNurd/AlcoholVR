@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [SelectionBase]
@@ -13,7 +15,10 @@ public class NPC : MonoBehaviour
 {
     [SerializeReference]
     public List<Sequence> Sequences = new List<Sequence>();
+
     public int CurrentSequenceIndex = 0;
+
+    public UnityEvent OnNPCInteract = new();
 
     // Component References
     private NavMeshAgent _agent;
@@ -27,34 +32,59 @@ public class NPC : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
         _grabInteractable = GetComponentInChildren<XRGrabInteractable>();
         _audioSource = GetComponentInChildren<AudioSource>();
+
+        _grabInteractable.selectEntered.AddListener((args) => OnNPCInteract.Invoke());
     }
 
     private async void Start()
     {
-        await UniTask.Yield(); // Delay to ensure all components are initialized before executing the first sequence
-        ExecuteSequence();
-    }
-
-    public void SetSequenceIndex(int index)
-    {
-        if (index < 0 || index >= Sequences.Count)
+        await UniTask.Yield();
+        
+        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
         {
-            Debug.LogWarning($"Attempted to set sequence index to {index}, but it is out of bounds.");
-            return;
+            Sequences[CurrentSequenceIndex].StartSequence(this);
         }
-
-        CurrentSequenceIndex = index;
     }
 
-    public void ExecuteSequence()
+    private void Update()
+    {
+        if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
+            return;
+
+        Sequences[CurrentSequenceIndex].UpdateSequence(this);
+    }
+
+    public void StartNextSequence()
     {
         if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
         {
-            Debug.LogWarning($"Attempted to play sequence with index {CurrentSequenceIndex}, but it is out of bounds.");
+            Debug.LogWarning($"Current sequence {CurrentSequenceIndex} is out of bounds.");
             return;
         }
 
-        Sequences[CurrentSequenceIndex].Execute(this);
+        Sequences[CurrentSequenceIndex].EndSequence(this);
+
+        CurrentSequenceIndex++;
+
+        if (CurrentSequenceIndex < Sequences.Count)
+        {
+            Sequences[CurrentSequenceIndex].StartSequence(this);
+        }
+    }
+
+    public void StartSequence(int index)
+    {
+        if (index < 0 || index >= Sequences.Count)
+        {
+            Debug.LogWarning($"Sequence index {index} is out of bounds.");
+            return;
+        }
+        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
+        {
+            Sequences[CurrentSequenceIndex].EndSequence(this);
+        }
+        CurrentSequenceIndex = index;
+        Sequences[CurrentSequenceIndex].StartSequence(this);
     }
 
     public void PlayAnimation(AnimationClip clip)

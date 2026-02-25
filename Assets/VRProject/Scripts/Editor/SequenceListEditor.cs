@@ -98,6 +98,17 @@ public class SequenceListEditor : Editor
 
     private void DrawSequenceItem(int index)
     {
+        // Consistent vertical padding for all items
+        EditorGUILayout.Space(4);
+
+        // Draw separator line between sequences (after the padding)
+        if (index > 0)
+        {
+            var lineRect = EditorGUILayout.GetControlRect(false, 1);
+            EditorGUI.DrawRect(lineRect, new Color(0.3f, 0.3f, 0.3f, 1f));
+            EditorGUILayout.Space(4);
+        }
+
         var sequenceProperty = _sequencesProperty.GetArrayElementAtIndex(index);
         var managedRef = sequenceProperty.managedReferenceValue as Sequence;
 
@@ -114,32 +125,29 @@ public class SequenceListEditor : Editor
         // Check if this is the active sequence
         bool isActive = _currentSequenceIndexProperty.intValue == index;
 
-        // Draw highlight background for active sequence
+        // Use consistent row height for all elements
+        float rowHeight = EditorGUIUtility.singleLineHeight;
+
+        // Reserve space for the row and draw highlight behind it
+        var rowRect = EditorGUILayout.BeginHorizontal(GUILayout.Height(rowHeight));
+        
         if (isActive)
         {
-            var highlightRect = EditorGUILayout.BeginHorizontal();
-            EditorGUI.DrawRect(highlightRect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
-        }
-        else
-        {
-            EditorGUILayout.BeginHorizontal();
+            // Expand highlight to full width with padding
+            var highlightRect = rowRect;
+            highlightRect.x = 0;
+            highlightRect.width = EditorGUIUtility.currentViewWidth;
+            highlightRect.yMin -= 2;
+            highlightRect.yMax += 2;
+            EditorGUI.DrawRect(highlightRect, new Color(1f, 1f, 1f, 0.05f));
         }
 
         // Foldout arrow inline with label
         _foldoutStates[index] = EditorGUILayout.Foldout(_foldoutStates[index], $"[{index}] {typeName}", true);
 
-        // Set as current button
-        GUI.enabled = !isActive;
-        if (GUILayout.Button("Set", GUILayout.Width(32)))
-        {
-            _currentSequenceIndexProperty.intValue = index;
-            serializedObject.ApplyModifiedProperties();
-        }
-        GUI.enabled = true;
-
         // Move up button
         GUI.enabled = index > 0;
-        if (GUILayout.Button("↑", GUILayout.Width(22)))
+        if (GUILayout.Button("↑", GUILayout.Width(22), GUILayout.Height(rowHeight)))
         {
             _sequencesProperty.MoveArrayElement(index, index - 1);
             if (isActive)
@@ -152,7 +160,7 @@ public class SequenceListEditor : Editor
 
         // Move down button
         GUI.enabled = index < _sequencesProperty.arraySize - 1;
-        if (GUILayout.Button("↓", GUILayout.Width(22)))
+        if (GUILayout.Button("↓", GUILayout.Width(22), GUILayout.Height(rowHeight)))
         {
             _sequencesProperty.MoveArrayElement(index, index + 1);
             if (isActive)
@@ -164,12 +172,13 @@ public class SequenceListEditor : Editor
         GUI.enabled = true;
 
         // Remove button
-        if (GUILayout.Button("X", GUILayout.Width(22)))
+        if (GUILayout.Button("X", GUILayout.Width(22), GUILayout.Height(rowHeight)))
         {
             _sequencesProperty.DeleteArrayElementAtIndex(index);
             if (_currentSequenceIndexProperty.intValue >= _sequencesProperty.arraySize)
                 _currentSequenceIndexProperty.intValue = Mathf.Max(0, _sequencesProperty.arraySize - 1);
             serializedObject.ApplyModifiedProperties();
+            EditorGUILayout.EndHorizontal();
             return;
         }
 
@@ -193,7 +202,7 @@ public class SequenceListEditor : Editor
                     string propName = iterator.name;
                     
                     // Skip event properties - we'll draw them in foldout
-                    if (propName == "OnSequenceBegan" || propName == "OnSequenceComplete")
+                    if (propName == "OnSequenceStart" || propName == "OnSequenceEnd")
                         continue;
 
                     EditorGUILayout.PropertyField(iterator, true);
@@ -206,8 +215,8 @@ public class SequenceListEditor : Editor
             if (_eventsFoldoutStates[index])
             {
                 EditorGUI.indentLevel++;
-                var beganProp = sequenceProperty.FindPropertyRelative("OnSequenceBegan");
-                var completeProp = sequenceProperty.FindPropertyRelative("OnSequenceComplete");
+                var beganProp = sequenceProperty.FindPropertyRelative("OnSequenceStart");
+                var completeProp = sequenceProperty.FindPropertyRelative("OnSequenceEnd");
                 
                 if (beganProp != null)
                     EditorGUILayout.PropertyField(beganProp);
