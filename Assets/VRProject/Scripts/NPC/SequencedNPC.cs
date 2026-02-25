@@ -11,11 +11,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using UnityEngine.PlayerLoop;
 using static UnityEngine.Rendering.DebugUI;
 using Void = EditorAttributes.Void;
 
 [Serializable]
-public class Sequence
+public class OldSequence
 {
     public enum Type
     {
@@ -50,36 +51,36 @@ public class Sequence
     [HideInInspector] public UnityEvent onSequenceEnd = new();
 
     #region Constructors
-    public Sequence(Type type, AnimationClip animation, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, AnimationClip animation, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.animation = animation;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, Dialogue dialogue, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, Dialogue dialogue, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.dialogue = dialogue;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, Transform destination, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, Transform destination, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.destination = destination;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, float secondsToWait, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, float secondsToWait, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.secondsToWait = secondsToWait;
         this.nextSequenceOnEnd = nextSequenceOnEnd;
     }
-    public Sequence(Type type, Vector3 directionToFace, float turnSpeed = 0.3f, bool nextSequenceOnEnd = true)
+    public OldSequence(Type type, Vector3 directionToFace, float turnSpeed = 0.3f, bool nextSequenceOnEnd = true)
     {
         this.type = type;
         this.directionToFace = directionToFace;
@@ -94,8 +95,8 @@ public class SequencedNPC : MonoBehaviour
 {
     public bool isDrunk = false;
 
-    public List<Sequence> sequences = new List<Sequence>();
-    public Sequence currentSequence;
+    public List<OldSequence> sequences = new List<OldSequence>();
+    public OldSequence currentSequence;
     public int currentSequenceIndex => sequences.IndexOf(currentSequence);
 
     public bool wrapAroundSequences = false; // If it should loop through the sequences or stop at the end
@@ -169,9 +170,9 @@ public class SequencedNPC : MonoBehaviour
     {
         ApplyWalkRotations();
 
-        if (!_isAtDestination && (currentSequence.type == Sequence.Type.Walk || currentSequence.type == Sequence.Type.WalkToPlayer))
+        if (!_isAtDestination && (currentSequence.type == OldSequence.Type.Walk || currentSequence.type == OldSequence.Type.WalkToPlayer))
         {
-            bool isWalkToPlayer = currentSequence.type == Sequence.Type.WalkToPlayer;
+            bool isWalkToPlayer = currentSequence.type == OldSequence.Type.WalkToPlayer;
 
             if (isWalkToPlayer)
             {
@@ -202,7 +203,7 @@ public class SequencedNPC : MonoBehaviour
         }
     }
 
-    private async UniTask HandleSequence(Sequence sequence)
+    private async UniTask HandleSequence(OldSequence sequence)
     {
         if (_cancelToken != null)
         {
@@ -212,28 +213,28 @@ public class SequencedNPC : MonoBehaviour
 
         switch (sequence.type)
         {
-            case Sequence.Type.Animate:
+            case OldSequence.Type.Animate:
                 await ExecuteAnimateSequence(sequence);
                 break;
-            case Sequence.Type.Dialogue:
+            case OldSequence.Type.Dialogue:
                 await ExecuteDialogueSequence(sequence);
                 break;
-            case Sequence.Type.Walk:
+            case OldSequence.Type.Walk:
                 // ensure destination is world space position 
                 await ExecuteWalkSequence(sequence);
                 break;
-            case Sequence.Type.WalkToPlayer:
+            case OldSequence.Type.WalkToPlayer:
                 await ExecuteWalkToPlayerSequence(sequence);
                 break;
-            case Sequence.Type.Wait:
+            case OldSequence.Type.Wait:
                 await ExecuteWaitSequence(sequence);
                 break;
-            case Sequence.Type.TurnToFace:
+            case OldSequence.Type.TurnToFace:
                 await ExecuteTurnToFaceSequence(sequence);
                 break;
         }
     }
-    private async UniTask ExecuteTurnToFaceSequence(Sequence sequence)
+    private async UniTask ExecuteTurnToFaceSequence(OldSequence sequence)
     {
         Tween.StopAll(bodyObj.transform);
 
@@ -247,7 +248,7 @@ public class SequencedNPC : MonoBehaviour
             }
         }
     }
-    private async UniTask ExecuteWaitSequence(Sequence sequence)
+    private async UniTask ExecuteWaitSequence(OldSequence sequence)
     {
         PlayIdleAnimation();
 
@@ -262,7 +263,7 @@ public class SequencedNPC : MonoBehaviour
             }
         }
     }
-    private async UniTask ExecuteWalkToPlayerSequence(Sequence sequence)
+    private async UniTask ExecuteWalkToPlayerSequence(OldSequence sequence)
     {
         _isAtDestination = false; 
         agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized, 1f);
@@ -282,7 +283,7 @@ public class SequencedNPC : MonoBehaviour
             }
         }
     }
-    private async UniTask ExecuteWalkSequence(Sequence sequence)
+    private async UniTask ExecuteWalkSequence(OldSequence sequence)
     {
         _isAtDestination = false;
         agent.SetDestinationToClosestPoint(sequence.destination.position, 1.5f);
@@ -302,7 +303,7 @@ public class SequencedNPC : MonoBehaviour
             }
         }
     }
-    private async UniTask ExecuteDialogueSequence(Sequence sequence)
+    private async UniTask ExecuteDialogueSequence(OldSequence sequence)
     {
         dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
 
@@ -333,7 +334,7 @@ public class SequencedNPC : MonoBehaviour
             }
         }
     }
-    private async UniTask ExecuteAnimateSequence(Sequence sequence)
+    private async UniTask ExecuteAnimateSequence(OldSequence sequence)
     {
         if (sequence.animation == null)
         {
@@ -414,9 +415,9 @@ public class SequencedNPC : MonoBehaviour
     }
 
     public void StartSequence(int index) => StartSequenceAsync(index).Forget();
-    public void StartSequence(Sequence sequence) => StartSequenceAsync(sequence).Forget();
+    public void StartSequence(OldSequence sequence) => StartSequenceAsync(sequence).Forget();
     public async UniTask StartSequenceAsync(int index) => await StartSequenceAsync(sequences[index]);
-    public async UniTask StartSequenceAsync(Sequence sequence)
+    public async UniTask StartSequenceAsync(OldSequence sequence)
     {
         _cancelToken?.Cancel();
         _isAtDestination = true;

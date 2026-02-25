@@ -1,0 +1,281 @@
+﻿using UnityEditor;
+using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+[CustomEditor(typeof(NPC))]
+public class SequenceListEditor : Editor
+{
+    private SerializedProperty _sequencesProperty;
+    private SerializedProperty _currentSequenceIndexProperty;
+    private Type[] _sequenceTypes;
+    private string[] _sequenceTypeNames;
+    private bool _showAddSequenceMenu = false;
+    private Dictionary<int, bool> _foldoutStates = new Dictionary<int, bool>();
+    private Dictionary<int, bool> _eventsFoldoutStates = new Dictionary<int, bool>();
+
+    private void OnEnable()
+    {
+        _sequencesProperty = serializedObject.FindProperty("Sequences");
+        _currentSequenceIndexProperty = serializedObject.FindProperty("CurrentSequenceIndex");
+        
+        if (_sequencesProperty == null)
+        {
+            Debug.LogError("Could not find 'Sequences' property on NPC.");
+            return;
+        }
+        
+        RefreshSequenceTypes();
+    }
+
+    private void RefreshSequenceTypes()
+    {
+        try
+        {
+            var sequenceBaseType = typeof(Sequence);
+            _sequenceTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => sequenceBaseType.IsAssignableFrom(p) && 
+                           p != sequenceBaseType && 
+                           !p.IsAbstract &&
+                           !p.IsInterface)
+                .OrderBy(p => p.Name)
+                .ToArray();
+
+            // Convert PascalCase to spaced words (e.g., "WaitSequence" -> "Wait Sequence")
+            _sequenceTypeNames = _sequenceTypes
+                .Select(type => Regex.Replace(type.Name, "(?<!^)([A-Z])", " $1"))
+                .ToArray();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error discovering Sequence types: {ex.Message}");
+        }
+    }
+
+    public override void OnInspectorGUI()
+    {
+        if (_sequencesProperty == null)
+        {
+            EditorGUILayout.HelpBox("Sequences property not found.", MessageType.Error);
+            return;
+        }
+
+        serializedObject.Update();
+
+        // Draw default inspector but skip Sequences field
+        DrawPropertiesExcluding(serializedObject, "Sequences", "m_Script");
+        
+        // Draw script field manually at top
+        GUI.enabled = false;
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
+        GUI.enabled = true;
+
+        EditorGUILayout.Space(4);
+        
+        // Draw sequences header with count
+        EditorGUILayout.LabelField($"Sequences ({_sequencesProperty.arraySize})", EditorStyles.boldLabel);
+
+        if (_sequencesProperty.arraySize == 0)
+        {
+            EditorGUILayout.HelpBox("No sequences added yet.", MessageType.Info);
+        }
+
+        // Draw each sequence
+        for (int i = 0; i < _sequencesProperty.arraySize; i++)
+        {
+            DrawSequenceItem(i);
+        }
+
+        // Add sequence button/menu
+        DrawAddSequenceSection();
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DrawSequenceItem(int index)
+    {
+        var sequenceProperty = _sequencesProperty.GetArrayElementAtIndex(index);
+        var managedRef = sequenceProperty.managedReferenceValue as Sequence;
+
+        if (!_foldoutStates.ContainsKey(index))
+            _foldoutStates[index] = false;
+        
+        if (!_eventsFoldoutStates.ContainsKey(index))
+            _eventsFoldoutStates[index] = false;
+
+        string typeName = managedRef != null 
+            ? Regex.Replace(managedRef.GetType().Name, "(?<!^)([A-Z])", " $1") 
+            : "None";
+
+        // Check if this is the active sequence
+        bool isActive = _currentSequenceIndexProperty.intValue == index;
+
+        // Draw highlight background for active sequence
+        if (isActive)
+        {
+            var highlightRect = EditorGUILayout.BeginHorizontal();
+            EditorGUI.DrawRect(highlightRect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
+        }
+        else
+        {
+            EditorGUILayout.BeginHorizontal();
+        }
+
+        // Foldout arrow inline with label
+        _foldoutStates[index] = EditorGUILayout.Foldout(_foldoutStates[index], $"[{index}] {typeName}", true);
+
+        // Set as current button
+        GUI.enabled = !isActive;
+        if (GUILayout.Button("Set", GUILayout.Width(32)))
+        {
+            _currentSequenceIndexProperty.intValue = index;
+            serializedObject.ApplyModifiedProperties();
+        }
+        GUI.enabled = true;
+
+        // Move up button
+        GUI.enabled = index > 0;
+        if (GUILayout.Button("↑", GUILayout.Width(22)))
+        {
+            _sequencesProperty.MoveArrayElement(index, index - 1);
+            if (isActive)
+                _currentSequenceIndexProperty.intValue = index - 1;
+            else if (_currentSequenceIndexProperty.intValue == index - 1)
+                _currentSequenceIndexProperty.intValue = index;
+            serializedObject.ApplyModifiedProperties();
+        }
+        GUI.enabled = true;
+
+        // Move down button
+        GUI.enabled = index < _sequencesProperty.arraySize - 1;
+        if (GUILayout.Button("↓", GUILayout.Width(22)))
+        {
+            _sequencesProperty.MoveArrayElement(index, index + 1);
+            if (isActive)
+                _currentSequenceIndexProperty.intValue = index + 1;
+            else if (_currentSequenceIndexProperty.intValue == index + 1)
+                _currentSequenceIndexProperty.intValue = index;
+            serializedObject.ApplyModifiedProperties();
+        }
+        GUI.enabled = true;
+
+        // Remove button
+        if (GUILayout.Button("X", GUILayout.Width(22)))
+        {
+            _sequencesProperty.DeleteArrayElementAtIndex(index);
+            if (_currentSequenceIndexProperty.intValue >= _sequencesProperty.arraySize)
+                _currentSequenceIndexProperty.intValue = Mathf.Max(0, _sequencesProperty.arraySize - 1);
+            serializedObject.ApplyModifiedProperties();
+            return;
+        }
+
+        EditorGUILayout.EndHorizontal();
+
+        // Draw properties if expanded
+        if (_foldoutStates[index] && managedRef != null)
+        {
+            EditorGUI.indentLevel++;
+
+            var iterator = sequenceProperty.Copy();
+            var endProperty = sequenceProperty.GetEndProperty();
+            
+            if (iterator.NextVisible(true))
+            {
+                do
+                {
+                    if (SerializedProperty.EqualContents(iterator, endProperty))
+                        break;
+
+                    string propName = iterator.name;
+                    
+                    // Skip event properties - we'll draw them in foldout
+                    if (propName == "OnSequenceBegan" || propName == "OnSequenceComplete")
+                        continue;
+
+                    EditorGUILayout.PropertyField(iterator, true);
+                }
+                while (iterator.NextVisible(false));
+            }
+
+            // Events foldout
+            _eventsFoldoutStates[index] = EditorGUILayout.Foldout(_eventsFoldoutStates[index], "Events", true);
+            if (_eventsFoldoutStates[index])
+            {
+                EditorGUI.indentLevel++;
+                var beganProp = sequenceProperty.FindPropertyRelative("OnSequenceBegan");
+                var completeProp = sequenceProperty.FindPropertyRelative("OnSequenceComplete");
+                
+                if (beganProp != null)
+                    EditorGUILayout.PropertyField(beganProp);
+                if (completeProp != null)
+                    EditorGUILayout.PropertyField(completeProp);
+                
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUI.indentLevel--;
+        }
+    }
+
+    private void DrawAddSequenceSection()
+    {
+        EditorGUILayout.Space(4);
+
+        // Main "Add Sequence" button with dropdown arrow indicator
+        var buttonRect = GUILayoutUtility.GetRect(new GUIContent("+ Add Sequence"), GUI.skin.button, GUILayout.Height(24));
+        if (GUI.Button(buttonRect, _showAddSequenceMenu ? "− Add Sequence" : "+ Add Sequence"))
+        {
+            _showAddSequenceMenu = !_showAddSequenceMenu;
+        }
+
+        if (_showAddSequenceMenu && _sequenceTypes.Length > 0)
+        {
+            // Indented, smaller buttons for sequence types
+            EditorGUILayout.BeginVertical();
+            EditorGUI.indentLevel++;
+            
+            for (int i = 0; i < _sequenceTypes.Length; i++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                GUILayout.Space(EditorGUI.indentLevel * 15);
+                
+                var style = new GUIStyle(EditorStyles.miniButton)
+                {
+                    alignment = TextAnchor.MiddleLeft,
+                    padding = new RectOffset(10, 10, 6, 6),
+                    fixedHeight = 0 // Allow height to be controlled by GUILayout
+                };
+                
+                if (GUILayout.Button("→ " + _sequenceTypeNames[i], style, GUILayout.Height(26), GUILayout.ExpandWidth(true)))
+                {
+                    AddSequenceOfType(_sequenceTypes[i]);
+                    _showAddSequenceMenu = false;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+    }
+
+    private void AddSequenceOfType(Type sequenceType)
+    {
+        try
+        {
+            var newSequence = (Sequence)Activator.CreateInstance(sequenceType);
+            _sequencesProperty.arraySize++;
+            var newElement = _sequencesProperty.GetArrayElementAtIndex(_sequencesProperty.arraySize - 1);
+            newElement.managedReferenceValue = newSequence;
+            serializedObject.ApplyModifiedProperties();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to create {sequenceType.Name}: {ex.Message}");
+        }
+    }
+}

@@ -188,7 +188,7 @@ public class TutorialScene : MonoBehaviour
 
     private async UniTask CheckIfPlayerTalkedToFriend()
     {
-        await UniTask.Delay(30_000);
+        await UniTask.Delay(25_000);
 
         if (friendInteractCount == 0)
         {
@@ -206,7 +206,6 @@ public class TutorialScene : MonoBehaviour
 
     private async void GrabDrinkTutorialSequence()
     {
-        Debug.Log("GRAB YOUR FRIEND A DRINK TUTORIAL START");
         _friendNPC.dialogueSystem.onEnd.RemoveListener(GrabDrinkTutorialSequence);
         
         ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Find your friend a drink.", 0, _tablesPos));

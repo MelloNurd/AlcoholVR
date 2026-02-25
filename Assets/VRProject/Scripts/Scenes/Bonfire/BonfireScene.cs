@@ -172,7 +172,7 @@ public class BonfireScene : MonoBehaviour
     {
         poisonedNPC.wrapAroundSequences = false;
         poisonedNPC.sequences.Clear();
-        Sequence faint = new Sequence(Sequence.Type.Animate, _faintAnimation, false);
+        OldSequence faint = new OldSequence(OldSequence.Type.Animate, _faintAnimation, false);
         poisonedNPC.sequences.Add(faint);
         poisonedNPC.StartSequence(faint);
         poisonedNPC.agent.enabled = false;
@@ -182,20 +182,20 @@ public class BonfireScene : MonoBehaviour
 
         _investigateGroup = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Investigate the commotion by the bonfire.", 1, poisonedNPC.transform));
 
-        Sequence mysteryWalkTo = new Sequence(Sequence.Type.Walk, _mysteryPoisoningReactionPoint);
-        Sequence turnToFace2 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _mysteryPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        OldSequence mysteryWalkTo = new OldSequence(OldSequence.Type.Walk, _mysteryPoisoningReactionPoint);
+        OldSequence turnToFace2 = new OldSequence(OldSequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _mysteryPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
         mysteryDrinkNPC.sequences.Add(mysteryWalkTo);
         mysteryDrinkNPC.sequences.Add(turnToFace2);
         mysteryDrinkNPC.StartSequence(mysteryWalkTo);
 
-        Sequence miscWalkTo = new Sequence(Sequence.Type.Walk, _miscPoisoningReactionPoint);
-        Sequence turnToFace3 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _miscPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        OldSequence miscWalkTo = new OldSequence(OldSequence.Type.Walk, _miscPoisoningReactionPoint);
+        OldSequence turnToFace3 = new OldSequence(OldSequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _miscPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
         miscNPC.sequences.Add(miscWalkTo);
         miscNPC.sequences.Add(turnToFace3);
         miscNPC.StartSequence(miscWalkTo);
 
-        Sequence friendWalkTo = new Sequence(Sequence.Type.Walk, _friendPoisoningReactionPoint);
-        Sequence turnToFace1 = new Sequence(Sequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _friendPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
+        OldSequence friendWalkTo = new OldSequence(OldSequence.Type.Walk, _friendPoisoningReactionPoint);
+        OldSequence turnToFace1 = new OldSequence(OldSequence.Type.TurnToFace, directionToFace: poisonedNPC.bodyObj.transform.position - _friendPoisoningReactionPoint.transform.position, nextSequenceOnEnd: false);
         friendNPC.sequences.Add(friendWalkTo);
         friendNPC.sequences.Add(turnToFace1);
         await friendNPC.StartSequenceAsync(friendWalkTo); // Wait for the friend to walk to the poisoned NPC
@@ -232,7 +232,7 @@ public class BonfireScene : MonoBehaviour
             friendNPC.lookAt.isLooking = false;
         });
 
-        Sequence poisoningDialogue = new Sequence(Sequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
+        OldSequence poisoningDialogue = new OldSequence(OldSequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
         friendNPC.sequences.Add(poisoningDialogue);
         friendNPC.StartSequence(poisoningDialogue);
 
@@ -243,7 +243,7 @@ public class BonfireScene : MonoBehaviour
             mysteryDrinkNPC.turnBodyToFacePlayer = false;
             mysteryDrinkNPC.turnHeadToFacePlayer = false;
 
-            Sequence responseSequence = new Sequence(Sequence.Type.Dialogue, poisoningResponse, nextSequenceOnEnd: false);
+            OldSequence responseSequence = new OldSequence(OldSequence.Type.Dialogue, poisoningResponse, nextSequenceOnEnd: false);
             mysteryDrinkNPC.sequences.Add(responseSequence);
             mysteryDrinkNPC.StartSequence(responseSequence);
 
@@ -385,7 +385,7 @@ public class BonfireScene : MonoBehaviour
             drunkFlirtNPC.sequences[drunkFlirtNPC.currentSequenceIndex + 1].dialogue = soberFlirtDialogue;
             drunkFlirtNPC.dialogueSystem.onEnd.AddListener(() =>
             { // Player is not drunk, so they did not go with the NPC
-                Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
+                OldSequence sitSequence = new OldSequence(OldSequence.Type.Animate, _sittingAnimation, false);
                 drunkFlirtNPC.sequences.Add(sitSequence);
                 drunkFlirtNPC.StartSequence(sitSequence);
             });
@@ -394,7 +394,7 @@ public class BonfireScene : MonoBehaviour
 
     private async void CheckFlirtationProximity()
     {
-        if (_isFlirtWaitingForPlayer && drunkFlirtNPC.currentSequence.type == Sequence.Type.Wait)
+        if (_isFlirtWaitingForPlayer && drunkFlirtNPC.currentSequence.type == OldSequence.Type.Wait)
         {
             if (Vector3.Distance(Player.Instance.CamPosition, _tent.position) < 2.75f)
             {
@@ -413,7 +413,7 @@ public class BonfireScene : MonoBehaviour
                 drunkFlirtNPC.transform.localEulerAngles = new Vector3(0, 203.75f, 0);
                 drunkFlirtNPC.bodyObj.transform.localEulerAngles = Vector3.zero;
 
-                Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
+                OldSequence sitSequence = new OldSequence(OldSequence.Type.Animate, _sittingAnimation, false);
                 drunkFlirtNPC.StartSequence(sitSequence);
 
                 await UniTask.Delay(tempAudio.clip.length.ToMS());
@@ -520,10 +520,10 @@ public class BonfireScene : MonoBehaviour
         // Disable the stick object
         fireStickNPC.GetComponentInChildren<Light>().transform.parent.gameObject.SetActive(false);
 
-        Sequence walkAwaySequence1 = new Sequence(Sequence.Type.Walk, _fireNPCWalkTarget1, nextSequenceOnEnd: true);
-        Sequence walkAwaySequence2 = new Sequence(Sequence.Type.Walk, _fireNPCWalkTarget2, nextSequenceOnEnd: true);
-        Sequence turnSequence = new Sequence(Sequence.Type.TurnToFace, directionToFace: new Vector3(1, 0, -1));
-        Sequence sitSequence = new Sequence(Sequence.Type.Animate, _sittingAnimation, false);
+        OldSequence walkAwaySequence1 = new OldSequence(OldSequence.Type.Walk, _fireNPCWalkTarget1, nextSequenceOnEnd: true);
+        OldSequence walkAwaySequence2 = new OldSequence(OldSequence.Type.Walk, _fireNPCWalkTarget2, nextSequenceOnEnd: true);
+        OldSequence turnSequence = new OldSequence(OldSequence.Type.TurnToFace, directionToFace: new Vector3(1, 0, -1));
+        OldSequence sitSequence = new OldSequence(OldSequence.Type.Animate, _sittingAnimation, false);
 
         fireStickNPC.sequences.Add(walkAwaySequence1);
         fireStickNPC.sequences.Add(turnSequence);
