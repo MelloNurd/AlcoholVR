@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1313438586783553957}
   - component: {fileID: 9043113821644084736}
   - component: {fileID: 8850819024240658572}
+  - component: {fileID: -5453749035211753283}
   m_Layer: 0
   m_Name: HandheldGame3
   m_TagString: Untagged
@@ -166,7 +167,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &1313438586783553957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,3 +337,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!114 &-5453749035211753283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5200750537642753265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01

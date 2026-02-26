@@ -70,6 +70,7 @@ GameObject:
   - component: {fileID: 4799278755405654537}
   - component: {fileID: 8724924412938486116}
   - component: {fileID: 4249219769114962886}
+  - component: {fileID: -6117143783603892627}
   m_Layer: 15
   m_Name: MagDart
   m_TagString: Red
@@ -122,7 +123,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &8763976318179839813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,19 +167,7 @@ MonoBehaviour:
       m_Calls: []
   m_FirstSelectEntered:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4799278755405654537}
-        m_TargetAssemblyTypeName: Dart, Assembly-CSharp
-        m_MethodName: set_HasBeenGrabbed
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   m_LastSelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -233,6 +222,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 3942510250131959614}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 0
@@ -344,6 +335,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &5206269798988200618
 MonoBehaviour:
@@ -414,6 +406,20 @@ CapsuleCollider:
   m_Height: 1.557243
   m_Direction: 1
   m_Center: {x: 0.013283284, y: -0.028157022, z: -3.95}
+--- !u!114 &-6117143783603892627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2276686441209867623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01
 --- !u!1 &4422322893798073560
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,6 +508,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7516782346530608454
 GameObject:
@@ -645,4 +652,5 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}

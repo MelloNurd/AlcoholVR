@@ -281,6 +281,7 @@ GameObject:
   - component: {fileID: 649680441513084460}
   - component: {fileID: 6795051244487194949}
   - component: {fileID: 4798409005960784009}
+  - component: {fileID: -7641565101482244852}
   m_Layer: 0
   m_Name: BlackScissors
   m_TagString: Untagged
@@ -331,7 +332,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &649680441513084460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,3 +502,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!114 &-7641565101482244852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7929828834012602384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01

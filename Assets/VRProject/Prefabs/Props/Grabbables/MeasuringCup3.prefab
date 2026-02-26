@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6303558217899713230}
   - component: {fileID: 8774614535087487283}
   - component: {fileID: 8607792556569263253}
+  - component: {fileID: 6205751682044203472}
   m_Layer: 0
   m_Name: MeasuringCup3
   m_TagString: Untagged
@@ -93,6 +94,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!54 &8625616406242125715
 Rigidbody:
@@ -120,7 +122,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &5438633588504972269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,6 +207,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -315,3 +319,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.012849513, y: 0.00263232, z: 0.086327314}
   m_Center: {x: -0.00025557168, y: 0.031773478, z: 0.07698181}
+--- !u!114 &6205751682044203472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8055884836685521005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01

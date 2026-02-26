@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4913497100391404210}
   - component: {fileID: 5400739991275954194}
   - component: {fileID: 7302349535987800468}
+  - component: {fileID: 3313016811532511590}
   m_Layer: 0
   m_Name: PizzaCutter
   m_TagString: Untagged
@@ -92,6 +93,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!54 &8789127089377333235
 Rigidbody:
@@ -119,7 +121,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &4913497100391404210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +206,8 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -293,3 +297,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.092487045, y: 0.017484194, z: 0.24738964}
   m_Center: {x: -0.000000011175871, y: 0, z: -0.06668382}
+--- !u!114 &3313016811532511590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254816585806293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01

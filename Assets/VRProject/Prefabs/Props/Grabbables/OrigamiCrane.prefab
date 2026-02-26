@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8240720572488155221}
   - component: {fileID: 1538003312685842627}
   - component: {fileID: 2997134024081941324}
+  - component: {fileID: -2766768739630037505}
   m_Layer: 0
   m_Name: OrigamiCrane
   m_TagString: Untagged
@@ -142,7 +143,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
 --- !u!114 &1538003312685842627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,3 +298,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClip: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
+--- !u!114 &-2766768739630037505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8240405602683352409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
+  settleTime: 5
+  velocityThreshold: 0.01
