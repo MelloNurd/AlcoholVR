@@ -5,6 +5,7 @@ public class PhoneSettings : MonoBehaviour
 {
     [SerializeField] Slider MasterVolumeSlider;
     [SerializeField] Slider MusicVolumeSlider;
+    [SerializeField] Slider VoicesVolumeSlider;
     [SerializeField] Slider SFXVolumeSlider;
     [SerializeField] Toggle TunnelingVignetteToggle;
     [SerializeField] Slider AperatureSizeSlider;
@@ -19,6 +20,7 @@ public class PhoneSettings : MonoBehaviour
         MasterVolumeSlider.value = SettingsManager.Instance.MasterVolume;
         MusicVolumeSlider.value = SettingsManager.Instance.MusicVolume;
         SFXVolumeSlider.value = SettingsManager.Instance.SFXVolume;
+        VoicesVolumeSlider.value = SettingsManager.Instance.VoicesVolume;
         TunnelingVignetteToggle.isOn = SettingsManager.Instance.TunnelingVignette;
         AperatureSizeSlider.value = SettingsManager.Instance.TunnelingVignetteAperatureSize;
         AperatureFeatheringSlider.value = SettingsManager.Instance.TunnelingVignetteFeathering;
@@ -41,6 +43,11 @@ public class PhoneSettings : MonoBehaviour
     public void OnSFXVolumeChanged(float value)
     {
         SettingsManager.Instance.SetSFXVolume(value);
+    }
+
+    public void OnVoicesVolumeChanged(float value)
+    {
+        SettingsManager.Instance.SetVoicesVolume(value);
     }
 
     public void OnTunnelingVignetteToggleChanged()

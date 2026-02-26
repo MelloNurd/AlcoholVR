@@ -9,6 +9,7 @@ public class SettingsManager : MonoBehaviour
     [Range(0f, 100f)] public float MasterVolume = 100f;
     [Range(0f, 100f)] public float MusicVolume = 100f;
     [Range(0f, 100f)] public float SFXVolume = 100f;
+    [Range(0f, 100f)] public float VoicesVolume = 100f;
 
     [Header("Accessibility Settings")]
     public bool TunnelingVignette = true;
@@ -81,6 +82,13 @@ public class SettingsManager : MonoBehaviour
         float decibelVolume = VolumePercentToDecibel(SFXVolume);
         SFXMixerGroup.audioMixer.SetFloat("SFXVolume", decibelVolume);
         Debug.Log($"SFX Volume set to {decibelVolume} dB ({SFXVolume}%)");
+    }
+
+    public void SetVoicesVolume(float volume)
+    {
+        float decibelVolume = VolumePercentToDecibel(volume);
+        MasterAudioMixerGroup.audioMixer.SetFloat("VoicesVolume", decibelVolume);
+        Debug.Log($"Voices Volume set to {decibelVolume} dB ({volume}%)");
     }
 
     float VolumePercentToDecibel(float volumePercent)
