@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
-using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
