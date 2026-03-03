@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: Flirt Interaction (F) (Drunk)
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
+    playedAudio: {fileID: 8300000, guid: c5e16d78b1a068f47ba365086e0a16b0, type: 3}
+    choices:
+    - choiceText: No thanks...
+      targetNodeId: 
+      isDisabled: 1
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: Are you okay? Maybe you should sit down and get some water...
+      targetNodeId: 
+      isDisabled: 1
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: '*hiccup* suure'
+      targetNodeId: folloow___f
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: folloow___f
+    dialogueText: folloow me
+    playedAudio: {fileID: 8300000, guid: e6b9d6846ac8c4141a86d72f664d8800, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: Flirt Interaction (F) (Sober)
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: y-youre awfully cuute... lets go s-somewhere privatee
+    playedAudio: {fileID: 8300000, guid: c5e16d78b1a068f47ba365086e0a16b0, type: 3}
+    choices:
+    - choiceText: Are you okay? Maybe you should sit down and get some water...
+      targetNodeId: o_ookay__f
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: No thanks...
+      targetNodeId: fiine__f
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: o_ookay__f
+    dialogueText: o-ookay
+    playedAudio: {fileID: 8300000, guid: daff0f405d3faa14d9b1b3077af19560, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: fiine__f
+    dialogueText: fiine
+    playedAudio: {fileID: 8300000, guid: a7f956c2a44dce04ab2a166c42bb3e67, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []

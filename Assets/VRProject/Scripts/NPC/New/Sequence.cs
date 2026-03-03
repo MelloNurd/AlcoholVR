@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -30,6 +31,7 @@ public abstract class Sequence
     protected virtual void OnEnd(NPC npc) { }
 }
 
+[Serializable]
 public class WaitSequence : Sequence
 {
     public float Time = 0f;
@@ -42,6 +44,7 @@ public class WaitSequence : Sequence
     }
 }
 
+[Serializable]
 public class AnimateSequence : Sequence
 {
     public AnimationClip Animation;
@@ -49,7 +52,15 @@ public class AnimateSequence : Sequence
 
     protected override async void OnStart(NPC npc)
     {
+        if (Animation == null)
+        {
+            Debug.LogWarning("No animation assigned to AnimateSequence, continuing to next sequence.");
+            npc.StartNextSequence();
+            return;
+        }
+
         await npc.PlayAnimationAsync(Animation);
+
         if (!Loop)
         {
             npc.StartNextSequence();
@@ -57,14 +68,19 @@ public class AnimateSequence : Sequence
     }
 }
 
+[Serializable]
 public class DialogueSequence : Sequence
 {
     
 }
 
+[Serializable]
 public class WaitForItemSequence : Sequence
 {
     public GameObject Item;
+
+    public UnityEvent OnCorrectItemGiven = new();
+    public UnityEvent OnIncorrectItemGiven = new();
 
     private UnityAction<NPC> _checkForCorrectItemAction;
 
@@ -83,7 +99,12 @@ public class WaitForItemSequence : Sequence
     {
         if (HeldItems.IsHoldingItem(Item))
         {
+            OnCorrectItemGiven.Invoke();
             npc.StartNextSequence();
+        }
+        else
+        {
+            OnIncorrectItemGiven.Invoke();
         }
     }
 }

@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using EditorAttributes;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -15,59 +11,61 @@ public class NPC : MonoBehaviour
     [SerializeReference]
     public List<Sequence> Sequences = new List<Sequence>();
 
-    public int CurrentSequenceIndex = 0;
+    private int _currentSequenceIndex = 0;
 
-    public UnityEvent OnNPCInteract = new();
+    [HideInInspector] public UnityEvent OnNPCInteract = new();
+
+    public bool isDrunk = false;
 
     // Component References
     private NavMeshAgent _agent;
     private Animator _animator;
-    private XRGrabInteractable _grabInteractable;
+    private XRSimpleInteractable _interactable;
     private AudioSource _audioSource;
 
     public void Awake()
     {
         _agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
-        _grabInteractable = GetComponentInChildren<XRGrabInteractable>();
+        _interactable = GetComponentInChildren<XRSimpleInteractable>();
         _audioSource = GetComponentInChildren<AudioSource>();
 
-        _grabInteractable.selectEntered.AddListener((args) => OnNPCInteract.Invoke());
+        _interactable.selectEntered.AddListener((args) => OnNPCInteract.Invoke());
     }
 
     private async void Start()
     {
         await UniTask.Yield();
         
-        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
+        if (_currentSequenceIndex >= 0 && _currentSequenceIndex < Sequences.Count)
         {
-            Sequences[CurrentSequenceIndex].StartSequence(this);
+            Sequences[_currentSequenceIndex].StartSequence(this);
         }
     }
 
     private void Update()
     {
-        if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
+        if (_currentSequenceIndex < 0 || _currentSequenceIndex >= Sequences.Count)
             return;
 
-        Sequences[CurrentSequenceIndex].UpdateSequence(this);
+        Sequences[_currentSequenceIndex].UpdateSequence(this);
     }
 
     public void StartNextSequence()
     {
-        if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
+        if (_currentSequenceIndex < 0 || _currentSequenceIndex >= Sequences.Count)
         {
-            Debug.LogWarning($"Current sequence {CurrentSequenceIndex} is out of bounds.");
+            Debug.LogWarning($"Current sequence {_currentSequenceIndex} is out of bounds.");
             return;
         }
 
-        Sequences[CurrentSequenceIndex].EndSequence(this);
+        Sequences[_currentSequenceIndex].EndSequence(this);
 
-        CurrentSequenceIndex++;
+        _currentSequenceIndex++;
 
-        if (CurrentSequenceIndex < Sequences.Count)
+        if (_currentSequenceIndex < Sequences.Count)
         {
-            Sequences[CurrentSequenceIndex].StartSequence(this);
+            Sequences[_currentSequenceIndex].StartSequence(this);
         }
     }
 
@@ -78,17 +76,33 @@ public class NPC : MonoBehaviour
             Debug.LogWarning($"Sequence index {index} is out of bounds.");
             return;
         }
-        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
+        if (_currentSequenceIndex >= 0 && _currentSequenceIndex < Sequences.Count)
         {
-            Sequences[CurrentSequenceIndex].EndSequence(this);
+            Sequences[_currentSequenceIndex].EndSequence(this);
         }
-        CurrentSequenceIndex = index;
-        Sequences[CurrentSequenceIndex].StartSequence(this);
+        _currentSequenceIndex = index;
+        Sequences[_currentSequenceIndex].StartSequence(this);
     }
 
     public void PlayAnimation(AnimationClip clip)
     {
         PlayAnimationAsync(clip).Forget();
+    }
+
+    public void PlayIdleAnimation()
+    {
+        _animator.SetBool("isDrunk", isDrunk);
+
+        _animator.SetTrigger("Start Idle");
+        _animator.SetBool("isWalk", false);
+    }
+
+    public void PlayWalkAnimation()
+    {
+        _animator.SetBool("isDrunk", isDrunk);
+
+        _animator.SetTrigger("Start Idle");
+        _animator.SetBool("isWalk", true);
     }
 
     public async UniTask PlayAnimationAsync(AnimationClip clip)

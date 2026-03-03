@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using UnityEngine.Events;
 
 [CustomEditor(typeof(NPC))]
 public class SequenceListEditor : Editor
@@ -189,6 +190,13 @@ public class SequenceListEditor : Editor
         {
             EditorGUI.indentLevel++;
 
+            // Get all event field names to skip them in the main property loop
+            var eventFieldNames = managedRef.GetType()
+                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => typeof(UnityEventBase).IsAssignableFrom(f.FieldType))
+                .Select(f => f.Name)
+                .ToHashSet();
+
             var iterator = sequenceProperty.Copy();
             var endProperty = sequenceProperty.GetEndProperty();
             
@@ -199,10 +207,8 @@ public class SequenceListEditor : Editor
                     if (SerializedProperty.EqualContents(iterator, endProperty))
                         break;
 
-                    string propName = iterator.name;
-                    
-                    // Skip event properties - we'll draw them in foldout
-                    if (propName == "OnSequenceStart" || propName == "OnSequenceEnd")
+                    // Skip all event properties - we'll draw them in foldout
+                    if (eventFieldNames.Contains(iterator.name))
                         continue;
 
                     EditorGUILayout.PropertyField(iterator, true);
@@ -215,13 +221,22 @@ public class SequenceListEditor : Editor
             if (_eventsFoldoutStates[index])
             {
                 EditorGUI.indentLevel++;
-                var beganProp = sequenceProperty.FindPropertyRelative("OnSequenceStart");
-                var completeProp = sequenceProperty.FindPropertyRelative("OnSequenceEnd");
                 
-                if (beganProp != null)
-                    EditorGUILayout.PropertyField(beganProp);
-                if (completeProp != null)
-                    EditorGUILayout.PropertyField(completeProp);
+                // Get all UnityEvent fields from the sequence type using reflection
+                var sequenceType = managedRef.GetType();
+                var eventFields = sequenceType
+                    .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .Where(f => typeof(UnityEventBase).IsAssignableFrom(f.FieldType))
+                    .ToArray();
+                
+                foreach (var eventField in eventFields)
+                {
+                    var eventProp = sequenceProperty.FindPropertyRelative(eventField.Name);
+                    if (eventProp != null)
+                    {
+                        EditorGUILayout.PropertyField(eventProp);
+                    }
+                }
                 
                 EditorGUI.indentLevel--;
             }
@@ -278,9 +293,13 @@ public class SequenceListEditor : Editor
         {
             var newSequence = (Sequence)Activator.CreateInstance(sequenceType);
             _sequencesProperty.arraySize++;
-            var newElement = _sequencesProperty.GetArrayElementAtIndex(_sequencesProperty.arraySize - 1);
+            int newIndex = _sequencesProperty.arraySize - 1;
+            var newElement = _sequencesProperty.GetArrayElementAtIndex(newIndex);
             newElement.managedReferenceValue = newSequence;
             serializedObject.ApplyModifiedProperties();
+            
+            // Automatically expand the foldout for the new sequence
+            _foldoutStates[newIndex] = true;
         }
         catch (Exception ex)
         {
