@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: Dad Conversation
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: Hey kiddo, how's it going?
+    playedAudio: {fileID: 8300000, guid: 6e37e4509a2456741b5118d854ebf46f, type: 3}
+    choices:
+    - choiceText: It's going good, dad
+      targetNodeId: dad_2
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: dad_2
+    dialogueText: Great. Any plans this afternoon?
+    playedAudio: {fileID: 8300000, guid: 23f5acb22bb6b6246a86472134b3aaaa, type: 3}
+    choices:
+    - choiceText: I'm heading to a friends house.
+      targetNodeId: dad_3_1
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: A friend is throwing a party.
+      targetNodeId: dad_3_2
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: dad_3_1
+    dialogueText: Okay, have fun.
+    playedAudio: {fileID: 8300000, guid: d37b00392dbf1ed41aad1f295ab391f9, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: dad_3_2
+    dialogueText: Alright. Stay safe, and don't do anything you shouldn't.
+    playedAudio: {fileID: 8300000, guid: 7c02e93da01f86747a5d2147fc8836f0, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []

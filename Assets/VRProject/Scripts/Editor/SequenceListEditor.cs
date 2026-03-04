@@ -21,7 +21,7 @@ public class SequenceListEditor : Editor
     private void OnEnable()
     {
         _sequencesProperty = serializedObject.FindProperty("Sequences");
-        _currentSequenceIndexProperty = serializedObject.FindProperty("CurrentSequenceIndex");
+        _currentSequenceIndexProperty = serializedObject.FindProperty("CurrentSequenceIndex"); // Use actual field name
         
         if (_sequencesProperty == null)
         {
@@ -111,7 +111,45 @@ public class SequenceListEditor : Editor
         }
 
         var sequenceProperty = _sequencesProperty.GetArrayElementAtIndex(index);
+        
+        // Check if the property is valid
+        if (sequenceProperty == null)
+        {
+            EditorGUILayout.HelpBox($"Sequence [{index}] is null.", MessageType.Warning);
+            if (GUILayout.Button("Remove Invalid Entry"))
+            {
+                _sequencesProperty.DeleteArrayElementAtIndex(index);
+                serializedObject.ApplyModifiedProperties();
+            }
+            return;
+        }
+
+        // For ManagedReference, the value could be null even if property exists
+        if (sequenceProperty.propertyType == SerializedPropertyType.ManagedReference && 
+            sequenceProperty.managedReferenceValue == null)
+        {
+            EditorGUILayout.HelpBox($"Sequence [{index}] has a null reference (type may have been deleted).", MessageType.Warning);
+            if (GUILayout.Button("Remove Invalid Entry"))
+            {
+                _sequencesProperty.DeleteArrayElementAtIndex(index);
+                serializedObject.ApplyModifiedProperties();
+            }
+            return;
+        }
+
         var managedRef = sequenceProperty.managedReferenceValue as Sequence;
+        
+        // Additional safety check - managedRef could still be null if cast fails
+        if (managedRef == null)
+        {
+            EditorGUILayout.HelpBox($"Sequence [{index}] could not be cast to Sequence type.", MessageType.Warning);
+            if (GUILayout.Button("Remove Invalid Entry"))
+            {
+                _sequencesProperty.DeleteArrayElementAtIndex(index);
+                serializedObject.ApplyModifiedProperties();
+            }
+            return;
+        }
 
         if (!_foldoutStates.ContainsKey(index))
             _foldoutStates[index] = false;
@@ -119,9 +157,7 @@ public class SequenceListEditor : Editor
         if (!_eventsFoldoutStates.ContainsKey(index))
             _eventsFoldoutStates[index] = false;
 
-        string typeName = managedRef != null 
-            ? Regex.Replace(managedRef.GetType().Name, "(?<!^)([A-Z])", " $1") 
-            : "None";
+        string typeName = Regex.Replace(managedRef.GetType().Name, "(?<!^)([A-Z])", " $1");
 
         // Check if this is the active sequence
         bool isActive = _currentSequenceIndexProperty.intValue == index;

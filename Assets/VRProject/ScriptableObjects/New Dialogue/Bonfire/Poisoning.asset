@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: Poisoning
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: Jeez, how many drinks has this guy had?
+    playedAudio: {fileID: 8300000, guid: c0dcf343487e99745a25db80ecf3246c, type: 3}
+    choices:
+    - choiceText: No idea...
+      targetNodeId: yo____i
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: yo____i
+    dialogueText: Yo... I don't think he's breathing! Someone call 911!
+    playedAudio: {fileID: 8300000, guid: b9f9753ebeead264f80a156c3b9d7971, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
