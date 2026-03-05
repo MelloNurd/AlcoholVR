@@ -11,7 +11,7 @@ public class NPC : MonoBehaviour
     [SerializeReference]
     public List<Sequence> Sequences = new List<Sequence>();
 
-    private int _currentSequenceIndex = 0;
+    [HideInInspector] public int CurrentSequenceIndex = 0;
 
     [HideInInspector] public UnityEvent OnNPCInteract = new();
 
@@ -37,35 +37,35 @@ public class NPC : MonoBehaviour
     {
         await UniTask.Yield();
         
-        if (_currentSequenceIndex >= 0 && _currentSequenceIndex < Sequences.Count)
+        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
         {
-            Sequences[_currentSequenceIndex].StartSequence(this);
+            Sequences[CurrentSequenceIndex].StartSequence(this);
         }
     }
 
     private void Update()
     {
-        if (_currentSequenceIndex < 0 || _currentSequenceIndex >= Sequences.Count)
+        if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
             return;
 
-        Sequences[_currentSequenceIndex].UpdateSequence(this);
+        Sequences[CurrentSequenceIndex].UpdateSequence(this);
     }
 
     public void StartNextSequence()
     {
-        if (_currentSequenceIndex < 0 || _currentSequenceIndex >= Sequences.Count)
+        if (CurrentSequenceIndex < 0 || CurrentSequenceIndex >= Sequences.Count)
         {
-            Debug.LogWarning($"Current sequence {_currentSequenceIndex} is out of bounds.");
+            Debug.LogWarning($"Current sequence {CurrentSequenceIndex} is out of bounds.");
             return;
         }
 
-        Sequences[_currentSequenceIndex].EndSequence(this);
+        Sequences[CurrentSequenceIndex].EndSequence(this);
 
-        _currentSequenceIndex++;
+        CurrentSequenceIndex++;
 
-        if (_currentSequenceIndex < Sequences.Count)
+        if (CurrentSequenceIndex < Sequences.Count)
         {
-            Sequences[_currentSequenceIndex].StartSequence(this);
+            Sequences[CurrentSequenceIndex].StartSequence(this);
         }
     }
 
@@ -76,12 +76,12 @@ public class NPC : MonoBehaviour
             Debug.LogWarning($"Sequence index {index} is out of bounds.");
             return;
         }
-        if (_currentSequenceIndex >= 0 && _currentSequenceIndex < Sequences.Count)
+        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
         {
-            Sequences[_currentSequenceIndex].EndSequence(this);
+            Sequences[CurrentSequenceIndex].EndSequence(this);
         }
-        _currentSequenceIndex = index;
-        Sequences[_currentSequenceIndex].StartSequence(this);
+        CurrentSequenceIndex = index;
+        Sequences[CurrentSequenceIndex].StartSequence(this);
     }
 
     public void PlayAnimation(AnimationClip clip)
@@ -109,5 +109,27 @@ public class NPC : MonoBehaviour
     {
         _animator.CrossFade(clip.name, 0.15f);
         await UniTask.Delay(clip.length.ToMS());
+    }
+
+    public async UniTask MoveToAsync(Transform transform) => await MoveToAsync(transform.position);
+    public async UniTask MoveToAsync(Vector3 destination)
+    {
+        if (_agent == null || !_agent.isActiveAndEnabled)
+        {
+            Debug.LogWarning("NavMeshAgent is not active or enabled. Cannot move.");
+            return;
+        }
+        if (!_agent.SetDestinationToClosestPoint(destination, 1.5f))
+        {
+            Debug.LogWarning($"Failed to set destination for {_agent.gameObject.name}. Check if the destination is valid.");
+            return;
+        }
+
+        PlayWalkAnimation();
+        while (!_agent.IsAtDestination())
+        {
+            await UniTask.Yield(); // Wait for the next frame
+        }
+        PlayIdleAnimation();
     }
 }

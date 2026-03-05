@@ -108,3 +108,20 @@ public class WaitForItemSequence : Sequence
         }
     }
 }
+
+[Serializable]
+public class MoveToSequence : Sequence
+{
+    public Transform Target;
+    protected override async void OnStart(NPC npc)
+    {
+        if (Target == null)
+        {
+            Debug.LogWarning("No target assigned to MoveToSequence, continuing to next sequence.");
+            npc.StartNextSequence();
+            return;
+        }
+        await npc.MoveToAsync(Target);
+        npc.StartNextSequence();
+    }
+}
