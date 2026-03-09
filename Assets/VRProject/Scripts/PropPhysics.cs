@@ -70,6 +70,9 @@ public class PropPhysics : MonoBehaviour
     IEnumerator IdleAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SetIdleState();
+        if(!inBubble)
+        {
+            SetIdleState();
+        }
     }
 }

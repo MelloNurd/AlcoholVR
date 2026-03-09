@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6055171494716738976}
   - component: {fileID: 5994772631035451384}
   - component: {fileID: 2906828599905709330}
-  - component: {fileID: 3896682196153974562}
   - component: {fileID: 5302834171027110984}
   - component: {fileID: 1313438586783553957}
   - component: {fileID: 9043113821644084736}
@@ -119,28 +118,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.55049324, y: 0.07355659, z: 0.42832276}
   m_Center: {x: 0, y: 0.036778294, z: -0.090357706}
---- !u!64 &3896682196153974562
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5200750537642753265}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2630020423069466706, guid: 403f481fd9411fe4babc6f59defb39d3, type: 3}
 --- !u!54 &5302834171027110984
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -349,5 +326,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea6df2dafb36bf944b96abbf330078c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PropPhysics
-  settleTime: 5
-  velocityThreshold: 0.01
+  bubbleTimeout: 5
