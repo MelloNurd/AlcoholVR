@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PropPhysics : MonoBehaviour
@@ -12,7 +13,7 @@ public class PropPhysics : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        SetIdleState();
+        StartCoroutine(IdleAfterDelay(1f)); // Start idle after 1 second to allow for initial setup
     }
 
     void Update()
@@ -64,5 +65,11 @@ public class PropPhysics : MonoBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
         rb.WakeUp();
+    }
+
+    IEnumerator IdleAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SetIdleState();
     }
 }

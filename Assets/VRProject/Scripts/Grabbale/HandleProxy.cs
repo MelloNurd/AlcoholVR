@@ -30,6 +30,10 @@ public class HandleProxy : MonoBehaviour
         // Slightly faster than GetComponent in Start  
         interactable = proxyHandle.GetComponent<XRGrabInteractable>();
         realRb = realHandle.GetComponent<Rigidbody>();
+        if(realRb == null)
+        {
+            Debug.LogError("Real handle must have a Rigidbody component.");
+        }
 
         realHandleTransform = realHandle.transform;
         proxyHandleTransform = proxyHandle.transform;

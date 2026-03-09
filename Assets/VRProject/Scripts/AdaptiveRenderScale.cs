@@ -41,7 +41,6 @@ public class AdaptiveRenderScale : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
