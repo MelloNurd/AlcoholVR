@@ -10873,7 +10873,7 @@ GameObject:
   - component: {fileID: 2329678256922549337}
   - component: {fileID: 5923508068118688748}
   m_Layer: 18
-  m_Name: DialogueText
+  m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12541,7 +12541,7 @@ GameObject:
   - component: {fileID: 4039551732799652452}
   - component: {fileID: 5526577096167014230}
   m_Layer: 18
-  m_Name: speech_bubble
+  m_Name: Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20210,8 +20210,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8669903188159110794}
+  - component: {fileID: 8669903188159110795}
   m_Layer: 18
-  m_Name: TextBubblePivot
+  m_Name: Speech Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20315,7 +20316,6 @@ GameObject:
   - component: {fileID: 1609364020017467214}
   - component: {fileID: 8403300852590222824}
   - component: {fileID: 8403300852590222828}
-  - component: {fileID: 8403300852590222826}
   - component: {fileID: 8403300852590222827}
   - component: {fileID: 8403300852590222825}
   - component: {fileID: 7725785705228218763}
@@ -20340,14 +20340,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1619e797ec493d44b7c0401132bb98b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
+  CurrentSequenceIndex: 0
   Sequences:
   - rid: 4795974171624472749
-  - rid: 4795974173316612344
-  CurrentSequenceIndex: 0
+  - rid: 4795974465898676750
+  - rid: 4795974465898676751
+  isDrunk: 0
+  canInteract: 1
   OnNPCInteract:
     m_PersistentCalls:
       m_Calls: []
-  isDrunk: 0
   references:
     version: 2
     RefIds:
@@ -20361,7 +20363,17 @@ MonoBehaviour:
           m_PersistentCalls:
             m_Calls: []
         Target: {fileID: 961055883}
-    - rid: 4795974173316612344
+    - rid: 4795974465898676750
+      type: {class: StartDialogueSequence, ns: , asm: Assembly-CSharp}
+      data:
+        OnSequenceStart:
+          m_PersistentCalls:
+            m_Calls: []
+        OnSequenceEnd:
+          m_PersistentCalls:
+            m_Calls: []
+        dialogue: {fileID: 11400000, guid: 8d9790b3e72c91e45a1a78cb48189315, type: 2}
+    - rid: 4795974465898676751
       type: {class: MoveToSequence, ns: , asm: Assembly-CSharp}
       data:
         OnSequenceStart:
@@ -20370,7 +20382,7 @@ MonoBehaviour:
         OnSequenceEnd:
           m_PersistentCalls:
             m_Calls: []
-        Target: {fileID: 0}
+        Target: {fileID: 902976090}
 --- !u!114 &8403300852590222825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20445,19 +20457,6 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AutoFindParentInteractableInHierarchy: 0
   m_ParentInteractableObject: {fileID: 0}
---- !u!114 &8403300852590222826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8403300852590222823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59ff80c2b0d36d04c8df5931bdc7c8cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueController
-  nextDialogue: {fileID: 0}
 --- !u!82 &8403300852590222827
 AudioSource:
   m_ObjectHideFlags: 0
@@ -20567,18 +20566,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea3469eb2077e8842b9b5cb4bf1074d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueRunner
-  currentGraph: {fileID: 0}
-  currentNode:
-    nodeId: 
-    dialogueText: 
-    playedAudio: {fileID: 0}
-    choices: []
-    onNodeEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    onNodeExit:
-      m_PersistentCalls:
-        m_Calls: []
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
@@ -21000,6 +20987,28 @@ Transform:
   - {fileID: 6848260063242786171}
   m_Father: {fileID: 6096536085613608516}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8669903188159110795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8297569242278388510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23bb91d38fd49845a565ac6870c78df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Typewriter
+  _baseTypingSpeed: 0.02
+  _typingSound: {fileID: 0}
+  typeFaster: 0
+  IsWriting: 0
+  OnCharacterType:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTextComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &8695519951313579189
 Transform:
   m_ObjectHideFlags: 0

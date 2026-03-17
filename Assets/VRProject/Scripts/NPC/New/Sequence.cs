@@ -1,6 +1,7 @@
 using System;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
+using EditorAttributes.Editor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -69,9 +70,15 @@ public class AnimateSequence : Sequence
 }
 
 [Serializable]
-public class DialogueSequence : Sequence
+public class StartDialogueSequence : Sequence
 {
-    
+    public DialogueGraph dialogue;
+    protected override async void OnStart(NPC npc)
+    {
+        await npc.StartDialogueAsync(dialogue);
+        Debug.Log("Dialogue finished (from Sequence script).");
+        npc.StartNextSequence();
+    }
 }
 
 [Serializable]
@@ -122,6 +129,18 @@ public class MoveToSequence : Sequence
             return;
         }
         await npc.MoveToAsync(Target);
+        npc.StartNextSequence();
+    }
+}
+
+[Serializable]
+public class QueueDialogueSequence : Sequence
+{
+    [Tooltip("This will queue the dialogue for the NPC, causing the NPC to become interactable. Interacting with the npc while queued will initiate the dialogue.")]
+    public DialogueGraph queuedDialogue;
+    protected override void OnStart(NPC npc)
+    {
+        npc.QueueDialogue(queuedDialogue);
         npc.StartNextSequence();
     }
 }

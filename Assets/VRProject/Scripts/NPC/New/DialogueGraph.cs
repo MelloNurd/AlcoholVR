@@ -35,7 +35,7 @@ public class DialogueGraph : ScriptableObject
     
     [SerializeField]
     public List<DialogueNode> nodes = new();
-    
+
     // Runtime lookup cache
     [NonSerialized]
     private Dictionary<string, DialogueNode> _nodeLookup;

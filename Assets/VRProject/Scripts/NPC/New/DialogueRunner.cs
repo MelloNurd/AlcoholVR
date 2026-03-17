@@ -1,58 +1,92 @@
 using Cysharp.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class DialogueRunner : MonoBehaviour
 {
-    public DialogueGraph currentGraph;
-    public DialogueNode currentNode;
-    
-    public UnityEvent onDialogueStart;
-    public UnityEvent onDialogueEnd;
-    
+    public NPC npc { get; private set; }
+
+    public DialogueGraph currentGraph { get; private set; }
+    public DialogueNode currentNode { get; private set; }
+    public DialogueGraph queuedDialogue { get; private set; }
+
+    public bool IsQueued => queuedDialogue != null;
     public bool IsActive => currentNode != null;
-    
-    // Reference your existing display components here
-    // (Typewriter, AudioSource, TextBubble, etc.)
-    
-    public void StartDialogue(DialogueGraph graph)
+
+    public UnityEvent onDialogueStart = new();
+    public UnityEvent onDialogueEnd = new();
+
+    private Typewriter _typewriter;
+
+    private void Awake()
     {
-        currentGraph = graph;
-        onDialogueStart?.Invoke();
-        GoToNode(graph.startNodeId);
+        _typewriter = GetComponentInChildren<Typewriter>();
+        npc = GetComponent<NPC>();
     }
-    
-    public async void GoToNode(string nodeId)
+
+    public void QueueDialogue(DialogueGraph graph)
     {
-        // Exit previous node
-        currentNode?.onNodeExit?.Invoke();
-        
-        if (string.IsNullOrEmpty(nodeId))
+        if (graph == null || graph.startNodeId.IsBlank())
         {
+            Debug.LogWarning("Dialogue graph has no start node defined.");
+            return;
+        }
+
+        queuedDialogue = graph;
+    }
+
+    public async UniTask StartDialogueAsync(DialogueGraph graph)
+    {
+        if (graph == null || graph.startNodeId.IsBlank())
+        {
+            Debug.LogWarning("Dialogue graph has no start node defined.");
             EndDialogue();
             return;
         }
-        
+
+        queuedDialogue = null;
+        currentGraph = graph;
+        onDialogueStart?.Invoke();
+        await ContinueDialogue(graph.startNodeId);
+    }
+
+    public async UniTask ContinueDialogue(string nodeId)
+    {
+        DialogueButtons.Instance.ClearButtons();
+
+        // Exit previous node
+        currentNode?.onNodeExit?.Invoke();
         currentNode = currentGraph.GetNode(nodeId);
-        
         if (currentNode == null)
         {
             Debug.LogWarning($"Node '{nodeId}' not found in graph.");
             EndDialogue();
             return;
         }
-        
         currentNode.onNodeEnter?.Invoke();
-        
-        // Display text, play audio, create buttons...
-        await DisplayNodeAsync(currentNode);
-    }
-    
-    private async UniTask DisplayNodeAsync(DialogueNode node)
-    {
-        // Your existing display logic here
-        // After text displays, create choice buttons that call:
-        // GoToNode(choice.targetNodeId)
+
+        await DisplayText(currentNode.dialogueText);
+
+        if (currentNode.choices.Count == 0)
+        {
+            await UniTask.Delay(3000); // Wait a bit before hiding text bubble
+            EndDialogue();
+            return;
+        }
+
+        DialogueChoice chosenChoice = await DialogueButtons.Instance.PromptPlayerForDialogueChoisesAsync(currentNode);
+
+        // Continue through tree if applicable, otherwise end dialogue
+        if (chosenChoice != null && !chosenChoice.targetNodeId.IsBlank())
+        {
+            chosenChoice.onChoiceSelected?.Invoke();
+            await ContinueDialogue(chosenChoice.targetNodeId);
+        }
+        else
+        {
+            EndDialogue();
+        }
     }
     
     public void EndDialogue()
@@ -61,5 +95,15 @@ public class DialogueRunner : MonoBehaviour
         currentNode = null;
         currentGraph = null;
         onDialogueEnd?.Invoke();
+        DialogueButtons.Instance.ClearButtons();
+        _typewriter.HideTextBubble();
+    }
+
+    private async UniTask DisplayText(string text)
+    {
+        if (text.IsBlank()) return;
+
+        await _typewriter.ShowTextBubble();
+        await _typewriter.StartWritingAsync(text);
     }
 }

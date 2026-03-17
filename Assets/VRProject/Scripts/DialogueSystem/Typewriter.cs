@@ -1,10 +1,11 @@
-using Cysharp.Threading.Tasks;
-using TMPro;
-using UnityEngine;
-using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Cysharp.Threading.Tasks;
+using PrimeTween;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Events;
 
 public class Typewriter : MonoBehaviour
 {
@@ -48,9 +49,15 @@ public class Typewriter : MonoBehaviour
 
     private TMP_Text _textComponent;
 
+    private GameObject _textBubble;
+    private Vector3 _textBubbleScale;
+
     void Awake()
     {
-        _textComponent = GetComponentInChildren<TMP_Text>();
+        _textBubble = gameObject.transform.GetChild(0).gameObject;
+        _textBubbleScale = _textBubble.transform.localScale;
+        _textComponent = _textBubble.GetComponentInChildren<TMP_Text>();
+
         _audioSource = GetComponent<AudioSource>();
         if(_audioSource == null)
         {
@@ -188,7 +195,7 @@ public class Typewriter : MonoBehaviour
             }
             OnCharacterType?.Invoke();
 
-            int delay = Mathf.RoundToInt(typingSpeeds[i] * 1000 * typingSpeedMultiplier);
+            int delay = (typingSpeeds[i] * typingSpeedMultiplier).ToMS();
             await UniTask.Delay(delay, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
             if(_cancelToken.Token.IsCancellationRequested)
             {
@@ -217,6 +224,20 @@ public class Typewriter : MonoBehaviour
         {
             _cancelToken.Cancel();
         }
+    }
+
+    public async UniTask ShowTextBubble()
+    {
+        _textBubble.SetActive(true);
+        Tween.CompleteAll(_textBubble.transform);
+        await Tween.Scale(_textBubble.transform, _textBubbleScale, 0.2f, Ease.OutBack);
+    }
+
+    public async void HideTextBubble()
+    {
+        Tween.CompleteAll(_textBubble.transform);
+        await Tween.Scale(_textBubble.transform, 0, 0.2f, Ease.InBack);
+        _textBubble.SetActive(false);
     }
 
     /// <summary>

@@ -116,28 +116,29 @@ public class DialogueSystem : MonoBehaviour
         // Display dialogue text (takes time, so await)
         await DisplayText(dialogue.dialogueText);
 
-        if (dialogue.options.Count > 0)
-        {
-            if(DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
-            {
-                dialogue.onDialogueStart?.Invoke();
-            }
-            else
-            {
-                // failed to create buttons, end dialogue as fallback
-                Debug.LogWarning("Failed to create dialogue buttons. Ending dialogue.");
-                EndCurrentDialogue();
-                Player.Instance.IsInteractingWithNPC = false;
-                return;
-            }
-        }
-        else
-        {
-            Player.Instance.EnableMovement();
-            Player.Instance.IsInteractingWithNPC = false;
-            await UniTask.Delay(3000); // Wait a bit before hiding text bubble
-            EndCurrentDialogue();
-        }
+        //if (dialogue.options.Count > 0)
+        //{
+        //    if(DialogueButtons.Instance.PromptPlayerForDialogueChoisesAsync(, dialogue))
+        //    {
+        //        dialogue.onDialogueStart?.Invoke();
+        //    }
+        //    else
+        //    {
+        //        // failed to create buttons, end dialogue as fallback
+        //        Debug.LogWarning("Failed to create dialogue buttons. Ending dialogue.");
+        //        EndCurrentDialogue();
+        //        Player.Instance.IsInteractingWithNPC = false;
+        //        return;
+        //    }
+        //}
+        //else
+        //{
+        //    Player.Instance.EnableMovement();
+        //    Player.Instance.IsInteractingWithNPC = false;
+        //    await UniTask.Delay(3000); // Wait a bit before hiding text bubble
+        //    EndCurrentDialogue();
+        //}
+        EndCurrentDialogue();
     }
 
     private async UniTask DisplayText(string text)
@@ -175,9 +176,6 @@ public class DialogueSystem : MonoBehaviour
         currentDialogue?.onDialogueEnd?.Invoke();
         currentDialogue = null;
         onEnd?.Invoke();
-        _dialogueText.text = "";
-        Tween.CompleteAll(_textBubble.transform);
-        await Tween.Scale(_textBubble.transform, 0, 0.2f, Ease.InBack);
-        _textBubble.SetActive(false);
+        
     }
 }

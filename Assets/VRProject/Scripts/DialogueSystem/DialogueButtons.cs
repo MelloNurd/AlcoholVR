@@ -128,60 +128,75 @@ public class DialogueButtons : MonoBehaviour
         }
     }
 
-    public bool TryCreateDialogueButtons(DialogueSystem system, Dialogue dialogue, bool reverseOrder = false)
+    /// <summary>
+    /// Creates dialogue buttons based on the provided DialogueNode's choices. Returns a UniTask that completes when a button is pressed, yielding the selected DialogueChoice. Buttons are spawned in front of the player, spaced out based on the _buttonAngleSpacing variable. If reverseOrder is true, buttons will be spawned in reverse order (useful for NPCs facing the player). The method also handles playing spawn sounds and setting up button interactions. If spawning fails (e.g., no valid positions), it returns null.
+    /// </summary>
+    /// <param name="dialogueNode"></param>
+    /// <param name="reverseOrder"></param>
+    /// <returns>The chosen dialogue choice, awaited until the button is pressed.</returns>
+    public async UniTask<DialogueChoice> PromptPlayerForDialogueChoisesAsync(DialogueNode dialogueNode, bool reverseOrder = false)
     {
-        if(dialogue == null || dialogue.dialogueText == null)
+        if(dialogueNode == null || dialogueNode.dialogueText.IsBlank())
         {
             Debug.LogWarning("DialogueSystem or current tree/option is null. Cannot create buttons.");
-            return false;
+            return null;
         }
 
-        if (!TryGenerateSpawnPositions(dialogue.options.Count, out Vector3[] spawnPos))
+        if (!TryGenerateSpawnPositions(dialogueNode.choices.Count, out Vector3[] spawnPos))
         {
             Debug.LogWarning("Failed to find valid spawn positions for dialogue buttons.");
-            return false;
+            return null;
         }
 
-        int middleIndex = dialogue.options.Count / 2; // Calculate middle index for reverse order
-
-        for (int i = 0; i < dialogue.options.Count; i++)
+        if (dialogueNode.choices.Count == 0)
         {
-            currentButtonCount++;
+            Debug.LogWarning("DialogueNode has no choices. No buttons will be created.");
+            return null;
+        }
 
-            int index = reverseOrder ? dialogue.options.Count - 1 - i : i; // adjust index for reverse order
+        currentButtonCount = dialogueNode.choices.Count;
 
+        UniTaskCompletionSource<DialogueChoice> buttonPressedTCS = new UniTaskCompletionSource<DialogueChoice>();
+
+        int middleIndex = dialogueNode.choices.Count / 2;
+        for (int i = 0; i < dialogueNode.choices.Count; i++)
+        {
+            int index = reverseOrder ? dialogueNode.choices.Count - 1 - i : i; // adjust index for reverse order
+
+            // Create and setup button
             Quaternion spawnRotation = Quaternion.LookRotation(spawnPos[i] - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
-
             PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, _buttonParentObj.transform).GetComponent<PhysicalButton>();
-            optionButton.name = "DialogueButton: " + dialogue.options[index].optionText;
+            optionButton.name = "DialogueButton: " + dialogueNode.choices[index].choiceText;
             optionButton.interactableLayers = LayerMask.GetMask("PlayerHand"); // only the player hand can interact with these buttons
             _activeButtons.Add(optionButton);
+            optionButton.SetButtonText(dialogueNode.choices[index].choiceText);
 
-            if (dialogue.options[i].DisableButton)
+            if (dialogueNode.choices[i].isDisabled)
             {
                 optionButton.DisableButton();
             }
 
+            // On button pressed setup
             int closureIndex = i; // weird behavior needed with lambda function, called a closure
-            optionButton.OnButtonDown.AddListener(async () => {
+            optionButton.OnButtonDown.AddListener(async () => { 
                 if (!optionButton.IsInteractable) return;
 
                 await UniTask.Delay(100); // small delay to allow button press sound to play
-                dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
-                system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);
+                dialogueNode.choices[index].onChoiceSelected?.Invoke(); // Invoke the option's selected event
+                //system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);
                 OnButtonPressed?.Invoke(optionButton);
+                buttonPressedTCS.TrySetResult(dialogueNode.choices[closureIndex]); // Set the result of the button press
             });
 
-            optionButton.SetButtonText(dialogue.options[index].optionText);
-
+            // Play spawn sound (Only on middle button)
             if (i == middleIndex && _buttonAppearSound != null)
             {
                 optionButton.PlaySound(_buttonAppearSound);
             }
         }
-
         OnButtonsSpawn?.Invoke();
-        return true;
+
+        return await buttonPressedTCS.Task; // Wait until a button is pressed
     }
 
     private bool TryGenerateSpawnPositions(int amount, out Vector3[] spawnPositions)
