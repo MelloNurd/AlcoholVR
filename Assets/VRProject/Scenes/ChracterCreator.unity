@@ -17433,11 +17433,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
@@ -17454,7 +17454,7 @@ PrefabInstance:
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1605832381}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
@@ -17493,11 +17493,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: DisableTutorialSettings
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
-      value: TransitionSceneByName
+      value: CloseEyes
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
@@ -17513,7 +17513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: SettingsManager, Assembly-CSharp
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
@@ -17524,8 +17524,16 @@ PrefabInstance:
       value: UnityEngine.UI.Button, UnityEngine.UI
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_FloatArgument
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_FloatArgument
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4750758084075894727, guid: ebb3558f812483243bc2fe6035e42534, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
@@ -21339,6 +21347,8 @@ MonoBehaviour:
   initializationTimeout: 10
   CharacterBody: {fileID: 1929787351}
   Head: {fileID: 259255005}
+  loading: {fileID: 436996262}
+  nextSceneName: House
 --- !u!114 &1135767650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32293,7 +32303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1605832382
 Transform:
   m_ObjectHideFlags: 0

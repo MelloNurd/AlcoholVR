@@ -1,7 +1,8 @@
+using Bozo.ModularCharacters;
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using Bozo.ModularCharacters;
+using UnityEngine.SceneManagement;
 
 public class PlayerPictureCapture : MonoBehaviour
 {
@@ -22,18 +23,20 @@ public class PlayerPictureCapture : MonoBehaviour
     [SerializeField] GameObject Head;
     SkinnedMeshRenderer headRenderer;
 
+    [SerializeField] Loading loading;
+    [SerializeField] string nextSceneName;
+
     void Awake()
     {
         if (characterSystem == null)
         {
             characterSystem = FindFirstObjectByType<OutfitSystem>();
         }
-
-        StartCoroutine(WaitForCharacterAndCapture());
     }
 
-    void Update()
+    private void Start()
     {
+        StartCoroutine(WaitForCharacterAndCapture());
     }
 
     /// <summary>
@@ -109,6 +112,7 @@ public class PlayerPictureCapture : MonoBehaviour
         {
             Debug.LogWarning("PlayerPictureCapture: ScreenshotParent is not assigned.");
         }
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextSceneName);
     }
 
     /// <summary>
