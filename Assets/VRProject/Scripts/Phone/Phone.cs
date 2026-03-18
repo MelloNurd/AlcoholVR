@@ -237,18 +237,24 @@ public class Phone : MonoBehaviour
             QueueNotification("Test Sender", "This is a test message");
         }
 
-        if (InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out _buttonPressed)
-            || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out _buttonPressed)
-            || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out _buttonPressed)
-            )
+        bool menuButtonPressed = InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.menuButton, out bool menuState) && menuState;
+        bool primaryButtonPressed = InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool primaryState) && primaryState;
+        bool secondaryButtonPressed = InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondaryState) && secondaryState;
+
+        if (menuButtonPressed || primaryButtonPressed || secondaryButtonPressed)
         {
-            if (_buttonPressed && !_lastButtonState)
+            _buttonPressed = true;
+            if (!_lastButtonState)
             {
                 _lastButtonState = true;
                 TogglePhone();
                 return;
             }
-            if (!_buttonPressed && _lastButtonState)
+        }
+        else
+        {
+            _buttonPressed = false;
+            if (_lastButtonState)
             {
                 _lastButtonState = false;
             }
