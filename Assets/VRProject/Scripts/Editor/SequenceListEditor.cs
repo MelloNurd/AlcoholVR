@@ -75,6 +75,17 @@ public class SequenceListEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
         GUI.enabled = true;
 
+        EditorGUILayout.Space(10);
+
+        // Manually draw the InteractWith button
+        // Logic relies on Awake(), so we only enable it in Play Mode to avoid crashes
+        GUI.enabled = Application.isPlaying;
+        if (GUILayout.Button("Simulate Interact"))
+        {
+            ((NPC)target).InteractWith();
+        }
+        GUI.enabled = true;
+
         EditorGUILayout.Space(4);
         
         // Draw sequences header with count

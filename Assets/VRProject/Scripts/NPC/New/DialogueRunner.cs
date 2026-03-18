@@ -22,7 +22,13 @@ public class DialogueRunner : MonoBehaviour
     private void Awake()
     {
         _typewriter = GetComponentInChildren<Typewriter>();
+
         npc = GetComponent<NPC>();
+    }
+
+    private void Start()
+    {
+        _typewriter.HideTextBubble();
     }
 
     public void QueueDialogue(DialogueGraph graph)

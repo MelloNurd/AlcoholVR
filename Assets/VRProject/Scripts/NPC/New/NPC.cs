@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using EditorAttributes;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.AI;
@@ -38,13 +39,21 @@ public class NPC : MonoBehaviour
             Debug.LogError($"XRSimpleInteractable component not found on {gameObject.name} or its children. Interactions will not work.", gameObject);
             return;
         }
-        _interactable.selectEntered.AddListener((args) =>
-        {
-            if (!canInteract)
-                return;
+        _interactable.selectEntered.AddListener((args) => InteractWith());
+    }
 
-            OnNPCInteract.Invoke();
-        });
+    public void InteractWith()
+    {
+        if (!canInteract)
+            return;
+
+        if (_dialogueRunner.IsQueued)
+        {
+            // Pause current sequence
+            // Start dialogue sequence
+            // Resume current sequence after dialogue ends
+        }
+        OnNPCInteract.Invoke();
     }
 
     private async void Start()

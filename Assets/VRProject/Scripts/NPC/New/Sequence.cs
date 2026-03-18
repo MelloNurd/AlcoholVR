@@ -18,6 +18,13 @@ public abstract class Sequence
     }
     protected virtual void OnStart(NPC npc) { }
 
+    public void PauseSequence(NPC npc)
+    {
+        OnSequenceEnd.Invoke();
+        OnPause(npc);
+    }
+    protected virtual void OnPause(NPC npc) { } // Possibly make this abstract
+
     public void UpdateSequence(NPC npc) 
     {
         OnUpdate(npc);
