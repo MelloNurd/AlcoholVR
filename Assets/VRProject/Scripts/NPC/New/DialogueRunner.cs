@@ -9,9 +9,9 @@ public class DialogueRunner : MonoBehaviour
 
     public DialogueGraph currentGraph { get; private set; }
     public DialogueNode currentNode { get; private set; }
-    public DialogueGraph queuedDialogue { get; private set; }
+    public DialogueGraph QueuedDialogue { get; private set; }
 
-    public bool IsQueued => queuedDialogue != null;
+    public bool IsQueued => QueuedDialogue != null;
     public bool IsActive => currentNode != null;
 
     public UnityEvent onDialogueStart = new();
@@ -33,13 +33,13 @@ public class DialogueRunner : MonoBehaviour
 
     public void QueueDialogue(DialogueGraph graph)
     {
-        if (graph == null || graph.startNodeId.IsBlank())
+        if (graph != null && graph.startNodeId.IsBlank())
         {
             Debug.LogWarning("Dialogue graph has no start node defined.");
             return;
         }
 
-        queuedDialogue = graph;
+        QueuedDialogue = graph;
     }
 
     public async UniTask StartDialogueAsync(DialogueGraph graph)
@@ -51,7 +51,7 @@ public class DialogueRunner : MonoBehaviour
             return;
         }
 
-        queuedDialogue = null;
+        QueuedDialogue = null;
         currentGraph = graph;
         onDialogueStart?.Invoke();
         await ContinueDialogue(graph.startNodeId);

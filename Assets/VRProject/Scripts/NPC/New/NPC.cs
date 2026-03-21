@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
-using EditorAttributes;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using static UnityEngine.GraphicsBuffer;
 
 [SelectionBase]
 public class NPC : MonoBehaviour
@@ -13,10 +14,13 @@ public class NPC : MonoBehaviour
     [HideInInspector] public int CurrentSequenceIndex = 0;
     [SerializeReference] public List<Sequence> Sequences = new List<Sequence>();
 
+    public CancellationTokenSource CancelTokenSource { get; private set; } = new CancellationTokenSource();
+
     public bool isDrunk = false;
     public bool canInteract = true;
 
     // Component References
+    private GameObject _bodyObject;
     private NavMeshAgent _agent;
     private DialogueRunner _dialogueRunner;
     private Animator _animator;
@@ -33,6 +37,7 @@ public class NPC : MonoBehaviour
         _interactable = GetComponentInChildren<XRSimpleInteractable>();
         _audioSource = GetComponentInChildren<AudioSource>();
         _dialogueRunner = GetComponentInChildren<DialogueRunner>();
+        _bodyObject = transform.Find("Body").gameObject;
 
         if (_interactable == null)
         {
@@ -40,26 +45,41 @@ public class NPC : MonoBehaviour
             return;
         }
         _interactable.selectEntered.AddListener((args) => InteractWith());
+
+        CurrentSequenceIndex = 0;
     }
 
-    public void InteractWith()
+    public async void InteractWith()
     {
+        Debug.Log($"CurrentSequenceIndex start of ineract: {CurrentSequenceIndex}");
         if (!canInteract)
             return;
 
+        // Prioritize dialogue interactions over other interactions
         if (_dialogueRunner.IsQueued)
         {
-            // Pause current sequence
-            // Start dialogue sequence
-            // Resume current sequence after dialogue ends
+            CancelTokenSource?.Cancel();
+
+            // Create new dialogue sequence and start (ideally not in the list)
+            Debug.Log($"CurrentSequenceIndex middle of ineract: {CurrentSequenceIndex}");
+
+            await StartDialogueAsync(_dialogueRunner.QueuedDialogue);
+
+            // Return to previous current sequence
+            CancelTokenSource = new CancellationTokenSource();
+            StartSequence(CurrentSequenceIndex);
         }
-        OnNPCInteract.Invoke();
+        else
+        {
+            OnNPCInteract.Invoke();
+        }
+        Debug.Log($"CurrentSequenceIndex end of ineract: {CurrentSequenceIndex}");
     }
 
     private async void Start()
     {
-        await UniTask.Yield();
-        
+        await UniTask.Yield(); // Wait a frame to ensure everything is initialized
+
         if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
         {
             Sequences[CurrentSequenceIndex].StartSequence(this);
@@ -83,16 +103,14 @@ public class NPC : MonoBehaviour
             return;
         }
 
-        Sequences[CurrentSequenceIndex].EndSequence(this);
-
-        CurrentSequenceIndex++;
-
-        if (CurrentSequenceIndex < Sequences.Count)
+        int nextIndex = CurrentSequenceIndex + 1;
+        if (nextIndex < Sequences.Count)
         {
-            Sequences[CurrentSequenceIndex].StartSequence(this);
+            StartSequence(nextIndex);
         }
         else
         {
+            Sequences[CurrentSequenceIndex].EndSequence(this);
             Debug.Log($"NPC ({gameObject.name}) reached the end of their sequences.", gameObject);
         }
     }
@@ -104,7 +122,7 @@ public class NPC : MonoBehaviour
             Debug.LogWarning($"Sequence index {index} is out of bounds.");
             return;
         }
-        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count)
+        if (CurrentSequenceIndex >= 0 && CurrentSequenceIndex < Sequences.Count && index != CurrentSequenceIndex)
         {
             Sequences[CurrentSequenceIndex].EndSequence(this);
         }
@@ -122,7 +140,7 @@ public class NPC : MonoBehaviour
         }
 
         canInteract = false;
-        await _dialogueRunner.StartDialogueAsync(dialogue);
+        await _dialogueRunner.StartDialogueAsync(dialogue); // Don't ever cancel out of dialogue
         Debug.Log("Dialogue finished (from NPC script).");
     }
 
@@ -134,8 +152,20 @@ public class NPC : MonoBehaviour
             return;
         }
 
+        Debug.Log($"Queueing dialogue: {dialogue.name} on NPC: {gameObject.name}");
         _dialogueRunner.QueueDialogue(dialogue);
         canInteract = true;
+    }
+
+    public void ClearDialogueQueue()
+    {
+        if(_dialogueRunner == null)
+        {
+            Debug.LogError("DialogueRunner component not found. Cannot clear dialogue queue.", gameObject);
+            return;
+        }
+        _dialogueRunner.QueueDialogue(null);
+        canInteract = false;
     }
 
     // Animations
@@ -146,6 +176,7 @@ public class NPC : MonoBehaviour
 
     public void PlayIdleAnimation()
     {
+        Debug.Log("Playing idle animation", gameObject);
         _animator.SetBool("isDrunk", isDrunk);
 
         _animator.SetTrigger("Start Idle");
@@ -163,7 +194,7 @@ public class NPC : MonoBehaviour
     public async UniTask PlayAnimationAsync(AnimationClip clip)
     {
         _animator.CrossFade(clip.name, 0.15f);
-        await UniTask.Delay(clip.length.ToMS());
+        await UniTask.Delay(clip.length.ToMS(), cancellationToken: CancelTokenSource.Token).SuppressCancellationThrow();
     }
 
     // NavMesh Agent
@@ -184,8 +215,25 @@ public class NPC : MonoBehaviour
         PlayWalkAnimation();
         while (!_agent.IsAtDestination())
         {
-            await UniTask.Yield(); // Wait for the next frame
+            await UniTask.Yield(PlayerLoopTiming.Update, CancelTokenSource.Token).SuppressCancellationThrow(); // Wait for the next frame
+            if (CancelTokenSource.IsCancellationRequested)
+            {
+                _agent.ResetPath();
+                break;
+            }
         }
         PlayIdleAnimation();
+        await UniTask.Yield(); // Ensure the idle animation has a frame to start before any next actions are taken
+    }
+
+    public async UniTask TurnToFaceAsyc(Transform target, float duration) => await TurnToFaceAsyc(target.position, duration);
+    public async UniTask TurnToFaceAsyc(Vector3 targetPosition, float duration)
+    {
+        Tween.StopAll(_bodyObject.transform);
+        _ = Tween.Rotation(_bodyObject.transform, Quaternion.LookRotation(targetPosition.normalized), duration);
+
+        await UniTask.Delay(duration.ToMS(), cancellationToken: CancelTokenSource.Token).SuppressCancellationThrow(); // Use UniTask to allow cancellation
+        if (CancelTokenSource.IsCancellationRequested)
+            Tween.StopAll(_bodyObject.transform); // Stop the tween immediately if cancelled
     }
 }
