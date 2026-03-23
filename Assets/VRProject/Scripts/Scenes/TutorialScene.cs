@@ -9,7 +9,11 @@ using CommonUsages = UnityEngine.XR.CommonUsages;
 
 public class TutorialScene : MonoBehaviour
 {
-    private const string MOVEMENT_TUTORIAL_TEXT = "Use the left joystick to move around.";
+    private const string WELCOME_TEXT = "Welcome to the simulator! Let's start with a tutorial on the controls.\n\nIn the tutorial, you have controllers instead of hands and the tutorial will highlight each control.\n\nPress the trigger on the left or right controller to continue.";
+    private const string SMOOTH_MOVEMENT_TUTORIAL_TEXT = "Let's get started!\n\nYou can use the joystick on the left controller to walk around. Try it now!";
+    private const string TELEPORT_TUTORIAL_TEXT = "You can also teleport by using the joystick on the right controller. Try it out!";
+    private const string MOVEMENT_PREFERENCE_TEXT = "Both of these movements will be available throughout the game, use whatever makes you the most comfortable!\n\nPress the trigger on the left or right controller to continue.";
+
     private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry clicking on them using the trigger on one of your controllers.";
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in with your hands to make a dialogue selection!";
     private const string PHONE_TUTORIAL_TEXT1 = "Press the menu button on your left controller to pull out and put away your phone.";
@@ -20,6 +24,8 @@ public class TutorialScene : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioClip _bgAudio;
+    [SerializeField] private AudioClip _popUpAudio;
+    [SerializeField] private AudioClip _tutorialCompleteAudio;
 
     [Header("Controllers")]
     [SerializeField] private GameObject leftController;
@@ -55,6 +61,9 @@ public class TutorialScene : MonoBehaviour
     private XRGrabInteractable _heldDrink;
 
     private bool playerHasMoved = false;
+    private bool playerHasTeleported = false;
+    private bool movePopUp = false;
+    private bool teleportPopUp = false;
 
     private ObjectiveSystem bringDrinkToFriend;
 
@@ -175,12 +184,38 @@ public class TutorialScene : MonoBehaviour
 
     private async UniTask InitializeMovementTutorial()
     {
-        await UniTask.Delay(5_000);
+        // Display welcome text and highlight triggers after a short delay
+        await UniTask.Delay(1_000);
+        PlayerAudio.PlaySound(_popUpAudio);
+        TutorialText.Instance.ShowText(WELCOME_TEXT);
+        TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
+        TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
+        // Wait until the player presses either of the VR triggers to continue
+        await UniTask.WaitUntil(() => InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerValue) && leftTriggerValue
+                                    || InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerValue) && rightTriggerValue);
+        TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
+        TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
+        PlayerAudio.PlaySound(_tutorialCompleteAudio);
 
-        TutorialText.Instance.ShowText(MOVEMENT_TUTORIAL_TEXT);
+        // After completing the welcome text, show the smooth movement tutorial after a short delay
+        await UniTask.Delay(500);
+        PlayerAudio.PlaySound(_popUpAudio);
+        TutorialText.Instance.ShowText(SMOOTH_MOVEMENT_TUTORIAL_TEXT);
         TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
-
+        movePopUp = true;
+        // Wait until the player moves using the left joystick to continue
         await UniTask.WaitUntil(() => playerHasMoved);
+        PlayerAudio.PlaySound(_tutorialCompleteAudio);
+
+        // After completing the smooth movement tutorial, show the teleport tutorial after a short delay
+        await UniTask.Delay(500);
+        PlayerAudio.PlaySound(_popUpAudio);
+        TutorialText.Instance.ShowText(TELEPORT_TUTORIAL_TEXT);
+        TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_JOYSTICK);
+        teleportPopUp = true;
+        // Wait until the player moves using the right joystick to continue
+        await UniTask.WaitUntil(() => playerHasTeleported);
+        PlayerAudio.PlaySound(_tutorialCompleteAudio);
 
         TutorialText.Instance.HideText();
         TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_JOYSTICK);
@@ -259,7 +294,7 @@ public class TutorialScene : MonoBehaviour
 
     private void Update()
     {
-        if (!playerHasMoved)
+        if (!playerHasMoved && movePopUp)
         {
             InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 input);
             if (input != Vector2.zero
@@ -270,6 +305,20 @@ public class TutorialScene : MonoBehaviour
             {
                 Debug.Log("Triggering player has moved reading value: " + input);
                 playerHasMoved = true;
+            }
+        }
+
+        if (!playerHasTeleported && teleportPopUp)
+        {
+            InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 input);
+            if (input != Vector2.zero
+                #if UNITY_EDITOR
+                || Keyboard.current.tKey.wasPressedThisFrame
+#endif
+                )
+            {
+                Debug.Log("Triggering player has teleported reading value: " + input);
+                playerHasTeleported = true;
             }
         }
 
