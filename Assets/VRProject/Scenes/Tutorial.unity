@@ -718,6 +718,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.766776, y: 4.168808, z: 0.948658}
   m_Center: {x: -0.6674361, y: 1.584404, z: 20.295717}
+--- !u!225 &395900083 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 9094154892306888924, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
+  m_PrefabInstance: {fileID: 1495343298}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &399289786 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1683282144007041449, guid: 2b44a1aa0a8b0b244b10bb5a2836ad40, type: 3}
@@ -947,6 +952,7 @@ GameObject:
   - component: {fileID: 493986367}
   - component: {fileID: 493986366}
   - component: {fileID: 493986369}
+  - component: {fileID: 493986370}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
@@ -1030,6 +1036,89 @@ Transform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &493986369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493986365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 2147483648
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 1
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
+  m_TeleportationProvider: {fileID: 0}
+  m_MatchOrientation: 0
+  m_MatchDirectionalInput: 0
+  m_TeleportTrigger: 0
+  m_FilterSelectionByHitNormal: 0
+  m_UpNormalToleranceDegrees: 30
+  m_Teleporting:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &493986370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3421,7 +3510,7 @@ MonoBehaviour:
   _followPlayer: 1
   distanceFromPlayer: 2
   verticalOffset: 0.25
-  panSpeed: 2
+  panSpeed: 1
   onlyYaw: 1
 --- !u!1 &880461228
 GameObject:
@@ -4201,6 +4290,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   _bgAudio: {fileID: 8300000, guid: b775416186a040a428a76fb37dc98f76, type: 3}
+  _popUpAudio: {fileID: 8300000, guid: f753413c55cab2b4b891d6ee4932a0fb, type: 3}
+  _tutorialCompleteAudio: {fileID: 8300000, guid: 42478345811cf2145b060d6f9cc1b13b, type: 3}
   leftController: {fileID: 700431520}
   rightController: {fileID: 634844284}
   _friendNPC: {fileID: 779306702}
@@ -4209,6 +4300,7 @@ MonoBehaviour:
   _waitingForDrink: {fileID: 11400000, guid: 3f3ca887212c27f48881669dbd505e25, type: 2}
   _foundSoda: {fileID: 11400000, guid: 8feb707c0c0f1d948acf21ab11d0527f, type: 2}
   _foundAlcohol: {fileID: 11400000, guid: 9ec90d83967648b45be897bd661c3960, type: 2}
+  _objectivesScreen: {fileID: 395900083}
 --- !u!137 &1142212780 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7060216311055747358, guid: fc7b1a1473ead1240a3039399fd92a6b, type: 3}
@@ -8899,7 +8991,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 0}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 2147483648
   m_DistanceCalculationMode: 1
   m_SelectMode: 1
   m_FocusMode: 1
