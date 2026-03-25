@@ -146,25 +146,19 @@ public class DialogueSystem : MonoBehaviour
 
         if (useTypewriterEffect && _typewriter != null)
         {
-            _textBubble.SetActive(true);
-            Tween.CompleteAll(_textBubble.transform);
-            _ = Tween.Scale(_textBubble.transform, _textBubbleScale, 0.2f, Ease.OutBack);
-            await UniTask.Delay(100); // Slight delay for bubble animation
+            await _typewriter.ShowTextBubble();
             await _typewriter.StartWritingAsync(text);
         }
         else
         {
-            _textBubble.SetActive(true);
-            Tween.CompleteAll(_textBubble.transform);
-            _ = Tween.Scale(_textBubble.transform, _textBubbleScale, 0.2f, Ease.OutBack);
-            await UniTask.Delay(100); // Slight delay for bubble animation
+            await _typewriter.ShowTextBubble();
             _dialogueText.text = text;
         }
 
         await UniTask.Delay(_typewriter.DefaultWritingSpeedInMS); // Wait slightly before showing buttons
     }
 
-    public async void EndCurrentDialogue()
+    public void EndCurrentDialogue()
     {
         if (TryGetComponent<InteractableNPC_SM>(out var interactableNPC) && interactableNPC.IsInState(NPC_SM.States.Interact))
         {
@@ -175,6 +169,7 @@ public class DialogueSystem : MonoBehaviour
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();
         currentDialogue = null;
+        _typewriter.HideTextBubble();
         onEnd?.Invoke();
         
     }

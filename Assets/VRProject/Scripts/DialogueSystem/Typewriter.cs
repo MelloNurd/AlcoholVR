@@ -54,9 +54,13 @@ public class Typewriter : MonoBehaviour
 
     void Awake()
     {
-        _textBubble = gameObject.transform.GetChild(0).gameObject;
-        _textBubbleScale = _textBubble.transform.localScale;
-        _textComponent = _textBubble.GetComponentInChildren<TMP_Text>();
+        _textComponent = transform.Find("Body").GetComponentInChildren<TMP_Text>();
+        if (_textComponent != null)
+        {
+            _textBubble = _textComponent.transform.parent.gameObject;
+            _textBubbleScale = _textBubble.transform.localScale;
+        }
+        else Debug.LogError($"TMP_Text component not found for {gameObject.name}'s {this.name}.");
 
         _audioSource = GetComponent<AudioSource>();
         if(_audioSource == null)
