@@ -41,14 +41,14 @@ public class PropPhysics : MonoBehaviour
     void EnterBubble()
     {
         inBubble = true;
-        Debug.Log("Entered bubble: " + gameObject.name);
+        //Debug.Log("Entered bubble: " + gameObject.name);
         SetActiveState();
     }
 
     void ExitBubble()
     {
         inBubble = false;
-        Debug.Log("Exited bubble: " + gameObject.name);
+        //Debug.Log("Exited bubble: " + gameObject.name);
         SetIdleState();
         
     }

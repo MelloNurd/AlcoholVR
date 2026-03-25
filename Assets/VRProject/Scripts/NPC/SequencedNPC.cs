@@ -323,6 +323,8 @@ public class SequencedNPC : MonoBehaviour
 
         dialogueSystem.StartDialogue(sequence.dialogue);
 
+        Debug.Log("Started dialogue sequence on " + gameObject.name + ". dialogueSystem.IsDialogueActive: " + dialogueSystem.IsDialogueActive, gameObject);
+
         await UniTask.WaitUntil(() => !dialogueSystem.IsDialogueActive, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 

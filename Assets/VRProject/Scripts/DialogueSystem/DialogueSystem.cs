@@ -118,7 +118,7 @@ public class DialogueSystem : MonoBehaviour
 
         if (dialogue.options.Count > 0)
         {
-            if (DialogueButtons.Instance.PromptPlayerForDialogueChoisesAsync(dialogue, dialogue))
+            if (DialogueButtons.Instance.TryCreateDialogueButtons(this, dialogue))
             {
                 dialogue.onDialogueStart?.Invoke();
             }
@@ -138,7 +138,6 @@ public class DialogueSystem : MonoBehaviour
             await UniTask.Delay(3000); // Wait a bit before hiding text bubble
             EndCurrentDialogue();
         }
-        EndCurrentDialogue();
     }
 
     private async UniTask DisplayText(string text)
@@ -171,6 +170,7 @@ public class DialogueSystem : MonoBehaviour
         {
             interactableNPC.SwitchState(NPC_SM.States.Walk);
         }
+        Debug.Log("Ending dialogue on " + gameObject.name, gameObject);
         Player.Instance.IsInDialogue = false;
         DialogueButtons.Instance.ClearButtons();
         currentDialogue?.onDialogueEnd?.Invoke();

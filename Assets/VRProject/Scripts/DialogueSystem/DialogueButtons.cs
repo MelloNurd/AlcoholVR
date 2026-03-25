@@ -128,30 +128,61 @@ public class DialogueButtons : MonoBehaviour
         }
     }
 
-    // Legacy method using old Dialogue class
-    public async UniTask<DialogueChoice> PromptPlayerForDialogueChoisesAsync(Dialogue oldDialogueToConvert, bool reverseOrder = false)
+    // Legacy / Old system
+    public bool TryCreateDialogueButtons(DialogueSystem system, Dialogue dialogue, bool reverseOrder = false)
     {
-        if (oldDialogueToConvert == null || oldDialogueToConvert.dialogueText.IsBlank())
+        if (dialogue == null || dialogue.dialogueText == null)
         {
             Debug.LogWarning("DialogueSystem or current tree/option is null. Cannot create buttons.");
-            return null;
+            return false;
         }
-        DialogueNode tempNode = new DialogueNode
+
+        if (!TryGenerateSpawnPositions(dialogue.options.Count, out Vector3[] spawnPos))
         {
-            dialogueText = oldDialogueToConvert.dialogueText,
-            choices = new List<DialogueChoice>(oldDialogueToConvert.options.Count)
-        };
-        foreach (var option in oldDialogueToConvert.options)
+            Debug.LogWarning("Failed to find valid spawn positions for dialogue buttons.");
+            return false;
+        }
+
+        int middleIndex = dialogue.options.Count / 2; // Calculate middle index for reverse order
+
+        for (int i = 0; i < dialogue.options.Count; i++)
         {
-            DialogueChoice choice = new DialogueChoice
+            currentButtonCount++;
+
+            int index = reverseOrder ? dialogue.options.Count - 1 - i : i; // adjust index for reverse order
+
+            Quaternion spawnRotation = Quaternion.LookRotation(spawnPos[i] - Camera.main.transform.position, Vector3.up) * Quaternion.Euler(-90, 0, 0); // rotate to face camera
+
+            PhysicalButton optionButton = Instantiate(_dialogueButtonPrefab, spawnPos[i], spawnRotation, _buttonParentObj.transform).GetComponent<PhysicalButton>();
+            optionButton.name = "DialogueButton: " + dialogue.options[index].optionText;
+            optionButton.interactableLayers = LayerMask.GetMask("PlayerHand"); // only the player hand can interact with these buttons
+            _activeButtons.Add(optionButton);
+
+            if (dialogue.options[i].DisableButton)
             {
-                choiceText = option.optionText,
-                isDisabled = option.DisableButton,
-                onChoiceSelected = option.onOptionSelected
-            };
-            tempNode.choices.Add(choice);
+                optionButton.DisableButton();
+            }
+
+            int closureIndex = i; // weird behavior needed with lambda function, called a closure
+            optionButton.OnButtonDown.AddListener(async () => {
+                if (!optionButton.IsInteractable) return;
+
+                await UniTask.Delay(100); // small delay to allow button press sound to play
+                dialogue.options[index].onOptionSelected?.Invoke(); // Invoke the option's selected event
+                system.StartDialogue(dialogue.options[closureIndex].nextDialogue, 1);
+                OnButtonPressed?.Invoke(optionButton);
+            });
+
+            optionButton.SetButtonText(dialogue.options[index].optionText);
+
+            if (i == middleIndex && _buttonAppearSound != null)
+            {
+                optionButton.PlaySound(_buttonAppearSound);
+            }
         }
-        return await PromptPlayerForDialogueChoisesAsync(tempNode, reverseOrder);
+
+        OnButtonsSpawn?.Invoke();
+        return true;
     }
 
     /// <summary>
