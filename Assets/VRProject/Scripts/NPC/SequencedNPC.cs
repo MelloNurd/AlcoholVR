@@ -459,7 +459,7 @@ public class SequencedNPC : MonoBehaviour
     {
         animator.SetBool("isDrunk", isDrunk);
 
-        Debug.Log("Playing idle animation on sequenceNPC", gameObject);
+        Debug.Log("Playing idle animation on " + gameObject.name, gameObject);
 
         animator.SetTrigger("Start Idle");
         animator.SetBool("isWalk", false);

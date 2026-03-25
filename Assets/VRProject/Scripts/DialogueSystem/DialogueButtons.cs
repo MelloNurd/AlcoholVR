@@ -128,6 +128,32 @@ public class DialogueButtons : MonoBehaviour
         }
     }
 
+    // Legacy method using old Dialogue class
+    public async UniTask<DialogueChoice> PromptPlayerForDialogueChoisesAsync(Dialogue oldDialogueToConvert, bool reverseOrder = false)
+    {
+        if (oldDialogueToConvert == null || oldDialogueToConvert.dialogueText.IsBlank())
+        {
+            Debug.LogWarning("DialogueSystem or current tree/option is null. Cannot create buttons.");
+            return null;
+        }
+        DialogueNode tempNode = new DialogueNode
+        {
+            dialogueText = oldDialogueToConvert.dialogueText,
+            choices = new List<DialogueChoice>(oldDialogueToConvert.options.Count)
+        };
+        foreach (var option in oldDialogueToConvert.options)
+        {
+            DialogueChoice choice = new DialogueChoice
+            {
+                choiceText = option.optionText,
+                isDisabled = option.DisableButton,
+                onChoiceSelected = option.onOptionSelected
+            };
+            tempNode.choices.Add(choice);
+        }
+        return await PromptPlayerForDialogueChoisesAsync(tempNode, reverseOrder);
+    }
+
     /// <summary>
     /// Creates dialogue buttons based on the provided DialogueNode's choices. Returns a UniTask that completes when a button is pressed, yielding the selected DialogueChoice. Buttons are spawned in front of the player, spaced out based on the _buttonAngleSpacing variable. If reverseOrder is true, buttons will be spawned in reverse order (useful for NPCs facing the player). The method also handles playing spawn sounds and setting up button interactions. If spawning fails (e.g., no valid positions), it returns null.
     /// </summary>

@@ -201,7 +201,8 @@ public class TutorialScene : MonoBehaviour
         TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
         TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
         // Wait until the player presses either of the VR triggers to continue
-        await UniTask.WaitUntil(() => InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerValue) && leftTriggerValue
+        await UniTask.WaitUntil(() => Keyboard.current.tKey.wasPressedThisFrame 
+                                    || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerValue) && leftTriggerValue
                                     || InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerValue) && rightTriggerValue);
         TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
         TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
@@ -225,7 +226,7 @@ public class TutorialScene : MonoBehaviour
         TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_JOYSTICK);
         teleportPopUp = true;
         // Wait until the player moves using the right joystick to continue
-        await UniTask.WaitUntil(() => playerHasTeleported);
+        await UniTask.WaitUntil(() => playerHasTeleported || Keyboard.current.uKey.wasPressedThisFrame);
         TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_JOYSTICK);
         PlayerAudio.PlaySound(_tutorialCompleteAudio);
 
@@ -236,7 +237,8 @@ public class TutorialScene : MonoBehaviour
         TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
         TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
         // Wait until the player presses either of the VR triggers to continue
-        await UniTask.WaitUntil(() => InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerVal) && leftTriggerVal
+        await UniTask.WaitUntil(() => Keyboard.current.tKey.wasPressedThisFrame
+                                    || InputManager.Instance.leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerVal) && leftTriggerVal
                                     || InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerVal) && rightTriggerVal);
         TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_TRIGGER);
         TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.LEFT_TRIGGER);
@@ -248,7 +250,8 @@ public class TutorialScene : MonoBehaviour
         TutorialText.Instance.ShowText(ROTATION_TUTORIAL_TEXT);
         TutorialButtons.Instance.HighlightButton(RightControllerMaterialIndex.RIGHT_JOYSTICK);
         // Wait until the player rotates using the right joystick to continue
-        await UniTask.WaitUntil(() => InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightJoystickInput) && Mathf.Abs(rightJoystickInput.x) > 0.5f);
+        await UniTask.WaitUntil(() => Keyboard.current.mKey.wasPressedThisFrame
+                                    || InputManager.Instance.rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightJoystickInput) && Mathf.Abs(rightJoystickInput.x) > 0.5f);
         TutorialButtons.Instance.ResetButton(RightControllerMaterialIndex.RIGHT_JOYSTICK);
         PlayerAudio.PlaySound(_tutorialCompleteAudio);
 

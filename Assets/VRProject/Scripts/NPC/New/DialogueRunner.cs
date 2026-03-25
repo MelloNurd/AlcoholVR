@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
+using AYellowpaper.SerializedCollections;
 
 public class DialogueRunner : MonoBehaviour
 {
@@ -13,8 +14,13 @@ public class DialogueRunner : MonoBehaviour
     public bool IsQueued => QueuedDialogue != null;
     public bool IsActive => currentNode != null;
 
+    [Header("Events")]
     public UnityEvent onDialogueStart = new();
     public UnityEvent onDialogueEnd = new();
+
+    [Tooltip("Map specific Node IDs to Scene Events. When the dialogue enters a node with a matching ID, the corresponding event will fire.")]
+    [SerializedDictionary("Node ID", "Scene Event")]
+    public SerializedDictionary<string, UnityEvent> SceneNodeEvents = new();
 
     private Typewriter _typewriter;
 
@@ -69,7 +75,13 @@ public class DialogueRunner : MonoBehaviour
             EndDialogue();
             return;
         }
+        
+        // Enter new node
         currentNode.onNodeEnter?.Invoke();
+        if (SceneNodeEvents.TryGetValue(nodeId, out var sceneEvent))
+        {
+            sceneEvent.Invoke();
+        }
 
         await DisplayText(currentNode.dialogueText);
 
