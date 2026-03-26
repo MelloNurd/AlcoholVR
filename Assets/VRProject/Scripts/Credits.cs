@@ -32,7 +32,6 @@ public class Credits : MonoBehaviour
 
         await PlayCredits();
 
-        ContinuousMusic.Instance?.StopMusic();
         Destroy(SettingsManager.Instance.gameObject);
         SettingsManager.Instance = null;
         Player.Instance.loading.TransitionSceneByName("MainMenu");
