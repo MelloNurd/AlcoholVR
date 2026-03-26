@@ -398,12 +398,13 @@ public class TutorialScene : MonoBehaviour
             }
         }
 
-        if (buttonsSpawned && !hasPressedButton && buttonTimer < 8f)
+        if (buttonsSpawned && !hasPressedButton && buttonTimer < 2f)
         {
             buttonTimer += Time.deltaTime;
 
-            if (buttonTimer >= 5f)
+            if (buttonTimer >= 2f)
             {
+                PlayerAudio.PlaySound(_popUpAudio);
                 TutorialText.Instance.ShowText(DIALOGUE_TUTORIAL_TEXT);
             }
         }
