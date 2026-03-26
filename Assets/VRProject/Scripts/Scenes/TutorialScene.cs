@@ -22,7 +22,7 @@ public class TutorialScene : MonoBehaviour
     private const string TALK_TUTORIAL_TEXT = "People with an exclamation point above them can be talked to.\n\nTry reaching out and clicking on them using the trigger on one of your controllers.";
     private const string DIALOGUE_TUTORIAL_TEXT = "Try pressing one of the buttons in with your hands to make a dialogue selection!";
    
-    private const string GRAB_TUTORIAL_TEXT = "Using the trigger on either controller, you can grab and hold most objects. Try grabbing one of the drinks!";
+    private const string GRAB_TUTORIAL_TEXT = "Using the trigger on either controller, you can grab and hold most objects. Some objects have special interactions like speakers or soda tabs.\n\n Try grabbing one of the drinks! Maybe even open and drink one yourself!";
     private const string INTERACT_HELP_TEXT = "Try holding a drink in one hand and interact with your friend with the other!";
 
     [Header("Audio")]
