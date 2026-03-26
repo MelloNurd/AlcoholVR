@@ -4296,7 +4296,7 @@ MonoBehaviour:
   rightController: {fileID: 634844284}
   _friendNPC: {fileID: 779306702}
   _tablesPos: {fileID: 405329521}
-  _car: {fileID: 587913377}
+  _car: {fileID: 1143657612}
   _waitingForDrink: {fileID: 11400000, guid: 3f3ca887212c27f48881669dbd505e25, type: 2}
   _foundSoda: {fileID: 11400000, guid: 8feb707c0c0f1d948acf21ab11d0527f, type: 2}
   _foundAlcohol: {fileID: 11400000, guid: 9ec90d83967648b45be897bd661c3960, type: 2}
@@ -4306,6 +4306,105 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7060216311055747358, guid: fc7b1a1473ead1240a3039399fd92a6b, type: 3}
   m_PrefabInstance: {fileID: 634844279}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1143657610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1143657612}
+  - component: {fileID: 1143657611}
+  - component: {fileID: 1143657613}
+  m_Layer: 0
+  m_Name: ToCharacterCreator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1143657611
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143657610}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 131264
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 1965887
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1143657612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143657610}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -41.8647, y: 15.4501, z: 16.2544}
+  m_LocalScale: {x: 30.73813, y: 30.182642, z: 34.824272}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1143657613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143657610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c973787ce9d9d5440b507c0235e8e74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <EventsEnabled>k__BackingField: 1
+  <EventsCooldown>k__BackingField: 0.1
+  colliders: []
+  OnTriggerEnterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1495343299}
+        m_TargetAssemblyTypeName: Loading, Assembly-CSharp
+        m_MethodName: TransitionSceneByName
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: CharacterCreator
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnTriggerStayEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExitEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerEnter2DEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerStay2DEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnTriggerExit2DEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1149412750 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1748051821869343632, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
@@ -6819,6 +6918,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1149412756}
   m_SourcePrefab: {fileID: 100100000, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
+--- !u!114 &1495343299 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3806961860674680793, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
+  m_PrefabInstance: {fileID: 1495343298}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ab5ba284a6399e41a87dfbeda9a14d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1495343301 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1344356157420940906, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
@@ -9230,3 +9340,4 @@ SceneRoots:
   - {fileID: 2105535412}
   - {fileID: 1117712045}
   - {fileID: 1766254809}
+  - {fileID: 1143657612}

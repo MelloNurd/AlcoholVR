@@ -39,7 +39,7 @@ public class TutorialScene : MonoBehaviour
 
     [Header("Objects")]
     [SerializeField] private Transform _tablesPos;
-    [SerializeField] private XRSimpleInteractable _car;
+    [SerializeField] private Transform _car;
 
     [Header("Dialogue")]
     [SerializeField] private Dialogue _waitingForDrink;
@@ -182,11 +182,8 @@ public class TutorialScene : MonoBehaviour
                     ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _car.transform));
                     _getDrinkObjective.Begin();
 
-                    _car.activated.AddListener((ActivateEventArgs test) =>
-                    {
-                        _getDrinkObjective.Complete();
-                        Player.Instance.loading.TransitionSceneById(SceneManager.GetActiveScene().buildIndex + 1);
-                    });
+                    BoxCollider collider = _car.gameObject.GetComponent<BoxCollider>();
+                    collider.enabled = true;
                 }
             }
         });
