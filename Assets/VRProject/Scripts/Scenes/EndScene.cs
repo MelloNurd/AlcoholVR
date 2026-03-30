@@ -19,6 +19,9 @@ public class EndScene : MonoBehaviour
     [SerializeField] private GameObject _phoneFoundPolaroid;
     [SerializeField] private GameObject _phoneLostPolaroid;
 
+    [SerializeField] private GameObject _rageGood;
+    [SerializeField] private GameObject _rageBad;
+
     [SerializeField] private GameObject _concertPolaroid;
     [SerializeField] private GameObject _bandShirt;
 
@@ -51,6 +54,7 @@ public class EndScene : MonoBehaviour
     private void ConfigureResults()
     {
         DrunkDriverResults();
+        RageResults();
         DrinkCountResults();
         ArcadeResults();
         TrashketballResults();
@@ -86,6 +90,22 @@ public class EndScene : MonoBehaviour
             _drunkDriverCrashedPolaroid.SetActive(false);
             _drunkDriverStayedPolaroid.SetActive(true);
             DroveDrunk = false;
+        }
+    }
+
+    private void RageResults()
+    {
+        if (GlobalStats.helpedRagingDrunk)
+        {
+            _rageGood.SetActive(true);
+            _rageBad.SetActive(false);
+            NPCRaged = false;
+        }
+        else
+        {
+            _rageGood.SetActive(false);
+            _rageBad.SetActive(true);
+            NPCRaged = true;
         }
     }
 
