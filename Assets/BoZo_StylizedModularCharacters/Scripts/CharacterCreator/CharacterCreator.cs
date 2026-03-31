@@ -1293,6 +1293,20 @@ private IEnumerator SavePlayerCharacterCoroutine()
     File.WriteAllText(jsonFilePath, jsonData);
     
     Debug.Log($"Player character saved to: {jsonFilePath}");
+
+    // Get the Gender blend shape value from the character and pass it to GlobalStats
+    var bodyShapes = character.GetShapes();
+    if (bodyShapes.Contains("BodyType"))
+    {
+        float genderValue = character.GetShapeValue("BodyType");
+        GlobalStats.Instance.SetSex(genderValue);
+        Debug.Log($"Set player sex based on character gender value: {genderValue}");
+    }
+    else
+    {
+        Debug.LogWarning("Could not find BodyType shape in character - using default");
+        GlobalStats.Instance.SetSex(50f); // Default to middle value
+    }
     
     // Show success feedback
     if (savedPrompt != null)
