@@ -271,12 +271,12 @@ public class AnimeationEvents : MonoBehaviour
     {
         int leftBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_L");
         int rightBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_R");
-        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_L");
-        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_R");
-        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_L");
-        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_R");
-        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_L");
-        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_R");
+        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_L");
+        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_R");
+        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_L");
+        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_R");
+        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_L");
+        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_R");
 
         float elapsed = 0f;
 
@@ -449,8 +449,10 @@ public class AnimeationEvents : MonoBehaviour
         int frownMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_L");
         float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex);
         float elapsed = 0f;
+        Debug.Log("Before while loop");
         while (elapsed < smoothDuration)
         {
+            Debug.Log($"Animating frown mouth. Elapsed: {elapsed}, Progress: {Mathf.Clamp01(elapsed / smoothDuration)}, CurrentWeight: {_skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex)}", gameObject);
             elapsed += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsed / smoothDuration);
             float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
@@ -461,7 +463,4 @@ public class AnimeationEvents : MonoBehaviour
         _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, targetWeight);
         _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, targetWeight);
     }
-
 }
-
-

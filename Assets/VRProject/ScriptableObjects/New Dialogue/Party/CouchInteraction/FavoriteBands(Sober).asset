@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: FavoriteBands(Sober)
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: Hey, we were just talking about our favorite bands. You into anything
+      lately?
+    playedAudio: {fileID: 8300000, guid: 6dcb1a7f38a4b41419226b58d6f83f3c, type: 3}
+    choices:
+    - choiceText: "Yeah, I\u2019m big into indie stuff."
+      targetNodeId: oh_nice__me_too
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: I mostly listen to rap.
+      targetNodeId: oh_nice__me_too
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: Metal, all the way.
+      targetNodeId: oh_nice__me_too
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: oh_nice__me_too
+    dialogueText: Oh nice, me too! We're all going to a concert soon, you should
+      come!
+    playedAudio: {fileID: 8300000, guid: 303da0f4ed19db84ba11cc587ead2da9, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []

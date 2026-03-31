@@ -32,8 +32,8 @@ public class Dialogue : ScriptableObject // Dialogue node in a dialogue tree (sp
 
     public AudioClip playedAudio;
 
-    public EyebrowsState eyebrowsState = EyebrowsState.None;
-    public MouthState mouthState = MouthState.None;
+    public EyebrowsState eyebrowsState = EyebrowsState.Neutral;
+    public MouthState mouthState = MouthState.Neutral;
 
     public List<DialogueOption> options = new();
 

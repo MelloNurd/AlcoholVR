@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum EyebrowsState
 {
-    None = 0,
+    Neutral = 0,
     Mad,
     Sad,
     Raised,
@@ -11,7 +11,7 @@ public enum EyebrowsState
 
 public enum MouthState
 {
-    None = 0,
+    Neutral = 0,
     Smile,
     Frown
 }
@@ -28,7 +28,7 @@ public class FacialExpressions : MonoBehaviour
     // Eyebrows
     public void SetEyebrows(EyebrowsState state)
     {
-        if (state == EyebrowsState.None)
+        if (state == EyebrowsState.Neutral)
         {
             ResetEyebrows();
             return;
@@ -48,7 +48,7 @@ public class FacialExpressions : MonoBehaviour
     // Mouth
     public void SetMouth(MouthState state)
     {
-        if (state == MouthState.None)
+        if (state == MouthState.Neutral)
         {
             ResetMouth();
             return;

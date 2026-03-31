@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49bbbe6ba00ea944c8e10507efa8bdb0, type: 3}
+  m_Name: FavoriteBands(Drunk)
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueGraph
+  startNodeId: start
+  nodes:
+  - nodeId: start
+    dialogueText: Hey, we were just talking about our favorite bands. You into anything
+      lately?
+    playedAudio: {fileID: 8300000, guid: 6dcb1a7f38a4b41419226b58d6f83f3c, type: 3}
+    choices:
+    - choiceText: '*hiccup*'
+      targetNodeId: chill_out__you_re_being_weird
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: heeey guys
+      targetNodeId: uhm__hi
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    - choiceText: '*burp*'
+      targetNodeId: chill_out__you_re_being_weird
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: chill_out__you_re_being_weird
+    dialogueText: Chill out, you're being weird.
+    playedAudio: {fileID: 8300000, guid: 4dcde130f26e42d439ef0be0877f3130, type: 3}
+    choices: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
+  - nodeId: uhm__hi
+    dialogueText: Uhm, hi?
+    playedAudio: {fileID: 8300000, guid: c1bb1b11321fe214dae379e943a5d72c, type: 3}
+    choices:
+    - choiceText: woaah, no need to be s-sooo rude
+      targetNodeId: chill_out__you_re_being_weird
+      isDisabled: 0
+      onChoiceSelected:
+        m_PersistentCalls:
+          m_Calls: []
+    onNodeEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    onNodeExit:
+      m_PersistentCalls:
+        m_Calls: []
