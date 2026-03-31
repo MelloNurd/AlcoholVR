@@ -101,6 +101,9 @@ namespace Bozo.ModularCharacters
         [Header("Stance")]
         [SerializeField] Slider stanceSlider;
 
+        [Header("Screenshot Object")]
+        [SerializeField] GameObject ssObj;
+
         private void Awake()
         {
             outfits.Clear();
@@ -1313,6 +1316,8 @@ private IEnumerator SavePlayerCharacterCoroutine()
     {
         FadeTextInAndOut(savedPrompt, holdTime, fadeInTime);
     }
-}
+
+    ssObj.SetActive(true);
+        }
     }
 }
