@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
+using static NPC;
 
 [SelectionBase]
 public class NPC_SM : MonoBehaviour // SM = State Machine

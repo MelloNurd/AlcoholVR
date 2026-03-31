@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.PlayerLoop;
+using static NPC;
 using static UnityEngine.Rendering.DebugUI;
 using Void = EditorAttributes.Void;
 
@@ -179,7 +180,7 @@ public class SequencedNPC : MonoBehaviour
                 _lastDestinationUpdateTime += Time.deltaTime;
 
                 // Update destination to be in front of player every half second
-                Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized*1.5f;
+                Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized * 1.5f;
                 if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
                 {
                     _lastDestinationUpdateTime = 0f;
@@ -190,13 +191,12 @@ public class SequencedNPC : MonoBehaviour
 
             if (agent.IsAtDestination(0.01f))
             {
-                if(isWalkToPlayer && Vector3.Distance(agent.transform.position, Player.Instance.Position) > 2f)
+                if (isWalkToPlayer && Vector3.Distance(agent.transform.position, Player.Instance.Position) > 2f)
                 {
                     // If this happens, it's basically a false positive, and we want to keep the NPC walking to the player
                     return;
                 }
 
-                Debug.Log($"{gameObject.name} reached destination!!!");
                 _isAtDestination = true;
                 agent.isStopped = true;
             }
@@ -265,7 +265,7 @@ public class SequencedNPC : MonoBehaviour
     }
     private async UniTask ExecuteWalkToPlayerSequence(OldSequence sequence)
     {
-        _isAtDestination = false; 
+        _isAtDestination = false;
         agent.SetDestinationToClosestPoint(Player.Instance.Position + Player.Instance.Camera.transform.forward.WithY(0).normalized, 1f);
         agent.isStopped = false;
 
@@ -294,7 +294,7 @@ public class SequencedNPC : MonoBehaviour
         await UniTask.WaitUntil(() => _isAtDestination, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
-        if(currentSequence == sequence)
+        if (currentSequence == sequence)
         {
             PlayIdleAnimation();
             if (sequence.nextSequenceOnEnd)
@@ -423,7 +423,7 @@ public class SequencedNPC : MonoBehaviour
     {
         _cancelToken?.Cancel();
         _isAtDestination = true;
-        if(agent != null && agent.enabled) agent.isStopped = true;
+        if (agent != null && agent.enabled) agent.isStopped = true;
         currentSequence?.onSequenceEnd?.Invoke();
         if (dialogueSystem.IsDialogueActive) dialogueSystem.EndCurrentDialogue();
         currentSequence = sequence;
@@ -444,13 +444,11 @@ public class SequencedNPC : MonoBehaviour
             return;
         }
 
-        if(animator == null)
+        if (animator == null)
         {
             Debug.LogWarning("No animator found on SequencedNPC.");
             return;
         }
-
-        Debug.Log("Playing animation: " + clip.name, gameObject);
 
         animator.SetBool("isDrunk", isDrunk);
 
@@ -460,8 +458,6 @@ public class SequencedNPC : MonoBehaviour
     public void PlayIdleAnimation()
     {
         animator.SetBool("isDrunk", isDrunk);
-
-        Debug.Log("Playing idle animation on " + gameObject.name, gameObject);
 
         animator.SetTrigger("Start Idle");
         animator.SetBool("isWalk", false);

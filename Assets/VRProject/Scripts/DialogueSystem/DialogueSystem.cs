@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
 using TMPro;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ public class DialogueSystem : MonoBehaviour
 
     public UnityEvent onStart;
     public UnityEvent onEnd;
+
+    private FacialExpressions _facialExpressions;
 
     private AudioSource _audioSource;
     private Typewriter _typewriter;
@@ -42,6 +45,8 @@ public class DialogueSystem : MonoBehaviour
             // This might've been breaking things so temporarily commenting out
             //_audioSource.enabled = false;
         }
+
+        _facialExpressions = GetComponentInChildren<FacialExpressions>();
     }
 
     private void Start()
@@ -100,8 +105,15 @@ public class DialogueSystem : MonoBehaviour
             EndCurrentDialogue();
             return;
         }
+        else if (_facialExpressions != null)
+        {
+            // These both call reset inernally if the chosen state is None
+            _facialExpressions.SetEyebrows(dialogue.eyebrowsState);
+            _facialExpressions.SetMouth(dialogue.mouthState);
+            await UniTask.Yield();
+        }
 
-        if(currentDialogue != null)
+        if (currentDialogue != null)
         {
             currentDialogue.onDialogueEnd?.Invoke();
         }
@@ -171,6 +183,11 @@ public class DialogueSystem : MonoBehaviour
         currentDialogue = null;
         _typewriter.HideTextBubble();
         onEnd?.Invoke();
-        
+
+        if (_facialExpressions != null)
+        {
+            _facialExpressions.ResetEyebrows();
+            _facialExpressions.ResetMouth();
+        }
     }
 }

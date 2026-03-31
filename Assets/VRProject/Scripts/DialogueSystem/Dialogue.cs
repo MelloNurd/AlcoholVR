@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static NPC;
 
+// OLD SYSTEM. KEPT FOR BACKWARDS COMPAT. SEE DialogueGraph.cs and DialogueRunner.cs for new system.
 [Serializable]
 public class DialogueOption // What the player can choose in a dialogue
 {
@@ -29,6 +31,9 @@ public class Dialogue : ScriptableObject // Dialogue node in a dialogue tree (sp
     [TextArea(3, 15)] public string dialogueText;
 
     public AudioClip playedAudio;
+
+    public EyebrowsState eyebrowsState = EyebrowsState.None;
+    public MouthState mouthState = MouthState.None;
 
     public List<DialogueOption> options = new();
 
