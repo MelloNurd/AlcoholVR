@@ -1,12 +1,7 @@
-using System;
 using Cysharp.Threading.Tasks;
-using EditorAttributes;
-using PrimeTween;
 using TMPro;
-using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class DialogueSystem : MonoBehaviour
 {
