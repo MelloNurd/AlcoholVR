@@ -48,6 +48,7 @@ public class TutorialScene : MonoBehaviour
 
     [Header("Other")]
     [SerializeField] private CanvasGroup _objectivesScreen;
+    [SerializeField] private CanvasGroup _textsSreen;
 
     private int friendInteractCount = 0;
 
@@ -69,11 +70,13 @@ public class TutorialScene : MonoBehaviour
     private bool playerHasMoved = false;
     private bool playerHasTeleported = false;
     private bool hasOpenedObjectives = false;
+    private bool hasOpenedTexts = false;
 
     // Make sure popups happens to complete tutorial steps only after the relevant tutorial text is shown
     private bool movePopUp = false;
     private bool teleportPopUp = false;
     private bool objectivePopUp = false;
+    private bool textPopUp = false;
 
     private ObjectiveSystem _talkToFriendObjective;
     private ObjectiveSystem bringDrinkToFriend;
@@ -176,9 +179,18 @@ public class TutorialScene : MonoBehaviour
 
                     Phone.Instance.QueueNotification("Mom", "Hey, it's time to go home. I'll be waiting in the car.");
 
+                    PlayerAudio.PlaySound(_popUpAudio);
                     TutorialText.Instance.ShowText("You got a text message. You can view them on your phone.");
                     TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.MENU_BUTTON);
-
+                    TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.X_BUTTON);
+                    TutorialButtons.Instance.HighlightButton(LeftControllerMaterialIndex.Y_BUTTON);
+                    textPopUp = true;
+                    await UniTask.WaitUntil(() => hasOpenedTexts || Keyboard.current.mKey.wasPressedThisFrame);
+                    PlayerAudio.PlaySound(_tutorialCompleteAudio);
+                    TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.MENU_BUTTON);
+                    TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.X_BUTTON);
+                    TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.Y_BUTTON);
+                    TutorialText.Instance.HideText();
                     ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _car.transform));
                     _getDrinkObjective.Begin();
 
@@ -392,6 +404,14 @@ public class TutorialScene : MonoBehaviour
             if (_objectivesScreen.alpha > 0f && _objectivesScreen.interactable)
             {
                 hasOpenedObjectives = true;
+            }
+        }
+
+        if (!hasOpenedTexts && textPopUp)
+        {
+            if (_textsSreen.alpha > 0f && _textsSreen.interactable)
+            {
+                hasOpenedTexts = true;
             }
         }
 
