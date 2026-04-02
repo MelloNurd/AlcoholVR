@@ -191,8 +191,8 @@ public class TutorialScene : MonoBehaviour
                     TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.X_BUTTON);
                     TutorialButtons.Instance.ResetButton(LeftControllerMaterialIndex.Y_BUTTON);
                     TutorialText.Instance.HideText();
-                    ObjectiveSystem _getDrinkObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _car.transform));
-                    _getDrinkObjective.Begin();
+                    ObjectiveSystem _goToCarObject = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Head to the car.", 0, _car.transform));
+                    _goToCarObject.Begin();
 
                     BoxCollider collider = _car.gameObject.GetComponent<BoxCollider>();
                     collider.enabled = true;
