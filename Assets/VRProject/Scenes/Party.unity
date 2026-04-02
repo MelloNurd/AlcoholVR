@@ -6493,6 +6493,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC_SM
   bodyObj: {fileID: 0}
   isDrunk: 0
+  isSitting: 1
+  sitCrossLegged: 1
   alwaysUseStartAnim: 0
   startAnim: {fileID: 7400000, guid: 9001b228f5ceca8429b218d8281c9cb6, type: 2}
   agent: {fileID: 0}
@@ -10727,9 +10729,17 @@ PrefabInstance:
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: isSitting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: startAnim
       value: 
       objectReference: {fileID: 7400000, guid: b53686ebfaf7858428821839cac8e973, type: 2}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sitCrossLegged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: usesCheckpoints
       value: 0
@@ -18942,6 +18952,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7642824524219776330, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
+      propertyPath: isSitting
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7642824524219776330, guid: 03a05f68ef3ad124da9b7c4abe747e99, type: 3}
       propertyPath: startAnim
       value: 
       objectReference: {fileID: 7400000, guid: a2b1807f56bdceb4a8420dc1cb496c6c, type: 2}
@@ -19307,6 +19321,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC_SM
   bodyObj: {fileID: 0}
   isDrunk: 0
+  isSitting: 1
+  sitCrossLegged: 0
   alwaysUseStartAnim: 0
   startAnim: {fileID: 7400000, guid: 9001b228f5ceca8429b218d8281c9cb6, type: 2}
   agent: {fileID: 0}
@@ -25443,6 +25459,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC_SM
   bodyObj: {fileID: 0}
   isDrunk: 0
+  isSitting: 1
+  sitCrossLegged: 1
   alwaysUseStartAnim: 0
   startAnim: {fileID: 7400000, guid: 9001b228f5ceca8429b218d8281c9cb6, type: 2}
   agent: {fileID: 0}
@@ -34314,6 +34332,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPC_SM
   bodyObj: {fileID: 0}
   isDrunk: 0
+  isSitting: 1
+  sitCrossLegged: 0
   alwaysUseStartAnim: 0
   startAnim: {fileID: 7400000, guid: 9001b228f5ceca8429b218d8281c9cb6, type: 2}
   agent: {fileID: 0}

@@ -5,6 +5,10 @@ public class SettingsManager : MonoBehaviour
 {
     public static SettingsManager Instance { get; set; }
 
+    [Header("Public References")]
+    public AnimationClip FemaleSittingIdleAnim;
+    public AnimationClip MaleSittingIdleAnim;
+
     [Header("Audio Settings")]
     [Range(0f, 100f)] public float MasterVolume = 100f;
     [Range(0f, 100f)] public float MusicVolume = 100f;

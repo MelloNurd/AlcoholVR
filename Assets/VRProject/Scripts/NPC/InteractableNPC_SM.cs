@@ -35,6 +35,8 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
     public ObjectiveSystem objective;
     public bool autoStartObjective = true;
 
+    private AnimationClip dialogueAnimCache;
+
     private new void Awake()
     {
         base.Awake();
@@ -54,6 +56,14 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         }
 
         exclamationObj.SetActive(IsInteractable);
+
+        dialogueSystem.onEnd.AddListener(() =>
+        {
+            if(dialogueAnimCache != null)
+            {
+                animator.CrossFade(dialogueAnimCache.name, 0.2f);
+            }
+        });
     }
 
     public void ChangeStartAnimation(AnimationClip newAnim)
@@ -95,6 +105,20 @@ public class InteractableNPC_SM : NPC_SM // SM = State Machine
         {
             Debug.LogError($"NPC {gameObject.name} does not have a first dialogue assigned.");
             return;
+        }
+
+        dialogueAnimCache = animator.GetCurrentAnimatorClipInfo(0)[0].clip;
+        if (isSitting)
+        {
+            AnimationClip dialogueAnim = sitCrossLegged
+                ? SettingsManager.Instance.FemaleSittingIdleAnim
+                : SettingsManager.Instance.MaleSittingIdleAnim;
+
+            animator.CrossFade(dialogueAnim.name, 0.2f);
+        }
+        else
+        {
+            PlayIdleAnimation();
         }
 
         // First, we run events
