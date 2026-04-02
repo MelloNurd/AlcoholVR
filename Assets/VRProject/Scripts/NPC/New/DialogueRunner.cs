@@ -23,10 +23,12 @@ public class DialogueRunner : MonoBehaviour
     public SerializedDictionary<string, UnityEvent> SceneNodeEvents = new();
 
     private Typewriter _typewriter;
+    private AudioSource _audioSource;
 
     private void Awake()
     {
         _typewriter = GetComponentInChildren<Typewriter>();
+        _audioSource = GetComponentInChildren<AudioSource>();
 
         npc = GetComponent<NPC>();
     }
@@ -83,6 +85,7 @@ public class DialogueRunner : MonoBehaviour
             sceneEvent.Invoke();
         }
 
+        PlayDialogueAudio(currentNode);
         await DisplayText(currentNode.dialogueText);
 
         if (currentNode.choices.Count == 0)
@@ -122,5 +125,24 @@ public class DialogueRunner : MonoBehaviour
 
         await _typewriter.ShowTextBubble();
         await _typewriter.StartWritingAsync(text);
+    }
+
+    private async void PlayDialogueAudio(DialogueNode dialogue)
+    {
+        if (_audioSource == null) return;
+
+        _audioSource.enabled = true;
+
+        if (_audioSource.isPlaying) _audioSource.Stop();
+
+        if (dialogue.playedAudio != null)
+        {
+            _audioSource.clip = dialogue.playedAudio;
+            _audioSource.Play();
+            await UniTask.Delay(dialogue.playedAudio.length.ToMS());
+        }
+
+        await UniTask.Yield(); // just to be safe
+        _audioSource.enabled = false;
     }
 }
