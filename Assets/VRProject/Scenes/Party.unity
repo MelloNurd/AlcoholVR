@@ -1292,33 +1292,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4496083126690354567}
     m_Modifications:
-    - target: {fileID: 719900884036676881, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_ReceiveGI
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2235210753116766711, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2632268924302149743, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3939696865895760898, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
       propertyPath: m_Name
       value: Flower
-      objectReference: {fileID: 0}
-    - target: {fileID: 5364077653317934901, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_ReceiveGI
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6130244823715312116, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6595609533214049679, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_ReceiveGI
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7634238063145351403, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1360,27 +1336,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8167686986460803203, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_ReceiveGI
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8996579889725325163, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3939696865895760898, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 827793443}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
---- !u!1 &60770617 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3939696865895760898, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
-  m_PrefabInstance: {fileID: 60770616}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &61641720 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7896078451320730912, guid: 2cd0a8ac8408f3e44802f2c6fab4233a, type: 3}
@@ -5784,6 +5744,7 @@ GameObject:
   m_Component:
   - component: {fileID: 233343492}
   - component: {fileID: 233343493}
+  - component: {fileID: 233343494}
   m_Layer: 0
   m_Name: GlassSoundMaker
   m_TagString: Untagged
@@ -5813,7 +5774,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 233343491}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -8103495390124478038, guid: ba36341ed860938449587693bc62e046, type: 2}
   m_audioClip: {fileID: 0}
@@ -5903,6 +5864,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &233343494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233343491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50cc150542d530340858f271a56f750b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!4 &235774414 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 120402671141156308, guid: a87a173c9b00bb74ea56020bd5c699ef, type: 3}
@@ -24567,21 +24540,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7634238063145351403, guid: 640dbc7c06b0c8e478f39f413ababbdf, type: 3}
   m_PrefabInstance: {fileID: 60770616}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &827793443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 60770617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 058e22a4de732eb49bc0668779ed207b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSounds
-  _impactSound: {fileID: 8300000, guid: 5f7b0137fccfe3241abbb70af19f150e, type: 3}
-  _pitchVariation: 0.1
-  _basePitch: 1
 --- !u!1001 &832452205
 PrefabInstance:
   m_ObjectHideFlags: 0
