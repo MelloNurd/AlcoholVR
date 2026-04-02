@@ -139,7 +139,7 @@ public class NPC : MonoBehaviour
         }
         canInteract = false;
 
-        await TurnToFaceAsyc(Player.Instance.Camera.transform, 0.5f);
+        await TurnToFaceAsyc(Player.Instance.Camera.transform, 0.5f); // Turn to face the player before starting dialogue
 
         await _dialogueRunner.StartDialogueAsync(dialogue);
         Debug.Log("Dialogue finished (from NPC script).");

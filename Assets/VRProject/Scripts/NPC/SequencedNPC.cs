@@ -307,6 +307,8 @@ public class SequencedNPC : MonoBehaviour
     {
         dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
 
+        animator.speed = 0;
+
         if (turnBodyToFacePlayer)
         {
             Vector3 directionToPlayer = (_playerObj.transform.position - bodyObj.transform.position).WithY(0);
@@ -327,6 +329,8 @@ public class SequencedNPC : MonoBehaviour
 
         await UniTask.WaitUntil(() => !dialogueSystem.IsDialogueActive, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
+
+        animator.speed = 1;
 
         if (currentSequence == sequence)
         {
