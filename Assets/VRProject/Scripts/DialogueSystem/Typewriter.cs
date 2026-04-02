@@ -54,7 +54,12 @@ public class Typewriter : MonoBehaviour
 
     void Awake()
     {
-        _textComponent = transform.Find("Body").GetComponentInChildren<TMP_Text>();
+        _textComponent = transform.GetComponentInChildren<TMP_Text>();
+        if (_textComponent == null)
+        {
+            _textComponent = GetComponentInParent<TMP_Text>();
+        }
+
         if (_textComponent != null)
         {
             _textBubble = _textComponent.transform.parent.gameObject;

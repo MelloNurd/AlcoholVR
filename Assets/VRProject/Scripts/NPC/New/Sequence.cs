@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
@@ -174,60 +175,45 @@ public class MoveToSequence : Sequence
 [Serializable]
 public class MoveToPlayerSequence : Sequence
 {
+    float _updateDestinationInterval = 0.5f;
+
     float _lastDestinationUpdateTime;
     Vector3 _lastDestinationPosition;
 
-    protected override async void OnStart(NPC npc)
+    protected override void OnStart(NPC npc)
     {
         _lastDestinationUpdateTime = 0f;
         _lastDestinationPosition = Vector3.zero;
+
+        Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized * 1.5f;
+        npc.SetDestinationToClosestPoint(inFrontOfPlayer);
+        npc.PlayWalkAnimation();
     }
 
     protected override void OnUpdate(NPC npc)
     {
+        if (npc.CancelTokenSource.IsCancellationRequested)
+            return;
+
+        Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized * 1.5f;
         _lastDestinationUpdateTime += Time.deltaTime;
 
-        // Update destination to be in front of player every half second
-        Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized * 1.5f;
-        if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
+        // Update destination to be in front of player every _updateDestinationInterval seconds
+        if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > _updateDestinationInterval)
         {
             _lastDestinationUpdateTime = 0f;
-            _ = npc.MoveToAsync(inFrontOfPlayer);
+            npc.SetDestinationToClosestPoint(inFrontOfPlayer);
             _lastDestinationPosition = inFrontOfPlayer;
         }
+
+        if (npc.IsAtDestination(0.01f))
+        {
+            //await npc.TurnToFaceAsyc(Player.Instance.transform, 0.5f);
+            npc.StartNextSequence();
+            npc.PlayIdleAnimation();
+            return;
+        }
     }
-
-    //if (!_isAtDestination && (currentSequence.type == OldSequence.Type.Walk || currentSequence.type == OldSequence.Type.WalkToPlayer))
-    //   {
-    //       bool isWalkToPlayer = currentSequence.type == OldSequence.Type.WalkToPlayer;
-
-    //       if (isWalkToPlayer)
-    //       {
-    //           _lastDestinationUpdateTime += Time.deltaTime;
-
-    //           // Update destination to be in front of player every half second
-    //           Vector3 inFrontOfPlayer = Player.Instance.CamPosition + Player.Instance.Camera.transform.forward.WithY(0).normalized*1.5f;
-    //           if (_lastDestinationPosition != inFrontOfPlayer && _lastDestinationUpdateTime > 0.5f)
-    //           {
-    //               _lastDestinationUpdateTime = 0f;
-    //               agent.SetDestinationToClosestPoint(inFrontOfPlayer);
-    //               _lastDestinationPosition = inFrontOfPlayer;
-    //           }
-    //       }
-
-    //       if (agent.IsAtDestination(0.01f))
-    //       {
-    //           if(isWalkToPlayer && Vector3.Distance(agent.transform.position, Player.Instance.Position) > 2f)
-    //           {
-    //               // If this happens, it's basically a false positive, and we want to keep the NPC walking to the player
-    //               return;
-    //           }
-
-    //           Debug.Log($"{gameObject.name} reached destination!!!");
-    //           _isAtDestination = true;
-    //           agent.isStopped = true;
-    //       }
-    //   }
 }
 
 [Serializable]

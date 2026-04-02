@@ -6037,11 +6037,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1149412756}
   m_SourcePrefab: {fileID: 100100000, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
---- !u!4 &1495343299 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4955128482294989904, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
-  m_PrefabInstance: {fileID: 1495343298}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1495343301 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1344356157420940906, guid: 679a0877d3291114e9ef30fe65071c47, type: 3}
@@ -9956,14 +9951,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8403300852590222823}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7429712, z: -0, w: 0.6693235}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.98, y: 0.997, z: 12.106}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6096536085613608516}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -95.97, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1617597061918430315
 GameObject:
   m_ObjectHideFlags: 0
@@ -20345,14 +20340,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1619e797ec493d44b7c0401132bb98b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC
-  CurrentSequenceIndex: 1
+  CurrentSequenceIndex: 0
   Sequences:
-  - rid: 4795974487080174068
-  - rid: 4795974171624472749
-  - rid: 4795974537329508557
-  - rid: 4795974465898676751
-  - rid: 4795974487080174407
-  - rid: 4795974537329508566
+  - rid: 5936247929376342157
+  - rid: 5936247929376342351
+  - rid: 5936247929376342158
   isDrunk: 0
   canInteract: 0
   OnNPCInteract:
@@ -20361,8 +20353,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 4795974171624472749
-      type: {class: MoveToSequence, ns: , asm: Assembly-CSharp}
+    - rid: 5936247929376342157
+      type: {class: MoveToPlayerSequence, ns: , asm: Assembly-CSharp}
       data:
         OnSequenceStart:
           m_PersistentCalls:
@@ -20370,9 +20362,8 @@ MonoBehaviour:
         OnSequenceEnd:
           m_PersistentCalls:
             m_Calls: []
-        Target: {fileID: 961055883}
-    - rid: 4795974465898676751
-      type: {class: MoveToSequence, ns: , asm: Assembly-CSharp}
+    - rid: 5936247929376342158
+      type: {class: StartDialogueSequence, ns: , asm: Assembly-CSharp}
       data:
         OnSequenceStart:
           m_PersistentCalls:
@@ -20380,29 +20371,8 @@ MonoBehaviour:
         OnSequenceEnd:
           m_PersistentCalls:
             m_Calls: []
-        Target: {fileID: 902976090}
-    - rid: 4795974487080174068
-      type: {class: QueueDialogueSequence, ns: , asm: Assembly-CSharp}
-      data:
-        OnSequenceStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnSequenceEnd:
-          m_PersistentCalls:
-            m_Calls: []
-        queuedDialogue: {fileID: 11400000, guid: 8d9790b3e72c91e45a1a78cb48189315, type: 2}
-    - rid: 4795974487080174407
-      type: {class: AnimateSequence, ns: , asm: Assembly-CSharp}
-      data:
-        OnSequenceStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnSequenceEnd:
-          m_PersistentCalls:
-            m_Calls: []
-        Animation: {fileID: 7400000, guid: 63cebafce914d004e8e424dfe4c77a11, type: 2}
-        ResetOnEnd: 0
-    - rid: 4795974537329508557
+        dialogue: {fileID: 11400000, guid: 957e6705a06c0b543a9f4b860a2e4d46, type: 2}
+    - rid: 5936247929376342351
       type: {class: TurnToFaceSequence, ns: , asm: Assembly-CSharp}
       data:
         OnSequenceStart:
@@ -20411,18 +20381,8 @@ MonoBehaviour:
         OnSequenceEnd:
           m_PersistentCalls:
             m_Calls: []
-        Target: {fileID: 1495343299}
-        TurnDuration: 2
-    - rid: 4795974537329508566
-      type: {class: WaitSecondsSequence, ns: , asm: Assembly-CSharp}
-      data:
-        OnSequenceStart:
-          m_PersistentCalls:
-            m_Calls: []
-        OnSequenceEnd:
-          m_PersistentCalls:
-            m_Calls: []
-        Seconds: 0
+        Target: {fileID: 1436845766}
+        TurnDuration: 1
 --- !u!114 &8403300852590222825
 MonoBehaviour:
   m_ObjectHideFlags: 0

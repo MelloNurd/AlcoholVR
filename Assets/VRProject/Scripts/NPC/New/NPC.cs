@@ -21,15 +21,14 @@ public class NPC : MonoBehaviour
 
     // Component References
     private GameObject _bodyObject;
-    private NavMeshAgent _agent;
     private DialogueRunner _dialogueRunner;
     private Animator _animator;
     private XRSimpleInteractable _interactable;
     private AudioSource _audioSource;
+    private NavMeshAgent _agent;
 
     [HideInInspector] public UnityEvent OnNPCInteract = new();
 
-    // Unity Lifecylce
     public void Awake()
     {
         _agent = GetComponentInChildren<NavMeshAgent>();
@@ -47,33 +46,6 @@ public class NPC : MonoBehaviour
         _interactable.selectEntered.AddListener((args) => InteractWith());
 
         CurrentSequenceIndex = 0;
-    }
-
-    public async void InteractWith()
-    {
-        Debug.Log($"CurrentSequenceIndex start of ineract: {CurrentSequenceIndex}");
-        if (!canInteract)
-            return;
-
-        // Prioritize dialogue interactions over other interactions
-        if (_dialogueRunner.IsQueued)
-        {
-            CancelTokenSource?.Cancel();
-
-            // Create new dialogue sequence and start (ideally not in the list)
-            Debug.Log($"CurrentSequenceIndex middle of ineract: {CurrentSequenceIndex}");
-
-            await StartDialogueAsync(_dialogueRunner.QueuedDialogue);
-
-            // Return to previous current sequence
-            CancelTokenSource = new CancellationTokenSource();
-            StartSequence(CurrentSequenceIndex);
-        }
-        else
-        {
-            OnNPCInteract.Invoke();
-        }
-        Debug.Log($"CurrentSequenceIndex end of ineract: {CurrentSequenceIndex}");
     }
 
     private async void Start()
@@ -131,6 +103,33 @@ public class NPC : MonoBehaviour
     }
 
     // Dialogue
+    public async void InteractWith()
+    {
+        Debug.Log($"CurrentSequenceIndex start of ineract: {CurrentSequenceIndex}");
+        if (!canInteract)
+            return;
+
+        // Prioritize dialogue interactions over other interactions
+        if (_dialogueRunner.IsQueued)
+        {
+            CancelTokenSource?.Cancel();
+
+            // Create new dialogue sequence and start (ideally not in the list)
+            Debug.Log($"CurrentSequenceIndex middle of ineract: {CurrentSequenceIndex}");
+
+            await StartDialogueAsync(_dialogueRunner.QueuedDialogue);
+
+            // Return to previous current sequence
+            CancelTokenSource = new CancellationTokenSource();
+            StartSequence(CurrentSequenceIndex);
+        }
+        else
+        {
+            OnNPCInteract.Invoke();
+        }
+        Debug.Log($"CurrentSequenceIndex end of ineract: {CurrentSequenceIndex}");
+    }
+
     public async UniTask StartDialogueAsync(DialogueGraph dialogue)
     {
         if(_dialogueRunner == null)
@@ -138,9 +137,11 @@ public class NPC : MonoBehaviour
             Debug.LogError("DialogueRunner component not found. Cannot start dialogue.", gameObject);
             return;
         }
-
         canInteract = false;
-        await _dialogueRunner.StartDialogueAsync(dialogue); // Don't ever cancel out of dialogue
+
+        await TurnToFaceAsyc(Player.Instance.Camera.transform, 0.5f);
+
+        await _dialogueRunner.StartDialogueAsync(dialogue);
         Debug.Log("Dialogue finished (from NPC script).");
     }
 
@@ -198,6 +199,9 @@ public class NPC : MonoBehaviour
     }
 
     // NavMesh Agent
+    public bool IsAtDestination(float threshold = 0.1f) => _agent.IsAtDestination();
+    public void SetDestinationToClosestPoint(Vector3 destination) => _agent.SetDestinationToClosestPoint(destination);
+
     public async UniTask MoveToAsync(Transform transform) => await MoveToAsync(transform.position);
     public async UniTask MoveToAsync(Vector3 destination)
     {
@@ -230,9 +234,12 @@ public class NPC : MonoBehaviour
     public async UniTask TurnToFaceAsyc(Vector3 targetPosition, float duration)
     {
         Tween.StopAll(_bodyObject.transform);
-        _ = Tween.Rotation(_bodyObject.transform, Quaternion.LookRotation(targetPosition.normalized), duration);
+
+        Vector3 directionToTarget = (targetPosition - _bodyObject.transform.position).WithY(0);
+        _ = Tween.Rotation(_bodyObject.transform, Quaternion.LookRotation(directionToTarget), duration);
 
         await UniTask.Delay(duration.ToMS(), cancellationToken: CancelTokenSource.Token).SuppressCancellationThrow(); // Use UniTask to allow cancellation
+
         if (CancelTokenSource.IsCancellationRequested)
             Tween.StopAll(_bodyObject.transform); // Stop the tween immediately if cancelled
     }
