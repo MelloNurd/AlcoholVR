@@ -95,6 +95,8 @@ public class OldSequence
 public class SequencedNPC : MonoBehaviour
 {
     public bool isDrunk = false;
+    public bool isSitting = false;
+    public bool sitCrossLegged = false;
 
     public List<OldSequence> sequences = new List<OldSequence>();
     public OldSequence currentSequence;
@@ -307,7 +309,19 @@ public class SequencedNPC : MonoBehaviour
     {
         dialogueSystem.onEnd?.AddListener(DialogueEndHandler);
 
-        animator.speed = 0;
+        AnimationClip currentAnimation = animator.GetCurrentAnimatorClipInfo(0)[0].clip;
+        if (isSitting)
+        {
+            AnimationClip dialogueAnim = sitCrossLegged 
+                ? SettingsManager.Instance.FemaleSittingIdleAnim 
+                : SettingsManager.Instance.MaleSittingIdleAnim;
+
+            animator.CrossFade(dialogueAnim.name, 0.2f);
+        }
+        else
+        {
+            PlayIdleAnimation();
+        }
 
         if (turnBodyToFacePlayer)
         {
@@ -330,7 +344,7 @@ public class SequencedNPC : MonoBehaviour
         await UniTask.WaitUntil(() => !dialogueSystem.IsDialogueActive, cancellationToken: _cancelToken.Token).SuppressCancellationThrow();
         if (_cancelToken.IsCancellationRequested) return;
 
-        animator.speed = 1;
+        animator.CrossFade(currentAnimation.name, 0.2f);
 
         if (currentSequence == sequence)
         {
