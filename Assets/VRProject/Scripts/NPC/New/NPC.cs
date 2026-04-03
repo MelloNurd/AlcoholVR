@@ -8,6 +8,13 @@ using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using static UnityEngine.GraphicsBuffer;
 
+public enum DialoguePose
+{
+    IdleStand,
+    IdleSit,
+    IdleSitCrossLegged,
+}
+
 [SelectionBase]
 public class NPC : MonoBehaviour
 {
@@ -17,6 +24,7 @@ public class NPC : MonoBehaviour
     public CancellationTokenSource CancelTokenSource { get; private set; } = new CancellationTokenSource();
 
     public bool isDrunk = false;
+    public DialoguePose dialoguePose = DialoguePose.IdleStand;
     public bool canInteract = true;
 
     // Component References
@@ -139,9 +147,26 @@ public class NPC : MonoBehaviour
         }
         canInteract = false;
 
+        // Save the current animation to return to after dialogue
+        AnimationClip currentAnimation = _animator.GetCurrentAnimatorClipInfo(0)[0].clip;
+        switch (dialoguePose)
+        {
+            case DialoguePose.IdleStand:
+                PlayIdleAnimation();
+                break;
+            case DialoguePose.IdleSit:
+                _animator.CrossFade(SettingsManager.Instance.MaleSittingIdleAnim.name, 0.2f);
+                break;
+            case DialoguePose.IdleSitCrossLegged:
+                _animator.CrossFade(SettingsManager.Instance.FemaleSittingIdleAnim.name, 0.2f);
+                break;
+        }
+
         await TurnToFaceAsyc(Player.Instance.Camera.transform, 0.5f); // Turn to face the player before starting dialogue
 
         await _dialogueRunner.StartDialogueAsync(dialogue);
+
+        _animator.CrossFade(currentAnimation.name, 0.2f);
         Debug.Log("Dialogue finished (from NPC script).");
     }
 
