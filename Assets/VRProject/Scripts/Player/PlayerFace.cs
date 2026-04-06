@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Triggers;
 using PrimeTween;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -16,7 +16,8 @@ public class PlayerFace : MonoBehaviour
     private Volume _globalVolume; // Assign this in the Inspector or find it at runtime
     private DepthOfField dof;
 
-    Tween blurTween;
+    [SerializeField] CanvasGroup drinkCanvas;
+    [SerializeField] TextMeshProUGUI drinkText;
 
     void Awake()
     {
@@ -59,9 +60,20 @@ public class PlayerFace : MonoBehaviour
                 {
                     BlurVision.BlurPlayerVision();
                     GlobalStats.DrinkCount++;
+                    drinkText.text = $"{GlobalStats.DrinkCount}";
+                    DisplayDrinks(0.25f, 1, 0.25f);
                 }
             }
         }
+    }
+
+    private async void DisplayDrinks(float fadeInTime, float duration, float fadeOutTime)
+    {
+        await Tween.Alpha(drinkCanvas, startValue: 0f, endValue: 1f, duration: fadeInTime);
+
+        await UniTask.Delay(duration.ToMS());
+
+        await Tween.Alpha(drinkCanvas, startValue: 1f, endValue: 0f, duration: fadeOutTime);
     }
 
     public void PlayDrinkSound()
