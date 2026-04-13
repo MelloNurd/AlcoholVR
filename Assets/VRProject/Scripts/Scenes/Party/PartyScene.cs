@@ -48,6 +48,7 @@ public class PartyScene : MonoBehaviour
     public BoolValue hasFoundPhone;
     public BoolValue hasTalkedToDrunkFriend;
     public BoolValue hasTakenKeysFromFriend;
+    public BoolValue npcTookEdible;
 
     private bool _isDrinkinFriendReady = false;
 
@@ -62,6 +63,7 @@ public class PartyScene : MonoBehaviour
         hasFoundPhone.Value = false;
         hasTalkedToDrunkFriend.Value = false;
         hasTakenKeysFromFriend.Value = false;
+        npcTookEdible.Value = false;
 
         SetDrunkFriendDestination();
         _couchFriend.onFirstInteraction.AddListener(SetCouchDialogue);

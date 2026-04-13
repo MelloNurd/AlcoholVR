@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EditorAttributes;
 using PrimeTween;
+using TMPro.EditorUtilities;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +24,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private Dialogue drunkFlirtationMale;
     [SerializeField] private Dialogue alcoholPoisoning;
     [SerializeField] private Dialogue poisoningResponse;
+    [SerializeField] private Dialogue npcTookEdible;
 
     [SerializeField] private Dialogue drankMysteryDrinkResponse;
 
@@ -30,6 +32,7 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private SequencedNPC friendNPC;
     [SerializeField] private SequencedNPC mysteryDrinkNPC;
     [SerializeField] private SequencedNPC tableNPC;
+    [SerializeField] private SequencedNPC weedEdibleNPC;
     [SerializeField] private SequencedNPC drunkFlirtNPCfemale;
     [SerializeField] private SequencedNPC drunkFlirtNPCmale;
     private SequencedNPC drunkFlirtNPC;
@@ -37,10 +40,13 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private SequencedNPC fireFriendNPC;
     [SerializeField] private SequencedNPC poisonedNPC;
     [SerializeField] private SequencedNPC miscNPC;
+    [SerializeField] private InteractableNPC_SM weedPressureNPC;
 
     [Header("Game State References")]
     [SerializeField] private BoolValue _deterredFireNPCs;
     [SerializeField] private BoolValue _drankMysteryDrink;
+    [SerializeField] private BoolValue _encouragedBonfireWeedDrink;
+    [SerializeField] private BoolValue _npcTookEdible;
     private bool _playerHasGrabbedDrink = false;
     private bool _playerHasTalkedToFlirt = false;
     private bool _playerHasTalkedToTable = false;
@@ -55,6 +61,8 @@ public class BonfireScene : MonoBehaviour
     [SerializeField] private GameObject _friendsAlcohol;
     [SerializeField] private AnimationClip _sittingAnimation;
     [SerializeField] private AnimationClip _faintAnimation;
+    [SerializeField] private AnimationClip _smokingAnimation;
+    [SerializeField] private AnimationClip _distressAnimation;
     [SerializeField] private Transform _fireNPCWalkTarget1;
     [SerializeField] private Transform _fireNPCWalkTarget2;
     [SerializeField] private Transform _friendPoisoningReactionPoint;
@@ -76,7 +84,7 @@ public class BonfireScene : MonoBehaviour
     private ObjectiveSystem _followFlirt;
     private ObjectiveSystem _investigateGroup;
 
-    void Start()
+    async void Start()
     {
         _cancelToken = new CancellationTokenSource();
 
@@ -85,6 +93,7 @@ public class BonfireScene : MonoBehaviour
         // reset game states
         _deterredFireNPCs.Value = false;
         _drankMysteryDrink.Value = false;
+        _encouragedBonfireWeedDrink.Value = false;
 
         _friendsSoda.SetActive(false);
         _friendsAlcohol.SetActive(false);
@@ -101,7 +110,6 @@ public class BonfireScene : MonoBehaviour
             drunkFlirtNPCmale.gameObject.SetActive(false);
         }
 
-
         PlayerAudio.PlayLoopingSound(_natureSound);
 
         ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Explore the bonfire.", 0, Vector3.zero));
@@ -117,6 +125,28 @@ public class BonfireScene : MonoBehaviour
             _playerHasTalkedToTable = true;
             RunSequenceChecks();
         });
+
+        weedPressureNPC.dialogueSystem.onEnd.AddListener(async () =>
+        {
+            weedPressureNPC.IsInteractable = false;
+            if (_encouragedBonfireWeedDrink.Value)
+            {
+                await UniTask.Delay(3000);
+                miscNPC.PlayIdleAnimation();
+                weedPressureNPC.PlayAnimation(_smokingAnimation.name); // For some reason he goes right back to idle after this
+                // Need to transfer joint obj as well
+            }
+        });
+
+        if (_npcTookEdible.Value)
+        {
+            // This runs if they took an extra edible in the previous scene (Party)
+            await UniTask.Delay(100);
+            var newSequence = new OldSequence(OldSequence.Type.Animate, _distressAnimation, false);
+            weedEdibleNPC.sequences.Add(newSequence);
+            weedEdibleNPC.StartSequence(newSequence);
+            tableNPC.sequences[tableNPC.sequences.Count - 1].dialogue = npcTookEdible; // Change dialgoue for table NPC (no longer offers beer, though player can still take)
+        }
     }
 
     private void Update()

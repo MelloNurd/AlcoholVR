@@ -2388,6 +2388,32 @@ BlendTree:
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0
+--- !u!1102 &6608283990803644729
+AnimatorState:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Distress
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: f1a5a2cd8e3e3724caae30a5fb050652, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &6615878708813121515
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2639,7 +2665,10 @@ AnimatorStateMachine:
     m_Position: {x: 780, y: 620, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1491002099507859028}
-    m_Position: {x: 1079.8304, y: 445.24475, z: 0}
+    m_Position: {x: 1250, y: 230, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 6608283990803644729}
+    m_Position: {x: 780, y: 670, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -601826050129803551}

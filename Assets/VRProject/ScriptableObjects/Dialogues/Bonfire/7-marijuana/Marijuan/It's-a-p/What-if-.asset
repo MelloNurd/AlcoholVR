@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fddbea89b40a91d4eab84ddefec1a047, type: 3}
+  m_Name: What-if-
+  m_EditorClassIdentifier: Assembly-CSharp::Dialogue
+  dialogueText: What if I regret it?
+  playedAudio: {fileID: 0}
+  eyebrowsState: 0
+  mouthState: 0
+  options:
+  - optionText: Just do it bro
+    nextDialogue: {fileID: 11400000, guid: 2a027e2b0ca30c249b7bc29c0ec2af87, type: 2}
+    DisableButton: 0
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: It's only one time
+    nextDialogue: {fileID: 11400000, guid: cf8087422603a714aa72c4f005c43289, type: 2}
+    DisableButton: 0
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  - optionText: Maybe you shouldn't do it
+    nextDialogue: {fileID: 11400000, guid: 35486198d9092e9428e6c426e50381a0, type: 2}
+    DisableButton: 0
+    onOptionSelected:
+      m_PersistentCalls:
+        m_Calls: []
+  onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
