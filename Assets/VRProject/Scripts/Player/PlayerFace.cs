@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class PlayerFace : MonoBehaviour
 {
@@ -18,7 +19,11 @@ public class PlayerFace : MonoBehaviour
 
     [SerializeField] CanvasGroup drinkCanvas;
     [SerializeField] TextMeshProUGUI drinkText;
+    [SerializeField] Image fillImage;
     [SerializeField] Loading eyelids;
+
+    // List of 5 color to change the UI image color to based on how many drinks the player has had
+    [SerializeField] private Color[] drinkColors;
 
     void Awake()
     {
@@ -62,6 +67,8 @@ public class PlayerFace : MonoBehaviour
                     BlurVision.BlurPlayerVision();
                     GlobalStats.DrinkCount++;
                     drinkText.text = $"{GlobalStats.DrinkCount}";
+                    fillImage.color = drinkColors[GlobalStats.DrinkCount - 1];
+                    fillImage.fillAmount = (float)GlobalStats.DrinkCount / GlobalStats.maxDrinks;
                     DisplayDrinks(0.25f, 1, 0.25f);
                     if(GlobalStats.DrinkCount >= GlobalStats.maxDrinks)
                     {
