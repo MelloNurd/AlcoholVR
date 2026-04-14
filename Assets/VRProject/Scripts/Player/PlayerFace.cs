@@ -55,7 +55,7 @@ public class PlayerFace : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen && bottle.IsFull)
+        if (other.TryGetComponent(out OpenableBottle bottle)  && bottle.IsFull)
         {
             if(Vector3.Dot(bottle.transform.forward, transform.forward) < -0.5f) // Bottle top is facing player's face
             {
@@ -68,7 +68,7 @@ public class PlayerFace : MonoBehaviour
                     GlobalStats.DrinkCount++;
                     drinkText.text = $"{GlobalStats.DrinkCount}";
                     fillImage.color = drinkColors[GlobalStats.DrinkCount - 1];
-                    fillImage.fillAmount = (float)GlobalStats.DrinkCount / GlobalStats.maxDrinks;
+                    fillImage.fillAmount = (float)GlobalStats.DrinkCount / (float)GlobalStats.maxDrinks;
                     DisplayDrinks(0.25f, 1, 0.25f);
                     if(GlobalStats.DrinkCount >= GlobalStats.maxDrinks)
                     {
