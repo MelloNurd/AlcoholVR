@@ -188,7 +188,13 @@ public class EndScene : MonoBehaviour
 
     private void BroughtAlcoholResults()
     {
-        if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
+        if(blackedOut && !GlobalStats.talkedToCouchNPC)
+        {
+            _concertBlackoutPolaroid.SetActive(true);
+            _concertPolaroid.SetActive(false);
+            _bandShirt.SetActive(false);
+        }
+        else if (GlobalStats.broughtItems == GlobalStats.BroughtOptions.Alcohol)
         {
             _concertPolaroid.SetActive(true);
             _bandShirt.SetActive(false);
