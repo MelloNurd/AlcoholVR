@@ -8,6 +8,8 @@ public class EndScene : MonoBehaviour
 {
     [SerializeField] private GameObject _drunkDriverStayedPolaroid;
     [SerializeField] private GameObject _drunkDriverCrashedPolaroid;
+    [SerializeField] private GameObject _drunkDriverBlackoutPolaroid;
+
     [SerializeField] private GameObject _obituary;
     [SerializeField] private GameObject _MiP;
     [SerializeField] private GameObject _pregnancyTest;
@@ -18,12 +20,15 @@ public class EndScene : MonoBehaviour
 
     [SerializeField] private GameObject _phoneFoundPolaroid;
     [SerializeField] private GameObject _phoneLostPolaroid;
+    [SerializeField] private GameObject _phoneBlackoutPolaroid;
 
-    [SerializeField] private GameObject _rageGood;
-    [SerializeField] private GameObject _rageBad;
+    [SerializeField] private GameObject _rageGoodPolaroid;
+    [SerializeField] private GameObject _rageBadPolaroid;
+    [SerializeField] private GameObject _rageBlackoutPolaroid;
 
     [SerializeField] private GameObject _concertPolaroid;
     [SerializeField] private GameObject _bandShirt;
+    [SerializeField] private GameObject _concertBlackoutPolaroid;
 
     [SerializeField] private MeshRenderer _reportCard;
     [SerializeField] private Material _goodGrades;
@@ -32,8 +37,9 @@ public class EndScene : MonoBehaviour
     [SerializeField] private BoolValue _foundPhone;
 
     [SerializeField] private BoolValue _stoppedFire;
-    [SerializeField] private GameObject _stoppedFirePicture;
-    [SerializeField] private GameObject _fireSpreadPicture;
+    [SerializeField] private GameObject _stoppedFirePolaroid;
+    [SerializeField] private GameObject _fireSpreadPolaroid;
+    [SerializeField] private GameObject _fireBlackoutPolaroid;
 
     [SerializeField] private GameObject _pregnancyTextMsgObj;
     [SerializeField] private GroupPhoto _groupPhoto;
@@ -45,9 +51,11 @@ public class EndScene : MonoBehaviour
     bool NPCDied = false;
     bool DroveDrunk = false;
     bool NPCRaged = false;
+    bool blackedOut = false;
 
     private void Start()
     {
+        blackedOut = GlobalStats.blackedOut;
         ConfigureResults();
     }
 
@@ -67,6 +75,7 @@ public class EndScene : MonoBehaviour
         _groupPhoto.SetPhoto(FemaleFlirt, NPCDied, DroveDrunk, NPCRaged);
     }
 
+    // NEED TO FIGURE OUT BLACK OUT RESULT
     private void Called911Results()
     {
         if(GlobalStats.playerDrankMysteryDrink)
@@ -79,32 +88,48 @@ public class EndScene : MonoBehaviour
     }
     private void DrunkDriverResults()
     {
-        if(GlobalStats.letDrunkFriendDrive)
+        if(blackedOut && !GlobalStats.talkedToDrunkDriverNPC)
+        {
+            _drunkDriverBlackoutPolaroid.SetActive(true);
+            _drunkDriverCrashedPolaroid.SetActive(false);
+            _drunkDriverStayedPolaroid.SetActive(false);
+        }
+        else if(GlobalStats.letDrunkFriendDrive)
         {
             _drunkDriverCrashedPolaroid.SetActive(true);
             _drunkDriverStayedPolaroid.SetActive(false);
+            _drunkDriverBlackoutPolaroid.SetActive(false);
             DroveDrunk = true;
         }
         else
         {
-            _drunkDriverCrashedPolaroid.SetActive(false);
             _drunkDriverStayedPolaroid.SetActive(true);
+            _drunkDriverCrashedPolaroid.SetActive(false);
+            _drunkDriverBlackoutPolaroid.SetActive(false);
             DroveDrunk = false;
         }
     }
 
     private void RageResults()
     {
-        if (GlobalStats.helpedRagingDrunk)
+        if(blackedOut && !GlobalStats.talkedToDrunkRageNPC)
         {
-            _rageGood.SetActive(true);
-            _rageBad.SetActive(false);
+            _rageBlackoutPolaroid.SetActive(true);
+            _rageGoodPolaroid.SetActive(false);
+            _rageBadPolaroid.SetActive(false);
+        }
+        else if (GlobalStats.helpedRagingDrunk)
+        {
+            _rageGoodPolaroid.SetActive(true);
+            _rageBadPolaroid.SetActive(false);
+            _rageBlackoutPolaroid.SetActive(false);
             NPCRaged = false;
         }
         else
         {
-            _rageGood.SetActive(false);
-            _rageBad.SetActive(true);
+            _rageGoodPolaroid.SetActive(false);
+            _rageBadPolaroid.SetActive(true);
+            _rageBlackoutPolaroid.SetActive(false);
             NPCRaged = true;
         }
     }
@@ -114,6 +139,7 @@ public class EndScene : MonoBehaviour
         _drugTest.SetActive(GlobalStats.playerDrankMysteryDrink);
     }
 
+    // NEED TO FIGURE OUT BLACKOUT RESULT
     private async void PregnancyTestResults()
     {
         if (GlobalStats.Instance.IsFemale)
@@ -176,15 +202,23 @@ public class EndScene : MonoBehaviour
 
     private void LostPhoneResults()
     {
-        if (_foundPhone.Value)
+        if(blackedOut && !GlobalStats.talkedToPhoneNPC)
+        {
+            _phoneBlackoutPolaroid.SetActive(true);
+            _phoneFoundPolaroid.SetActive(false);
+            _phoneLostPolaroid.SetActive(false);
+        }
+        else if (_foundPhone.Value)
         {
             _phoneFoundPolaroid.SetActive(true);
             _phoneLostPolaroid.SetActive(false);
+            _phoneBlackoutPolaroid.SetActive(false);
         }
         else
         {
             _phoneFoundPolaroid.SetActive(false);
             _phoneLostPolaroid.SetActive(true);
+            _phoneBlackoutPolaroid.SetActive(false);
         }
     }
 
@@ -233,15 +267,23 @@ public class EndScene : MonoBehaviour
 
     private void FireResults()
     {
-        if(_stoppedFire.Value)
+        if(blackedOut && !GlobalStats.talkedToFireNPC)
         {
-            _fireSpreadPicture.SetActive(false);
-            _stoppedFirePicture.SetActive(true);
+            _fireBlackoutPolaroid.SetActive(true);
+            _fireSpreadPolaroid.SetActive(false);
+            _stoppedFirePolaroid.SetActive(false);
+        }
+        else if(_stoppedFire.Value)
+        {
+            _fireSpreadPolaroid.SetActive(false);
+            _stoppedFirePolaroid.SetActive(true);
+            _fireBlackoutPolaroid.SetActive(false);
         }
         else
         {
-            _fireSpreadPicture.SetActive(true);
-            _stoppedFirePicture.SetActive(false);
+            _fireSpreadPolaroid.SetActive(true);
+            _stoppedFirePolaroid.SetActive(false);
+            _fireBlackoutPolaroid.SetActive(false);
         }
     }
 }

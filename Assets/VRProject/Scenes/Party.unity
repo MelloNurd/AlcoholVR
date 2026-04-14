@@ -4076,6 +4076,34 @@ PrefabInstance:
       propertyPath: turnBackAfterDialogue
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TalkedToEdibleNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 2585975086596715541, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
@@ -10308,13 +10336,41 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 660351249}
     - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TalkedToPhoneNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onIncompleteInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 660351249}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 892771976740634126, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 900587415495471354, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -11025,7 +11081,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TalkedToCouchNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782001672401910058, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1799402902792897395, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11720,9 +11800,37 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2206210721811343518}
     - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 660351249}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TalkedToDrunkDriverNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2684639621193027952, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: sequences.Array.data[2].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2692641556075338574, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -13624,13 +13732,41 @@ PrefabInstance:
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 660351249}
     - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TalkedToPhoneNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onIncompleteInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 660351249}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668045612412502545, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5688568767741352994, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -13905,18 +14041,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 804635415}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 660351249}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
@@ -13924,16 +14072,32 @@ PrefabInstance:
       value: ChangeStartAnimation
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: TalkedToDrunkRageNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: InteractableNPC_SM, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PartyScene, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
       objectReference: {fileID: 7400000, guid: 6d9f7c87cf2f35c4290a6b5d762cc43c, type: 2}
     - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.AnimationClip, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100904900869158951, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6101633564482714722, guid: fde7ab913ffdbe845881e063bba8c3a1, type: 3}
       propertyPath: m_StaticEditorFlags

@@ -266,4 +266,29 @@ public class PartyScene : MonoBehaviour
             IsInHouse = false;
         }
     }
+
+    public void TalkedToCouchNPC()
+    {
+        GlobalStats.talkedToCouchNPC = true;
+    }
+
+    public void TalkedToDrunkDriverNPC()
+    {
+        GlobalStats.talkedToDrunkDriverNPC = true;
+    }
+
+    public void TalkedToDrunkRageNPC()
+    {
+        GlobalStats.talkedToDrunkRageNPC = true;
+    }
+
+    public void TalkedToEdibleNPC()
+    {
+        GlobalStats.talkedToEdibleNPC = true;
+    }
+
+    public void TalkedToPhoneNPC()
+    {
+        GlobalStats.talkedToPhoneNPC = true;
+    }
 }

@@ -19,6 +19,7 @@ public class GlobalStats : MonoBehaviour
     public static GlobalStats Instance { get; private set; }
 
     public static int DrinkCount = 0;
+    [SerializeField] public static int maxDrinks = 5;
 
     public bool tweenWarnings = false;
 
@@ -34,6 +35,8 @@ public class GlobalStats : MonoBehaviour
 
     public bool IsMale => playerSex == Sex.Male;
     public bool IsFemale => playerSex == Sex.Female;
+
+    public static bool blackedOut = false;
 
     // House stats
     public static BroughtOptions broughtItems = BroughtOptions.None;
@@ -51,6 +54,18 @@ public class GlobalStats : MonoBehaviour
     public static bool playerDrankMysteryDrink = false;
     public static bool playerStoppedFire = false;
     public static bool called911 = false;
+
+    // Party Interactions
+    public static bool talkedToCouchNPC = false;
+    public static bool talkedToDrunkDriverNPC = false;
+    public static bool talkedToDrunkRageNPC = false;
+    public static bool talkedToEdibleNPC = false;
+    public static bool talkedToPhoneNPC = false;
+
+    // Bonfire Interactions
+    public static bool talkedToFlirtNPC = false;
+    public static bool talkedToFireNPC = false;
+    public static bool talkedToSmokingNPC = false;
 
     private void Awake()
     {
@@ -83,4 +98,7 @@ public class GlobalStats : MonoBehaviour
     {
         hoopsScore++;
     }
+
+    //Even triggered when current drinks equals or exceeds max drinks to allow for tracking overdrinking
+
 }

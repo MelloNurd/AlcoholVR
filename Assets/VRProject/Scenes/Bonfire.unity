@@ -627,7 +627,19 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 134556913}
+        m_TargetAssemblyTypeName: BonfireScene, Assembly-CSharp
+        m_MethodName: TalkedToFireNPC
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls: []
@@ -12593,12 +12605,40 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b7f27e5be86e5b7498bb11055cd8533b, type: 2}
     - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
       propertyPath: onCompleteInteraction.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 134556913}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TalkedToSmokingNPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
       propertyPath: onCompleteInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BonfireScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608409681946874392, guid: 070377f4acd9f5a4092329bd7e631b81, type: 3}
+      propertyPath: onFirstInteraction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -34552,12 +34592,32 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].onSequenceEnd.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[1].onSequenceEnd.m_PersistentCalls.m_Calls.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 134556913}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TalkedToFlirtNPC
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -34592,12 +34652,20 @@ PrefabInstance:
       value: AssignDrunkFlirtOutcome
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BonfireScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[1].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: BonfireScene, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
+      propertyPath: currentSequence.onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4345710387435252376, guid: d33091cddd1b98441a7a1636c9c3dacf, type: 3}
       propertyPath: sequences.Array.data[0].onSequenceEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

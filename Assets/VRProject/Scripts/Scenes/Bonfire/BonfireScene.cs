@@ -567,4 +567,19 @@ public class BonfireScene : MonoBehaviour
         await UniTask.Delay(270); // slight delay before second NPC starts walking away
         fireFriendNPC.StartSequence(walkAwaySequence2);
     }
+
+    public void TalkedToFlirtNPC()
+    {
+        GlobalStats.talkedToFlirtNPC = true;
+    }
+
+    public void TalkedToFireNPC()
+    {
+        GlobalStats.talkedToFireNPC = true;
+    }
+
+    public void TalkedToSmokingNPC()
+    {
+        GlobalStats.talkedToSmokingNPC = true;
+    }
 }

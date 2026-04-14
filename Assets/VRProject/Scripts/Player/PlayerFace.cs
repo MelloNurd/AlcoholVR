@@ -18,6 +18,7 @@ public class PlayerFace : MonoBehaviour
 
     [SerializeField] CanvasGroup drinkCanvas;
     [SerializeField] TextMeshProUGUI drinkText;
+    [SerializeField] Loading eyelids;
 
     void Awake()
     {
@@ -62,6 +63,11 @@ public class PlayerFace : MonoBehaviour
                     GlobalStats.DrinkCount++;
                     drinkText.text = $"{GlobalStats.DrinkCount}";
                     DisplayDrinks(0.25f, 1, 0.25f);
+                    if(GlobalStats.DrinkCount >= GlobalStats.maxDrinks)
+                    {
+                        GlobalStats.blackedOut = true;
+                        eyelids.LoadSceneByName("EndScene");
+                    }
                 }
             }
         }
