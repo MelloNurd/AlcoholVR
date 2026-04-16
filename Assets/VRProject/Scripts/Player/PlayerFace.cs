@@ -20,7 +20,9 @@ public class PlayerFace : MonoBehaviour
     [SerializeField] CanvasGroup drinkCanvas;
     [SerializeField] TextMeshProUGUI drinkText;
     [SerializeField] Image fillImage;
-    [SerializeField] Loading eyelids;
+    [SerializeField] Loading loading;
+    [SerializeField] MeshRenderer tunnelingVignetteRenderer;
+    Material tunnelingVignetteMaterial;
 
     // List of 5 color to change the UI image color to based on how many drinks the player has had
     [SerializeField] private Color[] drinkColors;
@@ -41,6 +43,7 @@ public class PlayerFace : MonoBehaviour
         }
 
         dof.active = false;
+        tunnelingVignetteMaterial = tunnelingVignetteRenderer.material;
     }
 
 #if UNITY_EDITOR
@@ -55,7 +58,7 @@ public class PlayerFace : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out OpenableBottle bottle)  && bottle.IsFull)
+        if (other.TryGetComponent(out OpenableBottle bottle) && bottle.IsOpen && bottle.IsFull)
         {
             if(Vector3.Dot(bottle.transform.forward, transform.forward) < -0.5f) // Bottle top is facing player's face
             {
@@ -73,7 +76,7 @@ public class PlayerFace : MonoBehaviour
                     if(GlobalStats.DrinkCount >= GlobalStats.maxDrinks)
                     {
                         GlobalStats.blackedOut = true;
-                        eyelids.LoadSceneByName("EndScene");
+                        TriggerBlackout();
                     }
                 }
             }
@@ -87,6 +90,40 @@ public class PlayerFace : MonoBehaviour
         await UniTask.Delay(duration.ToMS());
 
         await Tween.Alpha(drinkCanvas, startValue: 1f, endValue: 0f, duration: fadeOutTime);
+    }
+
+    private async void TriggerBlackout()
+    {
+        FadeAperature(1f, 0f, 2f);
+        await FadeFeathering(0.35f, 0f, 3f);
+        await UniTask.Delay(1000);
+        loading.LoadSceneByName("EndScene");
+    }
+
+    private async UniTask FadeAperature(float startValue, float endValue, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float currentValue = Mathf.Lerp(startValue, endValue, elapsed / duration);
+            tunnelingVignetteMaterial.SetFloat("_ApertureSize", currentValue);
+            await UniTask.Yield();
+        }
+        tunnelingVignetteMaterial.SetFloat("_ApertureSize", endValue);
+    }
+
+    private async UniTask FadeFeathering(float startValue, float endValue, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float currentValue = Mathf.Lerp(startValue, endValue, elapsed / duration);
+            tunnelingVignetteMaterial.SetFloat("_FeatheringEffect", currentValue);
+            await UniTask.Yield();
+        }
+        tunnelingVignetteMaterial.SetFloat("_FeatheringEffect", endValue);
     }
 
     public void PlayDrinkSound()
