@@ -78,7 +78,7 @@ public class EndScene : MonoBehaviour
     // NEED TO FIGURE OUT BLACK OUT RESULT
     private void Called911Results()
     {
-        if(GlobalStats.playerDrankMysteryDrink)
+        if(GlobalStats.playerDrankMysteryDrink || blackedOut)
         {
             _obituary.SetActive(false);
             return;
@@ -142,6 +142,12 @@ public class EndScene : MonoBehaviour
     // NEED TO FIGURE OUT BLACKOUT RESULT
     private async void PregnancyTestResults()
     {
+        if(blackedOut && !GlobalStats.talkedToFlirtNPC)
+        {
+            _pregnancyTest.SetActive(false);
+            return;
+        }
+
         if (GlobalStats.Instance.IsFemale)
         {
             FemaleFlirt = false;
