@@ -38,7 +38,7 @@ public class PropPhysics : MonoBehaviour
         }
     }
 
-    void EnterBubble()
+    public void EnterBubble()
     {
         inBubble = true;
         //Debug.Log("Entered bubble: " + gameObject.name);
