@@ -40,6 +40,26 @@ public class Dartboard : MonoBehaviour
     public float sphereOffset = 0.1f; // Offset to position the sphere correctly
     public float degreeOffset = 0f;
 
+    private Dictionary<GameObject, Vector3> darts = new(); // Using this just to reset bag positions
+
+    private void Awake()
+    {
+        foreach (GameObject dart in GameObject.FindGameObjectsWithTag("Blue"))
+        {
+            if (!darts.ContainsKey(dart))
+            {
+                darts.Add(dart, dart.transform.position);
+            }
+        }
+        foreach (GameObject dart in GameObject.FindGameObjectsWithTag("Red"))
+        {
+            if (!darts.ContainsKey(dart))
+            {
+                darts.Add(dart, dart.transform.position);
+            }
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         // Compare layer to see if it's Dart
@@ -66,6 +86,12 @@ public class Dartboard : MonoBehaviour
         // Reset final score text visibility
         red.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = false;
         blue.finalScoreText.transform.GetChild(0).GetComponent<Image>().enabled = false;
+
+        // Reset positions
+        foreach (var dart in darts.Keys)
+        {
+            dart.transform.position = darts[dart];
+        }
     }
 
     void CalculateScore(Vector3 worldHitPoint, Team team)
