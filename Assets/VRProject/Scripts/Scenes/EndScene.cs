@@ -12,6 +12,7 @@ public class EndScene : MonoBehaviour
 
     [SerializeField] private GameObject _obituary;
     [SerializeField] private GameObject _MiP;
+    [SerializeField] private GameObject _MiPBlackout;
     [SerializeField] private GameObject _pregnancyTest;
     [SerializeField] private GameObject _drugTest;
 
@@ -261,18 +262,28 @@ public class EndScene : MonoBehaviour
     private void DrinkCountResults()
     {
         TMP_Text reportCardText = _reportCard.GetComponentInChildren<TMP_Text>();
-        if (GlobalStats.DrinkCount > 0)
+        if (GlobalStats.DrinkCount > 0 && !blackedOut)
         {
             _MiP.SetActive(true);
+            _MiPBlackout.SetActive(false);
             _reportCard.material = _badGrades;
             if(reportCardText)
                 reportCardText.text = "Ugh! I can't believe I slept through that test after the party! I must've drank more than I thought...";
         }
+        else if (blackedOut)
+        {
+            _MiP.SetActive(false);
+            _MiPBlackout.SetActive(true);
+            _reportCard.material = _badGrades;
+            if(reportCardText)
+                reportCardText.text = "I can't believe I blacked out and missed that test! I must've drank way more than I thought...";
+        }
         else
         {
             _MiP.SetActive(false);
+            _MiPBlackout.SetActive(false);
             _reportCard.material = _goodGrades;
-            if(reportCardText)
+            if (reportCardText)
                 reportCardText.text = "All that hard work paid off!";
         }
     }
