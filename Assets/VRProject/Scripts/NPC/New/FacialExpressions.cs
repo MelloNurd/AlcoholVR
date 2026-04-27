@@ -1,3 +1,4 @@
+using EditorAttributes;
 using UnityEngine;
 
 public enum EyebrowsState
@@ -26,8 +27,10 @@ public class FacialExpressions : MonoBehaviour
     }
 
     // Eyebrows
+    [Button]
     public void SetEyebrows(EyebrowsState state)
     {
+        if (!Application.isPlaying) return;
         if (state == EyebrowsState.Neutral)
         {
             ResetEyebrows();
@@ -40,14 +43,18 @@ public class FacialExpressions : MonoBehaviour
         _animator.SetTrigger(triggerName);
     }
 
+    [Button]
     public void ResetEyebrows()
     {
+        if (!Application.isPlaying) return;
         _animator.SetTrigger("StartResetEyebrows");
     }
 
     // Mouth
+    [Button]
     public void SetMouth(MouthState state)
     {
+        if (!Application.isPlaying) return;
         if (state == MouthState.Neutral)
         {
             ResetMouth();
@@ -60,8 +67,10 @@ public class FacialExpressions : MonoBehaviour
         _animator.SetTrigger(triggerName);
     }
 
+    [Button]
     public void ResetMouth()
     {
+        if (!Application.isPlaying) return;
         _animator.SetTrigger("StartResetMouth");
     }
 }
