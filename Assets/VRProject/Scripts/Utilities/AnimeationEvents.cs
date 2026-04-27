@@ -329,8 +329,8 @@ public class AnimeationEvents : MonoBehaviour
 
     private IEnumerator AnimateSadEyebrows(float targetWeight)
     {
-        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_L");
-        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_R");
+        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_L");
+        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_R");
         
         float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowSadIndex);
         float elapsed = 0f;
@@ -351,8 +351,8 @@ public class AnimeationEvents : MonoBehaviour
 
     private IEnumerator AnimateRaisedEyebrows(float targetWeight)
     {
-        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_L");
-        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_R");
+        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_L");
+        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_R");
         
         float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowRaisedIndex);
         float elapsed = 0f;
@@ -373,8 +373,8 @@ public class AnimeationEvents : MonoBehaviour
 
     private IEnumerator AnimateLoweredEyebrows(float targetWeight)
     {
-        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_L");
-        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_R");
+        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_L");
+        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_R");
         
         float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowLoweredIndex);
         float elapsed = 0f;
