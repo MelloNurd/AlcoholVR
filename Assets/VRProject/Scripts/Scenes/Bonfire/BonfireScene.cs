@@ -259,6 +259,9 @@ public class BonfireScene : MonoBehaviour
         {
             friendNPC.lookAt.isLooking = false;
         });
+        
+        BoxCollider trigger = poisonedNPC.transform.parent.GetComponent<BoxCollider>();
+        trigger.enabled = false; // Disable the trigger so it can't be triggered again
 
         OldSequence poisoningDialogue = new OldSequence(OldSequence.Type.Dialogue, alcoholPoisoning, nextSequenceOnEnd: false);
         friendNPC.sequences.Add(poisoningDialogue);
