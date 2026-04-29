@@ -155,7 +155,7 @@ public class AnimeationEvents : MonoBehaviour
             return;
         }
 
-        QueueAnimation(AnimateResetEyebrows());
+        QueueAnimation(AnimateEyebrows(0f, 0f, 0f, 0f));
     }
 
     private void AngryEyebrows(float targetWeight = 100f)
@@ -167,7 +167,7 @@ public class AnimeationEvents : MonoBehaviour
             Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for angry eyebrows.", gameObject);
             return;
         }
-        QueueAnimation(AnimateAngryEyebrows(targetWeight));
+        QueueAnimation(AnimateEyebrows(targetWeight, 0f, 0f, 0f));
     }
 
     private void SadEyebrows(float targetWeight = 100f)
@@ -179,7 +179,7 @@ public class AnimeationEvents : MonoBehaviour
             Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for sad eyebrows.", gameObject);
             return;
         }
-        QueueAnimation(AnimateSadEyebrows(targetWeight));
+        QueueAnimation(AnimateEyebrows(0f, targetWeight, 0f, 0f));
     }
 
     private void RaisedEyebrows(float targetWeight = 100f)
@@ -191,7 +191,7 @@ public class AnimeationEvents : MonoBehaviour
             Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for raised eyebrows.", gameObject);
             return;
         }
-        QueueAnimation(AnimateRaisedEyebrows(targetWeight));
+        QueueAnimation(AnimateEyebrows(0f, 0f, targetWeight, 0f));
     }
 
     private void LoweredEyebrows(float targetWeight = 100f)
@@ -203,44 +203,56 @@ public class AnimeationEvents : MonoBehaviour
             Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for lowered eyebrows.", gameObject);
             return;
         }
-        QueueAnimation(AnimateLoweredEyebrows(targetWeight));
+        QueueAnimation(AnimateEyebrows(0f, 0f, 0f, targetWeight));
     }
 
-    private void ResetMouth()
+    private IEnumerator AnimateEyebrows(float angryTarget, float sadTarget, float raisedTarget, float loweredTarget)
     {
-        _animator.ResetTrigger("StartResetMouth");
-        if (_skinnedMeshRenderer == null)
-        {
-            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for resetting mouth.", gameObject);
-            return;
-        }
-        // Reset both smile and frown mouths to 0
-        QueueAnimation(AnimateResetMouth());
-    }
+        int leftBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_L");
+        int rightBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_R");
+        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_L");
+        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_R");
+        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_L");
+        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_R");
+        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_L");
+        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_R");
 
-    private void SmileMouth(float targetWeight = 100f)
-    {
-        _animator.ResetTrigger("StartSmileMouth");
+        float leftBrowAngryStart = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowAngryIndex);
+        float rightBrowAngryStart = _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowAngryIndex);
+        float leftBrowSadStart = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowSadIndex);
+        float rightBrowSadStart = _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowSadIndex);
+        float leftBrowRaisedStart = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowRaisedIndex);
+        float rightBrowRaisedStart = _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowRaisedIndex);
+        float leftBrowLoweredStart = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowLoweredIndex);
+        float rightBrowLoweredStart = _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowLoweredIndex);
 
-        if (_skinnedMeshRenderer == null)
-        {
-            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for smiling mouth.", gameObject);
-            return;
-        }
-        // Smile mouth is a single blend shape, so we can directly set it without queuing an animation
-        QueueAnimation(AnimateSmileMouth(targetWeight));
-    }
+        float elapsed = 0f;
 
-    private void FrownMouth(float targetWeight = 100f)
-    {
-        _animator.ResetTrigger("StartFrownMouth");
-        if (_skinnedMeshRenderer == null)
+        while (elapsed < smoothDuration)
         {
-            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for frowning mouth.", gameObject);
-            return;
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / smoothDuration);
+
+            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, Mathf.Lerp(leftBrowAngryStart, angryTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, Mathf.Lerp(rightBrowAngryStart, angryTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, Mathf.Lerp(leftBrowSadStart, sadTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, Mathf.Lerp(rightBrowSadStart, sadTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, Mathf.Lerp(leftBrowRaisedStart, raisedTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, Mathf.Lerp(rightBrowRaisedStart, raisedTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, Mathf.Lerp(leftBrowLoweredStart, loweredTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, Mathf.Lerp(rightBrowLoweredStart, loweredTarget, progress));
+
+            yield return null;
         }
-        // Frown mouth is a single blend shape, so we can directly set it without queuing an animation
-        QueueAnimation(AnimateFrownMouth(targetWeight));
+
+        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, angryTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, angryTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, sadTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, sadTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, raisedTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, raisedTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, loweredTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, loweredTarget);
     }
 
     private IEnumerator AnimateEyesClosed(float targetWeight)
@@ -267,200 +279,69 @@ public class AnimeationEvents : MonoBehaviour
         _skinnedMeshRenderer.SetBlendShapeWeight(leftEyeIndex, targetWeight);
     }
 
-    private IEnumerator AnimateResetEyebrows()
+    private void ResetMouth()
     {
-        int leftBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_L");
-        int rightBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_R");
-        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_L");
-        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Sad_R");
-        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_L");
-        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Raised_R");
-        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_L");
-        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brows_Lowered_R");
-
-        float elapsed = 0f;
-
-        while(elapsed < smoothDuration)
+        _animator.ResetTrigger("StartResetMouth");
+        if (_skinnedMeshRenderer == null)
         {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowAngryIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowAngryIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowSadIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowSadIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowRaisedIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowRaisedIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowLoweredIndex));
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, (1f - progress) * _skinnedMeshRenderer.GetBlendShapeWeight(rightBrowLoweredIndex));
-            yield return null;
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for resetting mouth.", gameObject);
+            return;
         }
-
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, 0f);
+        QueueAnimation(AnimateMouth(0f, 0f));
     }
 
-    private IEnumerator AnimateAngryEyebrows(float targetWeight)
+    private void SmileMouth(float targetWeight = 100f)
     {
-        int leftBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_L");
-        int rightBrowAngryIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Angry_R");
-        
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowAngryIndex);
-        float elapsed = 0f;
-        
-        while (elapsed < smoothDuration)
+        _animator.ResetTrigger("StartSmileMouth");
+
+        if (_skinnedMeshRenderer == null)
         {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, currentWeight);
-            yield return null;
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for smiling mouth.", gameObject);
+            return;
         }
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowAngryIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowAngryIndex, targetWeight);
+        QueueAnimation(AnimateMouth(targetWeight, 0f));
     }
 
-    private IEnumerator AnimateSadEyebrows(float targetWeight)
+    private void FrownMouth(float targetWeight = 100f)
     {
-        int leftBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_L");
-        int rightBrowSadIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Sad_R");
-        
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowSadIndex);
-        float elapsed = 0f;
-        
-        while (elapsed < smoothDuration)
+        _animator.ResetTrigger("StartFrownMouth");
+        if (_skinnedMeshRenderer == null)
         {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, currentWeight);
-            yield return null;
+            Debug.LogError("[AnimeationEvents] SkinnedMeshRenderer not found for frowning mouth.", gameObject);
+            return;
         }
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowSadIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowSadIndex, targetWeight);
+        QueueAnimation(AnimateMouth(0f, targetWeight));
     }
 
-    private IEnumerator AnimateRaisedEyebrows(float targetWeight)
-    {
-        int leftBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_L");
-        int rightBrowRaisedIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Raised_R");
-        
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowRaisedIndex);
-        float elapsed = 0f;
-        
-        while (elapsed < smoothDuration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, currentWeight);
-            yield return null;
-        }
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowRaisedIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowRaisedIndex, targetWeight);
-    }
-
-    private IEnumerator AnimateLoweredEyebrows(float targetWeight)
-    {
-        int leftBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_L");
-        int rightBrowLoweredIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Brow_Lowered_R");
-        
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(leftBrowLoweredIndex);
-        float elapsed = 0f;
-        
-        while (elapsed < smoothDuration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, currentWeight);
-            yield return null;
-        }
-        _skinnedMeshRenderer.SetBlendShapeWeight(leftBrowLoweredIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(rightBrowLoweredIndex, targetWeight);
-    }
-
-    private IEnumerator AnimateResetMouth()
+    private IEnumerator AnimateMouth(float smileTarget, float frownTarget)
     {
         int smileMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_R");
         int smileMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_L");
         int frownMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_R");
         int frownMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_L");
+
         float startSmileWeightR = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthRIndex);
         float startSmileWeightL = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthLIndex);
         float startFrownWeightR = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex);
         float startFrownWeightL = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthLIndex);
-        float elapsed = 0f;
-        while (elapsed < smoothDuration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            float currentSmileWeightR = Mathf.Lerp(startSmileWeightR, 0f, progress);
-            float currentSmileWeightL = Mathf.Lerp(startSmileWeightL, 0f, progress);
-            float currentFrownWeightR = Mathf.Lerp(startFrownWeightR, 0f, progress);
-            float currentFrownWeightL = Mathf.Lerp(startFrownWeightL, 0f, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, currentSmileWeightR);
-            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, currentSmileWeightL);
-            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, currentFrownWeightR);
-            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, currentFrownWeightL);
-            yield return null;
-        }
-        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, 0f);
-        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, 0f);
-    }
 
-    private IEnumerator AnimateSmileMouth(float targetWeight)
-    {
-        int smileMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_R");
-        int smileMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Happy_L");
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(smileMouthRIndex);
         float elapsed = 0f;
         while (elapsed < smoothDuration)
         {
             elapsed += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, currentWeight);
-            yield return null;
-        }
-        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, targetWeight);
-    }
 
-    private IEnumerator AnimateFrownMouth(float targetWeight)
-    {
-        int frownMouthRIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_R");
-        int frownMouthLIndex = _skinnedMeshRenderer.sharedMesh.GetBlendShapeIndex("Expression_Mouth_Sad_L");
-        float startWeight = _skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex);
-        float elapsed = 0f;
-        Debug.Log("Before while loop");
-        while (elapsed < smoothDuration)
-        {
-            Debug.Log($"Animating frown mouth. Elapsed: {elapsed}, Progress: {Mathf.Clamp01(elapsed / smoothDuration)}, CurrentWeight: {_skinnedMeshRenderer.GetBlendShapeWeight(frownMouthRIndex)}", gameObject);
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / smoothDuration);
-            float currentWeight = Mathf.Lerp(startWeight, targetWeight, progress);
-            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, currentWeight);
-            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, currentWeight);
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, Mathf.Lerp(startSmileWeightR, smileTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, Mathf.Lerp(startSmileWeightL, smileTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, Mathf.Lerp(startFrownWeightR, frownTarget, progress));
+            _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, Mathf.Lerp(startFrownWeightL, frownTarget, progress));
+
             yield return null;
         }
-        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, targetWeight);
-        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, targetWeight);
+
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthRIndex, smileTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(smileMouthLIndex, smileTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthRIndex, frownTarget);
+        _skinnedMeshRenderer.SetBlendShapeWeight(frownMouthLIndex, frownTarget);
     }
 }

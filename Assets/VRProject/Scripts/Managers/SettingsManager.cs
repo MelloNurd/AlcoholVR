@@ -103,8 +103,8 @@ public class SettingsManager : MonoBehaviour
         return Mathf.Log10(volumePercent/100) * 20f;
     }
 
-    public void DisableTutorialSettings()
+    public void DisableCharacterCreatorSettings()
     {
-        Player.Instance.DisableTutorialSettings();
+        Player.Instance.DisableCharacterCreatorSettings();
     }
 }
