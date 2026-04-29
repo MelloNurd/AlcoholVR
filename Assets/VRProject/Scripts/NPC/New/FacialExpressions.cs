@@ -73,4 +73,19 @@ public class FacialExpressions : MonoBehaviour
         if (!Application.isPlaying) return;
         _animator.SetTrigger("StartResetMouth");
     }
+
+    public void SetEyebrowsMad()
+    {
+        SetEyebrows(EyebrowsState.Mad);
+    }
+
+    public void SetEyebrowsRaised()
+    {
+        SetEyebrows(EyebrowsState.Raised);
+    }
+
+    public void SetMouthFrown()
+    {
+        SetMouth(MouthState.Frown);
+    }
 }

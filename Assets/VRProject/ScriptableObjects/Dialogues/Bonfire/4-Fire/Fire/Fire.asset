@@ -13,19 +13,22 @@ MonoBehaviour:
   m_Name: Fire
   m_EditorClassIdentifier: 
   dialogueText: 
+  playedAudio: {fileID: 0}
+  eyebrowsState: 3
+  mouthState: 0
   options:
   - optionText: Haha that looks cool
     nextDialogue: {fileID: 11400000, guid: 1f02427ac33394c4da984ded34eb5c88, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-    ButtonEnabled: 1
   - optionText: You guys should be more careful...
     nextDialogue: {fileID: 11400000, guid: 75f92db96d570804a835ff5f53340b4e, type: 2}
+    DisableButton: 0
     onOptionSelected:
       m_PersistentCalls:
         m_Calls: []
-    ButtonEnabled: 1
   onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
