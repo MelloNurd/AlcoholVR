@@ -240,13 +240,22 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void DisableTutorialSettings()
+    public void DisableCharacterCreatorSettings()
     {
+        SettingsManager.Instance.RangedInteractors = false;
         _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
         _rightNearFarInteractor.enableFarCasting = false;
         _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("UI");
         _leftNearFarInteractor.enableFarCasting = false;
-        SettingsManager.Instance.RangedInteractors = false;
+    }
+
+    public void EnableCharacterCreatorSettings()
+    {
+        SettingsManager.Instance.RangedInteractors = true;
+        _rightNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
+        _rightNearFarInteractor.enableFarCasting = true;
+        _leftNearFarInteractor.interactionLayers = LayerMask.GetMask("Default", "UI");
+        _leftNearFarInteractor.enableFarCasting = true;
     }
 
     public void DisabledRangedInteractors()
