@@ -215,7 +215,7 @@ public class PartyScene : MonoBehaviour
                 sequence.dialogue.options[1].onOptionSelected.AddListener(() => // BAD DECISION (ignore drunk rage)
                 {
                     GlobalStats.helpedRagingDrunk = false;
-                    _bonfireFriendNPC.StartNextSequence(2);
+                    _bonfireFriendNPC.StartNextSequence(3);
 
                     ObjectiveSystem leaveSceneObjective = ObjectiveManager.Instance.CreateObjectiveObject(new Objective("Leave the party for the bonfire.", 1, _exitSceneTransform));
                     leaveSceneObjective.Begin();
